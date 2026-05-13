@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 2 – Środowiskowe Uwarunkowania Zdrowia</title>
+<style>
+  :root {
+    --green:  #2d6a4f;
+    --green2: #40916c;
+    --green3: #74c69d;
+    --green4: #d8f3dc;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f8f9fa;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #eef2ef;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* START */
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--green); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .btn {
+    display: inline-block;
+    background: var(--green2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: var(--green); transform: translateY(-1px); }
+  .btn:active { transform: none; }
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--green2);
+    color: var(--green2);
+  }
+  .btn-outline:hover { background: var(--green4); }
+
+  /* QUIZ */
+  .progress-wrap {
+    margin-bottom: 1.2rem;
+  }
+  .progress-bar-bg {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green2), var(--green3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--green2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--green3);
+    background: #f0faf4;
+  }
+  .option-btn .opt-letter {
+    font-weight: 800;
+    color: var(--green2);
+    min-width: 1.4rem;
+    font-size: 1rem;
+  }
+  .option-btn.correct {
+    background: var(--green4);
+    border-color: var(--green2);
+  }
+  .option-btn.wrong {
+    background: var(--red2);
+    border-color: var(--red);
+  }
+  .option-btn.correct .opt-letter { color: var(--green); }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--green4); border-left: 4px solid var(--green2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.2rem;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--green); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), var(--green2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--green); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--green4); border-left: 3px solid var(--green2); }
+  .review-item.fail { background: var(--red2);   border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Środowiskowe Uwarunkowania Zdrowia</h1>
+  <p>Test 2 – podstawy i pojęcia · 37 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w Teście 2!</h2>
+    <p>Ten test skupia się na ogólnych pojęciach, definicjach i mechanizmach z zakresu środowiskowych uwarunkowań zdrowia. Pytania są prostsze i bardziej przekrojowe niż w Teście 1.</p>
+    <p>Przy każdym podejściu kolejność pytań i odpowiedzi jest losowa. Po wybraniu odpowiedzi zobaczysz krótkie wyjaśnienie. Łącznie <strong>37 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 35</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/35</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct">
+        <strong id="resCorrect">0</strong>
+        <span>Poprawnych</span>
+      </div>
+      <div class="stat-box stat-wrong">
+        <strong id="resWrong">0</strong>
+        <span>Niepoprawnych</span>
+      </div>
+      <div class="stat-box">
+        <strong id="resPct">0%</strong>
+        <span>Skuteczność</span>
+      </div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // --- WYKŁAD I: DETERMINANTY ZDROWIA ---
+  {
+    q: "Według modelu Marka Lalonde\u2019a, jaki czynnik w największym stopniu determinuje zdrowie człowieka?",
+    opts: [
+      { t: "Styl życia", c: true },
+      { t: "Opieka medyczna", c: false },
+      { t: "Czynniki genetyczne", c: false },
+      { t: "Środowisko fizyczne", c: false }
+    ],
+    exp: "Raport Lalonde\u2019a (1974) wskazuje, że styl życia odpowiada za ok. 50% zdrowia. Opieka medyczna \u2013 jedynie ok. 10\u201315%, genetyka \u2013 ok. 15%, środowisko \u2013 ok. 25%."
+  },
+  {
+    q: "Według Światowej Organizacji Zdrowia (WHO), z jakim odsetkiem globalnej śmiertelności powiązane są czynniki środowiskowe?",
+    opts: [
+      { t: "Około 10%", c: false },
+      { t: "Około 24%", c: true },
+      { t: "Około 50%", c: false },
+      { t: "Około 5%", c: false }
+    ],
+    exp: "WHO podaje, że czynniki środowiskowe odpowiadają za blisko 24% globalnej śmiertelności \u2013 co czwarty zgon na świecie jest powiązany z ekosystemem."
+  },
+  {
+    q: "Koncepcja \u201Epól zdrowia\u201F Marka Lalonde\u2019a wskazuje, że medycyna naprawcza odpowiada za ile procent dobrostanu populacji?",
+    opts: [
+      { t: "Około 10%", c: true },
+      { t: "Około 30%", c: false },
+      { t: "Około 50%", c: false },
+      { t: "Około 70%", c: false }
+    ],
+    exp: "Lalonde wykazał w raporcie z 1974 r., że medycyna naprawcza (czyli system opieki zdrowotnej) odpowiada jedynie za ok. 10% dobrostanu populacji."
+  },
+  {
+    q: "Które z poniższych NIE jest wymieniane jako determinant zdrowia w socjologicznym modelu zdrowia?",
+    opts: [
+      { t: "Środowisko fizyczne i psychospołeczne", c: false },
+      { t: "Biologia człowieka", c: false },
+      { t: "Styl życia", c: false },
+      { t: "Poziom inteligencji jednostki", c: true }
+    ],
+    exp: "Model socjologiczny wymienia: styl życia, środowisko, biologię, system opieki, pracę i społeczność. Poziom inteligencji nie figuruje jako samodzielny determinant."
+  },
+  // --- WYKŁAD II: ŚRODOWISKOWE ZAGROŻENIA ---
+  {
+    q: "Co oznacza pojęcie \u201Eśrodowiskowe zagrożenia zdrowia\u201F?",
+    opts: [
+      { t: "Wyłącznie choroby zakaźne przenoszone przez środowisko", c: false },
+      { t: "Czynniki zewnętrzne w otoczeniu człowieka negatywnie wpływające na zdrowie, często niezależne od jednostki", c: true },
+      { t: "Tylko zanieczyszczenia przemysłowe powietrza i wody", c: false },
+      { t: "Skutki nieprawidłowego stylu życia człowieka", c: false }
+    ],
+    exp: "Środowiskowe zagrożenia zdrowia to czynniki zewnętrzne (powietrze, woda, hałas itp.) stanowiące ryzyko zdrowotne, często niezależne od woli jednostki."
+  },
+  {
+    q: "Do jakiej kategorii zagrożeń środowiskowych zalicza się hałas w miejscu pracy?",
+    opts: [
+      { t: "Biologicznej", c: false },
+      { t: "Chemicznej", c: false },
+      { t: "Fizycznej", c: true },
+      { t: "Psychospołecznej", c: false }
+    ],
+    exp: "Hałas jest czynnikiem fizycznym. Inne czynniki fizyczne to wibracje, promieniowanie, temperatura. Czynniki biologiczne to mikroorganizmy, chemiczne \u2013 substancje toksyczne."
+  },
+  {
+    q: "Które z poniższych jest przykładem biologicznego zagrożenia środowiskowego w miejscu pracy?",
+    opts: [
+      { t: "Nadmierny hałas maszyn", c: false },
+      { t: "Ekspozycja na bakterie lub wirusy", c: true },
+      { t: "Wysokie stężenie dwutlenku węgla", c: false },
+      { t: "Praca w niskich temperaturach", c: false }
+    ],
+    exp: "Zagrożenia biologiczne obejmują ekspozycję na bakterie, wirusy, grzyby i inne organizmy żywe. Hałas, CO2 i temperatura to zagrożenia fizyczne lub chemiczne."
+  },
+  {
+    q: "Mikroklimat gorący w miejscu pracy może prowadzić przede wszystkim do:",
+    opts: [
+      { t: "Odmrożeń i hipotermii", c: false },
+      { t: "Przegrzania organizmu i udaru cieplnego", c: true },
+      { t: "Chorób układu oddechowego", c: false },
+      { t: "Zaburzeń słuchu", c: false }
+    ],
+    exp: "Mikroklimat gorący grozi przegrzaniem ciała, udarem cieplnym i odwodnieniem. Odmrożenia dotyczą mikroklimatu zimnego, a zaburzenia słuchu \u2013 hałasu."
+  },
+  // --- WYKŁAD III: SKALA INDYWIDUALNA PO GLOBALNĄ ---
+  {
+    q: "Które z poniższych jest przykładem zagrożenia zdrowotnego o GLOBALNYM zasięgu?",
+    opts: [
+      { t: "Smog w konkretnym mieście", c: false },
+      { t: "Pandemia grypy", c: true },
+      { t: "Skażenie lokalnej rzeki", c: false },
+      { t: "Hałas drogowy w dzielnicy", c: false }
+    ],
+    exp: "Pandemie (jak grypa H5N1 czy COVID-19) mają zasięg globalny i wymagają koordynacji WHO. Smog, skażenie rzeki czy hałas to zagrożenia lokalne lub regionalne."
+  },
+  {
+    q: "Ekologiczny bilans globalizacji po stronie negatywnej obejmuje przede wszystkim:",
+    opts: [
+      { t: "Wzrost wymiany handlowej między krajami", c: false },
+      { t: "Kryzys klimatyczny i degradację ekosystemów", c: true },
+      { t: "Poprawa dostępu do leków na świecie", c: false },
+      { t: "Szybszy transfer technologii medycznych", c: false }
+    ],
+    exp: "Negatywny ekologiczny bilans globalizacji to m.in. wzrost emisji gazów cieplarnianych, degradacja ekosystemów, zanieczyszczenie wód i utrata bioróżnorodności."
+  },
+  {
+    q: "Co oznacza termin \u201Einternacjonalizacja ryzyka\u201F w kontekście zdrowia publicznego?",
+    opts: [
+      { t: "Zagrożenia zdrowotne nie zatrzymują się na granicach państw", c: true },
+      { t: "Każdy kraj sam zarządza swoimi ryzykami zdrowotnymi", c: false },
+      { t: "Tylko kraje bogate są narażone na globalne zagrożenia", c: false },
+      { t: "Ryzyko zdrowotne maleje wraz z rozwojem globalizacji", c: false }
+    ],
+    exp: "Internacjonalizacja ryzyka oznacza, że w zglobalizowanym świecie zagrożenia zdrowotne (choroby, zanieczyszczenia) nie zatrzymują się na granicach \u2013 problem sąsiada staje się natychmiast naszym problemem."
+  },
+  {
+    q: "ECDC z siedzibą w Sztokholmie to instytucja, która zajmuje się:",
+    opts: [
+      { t: "Europejskim nadzorem i walką z chorobami zakaźnymi", c: true },
+      { t: "Finansowaniem badań środowiskowych w UE", c: false },
+      { t: "Kontrolą jakości żywności w Europie", c: false },
+      { t: "Regulacją substancji chemicznych w kosmetykach", c: false }
+    ],
+    exp: "ECDC (European Centre for Disease Prevention and Control) to europejska agencja ds. zapobiegania i zwalczania chorób zakaźnych, wdrożona m.in. w ramach IHR 2005."
+  },
+  // --- WYKŁAD IV: PSYCHOLOGIA KRYZYSU KLIMATYCZNEGO ---
+  {
+    q: "Termin \u201Eemocje klimatyczne\u201F jest uznawany za trafniejszy niż \u201Edepresja klimatyczna\u201F, ponieważ:",
+    opts: [
+      { t: "Wyklucza jakikolwiek patologiczny wymiar tych stanów", c: false },
+      { t: "Nie stygmatyzuje medycznie i uwzględnia też stany konstruktywne, jak poczucie wspólnoty czy radykalna nadzieja", c: true },
+      { t: "Wskazuje, że problem dotyczy wyłącznie psychiatrów", c: false },
+      { t: "Opisuje wyłącznie smutek i przygnębienie", c: false }
+    ],
+    exp: "Termin \u201Eemocje klimatyczne\u201F unika stygmatyzacji medycznej i obejmuje zarówno trudne stany (lęk, smutek), jak i konstruktywne odpowiedzi (poczucie wspólnoty, radykalna nadzieja)."
+  },
+  {
+    q: "Postawa \u201Ebagatelizowania\u201F wobec zmian klimatycznych polega na:",
+    opts: [
+      { t: "Aktywnym zaprzeczaniu faktom naukowym o klimacie", c: false },
+      { t: "Przypisywaniu napływającym informacjom o klimacie małego znaczenia i traktowaniu ich jako przesadzonych", c: true },
+      { t: "Intensywnym zaangażowaniu w działania proekologiczne", c: false },
+      { t: "Głębokim wypaleniu po wcześniejszym aktywizmie ekologicznym", c: false }
+    ],
+    exp: "Bagatelizowanie to minimalizowanie konsekwencji zmian klimatycznych \u2013 traktowanie alarmów jako przesadzonych. Różni się od denializmu (aktywnego negowania faktów) i wypalenia."
+  },
+  {
+    q: "Solastalgia to termin opisujący:",
+    opts: [
+      { t: "Lęk przed przyszłymi katastrofami klimatycznymi", c: false },
+      { t: "Cierpienie wynikające z degradacji bliskiego środowiska, w którym się mieszka", c: true },
+      { t: "Wypalenie aktywistów klimatycznych", c: false },
+      { t: "Radość z podejmowania działań proekologicznych", c: false }
+    ],
+    exp: "Solastalgia to ból i poczucie straty spowodowane zmianami w środowisku, w którym się żyje \u2013 np. obserwowanie degradacji rodzimego krajobrazu."
+  },
+  {
+    q: "Według Doherty\u2019ego i Clayton (2011), które populacje najbardziej ucierpią na zdrowiu psychicznym w wyniku zmian klimatycznych?",
+    opts: [
+      { t: "Osoby zamożne w krajach wysoko rozwiniętych", c: false },
+      { t: "Tak zwane wrażliwe populacje", c: true },
+      { t: "Wyłącznie aktywiści klimatyczni", c: false },
+      { t: "Osoby, które nigdy nie doświadczyły klęski żywiołowej", c: false }
+    ],
+    exp: "Badacze wskazują, że najbardziej narażone są tzw. wrażliwe populacje (m.in. dzieci, osoby starsze, biedniejsze społeczności), które mają mniejsze zasoby do radzenia sobie ze skutkami zmian klimatu."
+  },
+  // --- WYKŁAD V: CHOROBY CYWILIZACYJNE ---
+  {
+    q: "Choroby cywilizacyjne są definiowane jako:",
+    opts: [
+      { t: "Tylko choroby zakaźne szerzone przez globalizację", c: false },
+      { t: "Schorzenia związane z rozwojem technicznym, zmianami stylu życia i uprzemysłowieniem \u2013 będące chronicznym zaburzeniem homeostazy", c: true },
+      { t: "Choroby wyłącznie genetyczne uwarunkowane", c: false },
+      { t: "Wszystkie choroby nabyte w środowisku pracy", c: false }
+    ],
+    exp: "Choroby cywilizacyjne to schorzenia powiązane z uprzemysłowieniem i zmianami stylu życia. Ich istotą jest chroniczne zaburzenie homeostazy organizmu."
+  },
+  {
+    q: "Które z poniższych należy do tzw. \u201EWielkiej Czwórki\u201F chorób cywilizacyjnych?",
+    opts: [
+      { t: "Grypa sezonowa", c: false },
+      { t: "Choroby układu krążenia", c: true },
+      { t: "Malaria", c: false },
+      { t: "Cholera", c: false }
+    ],
+    exp: "Wielka Czwórka chorób cywilizacyjnych to: choroby układu krążenia, nowotwory, cukrzyca i choroby metaboliczne oraz zaburzenia psychiczne. Grypa, malaria czy cholera to choroby zakaźne."
+  },
+  {
+    q: "Jaką rolę odgrywa przewlekły stan zapalny (\u201Elow-grade inflammation\u201F) w chorobach cywilizacyjnych?",
+    opts: [
+      { t: "Jest jedynie objawem ostrych infekcji", c: false },
+      { t: "Jest kluczowym mechanizmem patologicznym leżącym u podstaw wielu chorób cywilizacyjnych", c: true },
+      { t: "Nie ma żadnego związku z chorobami metabolicznymi", c: false },
+      { t: "Chroni organizm przed chorobami cywilizacyjnymi", c: false }
+    ],
+    exp: "Przewlekły stan zapalny o niskim nasileniu jest centralnym mechanizmem patologicznym chorób cywilizacyjnych \u2013 w tym miażdżycy, cukrzycy i nowotworów."
+  },
+  {
+    q: "Do głównych przyczyn zaburzeń homeostazy prowadzących do chorób cywilizacyjnych zalicza się:",
+    opts: [
+      { t: "Infekcje wirusowe i bakteryjne", c: false },
+      { t: "Brak ruchu, palenie tytoniu, nieodpowiednia dieta i przewlekły stres", c: true },
+      { t: "Nadmierną aktywność fizyczną", c: false },
+      { t: "Niedobory żywieniowe wyłącznie witamin", c: false }
+    ],
+    exp: "Kluczowe przyczyny zaburzeń homeostazy w kontekście chorób cywilizacyjnych to: brak ruchu, palenie tytoniu, nieodpowiednia dieta i przewlekły stres."
+  },
+  // --- WYKŁAD VI: NANOTECHNOLOGIA ---
+  {
+    q: "Nanotechnologia w medycynie (nanomedycyna) umożliwia przede wszystkim:",
+    opts: [
+      { t: "Całkowitą eliminację skutków ubocznych leków", c: false },
+      { t: "Precyzyjniejsze dostarczanie leków do celu i personalizację terapii", c: true },
+      { t: "Produkcję wyłącznie antybiotyków nowej generacji", c: false },
+      { t: "Zastąpienie tradycyjnych metod diagnostycznych", c: false }
+    ],
+    exp: "Nanomedycyna pozwala na precyzyjne dawkowanie i docieranie leku do konkretnych komórek (np. nowotworowych), co oznacza mniejszą inwazyjność i personalizację terapii."
+  },
+  {
+    q: "Dlaczego nanocząstki mogą stanowić zagrożenie zdrowotne?",
+    opts: [
+      { t: "Powodują wyłącznie alergie skórne", c: false },
+      { t: "Ze względu na mikroskopijny rozmiar omijają naturalne bariery ochronne organizmu i mogą akumulować się w narządach", c: true },
+      { t: "Są zbyt duże, by wniknąć do komórek", c: false },
+      { t: "Zagrożenia nanocząstek dotyczą jedynie roślin", c: false }
+    ],
+    exp: "Nanocząstki, dzięki mikroskopijnemu rozmiarowi, mogą przekraczać bariery biologiczne (np. barierę krew\u2013mózg) i akumulować się w narządach, co budzi obawy toksykologiczne."
+  },
+  {
+    q: "W jakim kontekście ekologicznym nanotechnologia może być KORZYSTNA?",
+    opts: [
+      { t: "Zwiększa emisję gazów cieplarnianych przez przemysł", c: false },
+      { t: "Umożliwia oczyszczanie wody i remediację skażonych gleb", c: true },
+      { t: "Przyspiesza utratę bioróżnorodności", c: false },
+      { t: "Zastępuje odnawialne źródła energii", c: false }
+    ],
+    exp: "Nanotechnologia ma zastosowania proekologiczne: nanomateriały służą do uzdatniania wody, odsalania oraz oczyszczania gleb z metali ciężkich i związków organicznych."
+  },
+  // --- WYKŁAD VII: MEDYCYNA ŚRODOWISKOWA ---
+  {
+    q: "Koncepcja \u201EOne Health\u201F (\u201EJedno Zdrowie\u201F) zakłada, że:",
+    opts: [
+      { t: "Zdrowie człowieka jest całkowicie niezależne od stanu środowiska", c: false },
+      { t: "Zdrowie ludzi, zwierząt i środowiska jest ściśle ze sobą powiązane i współzależne", c: true },
+      { t: "O zdrowiu decydują wyłącznie geny człowieka", c: false },
+      { t: "Dobrostan pracowników nie zależy od otoczenia zakładu pracy", c: false }
+    ],
+    exp: "One Health to paradygmat zakładający nierozerwalną współzależność zdrowia ludzi, zwierząt i środowiska. W kontekście pracy \u2013 stan otoczenia zakładu bezpośrednio wpływa na dobrostan pracowników."
+  },
+  {
+    q: "Czym różni się medycyna środowiskowa od medycyny pracy?",
+    opts: [
+      { t: "Medycyna środowiskowa zajmuje się wyłącznie chorobami zakaźnymi", c: false },
+      { t: "Medycyna środowiskowa ma szerszy kontekst \u2013 obejmuje wpływ miejsca zamieszkania i codziennego otoczenia, nie tylko miejsca pracy", c: true },
+      { t: "Medycyna pracy nie zajmuje się czynnikami chemicznymi", c: false },
+      { t: "Obie dziedziny nie mają żadnych wspólnych obszarów", c: false }
+    ],
+    exp: "Medycyna środowiskowa ma szerszy zakres \u2013 obejmuje środowisko życia codziennego (dom, miasto), podczas gdy medycyna pracy koncentruje się na narażeniu zawodowym. Obie dziedziny mają wiele wspólnych metod."
+  },
+  {
+    q: "Co to jest biomonitoring w kontekście zdrowia pracowników?",
+    opts: [
+      { t: "System kamer monitorujących pracowników w zakładzie pracy", c: false },
+      { t: "Metoda oceny narażenia człowieka na czynniki szkodliwe poprzez pomiary w płynach i tkankach biologicznych", c: true },
+      { t: "Hodowla mikroorganizmów w celu testowania leków", c: false },
+      { t: "Analiza danych demograficznych populacji pracowniczej", c: false }
+    ],
+    exp: "Biomonitoring to metoda oceny rzeczywistego narażenia człowieka (np. na metale ciężkie, pestycydy) poprzez pomiar biomarkerów w próbkach biologicznych: krwi, moczu, włosach."
+  },
+  // --- WYKŁAD VIII: WYPADKI I URAZY ---
+  {
+    q: "Do której grupy czynników środowiskowych sprzyjających urazom zalicza się huragany i powodzie?",
+    opts: [
+      { t: "Czynniki chemiczne i energetyczne", c: false },
+      { t: "Czynniki naturalne i klimatyczne", c: true },
+      { t: "Czynniki psychospołeczne", c: false },
+      { t: "Czynniki technologiczne wynikające z błędu człowieka", c: false }
+    ],
+    exp: "Huragany i powodzie to czynniki naturalne i klimatyczne (siły wyższe). Obok nich wyróżnia się czynniki chemiczne/energetyczne (np. energia elektryczna) i technologiczne."
+  },
+  {
+    q: "Jaka jest kluczowa zasada w profilaktyce wypadków przy pracy dotycząca środków ochrony?",
+    opts: [
+      { t: "Środki ochrony indywidualnej mają pierwszeństwo przed zbiorową", c: false },
+      { t: "Środki ochrony zbiorowej mają pierwszeństwo przed indywidualnymi", c: true },
+      { t: "Oba rodzaje środków ochrony są równorzędne", c: false },
+      { t: "Środki ochrony są potrzebne tylko w przemyśle ciężkim", c: false }
+    ],
+    exp: "Kluczowa zasada profilaktyki wypadków: zawsze priorytet mają środki ochrony zbiorowej (np. barierki, wentylacja), a dopiero potem indywidualne (kaski, rękawice)."
+  },
+  {
+    q: "Z czego wynika większość wypadków przy pracy, według zasad BHP?",
+    opts: [
+      { t: "Z wadliwego sprzętu i złej infrastruktury", c: false },
+      { t: "Z niebezpiecznych zachowań samych pracowników", c: true },
+      { t: "Z niedostatecznego finansowania BHP przez pracodawcę", c: false },
+      { t: "Z czynników naturalnych i klimatycznych", c: false }
+    ],
+    exp: "Zgodnie z zasadami BHP, większość wypadków jest spowodowana nie warunkami materialnymi, lecz niebezpiecznymi zachowaniami pracowników (brak wiedzy, niewłaściwe postawy, brak nadzoru)."
+  },
+  // --- SEMINARIUM I: ZANIECZYSZCZENIA I ZDROWIE ---
+  {
+    q: "Według WHO, skażona żywność jest przyczyną ponad ilu różnych jednostek chorobowych?",
+    opts: [
+      { t: "Ponad 20", c: false },
+      { t: "Ponad 200", c: true },
+      { t: "Ponad 2000", c: false },
+      { t: "Ponad 50", c: false }
+    ],
+    exp: "WHO wskazuje, że skażona żywność powoduje ponad 200 różnych chorób \u2013 od łagodnych zatruć pokarmowych przez schorzenia metaboliczne po nowotwory."
+  },
+  {
+    q: "PM2.5 to cząstki pyłu zawieszonego, które stanowią szczególne zagrożenie zdrowotne, ponieważ:",
+    opts: [
+      { t: "Są widoczne gołym okiem i łatwe do unikania", c: false },
+      { t: "Ze względu na mały rozmiar wnikają głęboko do układu oddechowego i mogą dostawać się do krwiobiegu", c: true },
+      { t: "Oddziałują wyłącznie na skórę człowieka", c: false },
+      { t: "Są niebezpieczne jedynie dla zwierząt", c: false }
+    ],
+    exp: "Cząstki PM2.5 (drobny pył zawieszony o średnicy poniżej 2,5 mikrometra) wnikają głęboko do płuc, a nawet do krwiobiegu, powodując choroby układu oddechowego, krążenia i neurodegeneracyjne."
+  },
+  // --- SEMINARIUM III: ZAGROŻENIA ŻYWNOŚCIOWE ---
+  {
+    q: "Pestycydy w żywności zaliczamy do zagrożeń:",
+    opts: [
+      { t: "Biologicznych", c: false },
+      { t: "Chemicznych", c: true },
+      { t: "Fizycznych", c: false },
+      { t: "Psychospołecznych", c: false }
+    ],
+    exp: "Pestycydy to substancje chemiczne. Zagrożenia biologiczne to bakterie, wirusy, pasożyty; fizyczne \u2013 ciała obce, promieniowanie."
+  },
+  {
+    q: "Naturalne substancje antyodżywcze w żywności to:",
+    opts: [
+      { t: "Wyłącznie substancje dodawane przez producentów żywności", c: false },
+      { t: "Związki naturalnie obecne w roślinach, które mogą utrudniać wchłanianie składników odżywczych lub wykazywać toksyczność", c: true },
+      { t: "Bakterie i wirusy obecne w żywności", c: false },
+      { t: "Pozostałości środków konserwujących", c: false }
+    ],
+    exp: "Naturalne substancje antyodżywcze (np. lektyny, fityniany, glukozynolany) to związki produkowane przez same rośliny, które mogą zaburzać wchłanianie składników odżywczych lub działać toksycznie."
+  },
+  // --- SEMINARIUM IV: KOSMETYKI I ZABAWKI ---
+  {
+    q: "PFAS (\u201Ewieczne chemikalia\u201F) zyskały tę nazwę, ponieważ:",
+    opts: [
+      { t: "Stosuje się je od ponad 100 lat", c: false },
+      { t: "Praktycznie nie ulegają rozkładowi w środowisku ze względu na trwałe wiązania węglowo-fluorowe", c: true },
+      { t: "Są produkowane wyłącznie przez wiecznotrwałe rośliny", c: false },
+      { t: "Ich wpływ na zdrowie trwa przez całe życie człowieka", c: false }
+    ],
+    exp: "PFAS to syntetyczne związki oparte na długich łańcuchach węglowo-fluorowych. Wiązania C\u2013F są wyjątkowo trwałe, dlatego PFAS praktycznie nie rozkładają się w środowisku."
+  },
+  {
+    q: "Parabeny stosowane w kosmetykach budzą obawy zdrowotne przede wszystkim ze względu na ich:",
+    opts: [
+      { t: "Silne właściwości uczulające skórę", c: false },
+      { t: "Działanie podobne do estrogenów (działanie ksenoestrogenowe), mogące zaburzać gospodarkę hormonalną", c: true },
+      { t: "Toksyczność ostrą \u2013 groźną już po jednorazowej ekspozycji", c: false },
+      { t: "Zdolność do gromadzenia się wyłącznie w tkance kostnej", c: false }
+    ],
+    exp: "Parabeny są ksenoestrogenami \u2013 naśladują działanie naturalnych estrogenów. Choć ich działanie jest wielokrotnie słabsze od estradiolu, codzienne narażenie z wielu źródeł (kosmetyki, leki, żywność) budzi obawy."
+  },
+  {
+    q: "Mikroplastik stanowi zagrożenie zdrowotne, ponieważ:",
+    opts: [
+      { t: "Jest widoczny gołym okiem i łatwy do usunięcia z wody", c: false },
+      { t: "Mikroskopijne cząstki plastiku mogą przenikać do tkanek i narządów człowieka oraz transportować substancje toksyczne", c: true },
+      { t: "Oddziałuje wyłącznie na środowisko morskie, nie na człowieka", c: false },
+      { t: "Szkodzi tylko po spożyciu w bardzo dużych ilościach", c: false }
+    ],
+    exp: "Mikroplastik (cząstki plastiku < 5 mm) jest wszechobecny w środowisku. Może wnikać do organizmów, akumulować się w tkankach i przenosić toksyczne substancje chemiczne."
+  },
+  {
+    q: "Ftalany dodawane do plastiku w zabawkach mogą zagrażać zdrowiu przede wszystkim przez:",
+    opts: [
+      { t: "Działanie kancerogenne na skórę po kontakcie dotykowym", c: false },
+      { t: "Działanie zaburzające układ hormonalny (endokrynologiczne) i negatywny wpływ na płodność", c: true },
+      { t: "Ostre zatrucia po jednorazowym narażeniu", c: false },
+      { t: "Wywoływanie schorzeń autoimmunologicznych układu pokarmowego", c: false }
+    ],
+    exp: "Ftalany to plastyfikatory o udowodnionym działaniu na układ hormonalny. Mogą obniżać jakość nasienia, wpływać negatywnie na płodność i rozwój układu rozrodczego dzieci."
+  }
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() { selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx); });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Nast\u0119pne pytanie \u2192' : 'Poka\u017C wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90) { grade = 'Doskonale!'; col = '#2d6a4f'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!'; col = '#40916c'; }
+  else if (pct >= 60) { grade = 'Dobrze'; col = '#74c69d'; }
+  else if (pct >= 50) { grade = 'Dostatecznie'; col = '#e9c46a'; }
+  else { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' \u2014 Poprawnie' : ' \u2014 B\u0142\u0119dnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' : '<div style="margin-top:.3rem">Tw\u00F3j wyb\u00F3r: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
