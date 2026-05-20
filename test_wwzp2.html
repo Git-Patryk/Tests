@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 2 - Wspolczesne Wyzwania Zdrowia Publicznego (zaawansowany)</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+    --amber:   #e9a800;
+    --amber2:  #fff8e1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #3d006b 0%, var(--purple2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+  .difficulty-badge {
+    display: inline-block;
+    background: var(--amber);
+    color: #2d1a00;
+    font-family: sans-serif;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    padding: .25rem .8rem;
+    border-radius: 20px;
+    margin-top: .6rem;
+    text-transform: uppercase;
+  }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .warning-box {
+    background: var(--amber2);
+    border: 1px solid #ffe082;
+    border-left: 4px solid var(--amber);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 1.2rem 0;
+    text-align: left;
+    font-family: sans-serif;
+    font-size: .88rem;
+    line-height: 1.6;
+    color: #4a3000;
+  }
+  .warning-box strong { display: block; margin-bottom: .3rem; }
+  .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1rem 0;
+    border: 1px solid #e9d8fd;
+    font-family: sans-serif;
+    font-size: .87rem;
+    color: var(--gray);
+    line-height: 1.7;
+  }
+  .topics strong { display: block; margin-bottom: .4rem; color: var(--purple2); }
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #3d006b; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #3d006b; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3d006b, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #3d006b; }
+  .stat-wrong strong { color: var(--red); }
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="back-link" href="wwzp.html">&larr; Wróć do listy testów</a>
+  <h1>Współczesne Wyzwania Zdrowia Publicznego</h1>
+  <p>Test 2 &ndash; Wersja zaawansowana &middot; 48 pytań</p>
+  <div class="difficulty-badge">&#9733; Poziom zaawansowany</div>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Test 2 &ndash; Wersja zaawansowana</h2>
+    <div class="warning-box">
+      <strong>&#9888; Uwaga &ndash; trudniejszy poziom</strong>
+      Ten test wymaga znajomości konkretnych danych statystycznych, precyzyjnych rozróżnień między podobnymi pojęciami oraz umiejętności stosowania wiedzy w nowych kontekstach. Samo zapoznanie się z definicjami może nie wystarczyć.
+    </div>
+    <div class="topics">
+      <strong>Co sprawdza ten test:</strong>
+      Konkretne dane liczbowe (wydatki, wskaźniki kadrowe, statystyki epidemiologiczne) &middot; Subtelne różnice między podobnymi pojęciami &middot; Obliczenia DALY/YLL/YLD &middot; Mechanizmy biologiczne czynników ryzyka &middot; Szczegóły instytucjonalne i prawne &middot; Gradient społeczny i epigenetyka &middot; Ekonomika zdrowia (ICER, QALY, krzywa Prestona) &middot; Zasady epidemiologii (kryteria Bradforda Hilla)
+    </div>
+    <p>Kolejność pytań i odpowiedzi jest losowana przy każdym podejściu. Łącznie <strong>48 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 48</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/48</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+
+const ALL_QUESTIONS = [
+
+  // === BLOK 1: DEFINICJE I KONCEPCJE - PRECYZJA ===
+  {
+    q: "Ktory z ponizszych elementow NIE nalezy do klasycznej definicji zdrowia publicznego wg Charlesa-Edwarda Winslowa (1920)?",
+    opts: [
+      { t: "Zapobieganie chorobom", c: false },
+      { t: "Przedluzanie zycia", c: false },
+      { t: "Indywidualne leczenie pacjentow w szpitalach", c: true },
+      { t: "Promocja zdrowia fizycznego i sprawnosci poprzez wysilki spolecznosci", c: false }
+    ],
+    exp: "Winslow definiowal zdrowie publiczne jako nauke i sztuke zapobiegania chorobom, przedluzania zycia i promocji zdrowia poprzez wysilki spolecznosci - nie przez indywidualne leczenie kliniczne."
+  },
+  {
+    q: "Koncepcja 'nowych zagroznych zdrowotnych' (new public health threats) obejmuje przede wszystkim:",
+    opts: [
+      { t: "Choroby zakazne sprzed epoki antybiotykow", c: false },
+      { t: "NCD (choroby niezakazne), zdrowie psychiczne, oporne na antybiotyki patogeny i zagrozenia klimatyczne", c: true },
+      { t: "Wylacznie choroby wywolane przez zanieczyszczenia przemyslowe", c: false },
+      { t: "Choroby genetyczne i wrodzone wady rozwojowe", c: false }
+    ],
+    exp: "Wspolczesne zagrozenia zdrowia publicznego to przede wszystkim: epidemia NCD (otylosc, cukrzyca, choroby sercowo-naczyniowe), kryzysy zdrowia psychicznego, lekoopornosc oraz zdrowotne skutki zmian klimatu."
+  },
+  {
+    q: "Ktora z ponizszych par pojec najlepiej opisuje roznice miedzy profilaktyka a promocja zdrowia?",
+    opts: [
+      { t: "Profilaktyka - dziala przed choroba; promocja zdrowia - dziala po chorobie", c: false },
+      { t: "Profilaktyka skupia sie na redukcji ryzyka konkretnych chorob; promocja zdrowia wzmacnia ogolny potencjal zdrowotny i zmienia warunki zycia", c: true },
+      { t: "Profilaktyka dotyczy populacji; promocja zdrowia - jednostek", c: false },
+      { t: "Nie ma istotnej roznicy - sa to synonimy", c: false }
+    ],
+    exp: "Profilaktyka koncentruje sie na zapobieganiu konkretnym chorobom (np. szczepienia przeciw grypie). Promocja zdrowia ma szerszy zakres - wzmacnia zasoby zdrowotne jednostek i spoleczenstw oraz zmienia srodowisko i polityki publiczne."
+  },
+
+  // === BLOK 2: PROFILAKTYKA - SZCZEGOLY ===
+  {
+    q: "Badanie mammograficzne jako program skriningu raka piersi spelnia kryteria Wilsona i Jungnera, poniewaz:",
+    opts: [
+      { t: "Rak piersi jest choroba rzadka, ale latwa do leczenia na kazdym etapie", c: false },
+      { t: "Test jest prosty, a choroba na wczesnym etapie jest nieuleczalna", c: false },
+      { t: "Rak piersi jest waznym problemem zdrowotnym, istnieje skuteczne leczenie wczesnych stadiow, a mammografia ma akceptowalna czulosc i swoistosci", c: true },
+      { t: "Mammografia jest calkowicie bezpieczna i nie generuje zadnych kosztow", c: false }
+    ],
+    exp: "Kryteria Wilsona-Jungnera (1968) wymagaja m.in.: choroba musi byc waznym problemem zdrowotnym, musi istniec akceptowany test, musi istniec skuteczne leczenie. Rak piersi spelnia te warunki - jest czestym nowotworem, mammografia wykrywa wczesne stadia, a leczenie na wczesnym etapie jest bardzo skuteczne."
+  },
+  {
+    q: "Profilaktyka czwartorzedowa (IV fazy) dotyczy ochrony przed overmedykalizacja. Przykladem overmedykalizacji jest:",
+    opts: [
+      { t: "Brak dostepu do specjalisty przez dlugi czas oczekiwania", c: false },
+      { t: "Rozszerzanie granic 'normalnosci' tak, by coraz wiecej osob kwalifikowalo sie do leczenia (np. obnizone progi diagnozy nadcisnienia)", c: true },
+      { t: "Nadmiar szpitali w stosunku do potrzeb populacji", c: false },
+      { t: "Zbyt duze wydatki na promocje zdrowia", c: false }
+    ],
+    exp: "Overmedykalizacja (overdiagnosis, overtreatment) to m.in. 'rozciaganie' kryteriow diagnostycznych, przez co coraz wiecej zdrowych osob staje sie pacjentami. Przykladem jest obnizanie progow dla rozpoznania nadcisnienia, cukrzycy czy osteoporozy - co zwieksza liczbe 'chorych' bez poprawy zdrowia populacji."
+  },
+  {
+    q: "W modelu COM-B, 'Opportunity' (szansa/mozliwosc) dzieli sie na:",
+    opts: [
+      { t: "Mozliwosc fizyczna i psychologiczna", c: false },
+      { t: "Mozliwosc spoleczna i fizyczna (srodowiskowa)", c: true },
+      { t: "Motywacje automatyczna i refleksyjna", c: false },
+      { t: "Wiedze i umiejetnosci", c: false }
+    ],
+    exp: "W modelu COM-B: Capability = fizyczna + psychologiczna; Opportunity = fizyczna (srodowisko, zasoby) + spoleczna (normy spoleczne, otoczenie); Motivation = automatyczna (nawyki, emocje) + refleksyjna (plany, oceny). Szansa spoleczna to np. normy grupowe sprzyajce zdrowemu jedzeniu."
+  },
+  {
+    q: "Ktore z ponizszych dzialan interwencyjnych lezy NAJNIZEJ w piramidzie wplywu na zdrowie (czyli wymaga najwiekszego indywidualnego wysilku przy najmniejszym efekcie populacyjnym)?",
+    opts: [
+      { t: "Fluoryzacja wody pitnej", c: false },
+      { t: "Szczepienia ochronne", c: false },
+      { t: "Indywidualne poradnictwo dietetyczne", c: true },
+      { t: "Zakaz palenia w miejscach publicznych", c: false }
+    ],
+    exp: "W piramidzie wplywu na zdrowie (Frieden): podstawa (najsilniejszy efekt) to czynniki spoleczno-ekonomiczne, nastepnie zmiana otoczenia, interwencje ochronne (fluoryzacja, szczepienia), a na szczycie - poradnictwo indywidualne, ktore wymaga najwiekszego wysilku od jednostki i ma najmniejszy zasieg populacyjny."
+  },
+
+  // === BLOK 3: DETERMINANTY - SZCZEGOLY ===
+  {
+    q: "W modelu Dahlgrena i Whitehead warstwa 'sieci wsparcia spolecznego i spolecznosci' (social and community networks) pelni role:",
+    opts: [
+      { t: "Najglebszej, niezmiennej warstwy determinantow zdrowia", c: false },
+      { t: "Posredniczaca miedzy indywidualnym stylem zycia a warunkami strukturalnymi - sieci spoleczne moga lagodzic lub wzmacniac wplyw czynnikow strukturalnych", c: true },
+      { t: "Zewnetrznej warstwy obejmujacej warunki makroekonomiczne", c: false },
+      { t: "Warstwy odpowiadajacej wylacznie za dostep do opieki medycznej", c: false }
+    ],
+    exp: "Sieci wsparcia spolecznego to warstwa posrednia modelu - moga wzmacniac zdrowie (wsparcie emocjonalne, informacyjne) lub wzmacniac ryzyko (normy spoleczne sprzyjajace paleniu, alkoholowi). Pelnia role bufora lub wzmacniacza miedzy stylem zycia jednostki a warunkami strukturalnymi."
+  },
+  {
+    q: "Gradient spoleczny zdrowia (social gradient of health) oznacza:",
+    opts: [
+      { t: "Roznice zdrowotne istnieja tylko miedzy najubozszymi a bogatymi - srodkowe grupy sa podobne do bogatych", c: false },
+      { t: "Im nizszy status spoleczno-ekonomiczny, tym gorszy stan zdrowia - i relacja ta jest liniowa przez cale spektrum spoleczne", c: true },
+      { t: "Nierownasci zdrowotne wystepuja wylacznie w krajach rozwijajacych sie", c: false },
+      { t: "Roznice w zdrowiu sa spowodowane wylacznie przez roznice w dostepeie do opieki medycznej", c: false }
+    ],
+    exp: "Gradient spoleczny zdrowia (odkryty m.in. w badaniu Whitehall) to liniowa zaleznosc: kazdy szczebel w hierarchii spolecznej wiaze sie z lepszym zdrowiem niz szczebel ponizej. Nie jest to tylko roznica miedzy biednymi a bogatymi - roznica istnieje na kazdym poziomie drabiny spolecznej."
+  },
+  {
+    q: "Ktory z ponizszych przykladow najlepiej ilustruje roznice miedzy equality (rownoscia) a equity (sprawiedliwoscia) w zdrowiu?",
+    opts: [
+      { t: "Equality: kazdy dostaje ten sam lek; Equity: kazdy dostaje lek dobrany do swoich potrzeb", c: false },
+      { t: "Equality: kazdy dostaje jednakowo wysokie dofinansowanie; Equity: grupy defaworyzowane dostaja wiecej wsparcia, by wyrownac szanse", c: true },
+      { t: "Equality dotyczy instytucji, equity - jednostek", c: false },
+      { t: "Sa to synonimy uzywane zamiennie w dokumentach WHO", c: false }
+    ],
+    exp: "Equality (rownosc formalna) = jednakowe zasoby dla wszystkich. Equity (sprawiedliwosc) = roznicowanie zasobow wedlug potrzeb, by osiagnac rowny wynik. Klasyczny przyklad: jednakowe szczudlo dla osoby niskiej i wysokiej to equality; szczudlo dobrane do wzrostu to equity."
+  },
+
+  // === BLOK 4: DEMOGRAFIA - KONKRETNE DANE ===
+  {
+    q: "Jaki odsetek kobiet w Polsce zglosil w badaniu z 2025 roku dlugotrwale problemy zdrowotne lub choroby przewlekle trwajace minimum 6 miesiecy?",
+    opts: [
+      { t: "Okolo 24%", c: false },
+      { t: "Okolo 33%", c: true },
+      { t: "Okolo 46%", c: false },
+      { t: "Okolo 10%", c: false }
+    ],
+    exp: "Wg danych NIZP PZH-PIB (Sytuacja zdrowotna ludnosci Polski 2025): dlugotrwale problemy zdrowotne trwajace min. 6 miesiecy zglosilo ok. 33,1% kobiet i ok. 24,0% mezczyzn."
+  },
+  {
+    q: "Ktore swiadczenie medyczne ma NAJWYZSZY odsetek pacjentow zgłaszajacych zbyt dlugi subiektywny czas oczekiwania w Polsce (wg NIZP PZH 2025)?",
+    opts: [
+      { t: "Lekarz pierwszego kontaktu (POZ)", c: false },
+      { t: "Lekarz specjalista", c: true },
+      { t: "Badania diagnostyczne", c: false },
+      { t: "Szczepienia", c: false }
+    ],
+    exp: "Wg danych NIZP PZH-PIB 2025, najwyzszy odsetek pacjentow zglosil zbyt dlugi czas oczekiwania na lekarza specjaliste (ok. 79-83%), a na kolejnym miejscu - badania diagnostyczne (68-74%)."
+  },
+  {
+    q: "Standaryzowany wiekiem wspolczynnik umieralnosci na nowotwory u mezczyzn w Polsce wynosi ok. 696/100 000. Srednia UE to:",
+    opts: [
+      { t: "Okolo 450/100 000", c: false },
+      { t: "Okolo 684/100 000", c: true },
+      { t: "Okolo 800/100 000", c: false },
+      { t: "Okolo 550/100 000", c: false }
+    ],
+    exp: "Wg OECD/European Observatory (2023): standaryzowany wspolczynnik umieralnosci na nowotwory u mezczyzn w Polsce to ok. 696/100 000, a srednia UE - 684/100 000. Polska jest nieznacznie powyzej sredniej europejskiej."
+  },
+  {
+    q: "Ktore z ponizszych NAJLEPIEJ opisuje trend demograficzny w Polsce?",
+    opts: [
+      { t: "Polska starzeje sie szybciej niz srednia UE, ale dzietnosc zaczela rosnac powyzej 2,1", c: false },
+      { t: "Polska ma ujemny przyrost naturalny, starzejaca sie populacje i emigracje zarobkowa mlodych - co przyspiesza problemy systemu emerytalnego i zdrowotnego", c: true },
+      { t: "Polska ma jeden z najmlodszych spoleczenstw w UE dzieki wysokiej imigracji", c: false },
+      { t: "Problem starzenia dotyczy Polsky tylko w stopniu podobnym do sredniej UE", c: false }
+    ],
+    exp: "Polska ma ujemny przyrost naturalny (wskaznik dzietnosci ok. 1,3, daleko ponizej zastepczosci 2,1), starzejaca sie populacje i znaczna emigracje mlodych. Kombinacja tych czynnikow dramatycznie przyspiesza wzrost wspolczynnika obciazenia demograficznego."
+  },
+
+  // === BLOK 5: MIARY STANU ZDROWIA - OBLICZENIA I SZCZEGOLY ===
+  {
+    q: "Jesli choroba powoduje 10 000 zgonow rocznie (kazdy sredniow wieku 50 lat, przy oczekiwanej dlugosc zycia 80 lat) i 50 000 pacjentow zyje z niepelnosprawnoscia wagi 0,4, ile wynosi laczny DALY?",
+    opts: [
+      { t: "300 000 DALY", c: false },
+      { t: "350 000 DALY", c: false },
+      { t: "320 000 DALY", c: true },
+      { t: "500 000 DALY", c: false }
+    ],
+    exp: "YLL = 10 000 zgonow x (80-50 lat) = 300 000 YLL. YLD = 50 000 osob x 0,4 (waga niepelnosprawnosci) x 1 rok = 20 000 YLD. DALY = YLL + YLD = 300 000 + 20 000 = 320 000 DALY."
+  },
+  {
+    q: "Ktory z ponizszych wskaznikow pozwala NA NAJLEPSZA ocene jakosci zycia przy chorobach przewleklych (a nie tylko jego dlugosci)?",
+    opts: [
+      { t: "CMR (Crude Mortality Rate - surowy wspolczynnik umieralnosci)", c: false },
+      { t: "YLL (Years of Life Lost)", c: false },
+      { t: "QALY (Quality-Adjusted Life Year)", c: true },
+      { t: "SMR (Standardized Mortality Ratio)", c: false }
+    ],
+    exp: "QALY (Quality-Adjusted Life Year) laczyt dlugosc zycia z jego jakoscia - 1 rok pelnego zdrowia = 1 QALY, 1 rok w chorobie o wadze 0,5 = 0,5 QALY. Jest kluczowy w ocenie efektywnosci kosztowej interwencji (np. decyzji refundacyjnych). Rozni sie od DALY tym, ze DALY mierzy utracone lata, QALY - zyski zdrowotne."
+  },
+  {
+    q: "Polska ma 222/100 000 zgonow mozliwych do unikniecia dzieki profilaktyce vs. 160/100 000 dla sredniej UE. Ktory nowotwor jest GLOWNA przyczyna tych zgonow po stronie profilaktycznej w Polsce?",
+    opts: [
+      { t: "Rak piersi", c: false },
+      { t: "Rak jelita grubego", c: false },
+      { t: "Rak pluca", c: true },
+      { t: "Rak szyjki macicy", c: false }
+    ],
+    exp: "Sporod zgonow mozliwych do unikniecia dzieki profilaktyce w Polsce, rak pluca stanowi ok. 16% i jest glownym nowotworem tej kategorii. Jego glowna przyczyna to palenie tytoniu - behawioralny czynnik ryzyka podlegajacy profilaktyce. COVID-19 stanowil 18%, a choroby alkoholowe 13%."
+  },
+  {
+    q: "Pojecie 'healthspan' w kontekscie Medycyny 3.0 oznacza:",
+    opts: [
+      { t: "Calkowita dlugosc zycia mierzona od urodzenia do smierci", c: false },
+      { t: "Okres zycia spedzony w dobrym zdrowiu fizycznym i psychicznym, bez powaznej niepelnosprawnosci", c: true },
+      { t: "Czas od pojawienia sie objawow choroby do jej wyleczenia", c: false },
+      { t: "Srednia dlugosc hospitalizacji w ciagu zycia", c: false }
+    ],
+    exp: "Healthspan to czas zycia w dobrym zdrowiu. Medycyna 3.0 (wg P. Attii) stawia sobie za cel nie tylko wydluzenie lifespan (dlugosci zycia), ale przede wszystkim healthspan - czyli przesunie punkt gwaltownego pogorszenia zdrowia jak najdalej w strone konca zycia."
+  },
+
+  // === BLOK 6: CZYNNIKI RYZYKA - SZCZEGOLY ===
+  {
+    q: "Ktory z ponizszych czynnikow METABOLICZNYCH jest najsilniejszym predyktorem ryzyka sercowo-naczyniowego?",
+    opts: [
+      { t: "Podwyszone LDL-cholesterol w izolacji", c: false },
+      { t: "Polaczenie: otylosc brzuszna + nadcisnienie + dyslipidemii + hiperglikemia (zespol metaboliczny)", c: true },
+      { t: "Podwyzszony BMI jako jedyny wskaznik", c: false },
+      { t: "Podwyzzone troglicerydy bez innych czynnikow", c: false }
+    ],
+    exp: "Zespol metaboliczny (otylosc brzuszna + nadcisnienie + dyslipidemia + hiperglikemia) to kombinacja czynnikow metabolicznych, ktora wykadniczo zwiekasza ryzyko sercowo-naczyniowe i cukrzycy. Zadden z tych czynnikow w izolacji nie jest tak silnym predyktorem jak ich wspolwystepowanie."
+  },
+  {
+    q: "Dlaczego 'bezpieczny poziom spozycia alkoholu' jest pojesciem kontrowersyjnym wg aktualnych danych naukowych?",
+    opts: [
+      { t: "Bo alkohol jest bezpieczny tylko w polaczeniu z dieta srodziemnomorska", c: false },
+      { t: "Bo najnowsze badania (w tym Lancet 2018) nie potwierdzaja istnienia progu bezpiecznego spozycia - ryzyko nowotworow i innych chorob rosnie liniowo nawet od malych dawek", c: true },
+      { t: "Bo pojecie to nie istnieje - wszystkie organizacje zdrowotne zawsze mowily, ze nie ma bezpiecznej dawki", c: false },
+      { t: "Bo alkohol ma udowodniony korzystny efekt kardioprotekcyjny przy niskim spozycin", c: false }
+    ],
+    exp: "Metaanalizy (np. GBD 2016, Lancet 2018) wykazaly, ze nie ma bezpiecznego poziomu spozycia alkoholu - ryzyko nowotworow (zwlaszcza raka piersi, jelita grubego) rosnie liniowo juz od pierwszego drinka. Wczesniejsze badania sugerujace kardioprotekcje przy malych dawkach maja powazne bledy metodologiczne."
+  },
+  {
+    q: "Siedzacy tryb zycia jest niezaleznym czynnikiem ryzyka, co oznacza, ze:",
+    opts: [
+      { t: "Ryzyko zdrowotne braku aktywnosci fizycznej mozna calkowicie skompensowac prawidlowa dieta", c: false },
+      { t: "Nawet osoby o prawidlowej masie ciala, ktore prowadza siedzacy tryb zycia, maja wyzsze ryzyko chorob sercowo-naczyniowych i zgonu", c: true },
+      { t: "Dotyczy wylacznie osob z otyloscia lub nadwaga", c: false },
+      { t: "Jego wplyw na zdrowie jest mniejszy niz palenia tytoniu", c: false }
+    ],
+    exp: "Siedzacy tryb zycia jest niezaleznym czynnikiem ryzyka - oznacza to, ze nawet osoby szczuple i zdrowo jedzace, ktore spedzaja wiele godzin w pozycji siedzacej, maja podwyzszone ryzyko NCD i zgonu. Aktywnosc fizyczna i masa ciala to odrebne czynniki ryzyka."
+  },
+
+  // === BLOK 7: SZCZEPIENIA I CHOROBY ZAKAZNE ===
+  {
+    q: "Prog odpornosci zbiorowej potrzebny do przerwania transmisji odry (jeden z najwyzszych) wynosi okolo:",
+    opts: [
+      { t: "Okolo 60-70%", c: false },
+      { t: "Okolo 75-80%", c: false },
+      { t: "Okolo 92-95%", c: true },
+      { t: "Okolo 50%", c: false }
+    ],
+    exp: "Odra ma wskaznik reprodukcji (R0) na poziomie 12-18, co sprawia, ze do przerwania transmisji potrzeba ok. 92-95% odpornosci populacyjnej. To jeden z najwyzszych progow - stad nawet male grupy niezaszczepionych umozliwiaja wybuchy epidemii."
+  },
+  {
+    q: "AMR (antimicrobial resistance - antybiotykoopornosc) jest uwazana za jedno z kluczowych zagrozen zdrowia publicznego, poniewaz:",
+    opts: [
+      { t: "Powoduje bezposrednio zmniejszenie liczby antybiotykow dostepnych w aptekach", c: false },
+      { t: "Moze unicestwic zyski medycyny XX wieku - rutynowe zabiegi, porody i leczenie infekcji moga stac sie smiertelnie niebezpieczne", c: true },
+      { t: "Dotyczy wylacznie pacjentow szpitalnych", c: false },
+      { t: "Jest problemem tylko w krajach rozwijajacych sie", c: false }
+    ],
+    exp: "AMR to zagrozenie egzystencjalne dla medycyny nowoczesnej - bez skutecznych antybiotykow operacje (np. wymiana stawu, cesarskie ciecie), chemioterapia i leczenie zwyklych infekcji staja sie zagrozeniem zycia. WHO szacuje, ze bez dzialan AMR bedzie powodowac 10 mln zgonow rocznie do 2050 roku."
+  },
+
+  // === BLOK 8: SYSTEM OCHRONY ZDROWIA - SZCZEGOLY ===
+  {
+    q: "Wydatki na profilaktykę stanowia w Polsce ok. jakiego odsetka calkowitych wydatkow na ochrony zdrowia?",
+    opts: [
+      { t: "Okolo 15-20%", c: false },
+      { t: "Okolo 8-10%", c: false },
+      { t: "Okolo 2%", c: true },
+      { t: "Okolo 5%", c: false }
+    ],
+    exp: "Wg danych OECD (2023), wydatki na profilaktyke w Polsce stanowia zaledwie ok. 2% calkowitych wydatkow na zdrowie (36 PLN PPP/mieszkanca vs. 250 dla sredniej UE). To jeden z najnizszych odsetkow w Europie, co jest paradoksem w kontekscie wysokiej umieralnosci mozliwej do unikniecia."
+  },
+  {
+    q: "Ile wynosza wydatki na ochrony zdrowia w Polsce na jednego mieszkanca (PPP EUR, ok. 2021)?",
+    opts: [
+      { t: "Ok. 3500 PPP EUR - zblizone do sredniej UE (4028)", c: false },
+      { t: "Ok. 1733 PPP EUR - znacznie ponizej sredniej UE (4028)", c: true },
+      { t: "Ok. 900 PPP EUR - najnizsze w UE", c: false },
+      { t: "Ok. 2500 PPP EUR - nieznacznie ponizej sredniej UE", c: false }
+    ],
+    exp: "Polska wydaje ok. 1733 PPP EUR na mieszkanca - to ok. 43% sredniej unijnej (4028 PPP EUR). Dla porownania: Niemcy wydaja ok. 5000, Szwecja ok. 4800. Polska jest w dolnej cwartce krajow UE pod wzgledem wydatkow zdrowotnych na mieszkanca."
+  },
+  {
+    q: "Ktory typ wydatkow zdrowotnych stanowi w Polsce WIEKSZY udzial niz w sredniej UE?",
+    opts: [
+      { t: "Wydatki na profilaktyke", c: false },
+      { t: "Wydatki na opieke ambulatoryjna", c: false },
+      { t: "Wydatki OOP (out-of-pocket) - z wlasnej kieszeni przez pacjentow", c: true },
+      { t: "Wydatki na leczenie szpitalne", c: false }
+    ],
+    exp: "Wydatki OOP w Polsce stanowia ok. 20% calkowitych wydatkow zdrowotnych (vs. 15% sredniej UE). W strukturze tych wydatkow dominuja leki (61% vs. 24% w UE), co oznacza ze Polacy wyraznie wiecej placa za leki niz Europejczycy."
+  },
+  {
+    q: "Srednia UE pod wzgledem liczby praktykujacych lekarzy na 1000 mieszkancow wynosi 4,1. Gdzie plasuje sie Polska?",
+    opts: [
+      { t: "Powyzej sredniej - ok. 4,5/1000", c: false },
+      { t: "Na poziomie sredniej - ok. 4,1/1000", c: false },
+      { t: "Ponizej sredniej - ok. 3,3/1000", c: true },
+      { t: "Znacznie ponizej - ok. 2,0/1000", c: false }
+    ],
+    exp: "Polska ma ok. 3,3 praktykujacych lekarzy na 1000 mieszkancow przy sredniej UE 4,1 (dane OECD). Dodatkowo rozklad jest bardzo nierowny terytorialnie - w duzych miastach akademickich gestosc lekarzy jest kilkakrotnie wyzsza niz na obszarach wiejskich."
+  },
+  {
+    q: "Jakie sa konsekwencje zdrowotne zbyt dlugiego czasu oczekiwania na swiadczenia wg badan NIZP PZH (2025)?",
+    opts: [
+      { t: "Brak konsekwencji - pacjenci i tak dosc szybko uzyskuja pomoc", c: false },
+      { t: "Powazne lub niepowazne pogorszenie stanu zdrowia zglosilo ok. 34-37% pacjentow oczekujacych na specjaliste", c: true },
+      { t: "Konsekwencje sa jedynie ekonomiczne (koszty leczenia prywatnego)", c: false },
+      { t: "Konsekwencje zdrowotne obserwuje sie tylko u osob starszych (65+)", c: false }
+    ],
+    exp: "Wg NIZP PZH-PIB (2025), z powodu opoznienia w dostepe do lekarza specjalisty, stan zdrowia pogorszyl sie (powazanie lub niepowazanie) u ok. 34-37% pacjentow. To pokazuje realne zdrowotne koszty kolejek w systemie ochrony zdrowia."
+  },
+
+  // === BLOK 9: SYSTEM POLSKI - SZCZEGOLY ===
+  {
+    q: "Ktory z ponizszych podmiotow jest PLATNIKIEM w polskim systemie ochrony zdrowia?",
+    opts: [
+      { t: "Ministerstwo Zdrowia", c: false },
+      { t: "Narodowy Fundusz Zdrowia (NFZ)", c: true },
+      { t: "Panstwowa Inspekcja Sanitarna", c: false },
+      { t: "Agencja Oceny Technologii Medycznych i Taryfikacji (AOTMiT)", c: false }
+    ],
+    exp: "NFZ jest platnikiem (purchaser) w polskim systemie - zbiera skladki zdrowotne i kontraktuje swiadczenia zdrowotne od swiadczeniodawcow. Ministerstwo Zdrowia jest regulatorem. Sanepid to nadzor epidemiologiczny. AOTMiT ocenia technologie medyczne dla celow refundacyjnych."
+  },
+  {
+    q: "Koszykowe podejscie do swiadczen zdrowotnych (benefit basket) polega na:",
+    opts: [
+      { t: "Limitowaniu liczby wizyt do lekarzy w ciagu roku", c: false },
+      { t: "Okresleniu wykazu swiadczen gwarantowanych finansowanych ze srodkow publicznych - poza koszykiem pacjent placi sam", c: true },
+      { t: "Przydzielaniu pacjentow do lekarzy rodzinnych na podstawie miejsca zamieszkania", c: false },
+      { t: "Systemie bonu zdrowotnego dla kazdego obywatela", c: false }
+    ],
+    exp: "Koszyk swiadczen gwarantowanych to lista swiadczen finansowanych przez NFZ. Swiadczenia poza koszykiem (np. czesc stomatologii, niektorych badan) musza byc oplacane prywatnie. System ten definiuje granice publicznej odpowiedzialnosci finansowej za zdrowie obywateli."
+  },
+
+  // === BLOK 10: POLITYKA ZDROWOTNA I INSTYTUCJE ===
+  {
+    q: "Miedzynarodowe Przepisy Zdrowotne (IHR 2005) obliguja kraje czlonkowskie WHO do:",
+    opts: [
+      { t: "Wplasania stalych oplat do funduszu WHO", c: false },
+      { t: "Budowania zdolnosci nadzoru epidemiologicznego, raportowania zagrozen i reagowania na zdarzenia o miedzynarodowym znaczeniu", c: true },
+      { t: "Harmonizacji systemow ochrony zdrowia ze standardem NHS", c: false },
+      { t: "Wdrozenia szczepien obowiazkowych przeciw wybranym chorobom", c: false }
+    ],
+    exp: "IHR 2005 (International Health Regulations) to prawnie wiazace porozumienie 196 krajow. Zobowiazuja do budowania zdolnosci podstawowych w zakresie nadzoru, raportowania zdarzen zdrowotnych o miedzynarodowym znaczeniu (PHEIC) i reagowania - podstawa miedzynarodowej architektury bezpieczenstwa zdrowotnego."
+  },
+  {
+    q: "Health Technology Assessment (HTA) w Polsce przeprowadza:",
+    opts: [
+      { t: "Ministerstwo Finansow wspolnie z NFZ", c: false },
+      { t: "Agencja Oceny Technologii Medycznych i Taryfikacji (AOTMiT)", c: true },
+      { t: "Glowny Inspektorat Sanitarny", c: false },
+      { t: "Instytut Lekow", c: false }
+    ],
+    exp: "AOTMiT (Agencja Oceny Technologii Medycznych i Taryfikacji) przeprowadza oceny HTA w Polsce - analizuje kliniczna skutecznosc i efektywnosc kosztowa technologii medycznych (lekow, wyrobow medycznych, procedur), co stanowi podstawe decyzji refundacyjnych Ministra Zdrowia."
+  },
+  {
+    q: "Ktore z ponizszych NIE jest wymaganiem stawianym sprawiedliwemu systemowi ochrony zdrowia wg zasad zdrowia publicznego?",
+    opts: [
+      { t: "Powszechny dostep do swiadczen zdrowotnych", c: false },
+      { t: "Ochrona finansowa przed katastrofalnymi kosztami leczenia", c: false },
+      { t: "Jednakowy poziom zdrowia u wszystkich obywateli bez wyjatku", c: true },
+      { t: "Dobra jakosc swiadczen bez dyskryminacji", c: false }
+    ],
+    exp: "Sprawiedliwy system zdrowia musi zapewnic: dostep, ochrone finansowa i jakosc. Jednakowy poziom zdrowia u wszystkich jest niemozliwy i nie jest celem - ludzie roznia sie genetycznie, biologia, wiekiem. Celem jest usuwanie nieuzasadnionych, nierownosciowych barier w dostepeie, nie identyczny stan zdrowia."
+  },
+
+  // === BLOK 11: NAUKA O SYSTEMACH I EFEKTY ===
+  {
+    q: "Efekt Mattew w ochronie zdrowia oznacza:",
+    opts: [
+      { t: "Tendencje systemu zdrowotnego do koncentrowania zasobow i interwencji na grupach, ktore juz korzystaja z uslug - pomijajac grupy o wiekszych potrzebach", c: true },
+      { t: "Korzysci zdrowotne wynikajace z wiary religijnej i praktyk duchowych", c: false },
+      { t: "Wplyw mediow na postawy zdrowotne spoleczenstwa", c: false },
+      { t: "Efekt placebo w badaniach klinicznych", c: false }
+    ],
+    exp: "Efekt Mattew (od Ewangelii Mateusza: 'kto ma, temu bedzie dane') w ochronie zdrowia: osoby z lepszym wyksztalceniem, wyzszymi dochodami i wiekszymi zasobami czesciej korzystaja z profilaktyki i swiadczen - mimo ze potrzebuja ich proporcjonalnie mniej. Grupy najbardziej potrzebujace korzystaja najmniej."
+  },
+  {
+    q: "Pojecie 'inwestycja w zdrowie' (health as investment) uzasadnia wydatki na zdrowie publiczne argumentem, ze:",
+    opts: [
+      { t: "Zdrowi pracownicy sa bardziej produktywni, zmniejsza sie absencja chorobowa, a spoleczenstwo zaoszczedza na swiadczeniach spolecznych", c: true },
+      { t: "Szpitale sa dobrymi pracodawcami i tworza miejsca pracy", c: false },
+      { t: "Wydatki na leki stymuluja wzrost gospodarczy przez przemysl farmaceutyczny", c: false },
+      { t: "Zdrowie jest wartoscia sama w sobie, wiec kazda inwestycja jest uzasadniona moralnie", c: false }
+    ],
+    exp: "Podejscie 'investment for health' argumentuje, ze zdrowe spoleczenstwo generuje korzysc ekonomiczna: wyzsze PKB, nizsza absencja, nizsza niepelnosprawnosc, nizsze koszty opieki dlugoterminowej. To uzasadnia inwestycje w profilaktyke jako dajace wymierny zwrot ekonomiczny, nie tylko wartosc humanitarna."
+  },
+
+  // === BLOK 12: SDG I POLITYKI MIEDZYNARODOWE - SZCZEGOLY ===
+  {
+    q: "Cel SDG 3.8 dotyczy Powszechnego Ubezpieczenia Zdrowotnego (UHC). Co ono oznacza?",
+    opts: [
+      { t: "Wszyscy ludzie na swiecie sa ubezpieczeni zdrowotnie przez prywatne firmy ubezpieczeniowe", c: false },
+      { t: "Kazda osoba i spolecznosc ma dostep do potrzebnych uslug zdrowotnych bez ryzyka ruiny finansowej", c: true },
+      { t: "Kraje bogate finansuja systemy zdrowotne krajow biednych", c: false },
+      { t: "Wszystkie leki na swiecie sa bezplatne dla kazdego", c: false }
+    ],
+    exp: "Universal Health Coverage (UHC) to jedno z kluczowych zalozen SDG 3: kazda osoba powinna miec dostep do potrzebnych uslug zdrowotnych (profilaktycznych, kuracyjnych, rehabilitacyjnych) bez ponoszenia katastrofalnych wydatkow finansowych. To nie oznacza darmowosci - chodzi o ochrone finansowa i dostepnosc."
+  },
+  {
+    q: "Ktore z ponizszych najlepiej opisuje zasade 'Health in All Policies' w praktyce?",
+    opts: [
+      { t: "Ministerstwo Zdrowia sprawuje kontrole nad wszystkimi resortami rzadowymi", c: false },
+      { t: "Ocena skutkow zdrowotnych (Health Impact Assessment) jest obowiazkowa przy wszystkich aktach prawnych i inwestycjach publicznych", c: true },
+      { t: "Wydatki na zdrowie musza byc uwzglednione w kazdym budzecie resortowym", c: false },
+      { t: "Zdrowie musi byc priorytetem nr 1 we wszystkich politykach publicznych ponad innymi celami", c: false }
+    ],
+    exp: "HiAP w praktyce oznacza m.in. obowiazek przeprowadzania Health Impact Assessment (HIA) przy planowaniu polityk, infrastruktury, przepisow. Decyzje o nowej autostradzie, polityce rolnej czy regulacjach reklamowych sa analizowane pod katem ich skutkow zdrowotnych."
+  },
+  {
+    q: "Ktora z ponizszych organizacji ma PRAWNIE WIAZACE uprawnienia w stosunku do panstw czlonkowskich w zakresie zdrowia?",
+    opts: [
+      { t: "WHO - wszystkie zalecenia WHO sa prawnie wiazace dla czlonkow ONZ", c: false },
+      { t: "WHO dysponuje instrumentami prawnymi tylko przez Miedzynarodowe Przepisy Zdrowotne (IHR) i Ramowa Konwencje o Kontroli Tytoniu (FCTC)", c: true },
+      { t: "ECDC ma uprawnienia do nakazywania krajom UE wprowadzenia okreslonych srodkow epidemiologicznych", c: false },
+      { t: "Zaden miedzynarodowy podmiot nie ma zadnych wiazacych uprawnien zdrowotnych", c: false }
+    ],
+    exp: "WHO co do zasady wydaje zalecenia niewiazace. Wyjatki to IHR 2005 (prawnie wiazace w zakresie nadzoru i raportowania epidemiologicznego) oraz FCTC - Ramowa Konwencja o Kontroli Tytoniu (prawnie wiazacy traktat podpisany przez 182 strony). ECDC moze tylko rekomendowac, nie nakazywac."
+  },
+
+  // === BLOK 13: NIEROWNASCI ZDROWOTNE I SPOLECZNE ===
+  {
+    q: "Badanie Whitehall (urzednicy brytyjscy) wykazalo, ze gradient zdrowotny istnieje nawet w grupie:",
+    opts: [
+      { t: "Bezdomnych i chronicznie chorych", c: false },
+      { t: "Zamoznych pracujacych, poniewaz nawet wsrod urzednikow wyzszego szczebla ci z nizszych szczebli hierarchii mieli gorsze zdrowie niz ci z wyzszych", c: true },
+      { t: "Wylacznie kobiet - u mezczyzn gradient nie byl widoczny", c: false },
+      { t: "Tylko osob powyzej 60 roku zycia", c: false }
+    ],
+    exp: "Kluczowy wynik badania Whitehall: wszyscy uczestnticy to zatrudnieni urzednicy - nie bylo w grupie bezdomnych ani pracujacych w ciezkiej biedy. Mimo to bardzo wyrazny gradient zdrowia widal sie miedzy szczeblami hierarchii - nawet wsrod stosunkowo zamoznych. To dowod, ze nierownasci zdrowotne to nie tylko kwestia biedy."
+  },
+  {
+    q: "Pojecie 'przyczyny przyczyn' (causes of causes) w kontekscie zdrowia publicznego odnosi sie do:",
+    opts: [
+      { t: "Wieloczynnikowej etiologii chorob zakaznych", c: false },
+      { t: "Spoleczno-ekonomicznych determinantow, ktore warunkuja ekspozycje na bezposrednie czynniki ryzyka zdrowotnego (np. bieda jako przyczyna zlej diety i palenia)", c: true },
+      { t: "Lancuchom zakazen w epidemiologii chorob zakaznych", c: false },
+      { t: "Mechanizmom molekularnym prowadzacym do rozwoju nowotworow", c: false }
+    ],
+    exp: "Termin Geoffrey Rosea i Michaela Marmota: bezposrednie czynniki ryzyka (palenie, zla dieta) maja swoje 'przyczyny przyczyn' w warunkach spolecznych (bieda, brak edukacji, stres chroniczny). Interwencje skupione tylko na zachowaniach jednostek ignoruja strukturalne przyczyny nierownasci zdrowotnych."
+  },
+  {
+    q: "Ktory z ponizszych wskaznikow jest NAJCZESCIEJ stosowany do pomiaru nierownasci zdrowotnych miedzy grupami spolecznymi?",
+    opts: [
+      { t: "BMI (Body Mass Index)", c: false },
+      { t: "Wspolczynnik Giniego zastosowany do danych o zdrowiu (health Gini coefficient)", c: false },
+      { t: "Wzgledny gradient nierownasci (Relative Index of Inequality - RII) lub absolutny gradient (SII)", c: true },
+      { t: "Surowy wspolczynnik umieralnosci (CMR)", c: false }
+    ],
+    exp: "W epidemiologii spolecznej do pomiaru gradientu zdrowotnego stosuje sie Slope Index of Inequality (SII - miara absolutna) i Relative Index of Inequality (RII - miara wzgledna). Uwzgledniaja one cale spektrum spoleczne, nie tylko kontrast najubozsi vs. najzamozniejsi."
+  },
+
+  // === BLOK 14: EKONOMIKA ZDROWIA ===
+  {
+    q: "Paradoks Prestonapolega na tym, ze:",
+    opts: [
+      { t: "Bogate kraje maja wyzsze wskazniki otylosci niz kraje biedne", c: false },
+      { t: "Powyzej pewnego progu PKB, dalszy wzrost dochodu narodowego nie przekladena sie proporcjonalnie na poprawe zdrowia populacji", c: true },
+      { t: "Kraje wydajace wiecej na lekarzy maja gorsze wyniki zdrowotne", c: false },
+      { t: "Wzrost wydatkow na zdrowie zawsze poprawia wskazniki zdrowotne", c: false }
+    ],
+    exp: "Krzywa Prestona pokazuje, ze zwiazek miedzy PKB na glowe a oczekiwana dlugoscia zycia jest krzywoliniowy. Przy nizszych dochodach kazdego dolar poprawy PKB znacznie poprawia zdrowie; przy wysokich dochodach efekt jest minimalny. Wskazuje to, ze dystrybucja dochodow i wydatki na zdrowie sa wazniejsze niz sam wzrost PKB."
+  },
+  {
+    q: "Efektywnosc kosztowa interwencji zdrowotnej jest najczesciej wyrazana jako:",
+    opts: [
+      { t: "Calkowity koszt programu zdrowotnego", c: false },
+      { t: "ICER (Incremental Cost-Effectiveness Ratio) - koszt uzyskania dodatkowego QALY lub DALY w porownaniu z alternatywa", c: true },
+      { t: "Liczba pacjentow objeta interwencja", c: false },
+      { t: "Odsetek populacji, ktory skorzystal z programu", c: false }
+    ],
+    exp: "ICER (Incremental Cost-Effectiveness Ratio) to koszt dodatkowego efektu zdrowotnego (QALY lub unikniecia DALY) interwencji w porownaniu z najlepsza alternatywa. Sluzy do decyzji refundacyjnych i alokacji zasobow - interwencja jest oplacalna, jesli ICER jest ponizej ustalonego progu (w Polsce ok. 3-krotnosc PKB na glowe na QALY)."
+  },
+
+  // === BLOK 15: DODATKOWE WYMAGAJACE PYTANIA ===
+  {
+    q: "Roznica miedzy surowym wspolczynnikiem umieralnosci (CMR) a standaryzowanym (SMR/ASMR) polega na:",
+    opts: [
+      { t: "CMR dotyczy zgonow z konkretnych przyczyn, SMR - zgonow ogolnych", c: false },
+      { t: "SMR uwzglednia (standaryzuje) roznice w strukturze wiekowej populacji, co umozliwia uczciwe porownywanie miedzy populacjami o roznych profilach wiekowych", c: true },
+      { t: "CMR jest mniej dokladny bo obejmuje mniejsza probe", c: false },
+      { t: "SMR dotyczy wylacznie smiertelnosci szpitalnej", c: false }
+    ],
+    exp: "Surowy wspolczynnik umieralnosci (CMR) jest zafalszowany przez rozna strukture wiekowa populacji - starsza populacja bedzie miala wyzszy CMR nawet przy identycznym zdrowiu. Standaryzacja wiekowa (SMR, ASMR) usuwa ten efekt, umozliwiajac rzetelne porownania miedzy populacjami czy w czasie."
+  },
+  {
+    q: "Ktory z ponizszych mechanizmow wyjasnia, dlaczego stres chroniczny jest czynnikiem ryzyka chorob sercowo-naczyniowych?",
+    opts: [
+      { t: "Stres powoduje bezposrednie uszkodzenie serca przez przegrzanie organizmu", c: false },
+      { t: "Przewlekle podwyzszone kortyzol i katecholaminy prowadza do nadcisnienia, stanow zapalnych, dyslipidemii i zaburzen krzepliecia", c: true },
+      { t: "Stres powoduje jedynie porzednie zmiany stylu zycia (palenie, zla dieta), bez bezposredniego efektu biologicznego", c: false },
+      { t: "Wplyw stresu na serce dotyczy wylacznie osob z predyspozycjami genetycznymi", c: false }
+    ],
+    exp: "Stres chroniczny aktywuje os HPA (podwzgorze-przysadka-nadnercza) i uklad wspolczulny, prowadzac do przewleklego podwyzszenia kortyzolu i amin katecholowych. Skutki biologiczne: nadcisnienie, insulinoopornosc, przewlekly stan zapalny, dyslipidemia, hiperkoagulacja - wszystkie sa niezaleznymi czynnikami ryzyka sercowo-naczyniowego."
+  },
+  {
+    q: "W badaniach epidemiologicznych roznica miedzy korelacja a zwiazkiem przyczynowym jest kluczowa. Ktore kryterium Bradforda Hilla jako pierwsze i najwazniejsze sluzy do oceny zwiazku przyczynowego?",
+    opts: [
+      { t: "Plausibilnosc biologiczna (wiarygodnosc mechanizmu)", c: false },
+      { t: "Sila zwiazku (strength of association) wyrazona wielkocia wspolczynnika wzglednego ryzyka (RR)", c: true },
+      { t: "Gradientdawka-efekt", c: false },
+      { t: "Spectornosc zwiazku (specyficznosc)", c: false }
+    ],
+    exp: "Kryteria Bradforda Hilla (1965) sluza do oceny zwiazku przyczynowego. Sila zwiazku (im wieksze RR, tym mniej prawdopodobne ze jest to przypadkowe) jest pierwszym i jednym z najwazniejszych kryteriow. Silne stowarzyszenie jest trudniejsze do wyjasnienia przez niezidentyfikowane czynniki mylace (confounders)."
+  },
+  {
+    q: "Pojecie 'epigenetics' ma znaczenie dla zdrowia publicznego, poniewaz:",
+    opts: [
+      { t: "Wykazuje, ze geny w ogole nie wplywaja na zdrowie", c: false },
+      { t: "Dowodzi, ze ekspozycje srodowiskowe i spoleczne moga wlaczac/wylaczac geny, a zmiany te moga byc dziedziczone - co laczy determinizm genetyczny z determinantami spolecznymi", c: true },
+      { t: "Udowadnia, ze wszystkie choroby sa dziedziczne", c: false },
+      { t: "Dotyczy wylacznie badan laboratoryjnych bez znaczenia klinicznego", c: false }
+    ],
+    exp: "Epigenetyka pokazuje, ze srodowisko (stres, bieda, zla dieta, toksyny) moze zmieniac ekspresje genow (metylacja DNA, modyfikacje histonow) bez zmiany sekwencji DNA - i zmiany te moga byc przekazywane potomstwu. To mechanizm biologiczny, przez ktory nierownasci spoleczne 'wchodza pod skore' i traja pokoleniami."
+  },
+  {
+    q: "Ktore z ponizszych doskonale opisuje 'positive deviance' jako metode zmiany zachowan zdrowotnych?",
+    opts: [
+      { t: "Nagradzanie jednostek za rzucenie palenia lub odchudzanie", c: false },
+      { t: "Identyfikowanie i naśladowanie niekonwencjonalnych rozwiazan stosowanych przez osoby w tej samej spolecznosci, ktore mimo tych samych ograniczen osiagaja lepsze wyniki zdrowotne", c: true },
+      { t: "Straszenie pacjentow negatywnymi konsekwencjami zlych wyborow zdrowotnych", c: false },
+      { t: "Pozytywne dewiacje to zachowania patologiczne leczone w psychiatrii", c: false }
+    ],
+    exp: "Positive deviance (pozytywne odstepstwo) to podejscie polegajace na znalezieniu osob w spolecznosci, ktore - mimo tych samych ubostw, ograniczen i zasobow - osiagaja lepsze wyniki zdrowotne dzieki niestandardowym zachowaniom. Ich strategie sa nastepnie wdrazane w spolecznosci - to bardzo skuteczna i autentyczna metoda zmiany zachowan."
+  }
+
+];
+
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let questions = [], current = 0, score = 0, answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0; score = 0; answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) buttons[correctIdx].classList.add('correct');
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+  answered.push({ qText, correct: isCorrect, chosen: opts[selectedIdx].t, correctAns: opts.find(o => o.c).t });
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) renderQuestion();
+  else showResults();
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+  let grade, col;
+  if (pct >= 85)      { grade = 'Wybitnie!';        col = '#3d006b'; }
+  else if (pct >= 70) { grade = 'Bardzo dobrze!';   col = '#9b35e8'; }
+  else if (pct >= 55) { grade = 'Dobrze';           col = '#d18bff'; }
+  else if (pct >= 45) { grade = 'Dostatecznie';     col = '#e9a800'; }
+  else                { grade = 'Wymaga powtórki';  col = '#c1121f'; }
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' : '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 1 – Współczesne Wyzwania Zdrowia Publicznego</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #6a1ba0 0%, var(--purple2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #e9d8fd;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--purple2); }
+
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #6a1ba0; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #6a1ba0; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a1ba0, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #6a1ba0; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="wwzp.html">← Wróć do listy testów</a>
+  <h1>Współczesne Wyzwania Zdrowia Publicznego</h1>
+  <p>Test 1 – Zagadnienia egzaminacyjne · 50 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w Teście!</h2>
+    <p>Test obejmuje wszystkie 13 bloków tematycznych z listy zagadnień egzaminacyjnych dr. hab. Grzegorza Juszczyka.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Definicje ZP · Promocja zdrowia · Profilaktyka I–IV fazy · Model Dahlgrena i Whitehead · DALY/YLL/YLD · Umieralność możliwa do uniknięcia · Czynniki ryzyka · Szczepienia i kryteria Wilsona-Jungnera · Systemy Beveridge'a i Bismarcka · NFZ / NPZ / PIS · WHO / ECDC / CDC · SDGs · Health in All Policies · Kadry ZP</p>
+    </div>
+    <p>Kolejność pytań i odpowiedzi jest losowana przy każdym podejściu. Łącznie <strong>50 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 50</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/50</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // === 1. DEFINICJE I KONCEPCJE ZP ===
+  {
+    q: "Czym różni się zdrowie publiczne od medycyny naprawczej?",
+    opts: [
+      { t: "Zdrowie publiczne skupia się na populacji i zapobieganiu, medycyna naprawcza – na leczeniu jednostek", c: true },
+      { t: "Zdrowie publiczne zajmuje się wyłącznie chorobami zakaźnymi", c: false },
+      { t: "Medycyna naprawcza jest skuteczniejsza niż zdrowie publiczne", c: false },
+      { t: "Nie ma żadnych różnic między tymi pojęciami", c: false }
+    ],
+    exp: "Zdrowie publiczne działa na poziomie populacji, koncentrując się na profilaktyce i promocji zdrowia. Medycyna naprawcza (kliniczna) skupia się na diagnozowaniu i leczeniu chorób u konkretnych pacjentów."
+  },
+  {
+    q: "Zgodnie z definicją WHO, zdrowie to:",
+    opts: [
+      { t: "Stan pełnego dobrostanu fizycznego, psychicznego i społecznego, a nie jedynie brak choroby", c: true },
+      { t: "Brak jakichkolwiek chorób i dolegliwości", c: false },
+      { t: "Prawidłowe funkcjonowanie układów narządów", c: false },
+      { t: "Zdolność do pracy i aktywności zawodowej", c: false }
+    ],
+    exp: "Definicja WHO z 1948 r. określa zdrowie jako stan pełnego dobrostanu fizycznego, psychicznego i społecznego – nie tylko nieobecność choroby lub kalectwa."
+  },
+  {
+    q: "Zdrowie jako dobro społeczne oznacza, że:",
+    opts: [
+      { t: "Jest wyłącznie prywatną sprawą każdej jednostki", c: false },
+      { t: "Państwo i społeczeństwo mają obowiązek troski o warunki umożliwiające zachowanie zdrowia obywateli", c: true },
+      { t: "Za zdrowie odpowiada jedynie system opieki zdrowotnej", c: false },
+      { t: "Zdrowie można nabyć jak każde inne dobro na wolnym rynku", c: false }
+    ],
+    exp: "Traktowanie zdrowia jako dobra społecznego nakłada na państwo i wspólnotę obowiązek tworzenia warunków (politycznych, środowiskowych, ekonomicznych) sprzyjających zdrowiu wszystkich obywateli."
+  },
+  {
+    q: "Które z poniższych jest głównym zadaniem zdrowia publicznego?",
+    opts: [
+      { t: "Leczenie chorób zakaźnych w szpitalach", c: false },
+      { t: "Ochrona i poprawa zdrowia całych populacji poprzez działania zbiorowe", c: true },
+      { t: "Dystrybucja leków refundowanych", c: false },
+      { t: "Szkolenie lekarzy specjalistów", c: false }
+    ],
+    exp: "Głównym zadaniem zdrowia publicznego jest ochrona, promocja i poprawa zdrowia populacji poprzez zorganizowane wysiłki społeczeństwa – nie indywidualne leczenie pacjentów."
+  },
+
+  // === 2. PROMOCJA ZDROWIA I PROFILAKTYKA ===
+  {
+    q: "Profilaktyka I fazy (pierwotna) obejmuje:",
+    opts: [
+      { t: "Rehabilitację i zapobieganie niepełnosprawności po chorobie", c: false },
+      { t: "Zapobieganie wystąpieniu choroby poprzez eliminację czynników ryzyka", c: true },
+      { t: "Wczesne wykrywanie chorób u osób bez objawów", c: false },
+      { t: "Leczenie chorób już zdiagnozowanych", c: false }
+    ],
+    exp: "Profilaktyka I fazy (pierwotna) to działania zapobiegające zachorowaniu – szczepienia, edukacja zdrowotna, promocja aktywności fizycznej, eliminacja czynników ryzyka."
+  },
+  {
+    q: "Badania przesiewowe (skrining) należą do:",
+    opts: [
+      { t: "Profilaktyki I fazy", c: false },
+      { t: "Profilaktyki II fazy (wtórnej)", c: true },
+      { t: "Profilaktyki III fazy", c: false },
+      { t: "Profilaktyki IV fazy", c: false }
+    ],
+    exp: "Profilaktyka II fazy (wtórna) obejmuje wczesne wykrywanie chorób u osób bez objawów – badania przesiewowe (mammografia, PSA, kolonoskopia) pozwalają leczyć skuteczniej na wczesnym etapie."
+  },
+  {
+    q: "Profilaktyka IV fazy dotyczy ochrony przed:",
+    opts: [
+      { t: "Chorobami zakaźnymi w podróży", c: false },
+      { t: "Nadmierną medykalizacją i niepotrzebnymi interwencjami medycznymi (overmedicalisation)", c: true },
+      { t: "Nawrotami chorób po leczeniu", c: false },
+      { t: "Chorobami zawodowymi", c: false }
+    ],
+    exp: "Profilaktyka IV fazy (quaternary prevention) chroni pacjenta przed nadmierną medykalizacją – niepotrzebnymi diagnozami, lekami i zabiegami, które mogą przynieść więcej szkody niż pożytku."
+  },
+  {
+    q: "Edukacja zdrowotna różni się od promocji zdrowia tym, że:",
+    opts: [
+      { t: "Dotyczy wyłącznie chorób zakaźnych", c: false },
+      { t: "Jest węższym pojęciem – skupia się na przekazywaniu wiedzy i kształtowaniu umiejętności, promotyzja zdrowia obejmuje też działania środowiskowe i polityczne", c: true },
+      { t: "Jest skuteczniejsza od promocji zdrowia", c: false },
+      { t: "Nie ma żadnych różnic między tymi pojęciami", c: false }
+    ],
+    exp: "Edukacja zdrowotna to komponent promocji zdrowia, skupiający się na przekazywaniu wiedzy i kształtowaniu zachowań. Promocja zdrowia ma szerszy zakres – obejmuje też zmiany polityczne, środowiskowe i społeczne."
+  },
+  {
+    q: "W modelu COM-B litera 'C' oznacza:",
+    opts: [
+      { t: "Context (kontekst)", c: false },
+      { t: "Capability (zdolność/możliwości)", c: true },
+      { t: "Choice (wybór)", c: false },
+      { t: "Culture (kultura)", c: false }
+    ],
+    exp: "Model COM-B zakłada, że zmiana zachowania wymaga: Capability (zdolności fizyczne i psychiczne), Opportunity (możliwości środowiskowe i społeczne) oraz Motivation (motywacja automatyczna i refleksyjna)."
+  },
+  {
+    q: "Piramida wpływu na zdrowie pokazuje, że największy efekt populacyjny mają interwencje na poziomie:",
+    opts: [
+      { t: "Indywidualnego poradnictwa i edukacji", c: false },
+      { t: "Interwencji klinicznych", c: false },
+      { t: "Czynników społeczno-ekonomicznych i zmiany otoczenia", c: true },
+      { t: "Szczepień ochronnych", c: false }
+    ],
+    exp: "Zgodnie z piramidą wpływu na zdrowie (Frieden), interwencje zmieniające warunki społeczno-ekonomiczne i środowisko (np. fluoryzacja wody, przepisy antytytoniowe) mają największy efekt populacyjny przy najmniejszym wysiłku jednostki."
+  },
+
+  // === 3. DETERMINANTY I NIERÓWNOŚCI ZDROWIA ===
+  {
+    q: "Model Dahlgrena i Whitehead (1991) przedstawia determinanty zdrowia jako:",
+    opts: [
+      { t: "Listę chorób według częstości występowania", c: false },
+      { t: "Koncentryczne warstwy czynników od cech biologicznych jednostki po ogólne warunki społeczno-ekonomiczne", c: true },
+      { t: "Hierarchię instytucji ochrony zdrowia", c: false },
+      { t: "Podział chorób na zakaźne i niezakaźne", c: false }
+    ],
+    exp: "Model Dahlgrena i Whitehead (tzw. tęcza) przedstawia warstwy determinantów zdrowia: od cech wrodzonych (wiek, płeć), przez styl życia, sieci wsparcia, warunki życia i pracy, aż po ogólne warunki społeczno-ekonomiczne."
+  },
+  {
+    q: "Nierówności zdrowotne (health inequalities) to:",
+    opts: [
+      { t: "Różnice w zdrowiu wynikające wyłącznie z genów", c: false },
+      { t: "Systematyczne, unikalne i niesprawiedliwe różnice w stanie zdrowia między grupami społecznymi", c: true },
+      { t: "Różnice w długości kolejek do lekarza", c: false },
+      { t: "Zróżnicowanie liczby szpitali w różnych regionach", c: false }
+    ],
+    exp: "Nierówności zdrowotne to systematyczne różnice w stanie zdrowia między grupami społecznymi (wg dochodów, wykształcenia, miejsca zamieszkania), które można ograniczyć – a więc są niesprawiedliwe."
+  },
+  {
+    q: "Różnica między równością (equity) a sprawiedliwością (equality) w zdrowiu polega na tym, że:",
+    opts: [
+      { t: "Są to dwa nazwy tego samego pojęcia", c: false },
+      { t: "Equity oznacza zapewnienie każdemu tego samego, equality – proporcjonalne wsparcie do potrzeb", c: false },
+      { t: "Equality to jednakowe traktowanie wszystkich, equity to proporcjonalne zasoby według potrzeb – by wyrównać szanse", c: true },
+      { t: "Equity dotyczy tylko finansowania ochrony zdrowia", c: false }
+    ],
+    exp: "Equality (równość) to jednakowe zasoby dla wszystkich. Equity (sprawiedliwość) to różnicowanie zasobów proporcjonalnie do potrzeb, aby wyrównać szanse zdrowotne – grupy o większych potrzebach powinny otrzymać więcej wsparcia."
+  },
+  {
+    q: "Które z poniższych jest społecznym determinantem zdrowia wg WHO?",
+    opts: [
+      { t: "Wybór lekarza rodzinnego", c: false },
+      { t: "Poziom dochodów i status społeczny", c: true },
+      { t: "Wybór diety przez jednostkę", c: false },
+      { t: "Genetyczne predyspozycje do choroby", c: false }
+    ],
+    exp: "WHO wymienia szereg społecznych determinantów zdrowia: dochody, zatrudnienie, warunki mieszkaniowe, edukację, wykluczenie społeczne, wczesne dzieciństwo. Są to strukturalne warunki, na które jednostka ma ograniczony wpływ."
+  },
+
+  // === 4. DEMOGRAFIA I EPIDEMIOLOGIA ===
+  {
+    q: "Starzenie się społeczeństwa w Polsce oznacza przede wszystkim:",
+    opts: [
+      { t: "Wzrost odsetka dzieci w populacji", c: false },
+      { t: "Rosnący udział osób starszych (65+) przy malejącej liczbie osób w wieku produkcyjnym", c: true },
+      { t: "Zmniejszenie liczby urodzeń bez zmiany w strukturze wiekowej", c: false },
+      { t: "Wyłącznie wzrost średniej długości życia", c: false }
+    ],
+    exp: "Starzenie się społeczeństwa to proces rosnącego udziału osób starszych (65+) przy jednoczesnym malejącym udziale dzieci i osób w wieku produkcyjnym – generuje to wyzwania dla systemu emerytalnego i zdrowotnego."
+  },
+  {
+    q: "Współczynnik obciążenia demograficznego to:",
+    opts: [
+      { t: "Liczba zgonów na 1000 mieszkańców", c: false },
+      { t: "Stosunek liczby osób w wieku nieprodukcyjnym do liczby osób w wieku produkcyjnym", c: true },
+      { t: "Procent populacji cierpiącej na choroby przewlekłe", c: false },
+      { t: "Wydatki na zdrowie w przeliczeniu na jednego mieszkańca", c: false }
+    ],
+    exp: "Współczynnik obciążenia demograficznego = (osoby w wieku 0–14 lat + osoby 65+) / osoby w wieku 15–64 lata × 100. Im wyższy wskaźnik, tym więcej osób w wieku nieprodukcyjnym przypada na jedną osobę pracującą."
+  },
+  {
+    q: "Samoocena stanu zdrowia (self-rated health) jest ważnym wskaźnikiem, ponieważ:",
+    opts: [
+      { t: "Jest bardziej precyzyjna niż badania kliniczne", c: false },
+      { t: "Jest dobrym predyktorem przyszłej umieralności i korzystania ze świadczeń zdrowotnych", c: true },
+      { t: "Zastępuje obiektywne miary stanu zdrowia", c: false },
+      { t: "Dotyczy wyłącznie osób starszych", c: false }
+    ],
+    exp: "Badania pokazują, że negatywna samoocena zdrowia jest silnym predyktorem wyższej umieralności, większego korzystania ze świadczeń i gorszej jakości życia – nawet po uwzględnieniu obiektywnych wskaźników zdrowia."
+  },
+
+  // === 5. MIARY STANU ZDROWIA POPULACJI ===
+  {
+    q: "DALY (Disability-Adjusted Life Year) to miara, która:",
+    opts: [
+      { t: "Mierzy wyłącznie liczbę zgonów w populacji", c: false },
+      { t: "Łączy lata życia utracone z powodu przedwczesnej śmierci (YLL) z latami życia przeżytymi z niepełnosprawnością (YLD)", c: true },
+      { t: "Ocenia jakość systemu opieki zdrowotnej", c: false },
+      { t: "Jest miarą satysfakcji pacjentów z leczenia", c: false }
+    ],
+    exp: "DALY = YLL + YLD. Jest to miara ciężaru choroby: jeden DALY odpowiada jednemu utraconemu rokowi pełnego zdrowia. Pozwala porównywać wpływ różnych chorób na populację."
+  },
+  {
+    q: "YLL (Years of Life Lost) to:",
+    opts: [
+      { t: "Lata życia spędzone z niepełnosprawnością", c: false },
+      { t: "Lata życia utracone z powodu przedwczesnej śmierci", c: true },
+      { t: "Różnica między oczekiwaną a rzeczywistą długością życia w zdrowiu", c: false },
+      { t: "Liczba lat życia po 65. roku", c: false }
+    ],
+    exp: "YLL (Years of Life Lost) to lata życia utracone z powodu przedwczesnej śmierci – obliczane jako różnica między wiekiem zgonu a oczekiwaną długością życia."
+  },
+  {
+    q: "Umieralność możliwa do uniknięcia (avoidable mortality) obejmuje zgony przed:",
+    opts: [
+      { t: "60. rokiem życia", c: false },
+      { t: "75. rokiem życia", c: true },
+      { t: "85. rokiem życia", c: false },
+      { t: "65. rokiem życia", c: false }
+    ],
+    exp: "Standardowo umieralność możliwa do uniknięcia obejmuje zgony przed 75. rokiem życia. Wyróżnia się dwie kategorie: zgony możliwe do uniknięcia dzięki profilaktyce oraz dzięki skutecznej interwencji medycznej."
+  },
+  {
+    q: "Polska w porównaniu z UE pod względem zgonów możliwych do uniknięcia dzięki profilaktyce zajmuje pozycję:",
+    opts: [
+      { t: "Lepszą od średniej UE", c: false },
+      { t: "Na poziomie średniej UE", c: false },
+      { t: "Znacznie gorszą od średniej UE (ponad 2x więcej zgonów)", c: true },
+      { t: "Jeden z najlepszych wyników w Europie", c: false }
+    ],
+    exp: "Polska ma ok. 222 zgony na 100 tys. osób możliwe do uniknięcia dzięki profilaktyce, podczas gdy średnia UE wynosi ok. 160/100 tys. – to ponad 40% więcej. Wyniki dla interwencji medycznej są nieco lepsze, ale też powyżej średniej UE."
+  },
+  {
+    q: "Długość życia w zdrowiu (Healthy Life Years, HLY) mierzy:",
+    opts: [
+      { t: "Przeciętną długość życia bez uwzględnienia jakości zdrowia", c: false },
+      { t: "Liczbę lat życia oczekiwanych bez poważnej niepełnosprawności", c: true },
+      { t: "Wiek, w którym większość populacji umiera", c: false },
+      { t: "Czas hospitalizacji w ciągu całego życia", c: false }
+    ],
+    exp: "HLY (Healthy Life Years) to wskaźnik mierzący oczekiwaną liczbę lat bez poważnej niepełnosprawności. Służy do oceny, czy wzrost długości życia przekłada się na życie w dobrym zdrowiu."
+  },
+
+  // === 6. CZYNNIKI RYZYKA CHORÓB PRZEWLEKŁYCH ===
+  {
+    q: "Do behawioralnych czynników ryzyka chorób przewlekłych zalicza się:",
+    opts: [
+      { t: "Nadciśnienie tętnicze i hipercholesterolemię", c: false },
+      { t: "Palenie tytoniu, nadużywanie alkoholu, złą dietę i brak aktywności fizycznej", c: true },
+      { t: "Zanieczyszczenie powietrza i hałas", c: false },
+      { t: "Genetyczne predyspozycje do chorób", c: false }
+    ],
+    exp: "Behawioralne czynniki ryzyka to modyfikowalne zachowania: palenie, alkohol, nieodpowiednia dieta, brak aktywności fizycznej. Metaboliczne (nadciśnienie, otyłość) i środowiskowe (smog) to osobne kategorie."
+  },
+  {
+    q: "Palenie tytoniu jest powiązane przede wszystkim z:",
+    opts: [
+      { t: "Wyłącznie rakiem płuca", c: false },
+      { t: "Wieloma nowotworami, chorobami sercowo-naczyniowymi i układu oddechowego", c: true },
+      { t: "Tylko chorobami zakaźnymi dróg oddechowych", c: false },
+      { t: "Wyłącznie chorobami o podłożu alergicznym", c: false }
+    ],
+    exp: "Palenie tytoniu jest największym możliwym do uniknięcia czynnikiem ryzyka: powoduje raka płuca, krtani, jamy ustnej, przełyku, ale też chorobę niedokrwienną serca, udar, POChP i wiele innych."
+  },
+  {
+    q: "Otyłość jest najważniejszą przyczyną nowotworów możliwą do uniknięcia po:",
+    opts: [
+      { t: "Alkoholu", c: false },
+      { t: "Złej diecie", c: false },
+      { t: "Paleniu tytoniu", c: true },
+      { t: "Braku aktywności fizycznej", c: false }
+    ],
+    exp: "Otyłość jest drugą po paleniu tytoniu możliwą do uniknięcia przyczyną nowotworów – zwiększa ryzyko raka jelita grubego, piersi, trzonu macicy, nerki i innych."
+  },
+
+  // === 7. CHOROBY ZAKAŹNE I SZCZEPIENIA ===
+  {
+    q: "Odporność zbiorowa (herd immunity) oznacza, że:",
+    opts: [
+      { t: "Wszyscy członkowie społeczeństwa są zaszczepieni", c: false },
+      { t: "Wystarczający odsetek populacji jest odporny, aby uniemożliwić szerzenie się choroby, chroniąc też osoby niezaszczepione", c: true },
+      { t: "Choroba przestaje istnieć na danym terenie", c: false },
+      { t: "Dotyczy wyłącznie naturalnie nabytej odporności", c: false }
+    ],
+    exp: "Odporność zbiorowa (stadna) osiągnięta przez szczepienia chroni osoby, które same nie mogą być zaszczepione (noworodki, immunosupresja). Próg odporności różni się w zależności od zaraźliwości choroby (np. odra wymaga ~95%)."
+  },
+  {
+    q: "Kryteria Wilsona i Jungnera dotyczą:",
+    opts: [
+      { t: "Warunków, jakie musi spełniać program szczepień", c: false },
+      { t: "Warunków, jakie musi spełniać program badań przesiewowych, aby był uzasadniony", c: true },
+      { t: "Kryteriów kwalifikacji do transplantacji narządów", c: false },
+      { t: "Zasad finansowania profilaktyki pierwotnej", c: false }
+    ],
+    exp: "Kryteria Wilsona i Jungnera (1968) to 10 kryteriów oceny badań przesiewowych: m.in. choroba musi być ważnym problemem zdrowotnym, musi istnieć skuteczne leczenie, musi być dostępny test przesiewowy o akceptowalnych parametrach."
+  },
+  {
+    q: "Najważniejszym wyzwaniem zdrowia publicznego po pandemii COVID-19 jest:",
+    opts: [
+      { t: "Zwiększenie liczby łóżek szpitalnych na świecie", c: false },
+      { t: "Odbudowanie zaufania do szczepień, nadrobienie zaległości i wzmocnienie systemów nadzoru epidemiologicznego", c: true },
+      { t: "Całkowite zastąpienie wizyt stacjonarnych telemedycyną", c: false },
+      { t: "Zmniejszenie wydatków na ochronę zdrowia", c: false }
+    ],
+    exp: "Po pandemii kluczowe wyzwania to: odbudowanie zaufania społecznego do szczepień (wzrost ruchów antyszczepionkowych), nadrobienie zaległości diagnostycznych i terapeutycznych oraz wzmocnienie systemów nadzoru epidemiologicznego."
+  },
+
+  // === 8. SYSTEM OCHRONY ZDROWIA ===
+  {
+    q: "Model Beveridge'a (system Beveridge'a) to model ochrony zdrowia, w którym:",
+    opts: [
+      { t: "System jest finansowany ze składek pracowniczych i pracodawców", c: false },
+      { t: "Państwo finansuje opiekę zdrowotną z podatków ogólnych, zapewniając powszechny dostęp (NHS)", c: true },
+      { t: "Opieka zdrowotna opiera się głównie na prywatnych ubezpieczeniach", c: false },
+      { t: "Finansowanie pochodzi z dobrowolnych składek obywateli", c: false }
+    ],
+    exp: "Model Beveridge'a (np. NHS w Wielkiej Brytanii, systemy skandynawskie) finansuje opiekę zdrowotną z podatków ogólnych. Państwo jest głównym płatnikiem, a dostęp do opieki jest powszechny i bezpłatny w punkcie świadczenia."
+  },
+  {
+    q: "Model Bismarcka (system Bismarcka) oparty jest na:",
+    opts: [
+      { t: "Finansowaniu z podatków ogólnych przez rząd centralny", c: false },
+      { t: "Obowiązkowych składkach zdrowotnych pracowników i pracodawców zarządzanych przez kasy chorych/fundusze", c: true },
+      { t: "Prywatnych ubezpieczeniach zdrowotnych", c: false },
+      { t: "Dobrowolnym systemie samopomocy społecznej", c: false }
+    ],
+    exp: "Model Bismarcka (Niemcy, Polska, Francja) oparty jest na obowiązkowych składkach zdrowotnych pracodawcy i pracownika. Środki gromadzone są w kasach chorych lub funduszach (w Polsce NFZ) i przeznaczane na finansowanie świadczeń."
+  },
+  {
+    q: "Polska należy do systemu finansowania ochrony zdrowia opartego na modelu:",
+    opts: [
+      { t: "Beveridge'a (budżetowym)", c: false },
+      { t: "Bismarcka (ubezpieczeniowym)", c: true },
+      { t: "Prywatnego ubezpieczenia (jak w USA)", c: false },
+      { t: "Mieszanym bez dominującego modelu", c: false }
+    ],
+    exp: "Polska działa według modelu Bismarcka – obowiązkowe składki zdrowotne (9% podstawy wymiaru) zbiera NFZ, który finansuje świadczenia kontraktowane od świadczeniodawców."
+  },
+  {
+    q: "Gatekeeping (lekarz pierwszego kontaktu jako „strażnik wejścia”) polega na:",
+    opts: [
+      { t: "Ograniczeniu liczby wizyt u lekarzy specjalistów w ciągu roku", c: false },
+      { t: "Wymogu uzyskania skierowania od lekarza POZ przed wizytą u specjalisty, co koordynuje opiekę", c: true },
+      { t: "Kontrolowaniu listy leków dostępnych na receptę", c: false },
+      { t: "Ocenianiu jakości szpitali przez zewnętrznych kontrolerów", c: false }
+    ],
+    exp: "Gatekeeping to mechanizm, w którym lekarz POZ kieruje pacjenta do specjalistów i koordynuje jego opiekę. Pozwala to ograniczyć zbędne wizyty specjalistyczne, a pacjent ma ciągłość opieki i spójną dokumentację."
+  },
+  {
+    q: "AOS (ambulatoryjna opieka specjalistyczna) to:",
+    opts: [
+      { t: "System ratownictwa medycznego", c: false },
+      { t: "Świadczenia specjalistyczne udzielane w trybie ambulatoryjnym (bez hospitalizacji), wymagające skierowania", c: true },
+      { t: "Opieka długoterminowa dla osób przewlekle chorych", c: false },
+      { t: "Leczenie szpitalne pacjentów z chorobami przewlekłymi", c: false }
+    ],
+    exp: "AOS (Ambulatoryjna Opieka Specjalistyczna) obejmuje porady specjalistów (kardiolog, neurolog itd.) w poradniach specjalistycznych. Wymaga skierowania od lekarza POZ (z kilkoma wyjątkami) i jest finansowana przez NFZ."
+  },
+
+  // === 9. SYSTEM ZP W POLSCE ===
+  {
+    q: "Narodowy Program Zdrowia (NPZ) w Polsce to:",
+    opts: [
+      { t: "Dokument opisujący wyłącznie organizację systemu szpitalnego", c: false },
+      { t: "Rządowy program wieloletni określający cele zdrowotne i działania poprawiające zdrowie populacji", c: true },
+      { t: "Regulacja prawna dotycząca finansowania NFZ", c: false },
+      { t: "Lista leków refundowanych przez Ministerstwo Zdrowia", c: false }
+    ],
+    exp: "NPZ to wieloletni program rządowy (obecnie na lata 2021–2025) wyznaczający cele zdrowotne dla Polski: zmniejszenie zachorowalności, poprawa stanu zdrowia Polaków, redukcja nierówności zdrowotnych."
+  },
+  {
+    q: "Państwowa Inspekcja Sanitarna (Sanepid) w Polsce zajmuje się przede wszystkim:",
+    opts: [
+      { t: "Finansowaniem świadczeń zdrowotnych", c: false },
+      { t: "Nadzorem sanitarno-epidemiologicznym – kontrolą jakości żywności, wody, warunków pracy i walką z chorobami zakaźnymi", c: true },
+      { t: "Rejestracji lekarzy i innych pracowników ochrony zdrowia", c: false },
+      { t: "Koordynacją ratownictwa medycznego w Polsce", c: false }
+    ],
+    exp: "PIS (Sanepid) sprawuje nadzór sanitarno-epidemiologiczny: kontroluje bezpieczeństwo żywności i wody, warunki sanitarne szkół i zakładów pracy, a w razie epidemii koordynuje działania przeciwepidemiologiczne."
+  },
+  {
+    q: "Jaką rolę pełnią jednostki samorządu terytorialnego (JST) w zdrowiu publicznym?",
+    opts: [
+      { t: "Wyłącznie finansują szpitale kliniczne", c: false },
+      { t: "Realizują lokalne programy zdrowotne, prowadzą placówki zdrowotne i tworzą warunki sprzyjające zdrowiu mieszkańców", c: true },
+      { t: "Nie mają żadnych kompetencji w obszarze zdrowia publicznego", c: false },
+      { t: "Wyłącznie zbierają składki zdrowotne od mieszkańców", c: false }
+    ],
+    exp: "JST realizują lokalne programy zdrowotne (profilaktyka raka, stomatologia dzieci), prowadzą lub dofinansowują przychodnie i szpitale, tworzą infrastrukturę (ścieżki rowerowe, parki) sprzyjającą aktywnemu stylowi życia."
+  },
+
+  // === 10. POLITYKA ZDROWOTNA OPARTA NA DOWODACH ===
+  {
+    q: "Evidence-based public health (EBPH) oznacza:",
+    opts: [
+      { t: "Tworzenie polityki zdrowotnej wyłącznie na podstawie opinii ekspertów", c: false },
+      { t: "Systematyczne stosowanie najlepszych dostępnych dowodów naukowych przy podejmowaniu decyzji w zdrowiu publicznym", c: true },
+      { t: "Oparcie decyzji zdrowotnych wyłącznie na wynikach randomizowanych badań klinicznych", c: false },
+      { t: "Priorytetyzację badań laboratoryjnych w zarządzaniu zdrowiem", c: false }
+    ],
+    exp: "EBPH to podejście, w którym decyzje dotyczące programów zdrowotnych, interwencji i polityk opierają się na systematycznym przeglądzie najlepszych dostępnych dowodów naukowych, danych populacyjnych i ocenie potrzeb."
+  },
+  {
+    q: "Główną barierą wdrażania polityki zdrowotnej opartej na dowodach jest:",
+    opts: [
+      { t: "Zbyt duża liczba badań naukowych do przeanalizowania", c: false },
+      { t: "Brak decydentów zainteresowanych zdrowiem publicznym", c: false },
+      { t: "Rozbieżność między długim cyklem badań naukowych a krótkim cyklem politycznym oraz opór grup interesów", c: true },
+      { t: "Nadmiar środków finansowych przeznaczonych na badania", c: false }
+    ],
+    exp: "Kluczowe bariery EBPH to: krótki horyzont polityczny vs. długi czas produkcji dowodów naukowych, opór przemysłu tytoniowego/spożywczego/alkoholowego, trudność w tłumaczeniu wyników badań na język polityki."
+  },
+
+  // === 11. INSTYTUCJE KRAJOWE I MIĘDZYNARODOWE ===
+  {
+    q: "WHO (Światowa Organizacja Zdrowia) ma siedzibę w:",
+    opts: [
+      { t: "Nowym Jorku", c: false },
+      { t: "Brukseli", c: false },
+      { t: "Genewie", c: true },
+      { t: "Waszyngtonie", c: false }
+    ],
+    exp: "WHO (World Health Organization) – wyspecjalizowana agenda ONZ ds. zdrowia – ma siedzibę główną w Genewie w Szwajcarii. Została założona 7 kwietnia 1948 r. (stąd 7 kwietnia to Światowy Dzień Zdrowia)."
+  },
+  {
+    q: "ECDC (Europejskie Centrum ds. Zapobiegania i Kontroli Chorób) ma siedzibę w:",
+    opts: [
+      { t: "Brukseli", c: false },
+      { t: "Sztokholmie", c: true },
+      { t: "Genewie", c: false },
+      { t: "Amsterdamie", c: false }
+    ],
+    exp: "ECDC (European Centre for Disease Prevention and Control) ma siedzibę w Sztokholmie (Szwecja). Agencja UE zajmuje się nadzorem epidemiologicznym, oceną ryzyka i gotowością na zagrożenia zakaźne w Europie."
+  },
+  {
+    q: "CDC (Centers for Disease Control and Prevention) to instytucja:",
+    opts: [
+      { t: "Europejska agencja regulacyjna", c: false },
+      { t: "Agenda ONZ ds. chorób tropikalnych", c: false },
+      { t: "Federalna agencja USA z siedzibą w Atlancie, zajmująca się ochroną zdrowia publicznego", c: true },
+      { t: "Instytucja badająca bezpieczeństwo leków w UE", c: false }
+    ],
+    exp: "CDC (Centers for Disease Control and Prevention) to federalna agencja rządu USA z siedzibą w Atlancie (Georgia). Zajmuje się nadzorem epidemiologicznym, badaniami i reagowaniem na zagrożenia zdrowia publicznego."
+  },
+  {
+    q: "Do zadań WHO należy m.in.:",
+    opts: [
+      { t: "Bezpośrednie leczenie pacjentów w krajach rozwijających się", c: false },
+      { t: "Ustanawianie norm i standardów zdrowotnych, koordynacja odpowiedzi na epidemie, wspieranie krajów w rozwoju systemów zdrowotnych", c: true },
+      { t: "Finansowanie szpitali w krajach ubogich", c: false },
+      { t: "Rejestracja leków na rynku europejskim", c: false }
+    ],
+    exp: "WHO ustanawia globalne normy i standardy zdrowotne (np. ICD, Międzynarodowe Przepisy Zdrowotne), koordynuje odpowiedź na epidemie/pandemie, prowadzi programy zdrowotne i dostarcza ekspertyzę techniczną krajom członkowskim."
+  },
+
+  // === 12. CELE ZDROWOTNE I POLITYKI MIĘDZYNARODOWE ===
+  {
+    q: "SDG nr 3 (Cel Zrównoważonego Rozwoju nr 3) dotyczy:",
+    opts: [
+      { t: "Czystej wody i kanalizacji", c: false },
+      { t: "Dobrego zdrowia i jakości życia (Good Health and Well-Being)", c: true },
+      { t: "Klimatu i środowiska", c: false },
+      { t: "Edukacji włączającej i wysokiej jakości", c: false }
+    ],
+    exp: "SDG 3 – 'Dobre zdrowie i jakość życia' – zakłada zapewnienie zdrowego życia i dobrostanu dla ludzi w każdym wieku. Obejmuje m.in. walkę z chorobami zakaźnymi, zmniejszenie umieralności matek i noworodków, dostęp do powszechnej opieki zdrowotnej."
+  },
+  {
+    q: "Koncepcja 'Health in All Policies' (Zdrowie we wszystkich politykach) zakłada:",
+    opts: [
+      { t: "Że o zdrowiu decyduje wyłącznie Ministerstwo Zdrowia", c: false },
+      { t: "Systematyczne uwzględnianie wpływu na zdrowie we wszystkich sektorach polityki publicznej (transport, budownictwo, edukacja, rolnictwo)", c: true },
+      { t: "Że zdrowie jest najważniejszym celem wszystkich resortów rządowych", c: false },
+      { t: "Przeniesienie kompetencji zdrowotnych do Ministerstwa Finansów", c: false }
+    ],
+    exp: "HiAP to podejście zakładające, że decyzje w każdym sektorze (transport, mieszkalnictwo, edukacja, polityka fiskalna) mają wpływ na zdrowie populacji. Wymaga współpracy międzysektorowej i oceny skutków zdrowotnych przy tworzeniu prawa."
+  },
+  {
+    q: "Ile Celów Zrównoważonego Rozwoju (SDGs) przyjęła ONZ w Agendzie 2030?",
+    opts: [
+      { t: "10", c: false },
+      { t: "17", c: true },
+      { t: "20", c: false },
+      { t: "25", c: false }
+    ],
+    exp: "Agenda 2030 dla Zrównoważonego Rozwoju, przyjęta przez ONZ w 2015 r., zawiera 17 Celów Zrównoważonego Rozwoju (SDGs) z 169 szczegółowymi wskaźnikami do osiągnięcia do 2030 roku."
+  },
+  {
+    q: "Priorytety zdrowotne UE w ramach Programu UE dla Zdrowia (EU4Health) obejmują m.in.:",
+    opts: [
+      { t: "Wyłącznie finansowanie systemu emerytalnego", c: false },
+      { t: "Odporność systemów zdrowotnych, profilaktykę chorób, dostęp do leków i cyfryzację ochrony zdrowia", c: true },
+      { t: "Ujednolicenie stawek składek zdrowotnych we wszystkich krajach UE", c: false },
+      { t: "Zakaz stosowania medycyny niekonwencjonalnej", c: false }
+    ],
+    exp: "Program EU4Health 2021–2027 skupia się na: wzmocnieniu odporności systemów zdrowotnych (post-COVID), profilaktyce chorób, dostępie do leków i produktów medycznych oraz cyfrowej transformacji ochrony zdrowia."
+  },
+
+  // === 13. KADRY ZDROWIA PUBLICZNEGO ===
+  {
+    q: "Absolwent zdrowia publicznego powinien przede wszystkim posiadać kompetencje z zakresu:",
+    opts: [
+      { t: "Bezpośredniego leczenia pacjentów", c: false },
+      { t: "Analizy danych epidemiologicznych, planowania i oceny programów zdrowotnych, zarządzania systemem zdrowia", c: true },
+      { t: "Wyłącznie badań laboratoryjnych", c: false },
+      { t: "Pracy wyłącznie w Ministerstwie Zdrowia", c: false }
+    ],
+    exp: "Absolwent zdrowia publicznego potrafi analizować dane epidemiologiczne, planować i ewaluować programy zdrowotne, zarządzać instytucjami zdrowia, tworzyć politykę zdrowotną i działać na rzecz ograniczenia nierówności zdrowotnych."
+  },
+  {
+    q: "Profilaktyk to nowy zawód w systemie ochrony zdrowia, którego rola polega przede wszystkim na:",
+    opts: [
+      { t: "Wystawianiu recept profilaktycznych", c: false },
+      { t: "Prowadzeniu działań edukacyjnych i profilaktycznych w placówkach POZ oraz społecznościach lokalnych", c: true },
+      { t: "Kontrolowaniu jakości leków", c: false },
+      { t: "Zarządzaniu szpitalem publicznym", c: false }
+    ],
+    exp: "Profilaktyk to nowa rola systemowa, której celem jest wzmocnienie profilaktyki i edukacji zdrowotnej – głównie w POZ i środowisku lokalnym. Pomaga pacjentom zmieniać zachowania zdrowotne i korzystać z programów profilaktycznych."
+  },
+  {
+    q: "Głównym wyzwaniem kadrowym systemu ochrony zdrowia w Polsce jest:",
+    opts: [
+      { t: "Nadmiar lekarzy w stosunku do potrzeb", c: false },
+      { t: "Niedobór lekarzy i pielęgniarek oraz ich starzejące się kadry", c: true },
+      { t: "Zbyt duże wydatki na kształcenie kadr medycznych", c: false },
+      { t: "Brak zainteresowania studiami medycznymi wśród młodych ludzi", c: false }
+    ],
+    exp: "Polska ma poniżej średniej UE zarówno pod względem liczby lekarzy (3,3 vs 4,1/1000 osób) jak i pielęgniarek. Ponadto kadry są starzejące się – średni wiek pielęgniarki to ponad 50 lat."
+  },
+  {
+    q: "Edukacja zdrowotna w szkołach jest ważna, ponieważ:",
+    opts: [
+      { t: "Zastępuje rolę rodziców w kształtowaniu nawyków zdrowotnych", c: false },
+      { t: "Kształtuje postawy i zachowania zdrowotne w wieku, gdy są one najbardziej plastyczne i trwałe przez całe życie", c: true },
+      { t: "Dotyczy wyłącznie profilaktyki narkotyków", c: false },
+      { t: "Jest obowiązkowa jedynie w klasach 1–3 szkoły podstawowej", c: false }
+    ],
+    exp: "Edukacja zdrowotna w środowisku szkolnym jest szczególnie efektywna – kształtuje zachowania zdrowotne w wieku, gdy nawyki są najbardziej trwałe. Szkoła ma dostęp do całej populacji dzieci, niezależnie od statusu socjoekonomicznego rodziny."
+  },
+
+  // === DODATKOWE PYTANIA PRZEKROJOWE ===
+  {
+    q: "Najczęstszy nowotwór złośliwy u mężczyzn w Polsce to:",
+    opts: [
+      { t: "Rak płuca", c: false },
+      { t: "Rak jelita grubego", c: false },
+      { t: "Rak gruczołu krokowego", c: true },
+      { t: "Rak żołądka", c: false }
+    ],
+    exp: "Zgodnie z danymi OECD (2023), najczęstszym nowotworem u mężczyzn w Polsce jest rak gruczołu krokowego (22% nowych przypadków), następnie rak płuca (18%) i jelita grubego (15%)."
+  },
+  {
+    q: "Najczęstszy nowotwór złośliwy u kobiet w Polsce to:",
+    opts: [
+      { t: "Rak szyjki macicy", c: false },
+      { t: "Rak płuca", c: false },
+      { t: "Rak piersi", c: true },
+      { t: "Rak jelita grubego", c: false }
+    ],
+    exp: "Rak piersi to najczęstszy nowotwór u kobiet w Polsce (26% nowych przypadków). Kolejne miejsca zajmują rak jelita grubego (12%) i płuca (11%)."
+  },
+  {
+    q: "Wydatki na ochronę zdrowia w Polsce jako procent PKB (ok. 2021 r.) wynosiły:",
+    opts: [
+      { t: "Około 11% PKB, podobnie jak średnia UE", c: false },
+      { t: "Około 6,4% PKB – poniżej średniej UE (~11%)", c: true },
+      { t: "Około 3% PKB – najniżej w UE", c: false },
+      { t: "Około 8,5% PKB – powyżej średniej UE", c: false }
+    ],
+    exp: "Polska wydaje na ochronę zdrowia ok. 6,4% PKB, co jest znacznie poniżej średniej UE (11%). W przeliczeniu na mieszkańca to ok. 1733 PPP EUR vs 4028 PPP EUR dla średniej UE."
+  },
+  {
+    q: "Koncepcja Medycyny 3.0 (w odróżnieniu od Medycyny 2.0) zakłada:",
+    opts: [
+      { t: "Skupienie się wyłącznie na leczeniu ostrych stanów chorobowych", c: false },
+      { t: "Skupienie się na prewencji, długości życia w zdrowiu i personalizowanym podejściu do pacjenta zanim rozwinie się choroba", c: true },
+      { t: "Zastąpienie lekarzy przez sztuczną inteligencję", c: false },
+      { t: "Powrót do medycyny naturalnej i ziołolecznictwa", c: false }
+    ],
+    exp: "Medycyna 3.0 (wg P. Attii) skupia się na prewencji i wydłużeniu healthspan (czasu życia w zdrowiu) – w przeciwieństwie do Medycyny 2.0, która reaguje na chorobę po jej wystąpieniu. Obejmuje personalizowane podejście, dane i wczesną interwencję."
+  },
+  {
+    q: "Według Harvard Study of Adult Development (2016), najważniejszym czynnikiem długiego i zdrowego życia okazały się być:",
+    opts: [
+      { t: "Odpowiednia dieta i regularne ćwiczenia fizyczne", c: false },
+      { t: "Wysokie dochody i bezpieczne finansowo życie", c: false },
+      { t: "Bliskie, jakościowe relacje społeczne z rodziną i przyjaciółmi", c: true },
+      { t: "Brak nałogów – niepicie alkoholu i niepalenie tytoniu", c: false }
+    ],
+    exp: "75-letnie badanie (Harvard Study) śledziło losy 724 mężczyzn i wykazało, że jakość relacji społecznych – nie pieniądze, sława ani dieta – jest najsilniejszym predyktorem zdrowia i szczęścia w późniejszym życiu."
+  },
+  {
+    q: "Subiektywny czas oczekiwania na świadczenia w Polsce jest najdłuższy dla:",
+    opts: [
+      { t: "Lekarza POZ (pierwszego kontaktu)", c: false },
+      { t: "Lekarza specjalisty i badań diagnostycznych", c: true },
+      { t: "Szczepień ochronnych", c: false },
+      { t: "Wizyt stomatologicznych", c: false }
+    ],
+    exp: "Badania (NIZP PZH, 2025) pokazują, że ok. 78–83% pacjentów odczuwa za długi czas oczekiwania na lekarza specjalistę, a 68–74% na badania diagnostyczne – to największe problemy dostępności w polskim systemie ochrony zdrowia."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6a1ba0'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#9b35e8'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#d18bff'; }
+  else if (pct >= 50) { grade = 'Dostatecznie';    col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

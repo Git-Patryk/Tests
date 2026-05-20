@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SWPS – StudyZone</title>
+<style>
+  :root {
+    --bg:    #0a0a0f;
+    --card:  #12121a;
+    --border:#1e1e2e;
+    --text:  #e8e8f0;
+    --muted: #6b6b8a;
+    --nc:    #ff6b35;
+    --ng:    rgba(255,107,53,.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,107,53,.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,107,53,.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+  nav {
+    position: relative; z-index: 1;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: .55rem;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: .85rem; transition: color .2s; }
+  nav a:hover { color: var(--nc); }
+  nav .sep { color: var(--border); font-size: .85rem; }
+  nav .current { color: var(--text); font-weight: 600; font-size: .85rem; }
+
+  .center {
+    position: relative; z-index: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+  }
+  .soon-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 3.5rem 3rem;
+    text-align: center;
+    max-width: 460px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .soon-card::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,53,.18), transparent 70%);
+    pointer-events: none;
+  }
+  .soon-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.2rem;
+    filter: drop-shadow(0 0 12px var(--nc));
+    position: relative; z-index: 1;
+  }
+  .soon-card h1 {
+    font-size: 1.6rem; font-weight: 800; margin-bottom: .5rem;
+    position: relative; z-index: 1;
+    background: linear-gradient(90deg, #fff 40%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .soon-card p {
+    color: var(--muted); font-size: .9rem; line-height: 1.65;
+    position: relative; z-index: 1; margin-bottom: 1.8rem;
+  }
+  .back-btn {
+    display: inline-block;
+    background: var(--ng);
+    color: var(--nc);
+    border: 1px solid color-mix(in srgb, var(--nc) 30%, transparent);
+    border-radius: 10px;
+    padding: .75rem 1.8rem;
+    font-size: .92rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background .2s, transform .15s;
+    position: relative; z-index: 1;
+  }
+  .back-btn:hover { background: rgba(255,107,53,.2); transform: translateY(-2px); }
+
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 1.5rem;
+    color: var(--muted); font-size: .73rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <span class="current">SWPS</span>
+</nav>
+
+<div class="center">
+  <div class="soon-card">
+    <div class="soon-icon">🧬</div>
+    <h1>Uniwersytet SWPS</h1>
+    <p>Testy dla tego kierunku są w przygotowaniu. Wróć tu wkrótce – treści pojawią się po dodaniu materiałów do platformy.</p>
+    <a class="back-btn" href="index.html">← Wróć na stronę główną</a>
+  </div>
+</div>
+
+<footer>StudyZone &mdash; materiały pomocnicze do nauki</footer>
+</body>
+</html>
