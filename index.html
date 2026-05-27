@@ -10,6 +10,8 @@
     --c-uw-g:  rgba(0,229,255,.12);
     --c-swps:  #ff6b35;
     --c-swps-g:rgba(255,107,53,.12);
+    --c-eng:   #00b4d8;
+    --c-eng-g: rgba(0,180,216,.12);
     --card:    rgba(18,18,26,.85);
     --border:  rgba(255,255,255,.08);
     --text:    #e8e8f0;
@@ -161,6 +163,7 @@
 
   .uni-card.uw  { --nc: var(--c-uw);  --ng: var(--c-uw-g); }
   .uni-card.swps{ --nc: var(--c-swps);--ng: var(--c-swps-g); }
+  .uni-card.eng { --nc: var(--c-eng); --ng: var(--c-eng-g); }
 
   .uni-card::before { background: radial-gradient(circle, var(--nc), transparent 70%); }
   .uni-card:hover   { border-color: var(--nc); box-shadow: 0 0 40px color-mix(in srgb, var(--nc) 20%, transparent), 0 8px 32px rgba(0,0,0,.4); }
@@ -290,9 +293,9 @@
     <a class="uni-card uw" href="uw.html">
       <div class="uni-emblem">🏛️</div>
       <div class="uni-body">
-        <div class="uni-name">WUM</div>
-        <div class="uni-fullname">Warszawski Uniwersytet Medyczny</div>
-        <div class="uni-desc">Testy z przedmiotów Wydziału Nauk o Zdrowiu WUM</div>
+        <div class="uni-name">UW</div>
+        <div class="uni-fullname">Uniwersytet Warszawski</div>
+        <div class="uni-desc">Testy z przedmiotów Wydziału Nauk o Zdrowiu i innych kierunków UW</div>
       </div>
       <div class="uni-footer">
         <span class="uni-badge">2 przedmioty</span>
@@ -305,10 +308,30 @@
       <div class="uni-body">
         <div class="uni-name">SWPS <span class="chip-soon">Wkrótce</span></div>
         <div class="uni-fullname">Uniwersytet SWPS</div>
-        <div class="uni-desc">Testy z przedmiotów kierunków psychologicznych SWPS</div>
+        <div class="uni-desc">Testy z przedmiotów psychologii, prawa i nauk społecznych SWPS</div>
       </div>
       <div class="uni-footer">
         <span class="uni-badge" style="color:var(--c-swps);background:rgba(255,107,53,.1);border-color:rgba(255,107,53,.2);">W przygotowaniu</span>
+        <span class="uni-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<div class="section" style="padding-top:0;padding-bottom:4rem;">
+  <div class="section-label">Nauka języków</div>
+  <div class="uni-grid">
+
+    <a class="uni-card eng" href="english.html">
+      <div class="uni-emblem">🇬🇧</div>
+      <div class="uni-body">
+        <div class="uni-name">Język angielski</div>
+        <div class="uni-fullname">English Grammar &amp; Tenses</div>
+        <div class="uni-desc">Kompletny kurs gramatyki angielskiej — wszystkie czasy, struktury i testy</div>
+      </div>
+      <div class="uni-footer">
+        <span class="uni-badge">12 czasów + moduły</span>
         <span class="uni-arrow">→</span>
       </div>
     </a>

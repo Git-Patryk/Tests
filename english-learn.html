@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nauka – Angielski – StudyZone</title>
+<style>
+:root{
+  --eng:#00b4d8;--eng2:#0077b6;--pur:#b44fff;
+  --card:rgba(18,18,26,.9);--border:rgba(255,255,255,.08);
+  --text:#e8e8f0;--muted:#6b6b8a;--bg:#000008;
+  --fs:#ff9a9e;--fa:#b44fff;--fv:#00e5ff;--fe:#ffd700;--fn:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+#stars-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,8,.7) 100%);pointer-events:none;z-index:1;}
+
+/* TOPBAR */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:56px;display:flex;align-items:center;gap:1rem;
+  padding:0 1.2rem;
+  background:rgba(0,0,8,.85);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.tb-back{color:var(--muted);text-decoration:none;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:color .2s;}
+.tb-back:hover{color:var(--eng);}
+.tb-title{font-size:.9rem;font-weight:700;color:#fff;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tb-prog{display:flex;align-items:center;gap:.6rem;white-space:nowrap;}
+.tb-prog-text{font-size:.72rem;color:var(--muted);}
+.prog-track{width:80px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+#prog-fill{height:100%;background:linear-gradient(90deg,var(--eng),var(--pur));border-radius:2px;transition:width .4s;}
+
+/* LAYOUT */
+#layout{display:flex;padding-top:56px;min-height:100vh;position:relative;z-index:10;}
+
+/* SIDEBAR */
+#sidebar{
+  width:260px;flex-shrink:0;
+  position:fixed;top:56px;bottom:0;left:0;
+  overflow-y:auto;overflow-x:hidden;
+  background:rgba(8,8,18,.92);backdrop-filter:blur(8px);
+  border-right:1px solid var(--border);
+  padding:.8rem 0 2rem;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;
+}
+#sidebar::-webkit-scrollbar{width:4px;}
+#sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.nav-group{margin-bottom:.4rem;}
+.nav-group-label{
+  font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);padding:.7rem 1.2rem .3rem;display:block;
+}
+.nav-item{
+  display:flex;align-items:center;gap:.65rem;
+  padding:.55rem 1.2rem;cursor:pointer;
+  font-size:.82rem;color:rgba(232,232,240,.7);
+  transition:background .15s,color .15s;
+  border-left:2px solid transparent;
+  text-decoration:none;
+}
+.nav-item:hover{background:rgba(0,180,216,.07);color:#fff;}
+.nav-item.active{background:rgba(0,180,216,.12);color:var(--eng);border-left-color:var(--eng);}
+.nav-item.done{color:rgba(0,180,216,.8);}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);flex-shrink:0;transition:background .2s;}
+.nav-item.done .nav-dot{background:var(--eng);}
+.nav-item.active .nav-dot{background:var(--eng);box-shadow:0 0 6px var(--eng);}
+.nav-icon{font-size:1rem;width:1.2rem;text-align:center;flex-shrink:0;}
+
+/* MAIN */
+#main{margin-left:260px;flex:1;padding:2rem 2.5rem 4rem;max-width:calc(100% - 260px);}
+#topic-view{max-width:740px;margin:0 auto;}
+
+/* TOPIC CONTENT */
+.t-breadcrumb{font-size:.72rem;color:var(--muted);margin-bottom:1.2rem;letter-spacing:.05em;}
+.t-header{margin-bottom:2rem;}
+.t-polish{font-size:.8rem;color:var(--eng);letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:.4rem;}
+.t-title{font-size:2rem;font-weight:900;color:#fff;letter-spacing:-.03em;margin-bottom:.5rem;}
+.t-what{font-size:.95rem;color:rgba(232,232,240,.85);line-height:1.7;}
+
+.t-section{margin-top:1.8rem;}
+.t-section-title{
+  font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:.9rem;padding-bottom:.4rem;
+  border-bottom:1px solid var(--border);
+}
+
+/* WHEN TO USE */
+.when-list{display:flex;flex-direction:column;gap:.6rem;}
+.when-item{
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:10px;padding:.7rem 1rem;
+}
+.when-label{font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.25rem;}
+.when-ex{font-size:.82rem;color:var(--eng);font-style:italic;}
+
+/* FORMATION */
+.formation{display:flex;flex-direction:column;gap:.7rem;margin-bottom:.5rem;}
+.f-row{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;}
+.f-type{
+  width:20px;height:20px;border-radius:50%;font-size:.72rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.f-pos .f-type{background:rgba(0,230,118,.2);color:#00e676;}
+.f-neg .f-type{background:rgba(255,107,107,.2);color:#ff6b6b;}
+.f-q   .f-type{background:rgba(255,215,0,.2);color:#ffd700;}
+.f-parts{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;}
+.fp{color:rgba(255,255,255,.4);font-size:.9rem;}
+.fs{background:rgba(255,154,158,.15);color:var(--fs);padding:.15rem .5rem;border-radius:5px;font-size:.82rem;font-weight:600;}
+.fa{background:rgba(180,79,255,.15);color:var(--fa);padding:.15rem .5rem;border-radius:5px;font-size:.82rem;font-weight:600;}
+.fv{background:rgba(0,229,255,.15);color:var(--fv);padding:.15rem .5rem;border-radius:5px;font-size:.82rem;font-weight:600;}
+.fe{background:rgba(255,215,0,.15);color:var(--fe);padding:.15rem .5rem;border-radius:5px;font-size:.82rem;font-size:.82rem;font-weight:600;}
+.fn{background:rgba(255,107,107,.15);color:var(--fn);padding:.15rem .5rem;border-radius:5px;font-size:.82rem;font-weight:600;}
+.ft{color:rgba(232,232,240,.7);font-size:.82rem;}
+
+.f-legend{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;}
+.f-legend-item{display:flex;align-items:center;gap:.3rem;font-size:.7rem;color:var(--muted);}
+.f-legend-dot{width:8px;height:8px;border-radius:50%;}
+
+.f-note{
+  font-size:.8rem;color:rgba(232,232,240,.65);line-height:1.6;
+  background:rgba(255,255,255,.03);border-left:2px solid var(--eng);
+  padding:.5rem .8rem;border-radius:0 6px 6px 0;margin-top:.4rem;
+}
+
+/* MARKERS */
+.markers{display:flex;flex-wrap:wrap;gap:.5rem;}
+.marker{
+  font-size:.75rem;font-style:italic;
+  background:rgba(0,180,216,.1);color:var(--eng);
+  border:1px solid rgba(0,180,216,.25);
+  padding:.2rem .65rem;border-radius:20px;
+}
+
+/* EXAMPLES */
+.examples{display:flex;flex-direction:column;gap:.55rem;}
+.ex-item{
+  display:flex;align-items:flex-start;gap:.75rem;
+  background:rgba(255,255,255,.02);border:1px solid var(--border);
+  border-radius:10px;padding:.65rem .9rem;
+}
+.ex-badge{
+  font-size:.7rem;font-weight:800;width:18px;flex-shrink:0;margin-top:.1rem;
+}
+.ex-pos .ex-badge{color:#00e676;}
+.ex-neg .ex-badge{color:#ff6b6b;}
+.ex-q   .ex-badge{color:#ffd700;}
+.ex-en{font-size:.88rem;color:#fff;line-height:1.5;}
+.ex-pl{font-size:.78rem;color:var(--muted);margin-top:.15rem;}
+
+/* EXTRA SECTION */
+.extra-block{
+  margin-top:1rem;border-radius:14px;overflow:hidden;
+  border:1px solid rgba(180,79,255,.2);
+}
+.extra-header{
+  background:rgba(180,79,255,.1);padding:.75rem 1.1rem;
+  font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--pur);display:flex;align-items:center;gap:.5rem;cursor:pointer;
+  user-select:none;
+}
+.extra-header::after{content:'▼';margin-left:auto;font-size:.6rem;transition:transform .2s;}
+.extra-block.open .extra-header::after{transform:rotate(180deg);}
+.extra-body{
+  display:none;padding:1.1rem 1.2rem;
+  font-size:.85rem;line-height:1.75;color:rgba(232,232,240,.85);
+  background:rgba(8,8,20,.5);
+}
+.extra-block.open .extra-body{display:block;}
+.extra-body strong{color:#fff;}
+.extra-body em{color:var(--eng);}
+.extra-body .ex-row{margin:.3rem 0;padding:.3rem .6rem;background:rgba(255,255,255,.04);border-radius:6px;font-size:.82rem;}
+.extra-body .pos-ex{color:#9effc8;}
+.extra-body .neg-ex{color:#ffb3b3;}
+.extra-body .q-ex{color:#ffe08a;}
+.extra-body table{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.8rem;}
+.extra-body th{background:rgba(180,79,255,.15);color:var(--pur);padding:.4rem .7rem;text-align:left;font-weight:700;}
+.extra-body td{padding:.35rem .7rem;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(232,232,240,.8);}
+.extra-body td:first-child{color:#fff;}
+
+/* COMPLETE BTN + NAV */
+.t-footer{margin-top:2.5rem;display:flex;flex-direction:column;gap:1rem;align-items:flex-start;}
+.btn-complete{
+  display:flex;align-items:center;gap:.5rem;cursor:pointer;
+  background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.3);
+  color:var(--eng);font-size:.85rem;font-weight:700;letter-spacing:.04em;
+  padding:.6rem 1.3rem;border-radius:20px;transition:all .2s;
+}
+.btn-complete:hover{background:rgba(0,180,216,.22);border-color:var(--eng);}
+.btn-complete.done{background:rgba(0,230,118,.1);border-color:rgba(0,230,118,.3);color:#00e676;}
+.t-nav{display:flex;gap:.8rem;flex-wrap:wrap;}
+.btn-nav{
+  font-size:.8rem;color:var(--muted);background:rgba(255,255,255,.04);
+  border:1px solid var(--border);padding:.5rem 1rem;border-radius:12px;
+  cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;
+}
+.btn-nav:hover{color:#fff;border-color:rgba(255,255,255,.2);}
+
+/* WELCOME SCREEN */
+.welcome{text-align:center;padding:4rem 1rem;}
+.welcome-icon{font-size:3rem;margin-bottom:1rem;}
+.welcome-title{font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:.7rem;}
+.welcome-text{font-size:.9rem;color:var(--muted);line-height:1.7;max-width:420px;margin:0 auto 1.5rem;}
+.legend-box{
+  display:inline-flex;flex-wrap:wrap;gap:.5rem;justify-content:center;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:12px;padding:.8rem 1.2rem;margin-bottom:2rem;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  #sidebar{
+    position:fixed;top:56px;left:0;right:0;bottom:auto;
+    width:100%;height:auto;max-height:40vh;overflow-y:auto;
+    border-right:none;border-bottom:1px solid var(--border);
+    display:none;
+  }
+  #sidebar.mob-open{display:block;}
+  #main{margin-left:0;padding:1rem 1rem 3rem;max-width:100%;}
+  .mob-menu-btn{
+    display:flex;align-items:center;gap:.4rem;
+    font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;
+    padding:.3rem .5rem;
+  }
+  .tb-title{display:none;}
+}
+@media(min-width:769px){.mob-menu-btn{display:none;}}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas"></canvas>
+
+<div id="topbar">
+  <a href="english.html" class="tb-back">← Angielski</a>
+  <button class="mob-menu-btn" onclick="toggleSidebar()">☰ Tematy</button>
+  <span class="tb-title">Nauka gramatyki</span>
+  <div class="tb-prog">
+    <span class="tb-prog-text" id="prog-text">0 / 0</span>
+    <div class="prog-track"><div id="prog-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div id="layout">
+  <nav id="sidebar"><div id="nav-inner"></div></nav>
+  <div id="main"><div id="topic-view"></div></div>
+</div>
+
+<script>
+/* ── DATA ────────────────────────────────────────────────── */
+// TOPICS injected below
+/* ── ENGINE ─────────────────────────────────────────────── */
+const STORE_KEY = 'sz_eng_progress';
+let done = new Set(JSON.parse(localStorage.getItem(STORE_KEY)||'[]'));
+let currentId = null;
+
+function saveDone(){ localStorage.setItem(STORE_KEY, JSON.stringify([...done])); }
+
+function updateTopbar(){
+  const t = TOPICS.length;
+  const d = done.size;
+  document.getElementById('prog-text').textContent = d+' / '+t;
+  document.getElementById('prog-fill').style.width = (t ? Math.round(d/t*100) : 0)+'%';
+}
+
+function buildSidebar(){
+  const groups = {
+    present:{label:'Czasy teraźniejsze',items:[]},
+    past:   {label:'Czasy przeszłe',    items:[]},
+    future: {label:'Czasy przyszłe',    items:[]},
+    extra:  {label:'Dodatkowe moduły',  items:[]}
+  };
+  TOPICS.forEach(t=>{ if(groups[t.group]) groups[t.group].items.push(t); });
+  let html='';
+  for(const [,g] of Object.entries(groups)){
+    if(!g.items.length) continue;
+    html+=`<div class="nav-group"><span class="nav-group-label">${g.label}</span>`;
+    g.items.forEach(t=>{
+      const dc=done.has(t.id)?'done':'';
+      const ac=currentId===t.id?'active':'';
+      html+=`<div class="nav-item ${dc} ${ac}" onclick="navigate('${t.id}')">
+        <span class="nav-icon">${t.icon}</span>
+        <span style="flex:1">${t.name}</span>
+        <span class="nav-dot"></span>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  document.getElementById('nav-inner').innerHTML=html;
+}
+
+function parts(arr){
+  return arr.map(p=>{
+    if(p.length===1) return `<span class="fp">${p[0]}</span>`;
+    const map={s:'fs',a:'fa',v:'fv',e:'fe',n:'fn',t:'ft'};
+    return `<span class="${map[p[0]]||'ft'}">${p[1]}</span>`;
+  }).join(' ');
+}
+
+function renderWhen(items){
+  return items.map(i=>`<div class="when-item">
+    <div class="when-label">${i[0]}</div>
+    <div class="when-ex"><em>${i[1]}</em></div>
+  </div>`).join('');
+}
+
+function renderExamples(exs){
+  return exs.map(e=>{
+    const cls=e[0]==='+'?'pos':e[0]==='-'?'neg':'q';
+    const badge=e[0]==='?'?'?':e[0];
+    const pl=e[2]?`<div class="ex-pl">${e[2]}</div>`:'';
+    return `<div class="ex-item ex-${cls}">
+      <span class="ex-badge">${badge}</span>
+      <div><div class="ex-en">${e[1]}</div>${pl}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderExtra(extras){
+  if(!extras||!extras.length) return '';
+  return extras.map((ex,i)=>`
+    <div class="extra-block" id="ex-${currentId}-${i}">
+      <div class="extra-header" onclick="toggleExtra('ex-${currentId}-${i}')">
+        <span>📌</span> ${ex.title}
+      </div>
+      <div class="extra-body">${ex.body}</div>
+    </div>`).join('');
+}
+
+function toggleExtra(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function navigate(id){
+  const topic=TOPICS.find(t=>t.id===id);
+  if(!topic) return;
+  currentId=id;
+  const idx=TOPICS.indexOf(topic);
+  const prev=idx>0?TOPICS[idx-1]:null;
+  const next=idx<TOPICS.length-1?TOPICS[idx+1]:null;
+  const isDone=done.has(id);
+
+  const f=topic.formation;
+  const fHtml=`
+    <div class="formation">
+      <div class="f-row f-pos"><div class="f-type">+</div><div class="f-parts">${parts(f.pos)}</div></div>
+      <div class="f-row f-neg"><div class="f-type">−</div><div class="f-parts">${parts(f.neg)}</div></div>
+      <div class="f-row f-q">  <div class="f-type">?</div><div class="f-parts">${parts(f.q)}</div></div>
+    </div>
+    ${(topic.notes||[]).map(n=>`<div class="f-note">${n}</div>`).join('')}
+    <div class="f-legend">
+      <div class="f-legend-item"><div class="f-legend-dot" style="background:var(--fs)"></div>podmiot</div>
+      <div class="f-legend-item"><div class="f-legend-dot" style="background:var(--fa)"></div>posiłkowy</div>
+      <div class="f-legend-item"><div class="f-legend-dot" style="background:var(--fv)"></div>czasownik</div>
+      <div class="f-legend-item"><div class="f-legend-dot" style="background:var(--fe)"></div>końcówka</div>
+    </div>`;
+
+  document.getElementById('topic-view').innerHTML=`
+    <div class="t-breadcrumb">${groupLabel(topic.group)} › ${topic.name}</div>
+    <div class="t-header">
+      <div class="t-polish">${topic.polish}</div>
+      <div class="t-title">${topic.name}</div>
+      <div class="t-what">${topic.what}</div>
+    </div>
+    ${topic.when?`<div class="t-section"><div class="t-section-title">Kiedy używamy?</div><div class="when-list">${renderWhen(topic.when)}</div></div>`:''}
+    ${f?`<div class="t-section"><div class="t-section-title">Budowa zdania</div>${fHtml}</div>`:''}
+    ${topic.markers&&topic.markers.length?`<div class="t-section"><div class="t-section-title">Markery czasowe</div><div class="markers">${topic.markers.map(m=>`<span class="marker">${m}</span>`).join('')}</div></div>`:''}
+    <div class="t-section"><div class="t-section-title">Przykłady</div><div class="examples">${renderExamples(topic.examples)}</div></div>
+    ${topic.extra?`<div class="t-section"><div class="t-section-title">Powiązane struktury</div>${renderExtra(topic.extra)}</div>`:''}
+    <div class="t-footer">
+      <button class="btn-complete ${isDone?'done':''}" onclick="toggleDone('${id}')">
+        ${isDone?'✓ Ukończono':'○ Oznacz jako ukończone'}
+      </button>
+      <div class="t-nav">
+        ${prev?`<span class="btn-nav" onclick="navigate('${prev.id}')">← ${prev.name}</span>`:''}
+        ${next?`<span class="btn-nav" onclick="navigate('${next.id}')">${next.name} →</span>`:''}
+      </div>
+    </div>`;
+  buildSidebar();
+  document.getElementById('main').scrollTop=0;
+  window.scrollTo(0,0);
+  if(window.innerWidth<=768) document.getElementById('sidebar').classList.remove('mob-open');
+}
+
+function groupLabel(g){
+  return {present:'Teraźniejsze',past:'Przeszłe',future:'Przyszłe',extra:'Dodatkowe'}[g]||g;
+}
+
+function toggleDone(id){
+  if(done.has(id)) done.delete(id); else done.add(id);
+  saveDone(); updateTopbar(); navigate(id);
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('mob-open');
+}
+
+function showWelcome(){
+  document.getElementById('topic-view').innerHTML=`
+    <div class="welcome">
+      <div class="welcome-icon">📖</div>
+      <div class="welcome-title">Witaj w kursie angielskiego</div>
+      <div class="welcome-text">Wybierz temat z menu po lewej stronie, aby rozpocząć naukę. Każdy dział zawiera teorię, kolorową budowę zdań i przykłady.</div>
+      <div class="legend-box">
+        <div class="f-legend-item"><div class="f-legend-dot" style="background:var(--fs)"></div>&nbsp;podmiot</div>
+        <div class="f-legend-item"><div class="f-legend-dot" style="background:var(--fa)"></div>&nbsp;posiłkowy</div>
+        <div class="f-legend-item"><div class="f-legend-dot" style="background:var(--fv)"></div>&nbsp;czasownik</div>
+        <div class="f-legend-item"><div class="f-legend-dot" style="background:var(--fe)"></div>&nbsp;końcówka</div>
+      </div>
+      <div class="t-nav" style="justify-content:center">
+        <span class="btn-nav" onclick="navigate(TOPICS[0].id)">Zacznij od początku →</span>
+      </div>
+    </div>`;
+}
+
+/* ── STARS ───────────────────────────────────────────────── */
+(function(){
+  var c=document.getElementById('stars-canvas'),ctx=c.getContext('2d'),S=[],W,H;
+  function rsz(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  function mkS(){S=[];var n=Math.floor(W*H/3200);for(var i=0;i<n;i++)S.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+.2,a:Math.random()*.7+.2,sp:Math.random()*.008+.003,ph:Math.random()*Math.PI*2,cl:Math.random()>.92?'#b4e4ff':Math.random()>.85?'#ffe0f0':'#ffffff'});}
+  var tk=0;
+  function draw(){ctx.clearRect(0,0,W,H);tk+=.016;for(var i=0;i<S.length;i++){var s=S[i],a=s.a*(.55+.45*Math.sin(tk*s.sp*60+s.ph));ctx.save();ctx.globalAlpha=a;var g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*3.5);g.addColorStop(0,s.cl);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x,s.y,s.r*3.5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=Math.min(a*1.6,1);ctx.fillStyle=s.cl;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();ctx.restore();}requestAnimationFrame(draw);}
+  rsz();mkS();draw();window.addEventListener('resize',function(){rsz();mkS();});
+})();
+</script>
+
+<!-- TOPICS DATA — injected in next step -->
+<script id="topics-data">
+const TOPICS = [
+/* ═══════════════ PRESENT ═══════════════ */
+{id:'present-simple',group:'present',icon:'1️⃣',name:'Present Simple',polish:'Czas teraźniejszy prosty',
+what:'Opisuje <strong>czynności regularne, nawyki, fakty i prawdy ogólne</strong>. Używamy go gdy mówimy o tym, co dzieje się regularnie lub jest zawsze prawdą — <em>nie</em> o chwili obecnej.',
+when:[
+  ['Nawyki i czynności regularne','I go to the gym every Monday.'],
+  ['Fakty i prawdy ogólne','The Earth orbits the Sun.'],
+  ['Stany permanentne','She lives in Warsaw.'],
+  ['Rozkłady jazdy i harmonogramy','The train leaves at 8 am.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['v','czasownik'],['e','(+s/es — 3 os. l.poj.)']],
+  neg:[['s','podmiot'],['+'],['a',"don't / doesn't"],['+'],['v','czasownik']],
+  q: [['a','Do / Does'],['+'],['s','podmiot'],['+'],['v','czasownik'],['?']],
+},
+notes:[
+  '<strong>He / She / It</strong>: dodajemy <span class="fv">-s</span> lub <span class="fv">-es</span> → works, goes, watches',
+  'Spółgłoska + <em>y</em> → <span class="fv">-ies</span>: study→studies | Końc. <em>-sh/-ch/-x/-o</em> → <span class="fv">-es</span>: go→goes, watch→watches',
+],
+markers:['always','usually','often','sometimes','rarely','never','every day','on Mondays','once a week'],
+examples:[
+  ['+','She drinks coffee every morning.','Ona pije kawę każdego ranka.'],
+  ['+','The museum opens at 9 am.','Muzeum otwiera się o 9.'],
+  ['-',"He doesn't like spicy food.",'On nie lubi ostrego jedzenia.'],
+  ['-',"They don't work on Sundays.",'Oni nie pracują w niedziele.'],
+  ['?','Do you speak English?','Czy mówisz po angielsku?'],
+  ['?','Does she live here?','Czy ona tu mieszka?'],
+],
+extra:[{title:'Przysłówki częstotliwości (Frequency Adverbs)',body:`
+<p>Stoją <strong>przed głównym czasownikiem</strong>, ale <strong>po</strong> czasowniku <em>be</em>.</p>
+<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin:.7rem 0">
+<span style="background:rgba(0,230,118,.15);color:#9effc8;padding:.2rem .7rem;border-radius:20px;font-size:.78rem">always 100%</span>
+<span style="background:rgba(0,180,216,.12);color:#7dd8f0;padding:.2rem .7rem;border-radius:20px;font-size:.78rem">usually 90%</span>
+<span style="background:rgba(0,180,216,.12);color:#7dd8f0;padding:.2rem .7rem;border-radius:20px;font-size:.78rem">often 70%</span>
+<span style="background:rgba(255,215,0,.12);color:#ffd700;padding:.2rem .7rem;border-radius:20px;font-size:.78rem">sometimes 50%</span>
+<span style="background:rgba(255,154,158,.12);color:#ff9a9e;padding:.2rem .7rem;border-radius:20px;font-size:.78rem">rarely 20%</span>
+<span style="background:rgba(255,107,107,.15);color:#ff6b6b;padding:.2rem .7rem;border-radius:20px;font-size:.78rem">never 0%</span>
+</div>
+<div class="ex-row pos-ex">✓ She <strong>always</strong> arrives on time.</div>
+<div class="ex-row pos-ex">✓ He is <strong>never</strong> late. <em>(po "be": przysłówek idzie PO)</em></div>
+<div class="ex-row neg-ex">✗ He <strong>never</strong> is late. <em>(błąd)</em></div>`}]
+},
+{id:'present-continuous',group:'present',icon:'2️⃣',name:'Present Continuous',polish:'Czas teraźniejszy ciągły',
+what:'Opisuje czynności <strong>aktualnie trwające</strong> lub sytuacje <strong>tymczasowe</strong>. Podkreśla, że coś dzieje się <em>właśnie teraz</em> lub w bliskim otoczeniu chwili obecnej.',
+when:[
+  ['Czynność trwająca w tej chwili','I am writing an email right now.'],
+  ['Sytuacja tymczasowa','She is living with her parents this month.'],
+  ['Zaplanowana przyszłość','We are meeting tomorrow at 6.'],
+  ['Zmieniający się trend','The weather is getting warmer.'],
+  ['Irytujący nawyk (z always)','He is always losing his keys!'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','am / is / are'],['+'],['v','czasownik'],['e','-ing']],
+  neg:[['s','podmiot'],['+'],['a','am / is / are'],['+'],['n','not'],['+'],['v','czasownik'],['e','-ing']],
+  q: [['a','Am / Is / Are'],['+'],['s','podmiot'],['+'],['v','czasownik'],['e','-ing'],['?']],
+},
+notes:[
+  '<strong>am</strong>: I &nbsp;|&nbsp; <strong>is</strong>: he, she, it &nbsp;|&nbsp; <strong>are</strong>: you, we, they',
+  'Zasady dodawania <span class="fv">-ing</span>: &nbsp;work→working &nbsp;|&nbsp; write→writ<strong>ing</strong> (usuń -e) &nbsp;|&nbsp; run→runn<strong>ing</strong> (CVC: podwój) &nbsp;|&nbsp; lie→ly<strong>ing</strong>',
+],
+markers:['now','right now','at the moment','currently','still','today','this week','Look!','Listen!'],
+examples:[
+  ['+','I am studying for my exam right now.','Teraz uczę się do egzaminu.'],
+  ['+','They are building a new hospital.','Budują nowy szpital.'],
+  ['-',"She isn't watching TV at the moment.",'Ona teraz nie ogląda TV.'],
+  ['-',"We aren't waiting any longer.",'Już nie czekamy.'],
+  ['?','Are you working from home today?','Czy dziś pracujesz z domu?'],
+  ['?','Is he still sleeping?','Czy on nadal śpi?'],
+],
+extra:[{title:'Stative Verbs — czasowniki stanowe (bez formy -ing!)',body:`
+<p>Opisują <strong>stany</strong>, a nie czynności — nie używamy ich w formach ciągłych.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:.5rem;margin:.6rem 0;font-size:.8rem">
+<div><strong style="color:var(--fa)">Emocje</strong><br>love, hate, like, prefer, want, need, wish</div>
+<div><strong style="color:var(--fv)">Myślenie</strong><br>know, understand, believe, think*, remember</div>
+<div><strong style="color:var(--fe)">Zmysły</strong><br>see, hear, smell*, taste*, feel*</div>
+<div><strong style="color:var(--fs)">Posiadanie</strong><br>have*, own, belong, possess</div>
+</div>
+<div class="ex-row neg-ex">✗ I am knowing the answer. <em>(błąd)</em></div>
+<div class="ex-row pos-ex">✓ I know the answer.</div>
+<div class="ex-row neg-ex">✗ She is wanting coffee. <em>(błąd)</em></div>
+<div class="ex-row pos-ex">✓ She wants coffee.</div>
+<p style="margin-top:.6rem;color:var(--muted);font-size:.78rem">* Niektóre mają dwa znaczenia: <em>I think he is right</em> (opinia) vs. <em>I am thinking about you</em> (aktywne myślenie).</p>`}]
+},
+{id:'present-perfect',group:'present',icon:'3️⃣',name:'Present Perfect',polish:'Czas teraźniejszo-przeszły',
+what:'Łączy <strong>przeszłość z teraźniejszością</strong>. Używamy gdy wynik lub skutek przeszłego zdarzenia jest ważny <em>teraz</em>. <strong>Nie podajemy</strong> dokładnego czasu — to kluczowa różnica vs Past Simple.',
+when:[
+  ['Doświadczenia życiowe (kiedykolwiek)','I have visited Paris three times.'],
+  ['Wyniki/skutki widoczne teraz','She has broken her leg. (jest złamana teraz)'],
+  ['Niedawne zdarzenia z "just"','He has just called me.'],
+  ['Stany trwające od przeszłości do teraz','I have known her for 10 years.'],
+  ['Wiadomości / aktualności','There has been an accident on the highway.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','have / has'],['+'],['v','V₃']],
+  neg:[['s','podmiot'],['+'],['a',"haven't / hasn't"],['+'],['v','V₃']],
+  q: [['a','Have / Has'],['+'],['s','podmiot'],['+'],['v','V₃'],['?']],
+},
+notes:[
+  '<strong>have</strong>: I, you, we, they &nbsp;|&nbsp; <strong>has</strong>: he, she, it',
+  '<strong>V₃ = past participle</strong>: regularne: <span class="fv">+ed</span> (worked) | nieregularne: gone, seen, done, been, written, eaten…',
+  'Skróty: I\'ve, you\'ve, he\'s, she\'s, we\'ve &nbsp;|&nbsp; haven\'t, hasn\'t',
+],
+markers:['just','already','yet','ever','never','recently','lately','since','for','so far'],
+examples:[
+  ['+','I have never eaten sushi.','Nigdy nie jadłem sushi.'],
+  ['+','She has already finished her homework.','Ona już skończyła zadanie.'],
+  ['-',"They haven't seen each other since school.",'Nie widzieli się od szkoły.'],
+  ['-',"He hasn't called me yet.",'On jeszcze do mnie nie zadzwonił.'],
+  ['?','Have you ever been to London?','Czy byłeś kiedyś w Londynie?'],
+  ['?','Has she read this book?','Czy ona czytała tę książkę?'],
+],
+extra:[
+{title:'just / already / yet / ever / never — gdzie i kiedy?',body:`
+<table><tr><th>Słówko</th><th>Użycie</th><th>Przykład</th></tr>
+<tr><td><strong>just</strong></td><td>chwilę temu (twierdzące)</td><td><em>I've <strong>just</strong> arrived.</em></td></tr>
+<tr><td><strong>already</strong></td><td>wcześniej niż oczekiwano (twierdzące)</td><td><em>She's <strong>already</strong> left!</em></td></tr>
+<tr><td><strong>yet</strong></td><td>jeszcze nie / już? (przeczące + pytania)</td><td><em>Have you eaten <strong>yet</strong>?</em></td></tr>
+<tr><td><strong>ever</strong></td><td>kiedykolwiek (pytania)</td><td><em>Have you <strong>ever</strong> seen this?</em></td></tr>
+<tr><td><strong>never</strong></td><td>nigdy (twierdzące = przeczenie)</td><td><em>I've <strong>never</strong> tried that.</em></td></tr>
+</table>`},
+{title:'FOR vs SINCE — jak długo?',body:`
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.5rem 0">
+<div style="background:rgba(0,180,216,.08);border-radius:8px;padding:.7rem">
+<strong style="color:var(--eng)">FOR</strong> — <em>przez jak długo</em><br><small style="color:var(--muted)">for + okres czasu</small><br><br>
+for <strong>2 hours</strong>, for <strong>a week</strong>, for <strong>three years</strong>
+</div>
+<div style="background:rgba(180,79,255,.08);border-radius:8px;padding:.7rem">
+<strong style="color:var(--pur)">SINCE</strong> — <em>od kiedy</em><br><small style="color:var(--muted)">since + punkt w czasie</small><br><br>
+since <strong>Monday</strong>, since <strong>2020</strong>, since <strong>I was born</strong>
+</div>
+</div>
+<div class="ex-row pos-ex">✓ I've lived here <strong>for</strong> five years.</div>
+<div class="ex-row pos-ex">✓ I've lived here <strong>since</strong> 2019.</div>`},
+{title:'Present Perfect vs Past Simple — kiedy co wybrać?',body:`
+<table><tr><th>Present Perfect</th><th>Past Simple</th></tr>
+<tr><td>Brak dokładnego czasu / czas nieważny</td><td>Dokładny czas (yesterday, last year, in 1999)</td></tr>
+<tr><td>Wynik ważny TERAZ</td><td>Czynność zakończona, odcięta od teraźniejszości</td></tr>
+<tr><td><em>I've lost my keys!</em> (nie mam ich)</td><td><em>I lost my keys yesterday.</em></td></tr>
+<tr><td><em>Have you seen that film?</em></td><td><em>Did you see it last night?</em></td></tr>
+</table>`}
+]
+},
+{id:'present-perfect-continuous',group:'present',icon:'4️⃣',name:'Present Perfect Continuous',polish:'Czas teraźniejszo-przeszły ciągły',
+what:'Podkreśla <strong>trwanie i ciągłość</strong> czynności — rozpoczęła się w przeszłości i <em>nadal trwa</em> lub właśnie się skończyła, zostawiając widoczny ślad w teraźniejszości.',
+when:[
+  ['Czynność trwająca od przeszłości do teraz','I have been waiting for you for an hour.'],
+  ['Wyjaśnienie widocznych skutków','She looks tired — she has been working all night.'],
+  ['Podkreślenie ciągłości procesu','It has been raining since morning.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','have / has'],['+'],['a','been'],['+'],['v','czasownik'],['e','-ing']],
+  neg:[['s','podmiot'],['+'],['a',"haven't / hasn't"],['+'],['a','been'],['+'],['v','czasownik'],['e','-ing']],
+  q: [['a','Have / Has'],['+'],['s','podmiot'],['+'],['a','been'],['+'],['v','czasownik'],['e','-ing'],['?']],
+},
+notes:[
+  'Schemat pamięciowy: <span class="fa">have/has</span> + <span class="fa">been</span> + <span class="fv">V</span><span class="fe">-ing</span>',
+  'Często z <strong>for</strong> i <strong>since</strong> — jak długo dana czynność trwa.',
+],
+markers:['for','since','how long','all day','all morning','all week','lately','recently'],
+examples:[
+  ['+','I have been waiting for you for an hour.','Czekam na ciebie od godziny.'],
+  ['+','She has been learning guitar since January.','Uczy się gitary od stycznia.'],
+  ['-',"He hasn't been sleeping well lately.",'Ostatnio nie śpi dobrze.'],
+  ['-',"We haven't been eating healthy recently.",'Ostatnio nie jemy zdrowo.'],
+  ['?','How long have you been living here?','Jak długo tu mieszkasz?'],
+  ['?','Has it been raining long?','Czy pada już od dawna?'],
+],
+extra:[{title:'Present Perfect vs Present Perfect Continuous — jaka różnica?',body:`
+<table><tr><th>Present Perfect</th><th>Present Perfect Continuous</th></tr>
+<tr><td>Skupia się na <strong>wyniku / fakcie</strong></td><td>Skupia się na <strong>trwaniu / procesie</strong></td></tr>
+<tr><td><em>I've read the book.</em><br><small>(skończyłem — wynik)</small></td><td><em>I've been reading the book.</em><br><small>(nadal czytam / właśnie skończyłem)</small></td></tr>
+<tr><td><em>She has painted the fence.</em><br><small>(gotowe!)</small></td><td><em>She has been painting the fence.</em><br><small>(farba na rękach — był w trakcie)</small></td></tr>
+</table>
+<p style="margin-top:.6rem;font-size:.78rem;color:var(--muted)">Uwaga: czasowniki stanowe (know, want, love…) nie używamy w PPC — użyj PP: <em>I've known her for years.</em></p>`}]
+},
+/* ═══════════════ PAST ═══════════════ */
+{id:'past-simple',group:'past',icon:'5️⃣',name:'Past Simple',polish:'Czas przeszły prosty',
+what:'Opisuje <strong>zakończone czynności i zdarzenia z przeszłości</strong>. Kluczowe: podajemy (lub domyślamy się z kontekstu) <em>kiedy</em> to się stało.',
+when:[
+  ['Zakończona czynność w przeszłości','I visited Rome last year.'],
+  ['Seria następujących po sobie zdarzeń','She woke up, had breakfast and went to work.'],
+  ['Dawne nawyki i stany','He played football when he was young.'],
+  ['Z konkretnym wyznacznikiem czasu','We met in 1999. / She called two hours ago.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['v','V₂'],['t','(forma przeszła)']],
+  neg:[['s','podmiot'],['+'],['a',"didn't"],['+'],['v','czasownik']],
+  q: [['a','Did'],['+'],['s','podmiot'],['+'],['v','czasownik'],['?']],
+},
+notes:[
+  'Regularne: <span class="fv">+ed</span> → work→worked, play→played, live→lived, stop→stopped, study→studied',
+  'Nieregularne (najważniejsze): go→<strong>went</strong>, come→<strong>came</strong>, see→<strong>saw</strong>, do→<strong>did</strong>, have→<strong>had</strong>, be→<strong>was/were</strong>, take→<strong>took</strong>, make→<strong>made</strong>, give→<strong>gave</strong>, know→<strong>knew</strong>',
+],
+markers:['yesterday','last (week/month/year)','ago','in + rok','when I was young','in the morning','at that time'],
+examples:[
+  ['+','We went to the cinema yesterday.','Wczoraj poszliśmy do kina.'],
+  ['+','She studied medicine at university.','Studiowała medycynę na uniwersytecie.'],
+  ['-',"I didn't see him at the party.",'Nie widziałem go na imprezie.'],
+  ['-',"They didn't arrive on time.",'Nie dotarli na czas.'],
+  ['?','Did you enjoy the concert?','Czy podobał ci się koncert?'],
+  ['?','Where did she go?','Dokąd ona poszła?'],
+],
+extra:[{title:'Czasowniki nieregularne — wybrane formy (V1 / V2 / V3)',body:`
+<table><tr><th>V1 (bezokolicznik)</th><th>V2 (Past Simple)</th><th>V3 (Past Participle)</th></tr>
+<tr><td>be</td><td>was / were</td><td>been</td></tr>
+<tr><td>go</td><td>went</td><td>gone</td></tr>
+<tr><td>come</td><td>came</td><td>come</td></tr>
+<tr><td>see</td><td>saw</td><td>seen</td></tr>
+<tr><td>do</td><td>did</td><td>done</td></tr>
+<tr><td>have</td><td>had</td><td>had</td></tr>
+<tr><td>take</td><td>took</td><td>taken</td></tr>
+<tr><td>write</td><td>wrote</td><td>written</td></tr>
+<tr><td>give</td><td>gave</td><td>given</td></tr>
+<tr><td>know</td><td>knew</td><td>known</td></tr>
+<tr><td>speak</td><td>spoke</td><td>spoken</td></tr>
+<tr><td>eat</td><td>ate</td><td>eaten</td></tr>
+<tr><td>buy</td><td>bought</td><td>bought</td></tr>
+<tr><td>think</td><td>thought</td><td>thought</td></tr>
+<tr><td>feel</td><td>felt</td><td>felt</td></tr>
+</table>
+<p style="margin-top:.5rem;font-size:.78rem;color:var(--muted)">Pełny kurs mowy zależnej (Reported Speech) znajdziesz w dziale Dodatkowe moduły.</p>`}]
+},
+{id:'past-continuous',group:'past',icon:'6️⃣',name:'Past Continuous',polish:'Czas przeszły ciągły',
+what:'Opisuje czynności, które <strong>trwały</strong> w określonym momencie przeszłości lub stanowiły <strong>tło</strong> dla innych wydarzeń.',
+when:[
+  ['Czynność trwała w konkretnym momencie przeszłości','At 8 pm I was watching TV.'],
+  ['Dwie czynności jednocześnie','She was reading while he was cooking.'],
+  ['Czynność w toku + nagłe przerwanie','I was walking home when it started to rain.'],
+  ['Opis tła dla historii','The sun was shining. Birds were singing...'],
+  ['Uprzejme/pośrednie nawiązanie','I was wondering if you could help me.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','was / were'],['+'],['v','czasownik'],['e','-ing']],
+  neg:[['s','podmiot'],['+'],['a','was / were'],['+'],['n','not'],['+'],['v','czasownik'],['e','-ing']],
+  q: [['a','Was / Were'],['+'],['s','podmiot'],['+'],['v','czasownik'],['e','-ing'],['?']],
+},
+notes:[
+  '<strong>was</strong>: I, he, she, it &nbsp;|&nbsp; <strong>were</strong>: you, we, they',
+],
+markers:['at + czas (at 8 pm)','while','when','all day','all night','at that moment','this time yesterday'],
+examples:[
+  ['+','He was watching a movie at 9 pm.','O 21:00 oglądał film.'],
+  ['+','We were living in London when the pandemic started.','Mieszkaliśmy w Londynie kiedy zaczęła się pandemia.'],
+  ['-',"She wasn't sleeping when you called.",'Nie spała kiedy zadzwoniłeś.'],
+  ['-',"They weren't paying attention.",'Nie zwracali uwagi.'],
+  ['?','What were you doing at midnight?','Co robiłeś o północy?'],
+  ['?','Was she still working when you left?','Czy ona nadal pracowała kiedy wychodzłeś?'],
+],
+extra:[{title:'WHEN vs WHILE z czasami przeszłymi',body:`
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.5rem 0">
+<div style="background:rgba(0,180,216,.08);border-radius:8px;padding:.7rem">
+<strong style="color:var(--eng)">WHEN</strong> + <em>Past Simple</em><br><small style="color:var(--muted)">krótka, nagła czynność</small><br><br>
+I was cooking <strong>when</strong> she <em>arrived</em>.
+</div>
+<div style="background:rgba(180,79,255,.08);border-radius:8px;padding:.7rem">
+<strong style="color:var(--pur)">WHILE</strong> + <em>Past Continuous</em><br><small style="color:var(--muted)">dłuższa, trwająca czynność</small><br><br>
+<strong>While</strong> I <em>was cooking</em>, she arrived.
+</div>
+</div>
+<div class="ex-row pos-ex">✓ I was reading <strong>when</strong> the phone rang.</div>
+<div class="ex-row pos-ex">✓ <strong>While</strong> she was studying, he was playing games.</div>
+<p style="margin-top:.6rem;font-size:.78rem;color:var(--muted)">Obydwa zdania mówią to samo, tylko z innego punktu widzenia — kiedy używamy when, mówimy o przerywającej czynności; while skupia się na trwającej.</p>`}]
+},
+{id:'past-perfect',group:'past',icon:'7️⃣',name:'Past Perfect',polish:'Czas zaprzeszły',
+what:'Opisuje czynność, która <strong>wydarzyła się PRZED</strong> inną czynnością w przeszłości. Wyznacza kolejność zdarzeń — "cofamy się jeszcze dalej".',
+when:[
+  ['Czynność wcześniejsza przed inną przeszłą','When I arrived, she had already left.'],
+  ['Przyczyna czegoś w przeszłości','He was hungry because he hadn\'t eaten all day.'],
+  ['Po: after, before, when, by the time','By the time she arrived, I had finished cooking.'],
+  ['W mowie zależnej (backshift)','She said she had seen it before.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','had'],['+'],['v','V₃']],
+  neg:[['s','podmiot'],['+'],['a',"hadn't"],['+'],['v','V₃']],
+  q: [['a','Had'],['+'],['s','podmiot'],['+'],['v','V₃'],['?']],
+},
+notes:[
+  '<span class="fa">had</span> — ta sama forma dla WSZYSTKICH osób! (I/you/he/she/we/they had)',
+  'Skrót: I\'d, she\'d, they\'d &nbsp;|&nbsp; hadn\'t',
+],
+markers:['already','just','never','before','after','when','by the time','by then'],
+examples:[
+  ['+','By the time she arrived, I had finished cooking.','Kiedy ona dotarła, ja już skończyłem gotować.'],
+  ['+','They had been together for two years when they got married.','Byli razem od dwóch lat kiedy się pobrali.'],
+  ['-',"I hadn't seen her since school when we met again.",'Nie widziałem jej od szkoły kiedy znów się spotkaliśmy.'],
+  ['-',"He hadn't prepared for the exam, so he failed.",'Nie przygotował się do egzaminu, więc oblał.'],
+  ['?','Had you ever been to Spain before last summer?','Czy byłeś wcześniej w Hiszpanii?'],
+  ['?','Had she finished her work when you called?','Czy skończyła pracę kiedy zadzwoniłeś?'],
+],
+extra:[{title:'Sekwencja zdarzeń — oś czasu',body:`
+<p>Past Perfect wyraźnie pokazuje, <strong>które zdarzenie było wcześniejsze</strong>:</p>
+<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:.8rem;margin:.5rem 0;font-size:.82rem">
+  <div style="color:var(--muted);font-size:.72rem;margin-bottom:.4rem">⟵ dalej w przeszłości &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bliżej teraźniejszości ⟶</div>
+  <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+    <span style="background:rgba(180,79,255,.15);color:var(--pur);padding:.25rem .6rem;border-radius:6px">Past Perfect: <em>had left</em></span>
+    <span style="color:var(--muted)">→</span>
+    <span style="background:rgba(0,180,216,.15);color:var(--eng);padding:.25rem .6rem;border-radius:6px">Past Simple: <em>arrived</em></span>
+  </div>
+</div>
+<div class="ex-row pos-ex">When I <em>arrived</em> (PS), she <strong>had already left</strong> (PP).</div>
+<div class="ex-row pos-ex">He <em>was</em> tired because he <strong>had worked</strong> all day.</div>
+<p style="margin-top:.6rem;font-size:.78rem;color:var(--muted)">W mowie zależnej Past Simple "cofa się" do Past Perfect: <em>"I saw it"</em> → He said he <strong>had seen</strong> it. (→ moduł Mowa zależna)</p>`}]
+},
+{id:'past-perfect-continuous',group:'past',icon:'8️⃣',name:'Past Perfect Continuous',polish:'Czas zaprzeszły ciągły',
+what:'Podkreśla, że czynność <strong>trwała przez pewien czas</strong> przed innym zdarzeniem w przeszłości. Skupia się na czasie trwania procesu, a nie na jego wyniku.',
+when:[
+  ['Trwanie czynności przed momentem w przeszłości','She had been waiting for 2 hours when he finally arrived.'],
+  ['Wyjaśnienie przyczyny stanu w przeszłości','He was exhausted because he had been running.'],
+  ['Ciągłość procesu przed przeszłym momentem','They had been arguing all evening when she finally left.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','had'],['+'],['a','been'],['+'],['v','czasownik'],['e','-ing']],
+  neg:[['s','podmiot'],['+'],['a',"hadn't"],['+'],['a','been'],['+'],['v','czasownik'],['e','-ing']],
+  q: [['a','Had'],['+'],['s','podmiot'],['+'],['a','been'],['+'],['v','czasownik'],['e','-ing'],['?']],
+},
+notes:[
+  'Schemat pamięciowy: <span class="fa">had</span> + <span class="fa">been</span> + <span class="fv">V</span><span class="fe">-ing</span>',
+  'Odpowiednik Past Perfect Continuous dla "ciągłości" tak jak PPC jest dla teraźniejszości.',
+],
+markers:['for','since','how long','all day','all morning','before','when'],
+examples:[
+  ['+','I had been studying for six hours before I took a break.','Uczyłem się przez sześć godzin zanim zrobiłem przerwę.'],
+  ['+','They had been arguing when she finally walked out.','Kłócili się kiedy ona w końcu wyszła.'],
+  ['-',"He hadn't been sleeping well before his accident.",'Nie spał dobrze przed wypadkiem.'],
+  ['-',"We hadn't been living there long when the fire happened.",'Nie mieszkaliśmy tam długo kiedy wybuchł pożar.'],
+  ['?','How long had she been working there before she quit?','Jak długo tam pracowała zanim odeszła?'],
+  ['?','Had they been waiting long when you arrived?','Czy długo czekali kiedy przybyłeś?'],
+],
+extra:[{title:'Porównanie: 4 czasy przeszłe w jednym zdaniu',body:`
+<p style="margin-bottom:.6rem">Wszystkie czasy przeszłe mogą się pojawić razem — każdy ma swoją rolę:</p>
+<div class="ex-row" style="color:#fff;font-size:.85rem;line-height:1.8">
+When she <span style="background:rgba(0,180,216,.2);color:#7dd8f0;padding:.1rem .3rem;border-radius:4px">arrived</span> (PS),
+he <span style="background:rgba(180,79,255,.2);color:#cc99ff;padding:.1rem .3rem;border-radius:4px">was cooking</span> (PC) —
+he <span style="background:rgba(255,215,0,.15);color:#ffd700;padding:.1rem .3rem;border-radius:4px">had been preparing</span> (PPC) the meal
+because she <span style="background:rgba(255,154,158,.2);color:#ff9a9e;padding:.1rem .3rem;border-radius:4px">had mentioned</span> (PP) she was hungry.
+</div>`}]
+},
+/* ═══════════════ FUTURE ═══════════════ */
+{id:'future-simple',group:'future',icon:'9️⃣',name:'Future Simple (will)',polish:'Czas przyszły prosty',
+what:'Wyraża <strong>spontaniczne decyzje, przewidywania i obietnice</strong>. Używamy <em>will</em> gdy decyzja zapada w chwili mówienia lub gdy wyrażamy pewność/przewidywanie o przyszłości.',
+when:[
+  ['Spontaniczne decyzje (w chwili mówienia)','I\'ll help you with that! (właśnie zdecydowałem)'],
+  ['Przewidywania i opinie o przyszłości','It will probably rain tomorrow.'],
+  ['Obietnice i oferty','I\'ll call you later. / I\'ll carry that for you.'],
+  ['Fakty o przyszłości','She will be 30 next year.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','will'],['+'],['v','czasownik']],
+  neg:[['s','podmiot'],['+'],['a',"won't"],['+'],['v','czasownik']],
+  q: [['a','Will'],['+'],['s','podmiot'],['+'],['v','czasownik'],['?']],
+},
+notes:[
+  'Skrót: <span class="fa">\'ll</span> (I\'ll, you\'ll, he\'ll) &nbsp;|&nbsp; Przeczenie: <span class="fn">won\'t</span> = will not',
+  '<strong>will</strong> — ta sama forma dla WSZYSTKICH osób',
+],
+markers:['tomorrow','next (week/year)','soon','in the future','I think...','probably','perhaps'],
+examples:[
+  ['+','I will call you tomorrow.','Zadzwonię do ciebie jutro.'],
+  ['+','She\'ll probably be late.','Ona pewnie się spóźni.'],
+  ['-',"He won't listen to anyone.",'On nie posłucha nikogo.'],
+  ['-',"We won't be there on time.",'Nie zdążymy na czas.'],
+  ['?','Will you help me?','Czy mi pomożesz?'],
+  ['?','When will the results be out?','Kiedy będą wyniki?'],
+],
+extra:[{title:'Pierwszy okres warunkowy (First Conditional)',body:`
+<p><strong>Realne warunki dotyczące przyszłości</strong> — jeśli coś się stanie, to coś innego nastąpi.</p>
+<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:.8rem;margin:.6rem 0">
+<div style="margin-bottom:.4rem"><span style="color:var(--fv)"><strong>If</strong></span> + <span style="color:var(--eng)">Present Simple</span>, <span style="color:var(--pur)">will</span> + <span style="color:#fff">czasownik</span></div>
+<div class="ex-row pos-ex">If it <em>rains</em>, I <strong>will</strong> take an umbrella.</div>
+<div class="ex-row pos-ex">If you <em>study</em> hard, you <strong>will</strong> pass the exam.</div>
+<div class="ex-row pos-ex">If she <em>calls</em>, I <strong>will</strong> answer.</div>
+</div>
+<p style="color:var(--muted);font-size:.78rem">Uwaga: po IF używamy czasu teraźniejszego — NIE will! <span style="color:#ff6b6b">✗ If it will rain...</span></p>
+<p style="margin-top:.6rem;font-size:.82rem">Pełny kurs wszystkich okresów warunkowych (0, 1, 2, 3 i mieszane) znajdziesz w dziale <strong>Dodatkowe moduły → Okresy warunkowe</strong>.</p>`}]
+},
+{id:'be-going-to',group:'future',icon:'🔟',name:'Be Going To',polish:'Zamiary i przewidywania',
+what:'Wyraża <strong>wcześniej zaplanowane zamiary</strong> lub <strong>przewidywania oparte na dowodach</strong>. W przeciwieństwie do <em>will</em>, decyzja lub wskazówka istnieje <em>już przed</em> chwilą mówienia.',
+when:[
+  ['Zaplanowane zamiary i decyzje','I\'m going to visit my parents this weekend. (już zaplanowałem)'],
+  ['Przewidywania oparte na widocznych dowodach','Look at those clouds — it\'s going to rain! (widzę chmury)'],
+  ['Plany i projekty','We\'re going to renovate the kitchen next month.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','am / is / are'],['+'],['t','going to'],['+'],['v','czasownik']],
+  neg:[['s','podmiot'],['+'],['a','am / is / are'],['+'],['n','not'],['+'],['t','going to'],['+'],['v','czasownik']],
+  q: [['a','Am / Is / Are'],['+'],['s','podmiot'],['+'],['t','going to'],['+'],['v','czasownik'],['?']],
+},
+notes:[
+  'W mowie potocznej: <em>going to</em> często wymawia się jako <strong>"gonna"</strong> (nie piszemy tak w formalnych tekstach!)',
+],
+markers:['this weekend','next month','soon','tonight','tomorrow','this summer'],
+examples:[
+  ['+','I\'m going to start a new course next week.','Zaczynam nowy kurs w przyszłym tygodniu.'],
+  ['+','She\'s going to have a baby!','Ona będzie mieć dziecko!'],
+  ['-',"He isn't going to apologize.",'On nie zamierza przepraszać.'],
+  ['-',"They aren't going to join us.",'Oni nie zamierzają do nas dołączyć.'],
+  ['?','Are you going to apply for the job?','Czy zamierzasz aplikować na tę pracę?'],
+  ['?','Is it going to snow?','Czy będzie padał śnieg?'],
+],
+extra:[{title:'WILL vs BE GOING TO — kiedy co wybrać?',body:`
+<table><tr><th></th><th>will</th><th>be going to</th></tr>
+<tr><td><strong>Decyzja</strong></td><td>Spontaniczna, w tej chwili</td><td>Wcześniej zaplanowana</td></tr>
+<tr><td><strong>Przewidywanie</strong></td><td>Opinia / przekonanie<br><em>I think it will rain.</em></td><td>Oparte na dowodach<br><em>Look! It's going to rain!</em></td></tr>
+<tr><td><strong>Obietnica</strong></td><td>Tak — <em>I'll help you.</em></td><td>Raczej nie</td></tr>
+</table>
+<div class="ex-row" style="color:#fff;margin-top:.6rem"><strong>Scenariusz:</strong> Telefon dzwoni. Mówisz:</div>
+<div class="ex-row pos-ex">✓ <strong>I'll</strong> get it! <em>(spontaniczne — właśnie zdecydowałem)</em></div>
+<div class="ex-row pos-ex">✓ Don't worry, I'm <strong>going to</strong> call them back later. <em>(plan sprzed chwili)</em></div>`}]
+},
+{id:'future-continuous',group:'future',icon:'1️⃣1️⃣',name:'Future Continuous',polish:'Czas przyszły ciągły',
+what:'Opisuje czynność, która będzie <strong>trwała w określonym momencie w przyszłości</strong>. Podkreśla ciągłość działania lub zaplanowany przebieg zdarzeń.',
+when:[
+  ['Czynność w toku w danym momencie przyszłości','At this time tomorrow, I will be flying to Paris.'],
+  ['Zaplanowane lub przewidywalne czynności','She will be working late tonight.'],
+  ['Uprzejme pytania o plany innych osób','Will you be using the car tonight?'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','will'],['+'],['a','be'],['+'],['v','czasownik'],['e','-ing']],
+  neg:[['s','podmiot'],['+'],['a',"won't"],['+'],['a','be'],['+'],['v','czasownik'],['e','-ing']],
+  q: [['a','Will'],['+'],['s','podmiot'],['+'],['a','be'],['+'],['v','czasownik'],['e','-ing'],['?']],
+},
+notes:[
+  'Schemat pamięciowy: <span class="fa">will</span> + <span class="fa">be</span> + <span class="fv">V</span><span class="fe">-ing</span>',
+],
+markers:['at this time tomorrow','this time next week','at 8 pm tomorrow','in two hours','soon'],
+examples:[
+  ['+','I will be studying all night.','Będę się uczyć przez całą noc.'],
+  ['+','This time next week we will be lying on the beach.','Za tydzień o tej porze będziemy leżeć na plaży.'],
+  ['-',"She won't be working tomorrow.",'Jutro nie będzie pracować.'],
+  ['-',"Don't call at 3 — I won't be sleeping, I'll be in a meeting.",'Nie dzwoń o 3 — nie będę spać, będę na spotkaniu.'],
+  ['?','Will you be joining us for dinner?','Czy dołączysz do nas na kolację?'],
+  ['?','What will you be doing this time next year?','Co będziesz robić o tej porze za rok?'],
+],extra:[]
+},
+{id:'future-perfect',group:'future',icon:'1️⃣2️⃣',name:'Future Perfect',polish:'Czas przyszłościowo-przeszły',
+what:'Opisuje czynność, która zostanie <strong>zakończona przed określonym momentem w przyszłości</strong>. Patrzymy z przyszłości wstecz na to, co będzie już gotowe.',
+when:[
+  ['Czynność zakończona przed momentem w przyszłości','By Friday, I will have finished this project.'],
+  ['Z wyrażeniami: by, by the time, before','By 2030, she will have graduated.'],
+  ['Osiągnięcia do określonej daty','She will have lived here for ten years by then.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','will'],['+'],['a','have'],['+'],['v','V₃']],
+  neg:[['s','podmiot'],['+'],['a',"won't"],['+'],['a','have'],['+'],['v','V₃']],
+  q: [['a','Will'],['+'],['s','podmiot'],['+'],['a','have'],['+'],['v','V₃'],['?']],
+},
+notes:[
+  'Schemat pamięciowy: <span class="fa">will</span> + <span class="fa">have</span> + <span class="fv">V₃</span>',
+  'Kluczowe słowo: <strong>by</strong> (do, najpóźniej) — By Monday, By 2030, By then',
+],
+markers:['by (tomorrow/Friday/2030)','by the time','before','by then','by next year'],
+examples:[
+  ['+','By Friday, I will have finished this project.','Do piątku skończę ten projekt.'],
+  ['+','She will have lived here for ten years by then.','Do tego czasu będzie tu mieszkać od dziesięciu lat.'],
+  ['-',"They won't have arrived by 6 pm.",'Nie dotrą przed 18:00.'],
+  ['-',"I won't have finished cooking by the time you get here.",'Nie skończę gotować zanim dotrzesz.'],
+  ['?','Will you have completed the report by Monday?','Czy skończysz raport do poniedziałku?'],
+  ['?','Will they have left by the time we arrive?','Czy oni już odejdą zanim dotrzemy?'],
+],extra:[]
+},
+{id:'future-perfect-continuous',group:'future',icon:'🔢',name:'Future Perfect Continuous',polish:'Czas przyszłościowo-przeszły ciągły',
+what:'Podkreśla <strong>długotrwały przebieg</strong> czynności aż do określonego momentu w przyszłości. Skupia się na czasie trwania procesu — nie na jego wyniku.',
+when:[
+  ['Trwanie czynności przez pewien czas do momentu w przyszłości','By June, I will have been learning English for 5 years.'],
+  ['Podkreślenie długotrwałości procesu','Next month, I will have been working here for a decade.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','will'],['+'],['a','have'],['+'],['a','been'],['+'],['v','czasownik'],['e','-ing']],
+  neg:[['s','podmiot'],['+'],['a',"won't"],['+'],['a','have'],['+'],['a','been'],['+'],['v','czasownik'],['e','-ing']],
+  q: [['a','Will'],['+'],['s','podmiot'],['+'],['a','have'],['+'],['a','been'],['+'],['v','czasownik'],['e','-ing'],['?']],
+},
+notes:[
+  'Schemat: <span class="fa">will</span> + <span class="fa">have</span> + <span class="fa">been</span> + <span class="fv">V</span><span class="fe">-ing</span>',
+  'Używany rzadko — głównie do podkreślenia czasu trwania z <strong>by</strong> i <strong>for</strong>.',
+],
+markers:['by (then/next year)','for + okres czasu','next month/year'],
+examples:[
+  ['+','By the time she retires, she will have been teaching for 30 years.','Kiedy przejdzie na emeryturę, będzie uczyć od 30 lat.'],
+  ['+','Next month, I will have been living here for a year.','W przyszłym miesiącu minął rok jak tu mieszkam.'],
+  ['-',"By then, we won't have been waiting for long.",'Do tego czasu nie będziemy czekać długo.'],
+  ['-',"He won't have been working there long enough to get a raise.",'Nie będzie tam pracować wystarczająco długo na podwyżkę.'],
+  ['?','How long will you have been studying by the time you take the exam?','Jak długo będziesz się uczyć zanim podejdziesz do egzaminu?'],
+  ['?','Will they have been travelling for a month when they get back?','Czy będą podróżować przez miesiąc kiedy wrócą?'],
+],extra:[]
+},
+/* ═══════════════ EXTRA MODULES ═══════════════ */
+{id:'conditionals',group:'extra',icon:'🔀',name:'Okresy warunkowe',polish:'Conditionals — 0, 1, 2, 3 i mieszane',
+what:'Okresy warunkowe wyrażają <strong>warunki i ich skutki</strong>. Każdy z czterech typów mówi o innym stopniu realności — od faktów po niemożliwe scenariusze.',
+when:[
+  ['Zero Conditional — prawdy ogólne i fakty','If you heat water to 100°C, it boils.'],
+  ['First Conditional — realne, możliwe warunki','If it rains, I will stay home.'],
+  ['Second Conditional — hipotetyczne / nierealne','If I had a million euros, I would travel the world.'],
+  ['Third Conditional — niemożliwe (przeszłość)','If she had studied, she would have passed.'],
+],
+formation:{
+  pos:[['t','IF + warunek'], ['+'], ['t','→'], ['+'], ['t','skutek']],
+  neg:[['t','If + warunek (neg.)'],['+'],['t','→'],['+'],['t','skutek (neg.)']],
+  q: [['t','Would / Could'],['+'],['s','podmiot'],['+'],['v','V'], ['?']],
+},
+notes:[],
+markers:['if','unless (= if not)','as long as','provided that','even if','otherwise'],
+examples:[
+  ['+','If you touch fire, it burns. (Zero)','Jeśli dotkniesz ognia, parzy.'],
+  ['+','If she calls, I will answer. (First)','Jeśli zadzwoni, odbiorę.'],
+  ['+','If I were you, I would apologize. (Second)','Na twoim miejscu przeprosiłbym.'],
+  ['+','If he had left earlier, he would have caught the train. (Third)','Gdyby wyszedł wcześniej, zdążyłby na pociąg.'],
+  ['-',"If it doesn't stop raining, we'll cancel. (First)",'Jeśli nie przestanie padać, odwołamy.'],
+  ['?','What would you do if you lost your job? (Second)','Co byś zrobił gdybyś stracił pracę?'],
+],
+extra:[
+{title:'Tabela wszystkich typów — budowa i użycie',body:`
+<table><tr><th>Typ</th><th>Warunek (IF)</th><th>Skutek</th><th>Znaczenie</th></tr>
+<tr><td><strong>Zero</strong></td><td>Present Simple</td><td>Present Simple</td><td>Fakty, prawa naukowe<br><em>If you freeze water, it becomes ice.</em></td></tr>
+<tr><td><strong>First</strong></td><td>Present Simple</td><td>will + V</td><td>Realne, możliwe warunki<br><em>If it rains, I'll take an umbrella.</em></td></tr>
+<tr><td><strong>Second</strong></td><td>Past Simple</td><td>would + V</td><td>Nierealne / hipotetyczne teraz<br><em>If I were rich, I would travel.</em></td></tr>
+<tr><td><strong>Third</strong></td><td>Past Perfect</td><td>would have + V₃</td><td>Niemożliwe — inaczej w przeszłości<br><em>If she had tried, she would have succeeded.</em></td></tr>
+</table>
+<p style="margin-top:.5rem;font-size:.78rem;color:var(--muted)">Uwaga: po IF (Second) mówimy <strong>were</strong> dla wszystkich osób, nie "was": <em>If I <strong>were</strong> you...</em> — to poprawna forma.</p>`},
+{title:'Mixed Conditionals — mieszane okresy warunkowe',body:`
+<p>Łączą różne czasy gdy <strong>warunek i skutek dotyczą innych momentów</strong>.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.6rem 0">
+<div style="background:rgba(180,79,255,.08);border-radius:8px;padding:.7rem;font-size:.82rem">
+<strong style="color:var(--pur)">Past → Present</strong><br>
+<small>Gdyby coś się stało (nie stało się) → dziś byłoby inaczej</small><br><br>
+If + <em>Past Perfect</em>, would + V<br><br>
+<div class="ex-row pos-ex" style="margin-top:.3rem">If she had taken the job, she would be rich now.</div>
+</div>
+<div style="background:rgba(0,180,216,.08);border-radius:8px;padding:.7rem;font-size:.82rem">
+<strong style="color:var(--eng)">Present → Past</strong><br>
+<small>Gdyby teraz było inaczej → wtedy byłoby inaczej</small><br><br>
+If + <em>Past Simple</em>, would have + V₃<br><br>
+<div class="ex-row pos-ex" style="margin-top:.3rem">If I were braver, I would have spoken up.</div>
+</div>
+</div>`}
+]
+},
+{id:'passive-voice',group:'extra',icon:'🔄',name:'Strona bierna',polish:'Passive Voice',
+what:'Strona bierna (<em>Passive Voice</em>) przesuwa <strong>uwagę z wykonawcy na odbiorcę czynności</strong>. Wykonawca może być nieznany, nieważny lub celowo pominięty.',
+when:[
+  ['Wykonawca nieznany lub nieważny','My car was stolen last night.'],
+  ['Języka oficjalny, naukowy, dziennikarski','The results were published in 2024.'],
+  ['Chcemy podkreślić obiekt, nie podmiot','The Eiffel Tower was built in 1889.'],
+  ['Wykonawca oczywisty z kontekstu','He was arrested. (przez policję — domyślne)'],
+],
+formation:{
+  pos:[['s','podmiot (obiekt)'],['+'],['a','be (odpowiednia forma)'],['+'],['v','V₃'],['t','(+ by + sprawca)']],
+  neg:[['s','podmiot'],['+'],['a','be'],['+'],['n','not'],['+'],['v','V₃']],
+  q: [['a','Be (forma)'],['+'],['s','podmiot'],['+'],['v','V₃'],['?']],
+},
+notes:[
+  'Sprawca (agent) podawany po <strong>by</strong> — tylko gdy jest ważny: <em>The book was written <strong>by</strong> Tolkien.</em>',
+],
+markers:['by (+ sprawca)','was/were built','is/are made','has been done','will be announced'],
+examples:[
+  ['+','The Eiffel Tower was built in 1889.','Wieża Eiffla została zbudowana w 1889.'],
+  ['+','English is spoken all over the world.','Na całym świecie mówi się po angielsku.'],
+  ['-',"The report hasn't been finished yet.",'Raport nie został jeszcze ukończony.'],
+  ['-',"The package wasn't delivered on time.",'Paczka nie została dostarczona na czas.'],
+  ['?','Was this photo taken in Paris?','Czy to zdjęcie zostało zrobione w Paryżu?'],
+  ['?','Has the problem been solved?','Czy problem został rozwiązany?'],
+],
+extra:[{title:'Strona bierna we wszystkich głównych czasach',body:`
+<table><tr><th>Czas</th><th>Budowa (strona bierna)</th><th>Przykład</th></tr>
+<tr><td>Present Simple</td><td>is / are + V₃</td><td><em>It is made in Poland.</em></td></tr>
+<tr><td>Past Simple</td><td>was / were + V₃</td><td><em>It was made in 1990.</em></td></tr>
+<tr><td>Present Continuous</td><td>is / are being + V₃</td><td><em>It is being repaired.</em></td></tr>
+<tr><td>Past Continuous</td><td>was / were being + V₃</td><td><em>It was being built.</em></td></tr>
+<tr><td>Present Perfect</td><td>has / have been + V₃</td><td><em>It has been fixed.</em></td></tr>
+<tr><td>Past Perfect</td><td>had been + V₃</td><td><em>It had been sold already.</em></td></tr>
+<tr><td>Future Simple</td><td>will be + V₃</td><td><em>It will be announced soon.</em></td></tr>
+<tr><td>Modal + V</td><td>modal + be + V₃</td><td><em>It should be done carefully.</em></td></tr>
+</table>`}]
+},
+{id:'modal-verbs',group:'extra',icon:'🎛️',name:'Czasowniki modalne',polish:'Modal Verbs',
+what:'Czasowniki modalne <strong>modyfikują znaczenie</strong> głównego czasownika — wyrażają zdolność, możliwość, pozwolenie, konieczność lub radę. <em>Nie odmieniają się</em> przez osoby i zawsze stoją przed bezokolicznikiem bez "to".',
+when:[
+  ['Zdolność (can/could)','I can swim. / When I was young, I could run fast.'],
+  ['Możliwość/przypuszczenie (may/might)','It may rain. / She might be late.'],
+  ['Konieczność (must/have to)','You must stop here. / I have to work tomorrow.'],
+  ['Rada i zalecenie (should/ought to)','You should see a doctor. / You ought to apologize.'],
+  ['Prośby i pozwolenie (can/could/may)','Can you help? / Could I leave early? / May I come in?'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','modal'],['+'],['v','czasownik (bez TO)']],
+  neg:[['s','podmiot'],['+'],['a','modal'],['+'],['n','not'],['+'],['v','czasownik']],
+  q: [['a','Modal'],['+'],['s','podmiot'],['+'],['v','czasownik'],['?']],
+},
+notes:[
+  'NIE dodajemy <span class="fn">-s/-es</span> w 3 os. l.poj.: <em>She <span class="fa">can</span> swim</em> ✓ &nbsp;|&nbsp; <span style="color:#ff6b6b">✗ She cans swim</span>',
+  'Po modalu zawsze <strong>bezokolicznik BEZ to</strong> (z wyjątkiem: ought <strong>to</strong>, have <strong>to</strong>, used <strong>to</strong>)',
+],
+markers:['can','could','may','might','must','have to','should','ought to','shall','would','need to'],
+examples:[
+  ['+','She can speak three languages.','Ona mówi w trzech językach.'],
+  ['+','You should call your parents more often.','Powinieneś częściej dzwonić do rodziców.'],
+  ['-',"You mustn't park here.",'Nie wolno tu parkować. (zakaz)'],
+  ['-',"I don't have to work on Sundays.",'Nie muszę pracować w niedziele. (brak konieczności)'],
+  ['?','Could you pass me the salt, please?','Czy mógłbyś podać mi sól?'],
+  ['?','May I leave the room?','Czy mogę wyjść z pokoju?'],
+],
+extra:[{title:'Tabela znaczeń — kiedy co używać?',body:`
+<table><tr><th>Modal</th><th>Główne znaczenie</th><th>Przykład</th></tr>
+<tr><td><strong>can</strong></td><td>zdolność, pozwolenie (nieformalnie)</td><td><em>I can drive. / Can I go?</em></td></tr>
+<tr><td><strong>could</strong></td><td>zdolność w przeszłości, uprzejma prośba, możliwość</td><td><em>Could you help? / It could rain.</em></td></tr>
+<tr><td><strong>may</strong></td><td>możliwość (formalne), pozwolenie (formalne)</td><td><em>It may be true. / May I...?</em></td></tr>
+<tr><td><strong>might</strong></td><td>mała możliwość, niepewność</td><td><em>She might come later.</em></td></tr>
+<tr><td><strong>must</strong></td><td>silna konieczność, logiczny wniosek</td><td><em>You must stop. / He must be tired.</em></td></tr>
+<tr><td><strong>have to</strong></td><td>konieczność zewnętrzna (reguły, okoliczności)</td><td><em>I have to wear a uniform.</em></td></tr>
+<tr><td><strong>mustn't</strong></td><td>zakaz</td><td><em>You mustn't smoke here.</em></td></tr>
+<tr><td><strong>don't have to</strong></td><td>brak konieczności (nie: zakaz!)</td><td><em>You don't have to come.</em></td></tr>
+<tr><td><strong>should</strong></td><td>rada, zalecenie</td><td><em>You should rest.</em></td></tr>
+<tr><td><strong>would</strong></td><td>prośby, drugi okres warunkowy, przeszłe nawyki</td><td><em>Would you mind? / I would help.</em></td></tr>
+</table>`}]
+},
+{id:'reported-speech',group:'extra',icon:'💬',name:'Mowa zależna',polish:'Reported Speech',
+what:'Mowa zależna (<em>Reported Speech</em>) służy do <strong>przekazywania czyjejś wypowiedzi</strong>. W trakcie relacjonowania czasy "cofają się" (<em>backshift</em>), a zaimki i wyrażenia czasu ulegają zmianie.',
+when:[
+  ['Relacjonowanie cudzych słów','She said she was tired. (She said: "I am tired.")'],
+  ['Mowa zależna z czasownikami: say / tell / ask','He told me he would call. / She asked if I was ready.'],
+  ['Zmiana bezpośredniej mowy na pośrednią','Zawsze gdy przekazujemy słowa innej osoby.'],
+],
+formation:{
+  pos:[['s','podmiot'],['+'],['a','said / told'],['+'],['t','(that)'],['+'],['t','zdanie zależne']],
+  neg:[['s','podmiot'],['+'],['a','asked'],['+'],['t','if / whether'],['+'],['t','zdanie zależne']],
+  q: [['t','said / told / asked / wondered']],
+},
+notes:[
+  '<strong>say</strong> — bez obiektu: <em>She said she was tired.</em>',
+  '<strong>tell</strong> — z obiektem: <em>She told <span class="fv">me</span> she was tired.</em>',
+],
+markers:['said','told','asked','wondered','replied','admitted','claimed','promised'],
+examples:[
+  ['+','"I am happy." → She said she was happy.','Ona powiedziała, że jest szczęśliwa.'],
+  ['+','"I will call you." → He said he would call me.','Powiedział, że do mnie zadzwoni.'],
+  ['-','"I don\'t know." → She said she didn\'t know.','Powiedziała, że nie wie.'],
+  ['-','"I haven\'t seen it." → He said he hadn\'t seen it.','Powiedział, że tego nie widział.'],
+  ['?','"Are you ready?" → She asked if I was ready.','Zapytała, czy byłem gotowy.'],
+  ['?','"Where do you live?" → He asked where I lived.','Zapytał, gdzie mieszkam.'],
+],
+extra:[{title:'Tabela backshift — cofanie czasów',body:`
+<table><tr><th>Mowa bezpośrednia</th><th>Mowa zależna</th></tr>
+<tr><td>Present Simple: <em>I work</em></td><td>Past Simple: <em>said he <strong>worked</strong></em></td></tr>
+<tr><td>Present Continuous: <em>I am working</em></td><td>Past Continuous: <em>said he <strong>was working</strong></em></td></tr>
+<tr><td>Past Simple: <em>I worked</em></td><td>Past Perfect: <em>said he <strong>had worked</strong></em></td></tr>
+<tr><td>Present Perfect: <em>I have worked</em></td><td>Past Perfect: <em>said he <strong>had worked</strong></em></td></tr>
+<tr><td>will: <em>I will go</em></td><td>would: <em>said he <strong>would go</strong></em></td></tr>
+<tr><td>can: <em>I can do it</em></td><td>could: <em>said he <strong>could do</strong> it</em></td></tr>
+<tr><td>must: <em>I must leave</em></td><td>had to: <em>said he <strong>had to</strong> leave</em></td></tr>
+</table>`,},
+{title:'Zmiany zaimków i wyrażeń czasu/miejsca',body:`
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.5rem 0">
+<div>
+<strong style="color:var(--eng)">Zaimki</strong>
+<table style="margin-top:.4rem"><tr><td>I → </td><td>he / she</td></tr><tr><td>my → </td><td>his / her</td></tr><tr><td>we → </td><td>they</td></tr><tr><td>you → </td><td>I / he / she (kontekst)</td></tr></table>
+</div>
+<div>
+<strong style="color:var(--pur)">Czas i miejsce</strong>
+<table style="margin-top:.4rem"><tr><td>now → </td><td>then</td></tr><tr><td>today → </td><td>that day</td></tr><tr><td>yesterday → </td><td>the day before</td></tr><tr><td>tomorrow → </td><td>the next day</td></tr><tr><td>here → </td><td>there</td></tr><tr><td>this → </td><td>that</td></tr></table>
+</div>
+</div>
+<div class="ex-row pos-ex">"I'll call you <strong>tomorrow</strong>." → She said she would call me <strong>the next day</strong>.</div>`}
+]
+}
+];
+</script>
+
+<script>
+// init after TOPICS loaded
+updateTopbar();
+buildSidebar();
+showWelcome();
+</script>
+</body>
+</html>
