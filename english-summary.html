@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ściągawka – Angielski – StudyZone</title>
+<style>
+html{font-size:17px;}
+:root{
+  --eng:#00b4d8;--pur:#b44fff;--grn:#00c853;
+  --card:rgba(18,18,26,.9);--border:rgba(255,255,255,.08);
+  --text:#e8e8f0;--muted:#6b6b8a;--bg:#000008;
+  --fs:#ff9a9e;--fa:#b44fff;--fv:#00e5ff;--fe:#ffd700;--fn:#ff6b6b;
+  --cpres:#00b4d8;--cpast:#ff7043;--cfut:#b44fff;--cext:#00c853;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+#stars-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,8,.7) 100%);pointer-events:none;z-index:1;}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;gap:1rem;padding:0 1.4rem;background:rgba(0,0,8,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.tb-back{color:var(--muted);text-decoration:none;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:color .2s;}
+.tb-back:hover{color:var(--eng);}
+.tb-title{font-size:.9rem;font-weight:700;color:#fff;}
+
+/* PAGE */
+#page{position:relative;z-index:10;padding:5rem 1.5rem 4rem;max-width:1120px;margin:0 auto;}
+
+/* HEADER */
+.page-header{text-align:center;margin-bottom:2rem;}
+.page-icon{font-size:2.8rem;margin-bottom:.6rem;filter:drop-shadow(0 0 14px rgba(0,180,216,.8));}
+.page-title{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:900;letter-spacing:-.03em;background:linear-gradient(90deg,#00b4d8,#b44fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-sub{font-size:.85rem;color:var(--muted);margin-top:.4rem;}
+
+/* LEGEND */
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:.6rem 1.4rem;margin:.8rem 0 1.8rem;font-size:.73rem;}
+.leg{display:flex;align-items:center;gap:.35rem;color:rgba(232,232,240,.6);}
+.leg-dot{width:9px;height:9px;border-radius:50%;}
+
+/* FILTER TABS */
+.filter-bar{display:flex;justify-content:center;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;}
+.ftab{padding:.42rem 1.2rem;border-radius:20px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--muted);font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.05em;text-transform:uppercase;outline:none;}
+.ftab:hover{color:#fff;border-color:rgba(255,255,255,.25);}
+.ftab.active{color:#fff;}
+.ftab[data-g="all"].active   {background:rgba(0,180,216,.12);border-color:rgba(0,180,216,.4);}
+.ftab[data-g="present"].active{background:rgba(0,180,216,.12);border-color:rgba(0,180,216,.4);}
+.ftab[data-g="past"].active   {background:rgba(255,112,67,.12);border-color:rgba(255,112,67,.4);}
+.ftab[data-g="future"].active  {background:rgba(180,79,255,.12);border-color:rgba(180,79,255,.4);}
+.ftab[data-g="extra"].active   {background:rgba(0,200,83,.12);border-color:rgba(0,200,83,.4);}
+
+/* GROUP */
+.group-section{margin-bottom:2rem;}
+.group-section.hidden{display:none;}
+.group-heading{font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:.5rem 0;margin-bottom:1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem;}
+.group-heading::before{content:'';width:10px;height:10px;border-radius:50%;background:var(--gc);}
+
+/* CARDS GRID */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1rem;}
+
+/* CARD */
+.t-card{background:rgba(12,12,24,.82);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;backdrop-filter:blur(8px);transition:border-color .22s,transform .22s;display:flex;flex-direction:column;}
+.t-card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--cc) 30%,transparent);}
+
+.t-head{padding:.85rem 1.2rem .7rem;border-bottom:1px solid rgba(255,255,255,.05);}
+.t-name{font-size:1rem;font-weight:800;color:#fff;margin-bottom:.15rem;}
+.t-pl{font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cc);}
+
+.t-body{padding:.85rem 1.2rem;flex:1;display:flex;flex-direction:column;gap:.8rem;}
+
+/* STRUCTURE */
+.sec-lbl{font-size:.57rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem;}
+.struct-row{display:flex;align-items:baseline;gap:.3rem;font-size:.8rem;line-height:1.6;flex-wrap:wrap;}
+.s-sign{font-size:.68rem;font-weight:800;flex-shrink:0;width:14px;}
+.s-sign.p{color:var(--grn);}
+.s-sign.n{color:var(--fn);}
+.s-sign.q{color:var(--fa);}
+.sep{color:var(--muted);font-size:.7rem;}
+
+/* EXAMPLES */
+.ex-row{font-size:.8rem;line-height:1.6;display:flex;gap:.4rem;align-items:baseline;}
+.e-sign{font-size:.68rem;font-weight:800;flex-shrink:0;width:14px;}
+.e-sign.p{color:var(--grn);}
+.e-sign.n{color:var(--fn);}
+.e-sign.q{color:var(--fa);}
+.ex-txt{color:rgba(232,232,240,.8);}
+
+/* WHEN */
+.when-item{font-size:.78rem;color:rgba(232,232,240,.68);padding-left:.85rem;position:relative;line-height:1.5;}
+.when-item+.when-item{margin-top:.15rem;}
+.when-item::before{content:'·';position:absolute;left:0;color:var(--cc);}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.15rem;}
+.tag{font-size:.65rem;padding:.15rem .5rem;border-radius:5px;background:color-mix(in srgb,var(--cc) 12%,transparent);border:1px solid color-mix(in srgb,var(--cc) 25%,transparent);color:color-mix(in srgb,var(--cc) 85%,#fff);}
+
+/* EXTRA CARD (special layout) */
+.extra-table{width:100%;border-collapse:collapse;font-size:.77rem;}
+.extra-table tr:not(:last-child) td{padding-bottom:.45rem;}
+.extra-table .et-key{color:var(--cc);font-weight:700;white-space:nowrap;padding-right:.7rem;vertical-align:top;padding-top:.05rem;}
+.extra-table .et-val{color:rgba(232,232,240,.75);line-height:1.5;}
+
+/* CARD FOOTER */
+.t-foot{padding:.55rem 1.2rem;border-top:1px solid rgba(255,255,255,.05);display:flex;gap:.5rem;}
+.t-link{flex:1;text-align:center;padding:.38rem .5rem;border-radius:7px;font-size:.7rem;font-weight:700;text-decoration:none;transition:background .18s;border:1px solid rgba(255,255,255,.1);cursor:pointer;}
+.t-link:hover{background:rgba(255,255,255,.08);}
+.t-link.learn{color:var(--eng);}
+.t-link.test{color:var(--pur);}
+
+/* COLOR CODING */
+.fs{color:var(--fs);}
+.fa{color:var(--fa);}
+.fv{color:var(--fv);}
+.fe{color:var(--fe);}
+.fn{color:var(--fn);}
+
+@media(max-width:620px){
+  #page{padding:5rem 1rem 3rem;}
+  .cards-grid{grid-template-columns:1fr;}
+  .legend{gap:.5rem 1rem;}
+}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas"></canvas>
+
+<div id="topbar">
+  <a class="tb-back" href="english.html">← Angielski</a>
+  <span class="tb-title">Ściągawka gramatyczna</span>
+</div>
+
+<div id="page">
+  <div class="page-header">
+    <div class="page-icon">📋</div>
+    <div class="page-title">Ściągawka gramatyczna</div>
+    <div class="page-sub">Wszystkie czasy angielskie — budowa, przykłady, zastosowanie w jednym miejscu</div>
+  </div>
+
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:var(--fs)"></div>podmiot (S)</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--fa)"></div>pomocniczy</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--fv)"></div>główny czasownik</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--fe)"></div>końcówka</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--fn)"></div>negacja</div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="ftab active" data-g="all"     onclick="setFilter('all')">Wszystkie</button>
+    <button class="ftab"        data-g="present" onclick="setFilter('present')">Present</button>
+    <button class="ftab"        data-g="past"    onclick="setFilter('past')">Past</button>
+    <button class="ftab"        data-g="future"  onclick="setFilter('future')">Future</button>
+    <button class="ftab"        data-g="extra"   onclick="setFilter('extra')">Dodatkowe</button>
+  </div>
+
+  <div id="content"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════
+const TENSES = [
+
+// ── PRESENT ──────────────────────────────────────────────────
+{id:'present-simple',name:'Present Simple',pl:'Czas teraźniejszy prosty',group:'present',color:'#00b4d8',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fv">V1</span><span class="fe">(s/es)</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fn">don\'t/doesn\'t</span> <span class="sep">+</span> <span class="fv">V1</span>'},
+   {s:'q',h:'<span class="fa">Do/Does</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fv">V1</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fv">works</span> every day.'},
+   {s:'n',h:'She <span class="fn">doesn\'t</span> <span class="fv">work</span> on weekends.'},
+   {s:'q',h:'<span class="fa">Does</span> she <span class="fv">work</span> here?'},
+ ],
+ when:['nawyki i codzienne rutyny','fakty naukowe i prawdy ogólne','rozkłady jazdy i plany (stałe)'],
+ tags:['every day','usually','always','never','often','sometimes'],
+},
+
+{id:'present-continuous',name:'Present Continuous',pl:'Czas teraźniejszy ciągły',group:'present',color:'#00b4d8',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">am/is/are</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">am not/isn\'t/aren\'t</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'q',h:'<span class="fa">Am/Is/Are</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">is</span> <span class="fv">working</span> right now.'},
+   {s:'n',h:'She <span class="fa">isn\'t</span> <span class="fv">working</span> today.'},
+   {s:'q',h:'<span class="fa">Is</span> she <span class="fv">working</span>?'},
+ ],
+ when:['czynność trwająca właśnie teraz','tymczasowa sytuacja','bliskie plany (z datą)'],
+ tags:['now','at the moment','right now','currently','this week','today'],
+},
+
+{id:'present-perfect',name:'Present Perfect',pl:'Czas teraźniejszy dokonany',group:'present',color:'#00b4d8',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">have/has</span> <span class="sep">+</span> <span class="fv">V3</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">haven\'t/hasn\'t</span> <span class="sep">+</span> <span class="fv">V3</span>'},
+   {s:'q',h:'<span class="fa">Have/Has</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fv">V3</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">has</span> <span class="fv">just finished</span>.'},
+   {s:'n',h:'She <span class="fa">hasn\'t</span> <span class="fv">called</span> yet.'},
+   {s:'q',h:'<span class="fa">Have</span> you ever <span class="fv">been</span> to Paris?'},
+ ],
+ when:['czynność zakończona z efektem teraźniejszym','doświadczenia życiowe','niedawne wydarzenia (bez podania czasu)'],
+ tags:['just','already','yet','ever','never','recently','for','since'],
+},
+
+{id:'present-perfect-continuous',name:'Present Perfect Continuous',pl:'Czas teraźniejszy dokonany ciągły',group:'present',color:'#00b4d8',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">have/has been</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">haven\'t/hasn\'t been</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'q',h:'<span class="fa">Have/Has</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fa">been</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">has been working</span> all day.'},
+   {s:'n',h:'She <span class="fa">hasn\'t been sleeping</span> well.'},
+   {s:'q',h:'How long <span class="fa">have</span> you <span class="fa">been</span> <span class="fv">waiting</span>?'},
+ ],
+ when:['czynność trwająca od przeszłości do teraz (podkreślenie czasu trwania)','widoczny efekt ciągłej czynności'],
+ tags:['for','since','all day','all morning','how long','lately'],
+},
+
+// ── PAST ──────────────────────────────────────────────────────
+{id:'past-simple',name:'Past Simple',pl:'Czas przeszły prosty',group:'past',color:'#ff7043',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fv">V2</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fn">didn\'t</span> <span class="sep">+</span> <span class="fv">V1</span>'},
+   {s:'q',h:'<span class="fa">Did</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fv">V1</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fv">worked</span> yesterday.'},
+   {s:'n',h:'She <span class="fn">didn\'t</span> <span class="fv">come</span>.'},
+   {s:'q',h:'<span class="fa">Did</span> she <span class="fv">call</span>?'},
+ ],
+ when:['zakończona czynność w konkretnym momencie przeszłości','kolejność wydarzeń w przeszłości'],
+ tags:['yesterday','last year','ago','in 2020','when','then'],
+},
+
+{id:'past-continuous',name:'Past Continuous',pl:'Czas przeszły ciągły',group:'past',color:'#ff7043',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">was/were</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">wasn\'t/weren\'t</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'q',h:'<span class="fa">Was/Were</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">was sleeping</span> at 8 p.m.'},
+   {s:'n',h:'She <span class="fa">wasn\'t working</span> then.'},
+   {s:'q',h:'<span class="fa">Was</span> she <span class="fv">sleeping</span>?'},
+ ],
+ when:['czynność w toku w danym momencie przeszłości','tło dla innej czynności (while/when)'],
+ tags:['while','at that time','at 8 p.m.','when','all day yesterday'],
+},
+
+{id:'past-perfect',name:'Past Perfect',pl:'Czas przeszły dokonany',group:'past',color:'#ff7043',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">had</span> <span class="sep">+</span> <span class="fv">V3</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">hadn\'t</span> <span class="sep">+</span> <span class="fv">V3</span>'},
+   {s:'q',h:'<span class="fa">Had</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fv">V3</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">had</span> <span class="fv">already left</span>.'},
+   {s:'n',h:'She <span class="fa">hadn\'t</span> <span class="fv">seen</span> it before.'},
+   {s:'q',h:'<span class="fa">Had</span> she <span class="fv">called</span>?'},
+ ],
+ when:['czynność wcześniejsza niż inna czynność w przeszłości','„zaprzeszłość" — cofnięcie się w czasie'],
+ tags:['before','after','already','by the time','when','never'],
+},
+
+{id:'past-perfect-continuous',name:'Past Perfect Continuous',pl:'Czas przeszły dokonany ciągły',group:'past',color:'#ff7043',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">had been</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">hadn\'t been</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'q',h:'<span class="fa">Had</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fa">been</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">had been working</span> for hours.'},
+   {s:'n',h:'She <span class="fa">hadn\'t been sleeping</span>.'},
+   {s:'q',h:'<span class="fa">Had</span> she <span class="fa">been</span> <span class="fv">waiting</span> long?'},
+ ],
+ when:['czas trwania czynności, która poprzedzała inną w przeszłości'],
+ tags:['for','since','before','by the time','all day'],
+},
+
+// ── FUTURE ────────────────────────────────────────────────────
+{id:'future-simple',name:'Future Simple (will)',pl:'Czas przyszły prosty',group:'future',color:'#b44fff',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">will</span> <span class="sep">+</span> <span class="fv">V1</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">won\'t</span> <span class="sep">+</span> <span class="fv">V1</span>'},
+   {s:'q',h:'<span class="fa">Will</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fv">V1</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">will</span> <span class="fv">call</span> tomorrow.'},
+   {s:'n',h:'She <span class="fa">won\'t</span> <span class="fv">come</span>.'},
+   {s:'q',h:'<span class="fa">Will</span> she <span class="fv">help</span> us?'},
+ ],
+ when:['spontaniczna decyzja podjęta w tej chwili','obietnica i przepowiednia','opinia o przyszłości'],
+ tags:['tomorrow','next year','soon','probably','I think','I\'m sure'],
+},
+
+{id:'be-going-to',name:'Be Going To',pl:'Zamierzam / planuję',group:'future',color:'#b44fff',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">am/is/are going to</span> <span class="sep">+</span> <span class="fv">V1</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">isn\'t/aren\'t going to</span> <span class="sep">+</span> <span class="fv">V1</span>'},
+   {s:'q',h:'<span class="fa">Am/Is/Are</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fa">going to</span> <span class="sep">+</span> <span class="fv">V1</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">is going to</span> <span class="fv">study</span> medicine.'},
+   {s:'n',h:'She <span class="fa">isn\'t going to</span> <span class="fv">accept</span> it.'},
+   {s:'q',h:'<span class="fa">Is</span> it <span class="fa">going to</span> <span class="fv">rain</span>?'},
+ ],
+ when:['zaplanowana czynność (podjęta wcześniej decyzja)','widoczna oznaka w teraźniejszości (Look! It\'s going to rain.)'],
+ tags:['tomorrow','next week','soon','already decided','Look!'],
+},
+
+{id:'future-continuous',name:'Future Continuous',pl:'Czas przyszły ciągły',group:'future',color:'#b44fff',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">will be</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">won\'t be</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'q',h:'<span class="fa">Will</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fa">be</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">will be working</span> at 8 tomorrow.'},
+   {s:'n',h:'She <span class="fa">won\'t be sleeping</span>.'},
+   {s:'q',h:'<span class="fa">Will</span> you <span class="fa">be</span> <span class="fv">joining</span> us?'},
+ ],
+ when:['czynność trwająca w danym momencie w przyszłości'],
+ tags:['at this time tomorrow','this time next week','in 2 hours'],
+},
+
+{id:'future-perfect',name:'Future Perfect',pl:'Czas przyszły dokonany',group:'future',color:'#b44fff',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">will have</span> <span class="sep">+</span> <span class="fv">V3</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">won\'t have</span> <span class="sep">+</span> <span class="fv">V3</span>'},
+   {s:'q',h:'<span class="fa">Will</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fa">have</span> <span class="sep">+</span> <span class="fv">V3</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">will have finished</span> by 5.'},
+   {s:'n',h:'She <span class="fa">won\'t have arrived</span> yet.'},
+   {s:'q',h:'<span class="fa">Will</span> she <span class="fa">have</span> <span class="fv">left</span> by then?'},
+ ],
+ when:['czynność zakończona do określonego momentu w przyszłości'],
+ tags:['by tomorrow','by 5 p.m.','by the time','before'],
+},
+
+{id:'future-perfect-continuous',name:'Future Perfect Continuous',pl:'Czas przyszły dokonany ciągły',group:'future',color:'#b44fff',
+ struct:[
+   {s:'p',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">will have been</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'n',h:'<span class="fs">S</span> <span class="sep">+</span> <span class="fa">won\'t have been</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>'},
+   {s:'q',h:'<span class="fa">Will</span> <span class="sep">+</span> <span class="fs">S</span> <span class="sep">+</span> <span class="fa">have been</span> <span class="sep">+</span> <span class="fv">V</span><span class="fe">-ing</span>?'},
+ ],
+ ex:[
+   {s:'p',h:'She <span class="fa">will have been working</span> for 5h by midnight.'},
+   {s:'n',h:'She <span class="fa">won\'t have been sleeping</span>.'},
+   {s:'q',h:'<span class="fa">Will</span> they <span class="fa">have been</span> <span class="fv">waiting</span> long?'},
+ ],
+ when:['czas trwania czynności do określonego momentu w przyszłości'],
+ tags:['for … by …','by the time','all day by then'],
+},
+
+// ── EXTRA ─────────────────────────────────────────────────────
+{id:'conditionals',name:'Okresy warunkowe',pl:'Conditionals 0 / 1 / 2 / 3',group:'extra',color:'#00c853',type:'extra',
+ rows:[
+   {k:'0 — ogólne prawdy',  v:'If + <span class="fv">PS</span>, <span class="fv">PS</span> &emsp;→ If you heat ice, <em>it melts.</em>'},
+   {k:'1 — realna przyszłość', v:'If + <span class="fv">PS</span>, <span class="fa">will</span> + <span class="fv">V1</span> &emsp;→ If it rains, <em>I\'ll stay home.</em>'},
+   {k:'2 — nierealna teraźn.', v:'If + <span class="fv">Past Simple</span>, <span class="fa">would</span> + <span class="fv">V1</span> &emsp;→ If I <em>were</em> rich, I\'d travel.'},
+   {k:'3 — nierealna przeszłość', v:'If + <span class="fv">Past Perfect</span>, <span class="fa">would have</span> + <span class="fv">V3</span> &emsp;→ If she <em>had studied</em>, she <em>would have passed</em>.'},
+   {k:'I wish / If only', v:'+ Past Simple (życzenie teraźniejsze) &emsp;→ <em>I wish I spoke French.</em>'},
+ ],
+},
+
+{id:'passive-voice',name:'Strona bierna',pl:'Passive Voice',group:'extra',color:'#00c853',type:'extra',
+ rows:[
+   {k:'Present Simple',  v:'<span class="fa">am/is/are</span> + <span class="fv">V3</span> &emsp;→ English <em>is spoken</em> here.'},
+   {k:'Past Simple',     v:'<span class="fa">was/were</span> + <span class="fv">V3</span> &emsp;→ The car <em>was stolen</em>.'},
+   {k:'Present Perfect', v:'<span class="fa">has/have been</span> + <span class="fv">V3</span> &emsp;→ It <em>has been sent</em>.'},
+   {k:'Future',          v:'<span class="fa">will be</span> + <span class="fv">V3</span> &emsp;→ It <em>will be finished</em>.'},
+   {k:'Pres. Continuous',v:'<span class="fa">is/are being</span> + <span class="fv">V3</span> &emsp;→ It <em>is being built</em>.'},
+   {k:'Sprawca czynności',v:'+ <strong>by</strong> + sprawca &emsp;→ written <em>by</em> Mozart'},
+ ],
+},
+
+{id:'modal-verbs',name:'Czasowniki modalne',pl:'Modal Verbs',group:'extra',color:'#00c853',type:'extra',
+ rows:[
+   {k:'can / could',    v:'zdolność, pozwolenie &emsp;→ <em>She can swim. Could you help me?</em>'},
+   {k:'must',           v:'konieczność (wewnętrzna) / zakaz z not &emsp;→ <em>You must try. You mustn\'t park here.</em>'},
+   {k:'have to',        v:'konieczność zewnętrzna / brak z don\'t have to &emsp;→ <em>I have to go. You don\'t have to come.</em>'},
+   {k:'should / ought to', v:'rada, powinność &emsp;→ <em>You should see a doctor.</em>'},
+   {k:'may / might',    v:'pozwolenie / słaba możliwość &emsp;→ <em>May I leave? It might rain.</em>'},
+   {k:'would',          v:'warunkowe, grzeczna prośba &emsp;→ <em>Would you help me?</em>'},
+   {k:'shall',          v:'propozycja, sugestia &emsp;→ <em>Shall we start?</em>'},
+ ],
+},
+
+{id:'reported-speech',name:'Mowa zależna',pl:'Reported Speech',group:'extra',color:'#00c853',type:'extra',
+ rows:[
+   {k:'Present Simple →', v:'Past Simple &emsp;→ "I <em>am</em> tired." → she said she <em>was</em> tired'},
+   {k:'Past Simple →',    v:'Past Perfect &emsp;→ "I <em>saw</em> her." → he said he <em>had seen</em> her'},
+   {k:'Present Perfect →',v:'Past Perfect &emsp;→ "I <em>have done</em> it." → she said she <em>had done</em> it'},
+   {k:'will →',           v:'would &emsp;→ "I <em>will</em> call." → he said he <em>would</em> call'},
+   {k:'can →',            v:'could &emsp;→ "I <em>can</em> help." → she said she <em>could</em> help'},
+   {k:'must →',           v:'had to &emsp;→ "I <em>must</em> go." → he said he <em>had to</em> go'},
+   {k:'now / today →',    v:'then / that day &emsp; | &emsp; tomorrow → the next day &emsp; | &emsp; here → there'},
+ ],
+},
+
+];
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+const GROUPS = [
+  {id:'present', label:'Present', gc:'var(--cpres)'},
+  {id:'past',    label:'Past',    gc:'var(--cpast)'},
+  {id:'future',  label:'Future',  gc:'var(--cfut)'},
+  {id:'extra',   label:'Dodatkowe', gc:'var(--cext)'},
+];
+
+const SIGN_MAP = {p:'+', n:'–', q:'?'};
+
+function buildCard(t) {
+  const cc = t.color;
+  const style = `--cc:${cc};`;
+
+  if (t.type === 'extra') {
+    const rows = t.rows.map(r =>
+      `<tr><td class="et-key">${r.k}</td><td class="et-val">${r.v}</td></tr>`
+    ).join('');
+    return `
+    <div class="t-card" style="${style}">
+      <div class="t-head">
+        <div>
+          <div class="t-name">${t.name}</div>
+          <div class="t-pl">${t.pl}</div>
+        </div>
+      </div>
+      <div class="t-body">
+        <table class="extra-table">${rows}</table>
+      </div>
+      <div class="t-foot">
+        <a class="t-link learn" href="english-learn.html" onclick="sessionStorage.setItem('sz_nav','${t.id}')">📖 Nauka</a>
+        <a class="t-link test"  href="english-tests.html" onclick="sessionStorage.setItem('sz_tnav','${t.id}')">✏️ Test</a>
+      </div>
+    </div>`;
+  }
+
+  const structHTML = t.struct.map(r =>
+    `<div class="struct-row"><span class="s-sign ${r.s}">${SIGN_MAP[r.s]}</span>${r.h}</div>`
+  ).join('');
+
+  const exHTML = t.ex.map(r =>
+    `<div class="ex-row"><span class="e-sign ${r.s}">${SIGN_MAP[r.s]}</span><span class="ex-txt">${r.h}</span></div>`
+  ).join('');
+
+  const whenHTML = t.when.map(w =>
+    `<div class="when-item">${w}</div>`
+  ).join('');
+
+  const tagsHTML = t.tags.map(tag =>
+    `<span class="tag">${tag}</span>`
+  ).join('');
+
+  return `
+  <div class="t-card" style="${style}">
+    <div class="t-head">
+      <div>
+        <div class="t-name">${t.name}</div>
+        <div class="t-pl">${t.pl}</div>
+      </div>
+    </div>
+    <div class="t-body">
+      <div>
+        <div class="sec-lbl">Budowa</div>
+        ${structHTML}
+      </div>
+      <div>
+        <div class="sec-lbl">Przykłady</div>
+        ${exHTML}
+      </div>
+      <div>
+        <div class="sec-lbl">Kiedy używać</div>
+        ${whenHTML}
+      </div>
+      <div>
+        <div class="sec-lbl">Wyrażenia czasowe</div>
+        <div class="tags">${tagsHTML}</div>
+      </div>
+    </div>
+    <div class="t-foot">
+      <a class="t-link learn" href="english-learn.html" onclick="sessionStorage.setItem('sz_nav','${t.id}')">📖 Nauka</a>
+      <a class="t-link test"  href="english-tests.html" onclick="sessionStorage.setItem('sz_tnav','${t.id}')">✏️ Test</a>
+    </div>
+  </div>`;
+}
+
+function render(filter) {
+  const content = document.getElementById('content');
+  let html = '';
+
+  GROUPS.forEach(g => {
+    if (filter !== 'all' && filter !== g.id) return;
+    const items = TENSES.filter(t => t.group === g.id);
+    if (!items.length) return;
+
+    const cards = items.map(buildCard).join('');
+    html += `
+    <div class="group-section" data-group="${g.id}" style="--gc:${g.gc}">
+      <div class="group-heading" style="color:${g.gc}">${g.label}</div>
+      <div class="cards-grid">${cards}</div>
+    </div>`;
+  });
+
+  content.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FILTER
+// ═══════════════════════════════════════════════════════════════
+let activeFilter = 'all';
+
+function setFilter(g) {
+  activeFilter = g;
+  document.querySelectorAll('.ftab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.g === g);
+  });
+  render(g);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DEEP LINK: navigate english-learn/tests to right topic
+// ═══════════════════════════════════════════════════════════════
+// english-learn.html can read sessionStorage.sz_nav
+// english-tests.html can read sessionStorage.sz_tnav
+// (Both files would need small additions to use this — left as enhancement)
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+render('all');
+
+// ═══════════════════════════════════════════════════════════════
+// STARS
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  var c=document.getElementById('stars-canvas'),ctx=c.getContext('2d'),stars=[],W,H;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  function make(){stars=[];var n=Math.floor((W*H)/3200);for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+.2,alpha:Math.random()*.7+.2,speed:Math.random()*.008+.003,phase:Math.random()*Math.PI*2,color:Math.random()>.92?'#b4e4ff':Math.random()>.85?'#ffe0f0':'#fff'});}
+  var tick=0;
+  function draw(){ctx.clearRect(0,0,W,H);tick+=.016;for(var i=0;i<stars.length;i++){var s=stars[i],a=s.alpha*(.55+.45*Math.sin(tick*s.speed*60+s.phase));ctx.save();ctx.globalAlpha=a;var g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*3.5);g.addColorStop(0,s.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x,s.y,s.r*3.5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=Math.min(a*1.6,1);ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();ctx.restore();}requestAnimationFrame(draw);}
+  resize();make();draw();
+  window.addEventListener('resize',function(){resize();make();});
+})();
+</script>
+</body>
+</html>

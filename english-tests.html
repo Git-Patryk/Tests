@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testy – Angielski – StudyZone</title>
+<style>
+html{font-size:17px;}
+:root{
+  --eng:#00b4d8;--pur:#b44fff;--grn:#00c853;--red:#ff6b6b;--gold:#ffd700;
+  --card:rgba(18,18,26,.9);--border:rgba(255,255,255,.08);
+  --text:#e8e8f0;--muted:#6b6b8a;--bg:#000008;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+#stars-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,8,.7) 100%);pointer-events:none;z-index:1;}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;gap:1rem;padding:0 1.2rem;background:rgba(0,0,8,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.tb-back{color:var(--muted);text-decoration:none;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:color .2s;}
+.tb-back:hover{color:var(--pur);}
+.tb-title{font-size:.9rem;font-weight:700;color:#fff;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tb-prog{display:flex;align-items:center;gap:.6rem;white-space:nowrap;}
+.tb-prog-text{font-size:.72rem;color:var(--muted);}
+.prog-track{width:80px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+#prog-fill{height:100%;background:linear-gradient(90deg,var(--pur),var(--eng));border-radius:2px;transition:width .4s;}
+
+/* LAYOUT */
+#layout{display:flex;padding-top:56px;min-height:100vh;position:relative;z-index:10;}
+
+/* SIDEBAR */
+#sidebar{width:260px;flex-shrink:0;position:fixed;top:56px;bottom:0;left:0;overflow-y:auto;overflow-x:hidden;background:rgba(8,8,18,.92);backdrop-filter:blur(8px);border-right:1px solid var(--border);padding:.8rem 0 2rem;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;}
+#sidebar::-webkit-scrollbar{width:4px;}
+#sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.nav-group{margin-bottom:.4rem;}
+.nav-group-label{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:.7rem 1.2rem .3rem;display:block;}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.55rem 1.2rem;cursor:pointer;font-size:.82rem;color:rgba(232,232,240,.7);transition:background .15s,color .15s;border-left:2px solid transparent;user-select:none;}
+.nav-item:hover{background:rgba(180,79,255,.07);color:#fff;}
+.nav-item.active{background:rgba(180,79,255,.12);color:var(--pur);border-left-color:var(--pur);}
+.nav-item.done{color:rgba(0,200,83,.8);}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);flex-shrink:0;transition:background .2s;}
+.nav-item.done .nav-dot{background:var(--grn);}
+.nav-item.active .nav-dot{background:var(--pur);box-shadow:0 0 6px var(--pur);}
+
+/* HAMBURGER */
+#hamburger{display:none;background:none;border:1px solid rgba(255,255,255,.15);color:#fff;padding:.3rem .6rem;border-radius:6px;cursor:pointer;font-size:.9rem;margin-right:auto;}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90;}
+
+/* MAIN */
+#main{margin-left:260px;flex:1;padding:2rem 2.5rem 4rem;max-width:calc(100% - 260px);}
+
+/* WELCOME */
+#welcome-view{max-width:680px;margin:0 auto;background:rgba(12,12,24,.78);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:2.4rem 2.4rem 2rem;backdrop-filter:blur(10px);}
+.w-icon{font-size:3rem;margin-bottom:1rem;filter:drop-shadow(0 0 12px var(--pur));}
+.w-title{font-size:2rem;font-weight:900;color:#fff;margin-bottom:.5rem;}
+.w-sub{font-size:.9rem;color:rgba(232,232,240,.7);line-height:1.7;margin-bottom:1.5rem;}
+.w-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:.8rem;margin-bottom:1.5rem;}
+.w-tile{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+.w-tile-icon{font-size:1.4rem;margin-bottom:.4rem;}
+.w-tile-name{font-size:.82rem;font-weight:700;color:#fff;}
+.w-tile-desc{font-size:.75rem;color:var(--muted);margin-top:.2rem;line-height:1.5;}
+.btn-start{display:inline-block;padding:.7rem 1.8rem;background:linear-gradient(135deg,var(--pur),#7b2fff);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(180,79,255,.4);}
+
+/* TEST VIEW */
+#test-view{max-width:760px;margin:0 auto;}
+
+/* SCORE BANNER */
+#score-banner{background:rgba(12,12,24,.85);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1.4rem 1.8rem;margin-bottom:1.5rem;backdrop-filter:blur(10px);text-align:center;}
+.sb-title{font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;}
+.sb-score{font-size:3rem;font-weight:900;line-height:1;}
+.sb-grade{font-size:.9rem;margin-top:.4rem;color:rgba(232,232,240,.7);}
+.sb-bar{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:1rem;overflow:hidden;}
+.sb-bar-fill{height:100%;border-radius:3px;transition:width .6s .1s;}
+
+.test-header{background:rgba(12,12,24,.78);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.5rem 2rem;margin-bottom:1.5rem;backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.test-name-label{font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pur);margin-bottom:.3rem;}
+.test-name{font-size:1.6rem;font-weight:900;color:#fff;}
+.test-count{font-size:.8rem;color:var(--muted);margin-top:.2rem;}
+.test-score-badge{background:rgba(180,79,255,.1);border:1px solid rgba(180,79,255,.25);border-radius:12px;padding:.7rem 1.2rem;text-align:center;flex-shrink:0;}
+#live-score{font-size:1.6rem;font-weight:900;color:var(--pur);line-height:1;}
+.tsb-label{font-size:.62rem;color:var(--muted);}
+
+.q-section-header{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:1rem 0 .6rem;border-bottom:1px solid var(--border);margin-bottom:.8rem;}
+
+/* QUESTION BLOCK */
+.q-block{background:rgba(12,12,24,.78);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:.8rem;backdrop-filter:blur(8px);transition:border-color .2s,background .2s;}
+.q-block.correct{border-color:rgba(0,200,83,.4);background:rgba(0,200,83,.04);}
+.q-block.wrong{border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.04);}
+.q-row{display:flex;gap:.8rem;align-items:flex-start;}
+.q-num{width:26px;height:26px;border-radius:50%;flex-shrink:0;background:rgba(180,79,255,.15);border:1px solid rgba(180,79,255,.3);color:var(--pur);font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:.1rem;transition:background .2s,border-color .2s,color .2s;}
+.q-block.correct .q-num{background:rgba(0,200,83,.2);border-color:rgba(0,200,83,.4);color:var(--grn);}
+.q-block.wrong .q-num{background:rgba(255,107,107,.2);border-color:rgba(255,107,107,.3);color:var(--red);}
+.q-body{flex:1;min-width:0;}
+.q-text{font-size:.9rem;color:var(--text);line-height:1.6;margin-bottom:.75rem;}
+.q-inst{font-size:.73rem;color:var(--pur);font-weight:700;margin-bottom:.3rem;letter-spacing:.03em;text-transform:uppercase;}
+
+/* MCQ */
+.q-opts{display:flex;flex-direction:column;gap:.45rem;}
+.q-opt{display:flex;align-items:center;gap:.7rem;padding:.5rem .85rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:9px;cursor:pointer;font-size:.86rem;color:rgba(232,232,240,.8);transition:background .15s,border-color .15s,color .15s;text-align:left;width:100%;}
+.q-opt:hover{background:rgba(180,79,255,.1);border-color:rgba(180,79,255,.3);color:#fff;}
+.q-opt.selected{background:rgba(180,79,255,.15);border-color:rgba(180,79,255,.5);color:var(--pur);}
+.q-opt.opt-correct{background:rgba(0,200,83,.1);border-color:rgba(0,200,83,.4);color:var(--grn);}
+.q-opt.opt-wrong{background:rgba(255,107,107,.08);border-color:rgba(255,107,107,.3);color:var(--red);}
+.opt-letter{width:22px;height:22px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s;}
+.q-opt.selected .opt-letter{background:rgba(180,79,255,.3);border-color:rgba(180,79,255,.6);}
+.q-opt.opt-correct .opt-letter{background:rgba(0,200,83,.25);border-color:rgba(0,200,83,.5);}
+.q-opt.opt-wrong .opt-letter{background:rgba(255,107,107,.2);border-color:rgba(255,107,107,.4);}
+
+/* FILL / TRANSFORM */
+.q-input{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:.42rem .8rem;color:#fff;font-size:.88rem;font-family:inherit;width:100%;max-width:340px;transition:border-color .2s;outline:none;}
+.q-input:focus{border-color:rgba(180,79,255,.5);background:rgba(180,79,255,.06);}
+.q-input.inp-correct{border-color:var(--grn);background:rgba(0,200,83,.08);color:var(--grn);}
+.q-input.inp-wrong{border-color:var(--red);background:rgba(255,107,107,.06);color:var(--red);}
+.q-hint{font-size:.72rem;color:var(--muted);margin-top:.5rem;line-height:1.5;}
+.q-hint.reveal{color:var(--grn);font-weight:600;}
+.q-orig{font-size:.86rem;color:rgba(232,232,240,.55);margin-bottom:.6rem;font-style:italic;}
+
+/* BOTTOM BAR */
+#test-bottom{margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.btn-check{padding:.72rem 2rem;border-radius:10px;background:linear-gradient(135deg,var(--pur),#7b2fff);color:#fff;border:none;font-size:.92rem;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.btn-check:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(180,79,255,.4);}
+.btn-reset{padding:.72rem 1.4rem;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(232,232,240,.7);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s;}
+.btn-reset:hover{background:rgba(255,255,255,.12);color:#fff;}
+
+/* COMING SOON */
+.coming-soon{padding:3rem 2rem;text-align:center;color:var(--muted);font-size:.95rem;background:rgba(12,12,24,.6);border:1px solid var(--border);border-radius:16px;}
+.coming-soon-icon{font-size:2.5rem;margin-bottom:.8rem;filter:drop-shadow(0 0 10px rgba(180,79,255,.5));}
+.coming-soon-title{font-size:1.1rem;font-weight:700;color:rgba(232,232,240,.6);margin-bottom:.4rem;}
+
+/* MOBILE */
+@media(max-width:720px){
+  #hamburger{display:flex;align-items:center;justify-content:center;}
+  #sidebar{transform:translateX(-100%);transition:transform .3s;z-index:95;}
+  #sidebar.open{transform:none;}
+  #sidebar-overlay.open{display:block;}
+  #main{margin-left:0;max-width:100%;padding:1.2rem 1rem 3rem;}
+  .test-header{flex-direction:column;align-items:flex-start;}
+  .q-input{max-width:100%;}
+}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas"></canvas>
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<div id="topbar">
+  <a class="tb-back" href="english.html">← Angielski</a>
+  <button id="hamburger" onclick="toggleSidebar()">☰</button>
+  <span class="tb-title" id="tb-title">Testy gramatyczne</span>
+  <div class="tb-prog">
+    <span class="tb-prog-text" id="prog-text">0 / 17</span>
+    <div class="prog-track"><div id="prog-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div id="layout">
+  <nav id="sidebar">
+    <div class="nav-group">
+      <span class="nav-group-label">Present</span>
+      <div class="nav-item" id="nav-present-simple" onclick="navigate('present-simple')"><span class="nav-dot"></span>Present Simple</div>
+      <div class="nav-item" id="nav-present-continuous" onclick="navigate('present-continuous')"><span class="nav-dot"></span>Present Continuous</div>
+      <div class="nav-item" id="nav-present-perfect" onclick="navigate('present-perfect')"><span class="nav-dot"></span>Present Perfect</div>
+      <div class="nav-item" id="nav-present-perfect-continuous" onclick="navigate('present-perfect-continuous')"><span class="nav-dot"></span>Present Perfect Continuous</div>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Past</span>
+      <div class="nav-item" id="nav-past-simple" onclick="navigate('past-simple')"><span class="nav-dot"></span>Past Simple</div>
+      <div class="nav-item" id="nav-past-continuous" onclick="navigate('past-continuous')"><span class="nav-dot"></span>Past Continuous</div>
+      <div class="nav-item" id="nav-past-perfect" onclick="navigate('past-perfect')"><span class="nav-dot"></span>Past Perfect</div>
+      <div class="nav-item" id="nav-past-perfect-continuous" onclick="navigate('past-perfect-continuous')"><span class="nav-dot"></span>Past Perfect Continuous</div>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Future</span>
+      <div class="nav-item" id="nav-future-simple" onclick="navigate('future-simple')"><span class="nav-dot"></span>Future Simple (will)</div>
+      <div class="nav-item" id="nav-be-going-to" onclick="navigate('be-going-to')"><span class="nav-dot"></span>Be Going To</div>
+      <div class="nav-item" id="nav-future-continuous" onclick="navigate('future-continuous')"><span class="nav-dot"></span>Future Continuous</div>
+      <div class="nav-item" id="nav-future-perfect" onclick="navigate('future-perfect')"><span class="nav-dot"></span>Future Perfect</div>
+      <div class="nav-item" id="nav-future-perfect-continuous" onclick="navigate('future-perfect-continuous')"><span class="nav-dot"></span>Future Perfect Continuous</div>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Dodatkowe</span>
+      <div class="nav-item" id="nav-conditionals" onclick="navigate('conditionals')"><span class="nav-dot"></span>Okresy warunkowe</div>
+      <div class="nav-item" id="nav-passive-voice" onclick="navigate('passive-voice')"><span class="nav-dot"></span>Strona bierna</div>
+      <div class="nav-item" id="nav-modal-verbs" onclick="navigate('modal-verbs')"><span class="nav-dot"></span>Czasowniki modalne</div>
+      <div class="nav-item" id="nav-reported-speech" onclick="navigate('reported-speech')"><span class="nav-dot"></span>Mowa zależna</div>
+    </div>
+  </nav>
+
+  <main id="main">
+    <div id="welcome-view">
+      <div class="w-icon">✏️</div>
+      <div class="w-title">Testy gramatyczne</div>
+      <div class="w-sub">Sprawdź swoją znajomość angielskich czasów i struktur gramatycznych. Każdy test zawiera pytania ABCD, uzupełnianie zdań i transformacje zdań.</div>
+      <div class="w-grid">
+        <div class="w-tile">
+          <div class="w-tile-icon">🅐</div>
+          <div class="w-tile-name">Pytania ABCD</div>
+          <div class="w-tile-desc">Wybierz jedną poprawną odpowiedź spośród czterech</div>
+        </div>
+        <div class="w-tile">
+          <div class="w-tile-icon">✍️</div>
+          <div class="w-tile-name">Uzupełnianie</div>
+          <div class="w-tile-desc">Wpisz poprawną formę czasownika w odpowiednim czasie</div>
+        </div>
+        <div class="w-tile">
+          <div class="w-tile-icon">🔄</div>
+          <div class="w-tile-name">Transformacje</div>
+          <div class="w-tile-desc">Przekształć zdanie według podanej instrukcji</div>
+        </div>
+      </div>
+      <button class="btn-start" onclick="navigate('present-simple')">Zacznij od Present Simple →</button>
+    </div>
+    <div id="test-view" style="display:none"></div>
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// TESTS DATA
+// ═══════════════════════════════════════════════════════════════
+const TESTS = {
+
+'present-simple':{
+  name:'Present Simple',pl:'Czas teraźniejszy prosty',group:'Present',
+  qs:[
+    {t:'mcq',q:'Która forma jest poprawna dla 3. osoby liczby pojedynczej?',o:['She go to work.','She goes to work.','She going to work.','She goed to work.'],a:1},
+    {t:'mcq',q:'Uzupełnij: „I ___ not drink coffee."',o:['do','does','am','is'],a:0},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:['He watch TV every evening.','He watches TV every evening.','He is watches TV every evening.','He watched TV every evening.'],a:1},
+    {t:'mcq',q:'Kiedy używamy Present Simple?',o:['Dla czynności trwającej właśnie teraz','Dla nawyków i stałych czynności','Dla czynności zakończonych w przeszłości','Dla planów na przyszłość (z datą)'],a:1},
+    {t:'mcq',q:'Które wyrażenie czasowe pasuje do Present Simple?',o:['right now','at the moment','every day','yesterday'],a:2},
+    {t:'mcq',q:'„___ she work here?" – brakujące słowo to:',o:['Does','Do','Is','Has'],a:0},
+    {t:'mcq',q:'Które zdanie jest poprawnym przeczeniem?',o:["She doesn't likes him.","She don't like him.","She doesn't like him.","She isn't like him."],a:2},
+    {t:'mcq',q:'„They ___ English." – brakujące słowo:',o:['speaks','speak','speaking','spoken'],a:1},
+    {t:'mcq',q:'Które pytanie jest zbudowane poprawnie?',o:['Do your parents lives near here?','Does your parents live near here?','Do your parents live near here?','Are your parents live near here?'],a:2},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:['Water boils at 100°C.','The sun rises in the east.','He is always arriving late.','She works at a hospital.'],a:2},
+    {t:'mcq',q:'Które zdanie jest pytaniem w Present Simple?',o:['She does like it.','Does she like it?','She like it?','Is she like it?'],a:1},
+    {t:'mcq',q:'Wyraz „usually" wskazuje na użycie czasu:',o:['Present Continuous','Past Simple','Present Simple','Future Simple'],a:2},
+    {t:'fill',q:'He ___ (play) football on weekends.',a:'plays',hint:'3. os. lp → +s/es'},
+    {t:'fill',q:'I ___ (not/eat) meat.',a:"don't eat",hint:'1. os. lp → do not / don\'t'},
+    {t:'fill',q:'Water ___ (boil) at 100°C.',a:'boils',hint:'fakt naukowy, 3. os. lp → +s'},
+    {t:'fill',q:'My sister ___ (study) medicine.',a:'studies',hint:'-y po spółgłosce → -ies'},
+    {t:'fill',q:'___ you like jazz? (Do/Does)',a:'Do',hint:'I/you/they → Do'},
+    {t:'fill',q:'The bank ___ (open) at 9 a.m.',a:'opens',hint:'3. os. lp → +s'},
+    {t:'fill',q:'He ___ (not/watch) TV often.',a:"doesn't watch",hint:'3. os. lp → does not / doesn\'t'},
+    {t:'fill',q:'We ___ (live) in Warsaw.',a:'live',hint:'1. os. lm → bez zmian'},
+    {t:'fill',q:'She ___ (go) to the gym three times a week.',a:'goes',hint:'-o → +es'},
+    {t:'fill',q:'___ it rain a lot here? (Do/Does)',a:'Does',hint:'3. os. lp → Does'},
+    {t:'fill',q:'They ___ (not/speak) French.',a:"don't speak",hint:'lm → do not / don\'t'},
+    {t:'fill',q:'He ___ (teach) maths at school.',a:'teaches',hint:'-ch → +es'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'He works here.',a:"He doesn't work here.",hint:"doesn't + V1 (bez -s)"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She likes music.',a:'Does she like music?',hint:'Does + podmiot + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'They play tennis every week.',a:"They don't play tennis every week.",hint:"don't + V1"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'He speaks English.',a:'Does he speak English?',hint:'Does + podmiot + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'The train leaves at 8.',a:"The train doesn't leave at 8.",hint:"doesn't + V1 (bez -s/-es)"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'Your sister works here.',a:'Does your sister work here?',hint:'Does + podmiot + V1 + ?'},
+  ]
+},
+
+'present-continuous':{
+  name:'Present Continuous',pl:'Czas teraźniejszy ciągły',group:'Present',
+  qs:[
+    {t:'mcq',q:'„She ___ a book at the moment." Brakujące słowo:',o:['reads','is reading','read','has read'],a:1},
+    {t:'mcq',q:'Które wyrażenie pasuje do Present Continuous?',o:['every day','right now','yesterday','last year'],a:1},
+    {t:'mcq',q:'„___ they playing football?" Brakujący wyraz:',o:['Is','Are','Do','Does'],a:1},
+    {t:'mcq',q:'Które zdanie jest poprawnym przeczeniem w PC?',o:["He isn't watching TV.","He doesn't watching TV.","He not watching TV.","He not watch TV now."],a:0},
+    {t:'mcq',q:'Które zdanie zawiera błąd (stative verb)?',o:["I'm eating lunch.","She's running fast.","He's knowing the answer.","We're talking to them."],a:2},
+    {t:'mcq',q:'„What ___ she doing?" Brakujący wyraz:',o:['is','are','do','does'],a:0},
+    {t:'mcq',q:'Które zdanie jest poprawne? (stative verb)',o:["She is liking this song.","She likes this song.","She liking this song.","She like this song."],a:1},
+    {t:'mcq',q:'Present Continuous tworzymy z:',o:['do/does + V1','am/is/are + V-ing','have/has + V3','will + V1'],a:1},
+    {t:'mcq',q:'Kiedy NIE używamy Present Continuous?',o:['Czynność trwa teraz','Tymczasowa sytuacja','Stały nawyk lub rutyna','Plan na najbliższą przyszłość'],a:2},
+    {t:'mcq',q:'„They ___ to the beach this weekend." (zaplanowany wyjazd)',o:['are going','go','gone','went'],a:0},
+    {t:'mcq',q:'Jaka końcówka jest dodawana do czasownika w PC?',o:['-s','-ed','-ing','-en'],a:2},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:["I'm having a great time!","I having a great time!","I am have a great time!","I does having a great time!"],a:0},
+    {t:'fill',q:'Listen! She ___ (sing).',a:'is singing',hint:'she → is + V-ing'},
+    {t:'fill',q:'I ___ (not/study) now.',a:"am not studying",hint:'I → am not + V-ing'},
+    {t:'fill',q:'___ he working today? (Is/Are)',a:'Is',hint:'he → Is'},
+    {t:'fill',q:'We ___ (have) dinner at the moment.',a:'are having',hint:'have → having (e odpada)'},
+    {t:'fill',q:'They ___ (run) in the park right now.',a:'are running',hint:'run → running (podwajamy n)'},
+    {t:'fill',q:'She ___ (not/talk) to me right now.',a:"isn't talking",hint:"is not → isn't"},
+    {t:'fill',q:'Look! The dog ___ (swim)!',a:'is swimming',hint:'swim → swimming (podwajamy m)'},
+    {t:'fill',q:'___ you listening to music? (Is/Are)',a:'Are',hint:'you → Are'},
+    {t:'fill',q:'He ___ (sit) by the window.',a:'is sitting',hint:'sit → sitting (podwajamy t)'},
+    {t:'fill',q:'My parents ___ (travel) around Europe this month.',a:'are travelling',hint:'travel → travelling'},
+    {t:'fill',q:'I ___ (write) an email right now.',a:'am writing',hint:'write → writing (e odpada)'},
+    {t:'fill',q:'The children ___ (play) outside.',a:'are playing',hint:'they → are + V-ing'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She is cooking dinner.',a:"She isn't cooking dinner.",hint:"is not / isn't + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'They are watching TV.',a:'Are they watching TV?',hint:'Are + podmiot + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'He is studying now.',a:"He isn't studying now.",hint:"isn't + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She is working today.',a:'Is she working today?',hint:'Is + podmiot + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'We are having a meeting.',a:"We aren't having a meeting.",hint:"are not / aren't + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'It is raining outside.',a:'Is it raining outside?',hint:'Is + it + V-ing + ?'},
+  ]
+},
+
+'present-perfect':{
+  name:'Present Perfect',pl:'Czas teraźniejszy dokonany',group:'Present',
+  qs:[
+    {t:'mcq',q:'Present Perfect tworzymy z:',o:['do/does + V1','am/is/are + V-ing','have/has + V3','will + V1'],a:2},
+    {t:'mcq',q:'„She ___ never been to Paris." Brakujące słowo:',o:['is','was','has','have'],a:2},
+    {t:'mcq',q:'Które wyrażenie pasuje do Present Perfect?',o:['yesterday','last year','just','two days ago'],a:2},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:['I have saw this film.','I have seen this film.','I have see this film.','I has seen this film.'],a:1},
+    {t:'mcq',q:'„___ you ever eaten sushi?" Brakujące słowo:',o:['Did','Do','Have','Has'],a:2},
+    {t:'mcq',q:'Kiedy używamy Present Perfect?',o:['Czynność w konkretnym momencie przeszłości','Czynność zakończona, ale z efektem teraźniejszym','Czynność trwająca właśnie teraz','Plan na przyszłość'],a:1},
+    {t:'mcq',q:'Które zdanie jest błędne?',o:['I have just finished.','She has already left.','They have went home.','We have never met.'],a:2},
+    {t:'mcq',q:'„I ___ lost my keys." Brakujące słowo:',o:['am','was','have','did'],a:2},
+    {t:'mcq',q:'Które zdanie używa PP poprawnie?',o:['I have seen him yesterday.','I have seen him today.','I have see him today.','I seen him today.'],a:1},
+    {t:'mcq',q:'„She has ___ finished her homework." Brakujące słowo:',o:['just','yesterday','ago','last week'],a:0},
+    {t:'mcq',q:'Które wyrażenie NIE pasuje do Present Perfect?',o:['already','ever','never','last Monday'],a:3},
+    {t:'mcq',q:'Forma V3 od „go" to:',o:['goed','gone','went','going'],a:1},
+    {t:'fill',q:'I ___ (never/eat) caviar.',a:'have never eaten',hint:'have + never + V3'},
+    {t:'fill',q:'She ___ (just/finish) her report.',a:'has just finished',hint:'has + just + V3'},
+    {t:'fill',q:'They ___ (already/leave).',a:'have already left',hint:'leave → left (nieregularny)'},
+    {t:'fill',q:'___ you ever been to London? (Have/Has)',a:'Have',hint:'you → Have'},
+    {t:'fill',q:'He ___ (not/see) this film yet.',a:"hasn't seen",hint:"hasn't + V3"},
+    {t:'fill',q:'We ___ (live) here for five years.',a:'have lived',hint:'have + V3 (regularny)'},
+    {t:'fill',q:'I ___ (lose) my wallet!',a:'have lost',hint:'lose → lost (nieregularny)'},
+    {t:'fill',q:'She ___ (write) three emails today.',a:'has written',hint:'write → written (nieregularny)'},
+    {t:'fill',q:'___ he called you yet? (Have/Has)',a:'Has',hint:'he → Has'},
+    {t:'fill',q:'They ___ (not/arrive) yet.',a:"haven't arrived",hint:"haven't + V3"},
+    {t:'fill',q:'I ___ (already/read) this book.',a:'have already read',hint:'read → read (niezmieniony)'},
+    {t:'fill',q:'She ___ (be) ill since Monday.',a:'has been',hint:'be → been (nieregularny)'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She has finished the project.',a:"She hasn't finished the project.",hint:"hasn't + V3"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'They have met before.',a:'Have they met before?',hint:'Have + podmiot + V3 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'He has called me.',a:"He hasn't called me.",hint:"hasn't + V3"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'You have been here before.',a:'Have you been here before?',hint:'Have + podmiot + V3 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'We have seen this film.',a:"We haven't seen this film.",hint:"haven't + V3"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She has eaten sushi.',a:'Has she eaten sushi?',hint:'Has + podmiot + V3 + ?'},
+  ]
+},
+
+'present-perfect-continuous':{
+  name:'Present Perfect Continuous',pl:'Czas teraźniejszy dokonany ciągły',group:'Present',
+  qs:[
+    {t:'mcq',q:'Present Perfect Continuous tworzymy z:',o:['have/has + V3','have/has + been + V-ing','am/is/are + V-ing','did + V1'],a:1},
+    {t:'mcq',q:'„She ___ been waiting for an hour." Brakujące słowo:',o:['is','has','have','was'],a:1},
+    {t:'mcq',q:'Które wyrażenie pasuje do PPC?',o:['yesterday','just','for two hours','last night'],a:2},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:["I've been studying all day.","I've studying all day.","I've been study all day.","I been studying all day."],a:0},
+    {t:'mcq',q:'PPC podkreśla przede wszystkim:',o:['Zakończony skutek czynności','Czas trwania i ciągłość czynności','Konkretny moment w przeszłości','Czynność wielokrotną'],a:1},
+    {t:'mcq',q:'„How long ___ you been learning English?"',o:['did','have','has','are'],a:1},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:["She's been cooking since noon.","They've been waiting for ages.","He's been knowing her for years.","I've been running all morning."],a:2},
+    {t:'mcq',q:'„He looks tired. He ___ been working all night."',o:['is','was','has','have'],a:2},
+    {t:'mcq',q:'Które wyrażenia wskazują na PPC?',o:['already, yet, ever','for, since, all day','yesterday, last week, ago','soon, tomorrow, next week'],a:1},
+    {t:'mcq',q:'Skrócona forma „she has been" to:',o:["she'd been","she's been","she'll been","she've been"],a:1},
+    {t:'mcq',q:'Które zdanie jest poprawnym przeczeniem?',o:["She hasn't been working.","She wasn't been working.","She didn't been working.","She isn't been working."],a:0},
+    {t:'mcq',q:'W PPC V3 jest zawsze:',o:['V3 od danego czasownika','been','V-ing','V1'],a:1},
+    {t:'fill',q:'I ___ (study) for three hours.',a:'have been studying',hint:'have + been + V-ing'},
+    {t:'fill',q:'She ___ (wait) since 9 a.m.',a:'has been waiting',hint:'has + been + V-ing'},
+    {t:'fill',q:'They ___ (work) on this project all month.',a:'have been working',hint:'have + been + V-ing'},
+    {t:'fill',q:'___ you been waiting long? (Has/Have)',a:'Have',hint:'you → Have'},
+    {t:'fill',q:'He ___ (not/sleep) well lately.',a:"hasn't been sleeping",hint:"hasn't + been + V-ing"},
+    {t:'fill',q:'We ___ (live) here since 2020.',a:'have been living',hint:'have + been + V-ing'},
+    {t:'fill',q:'She ___ (run) – look how red her face is!',a:'has been running',hint:'has + been + V-ing'},
+    {t:'fill',q:'How long ___ he been playing guitar? (has/have)',a:'has',hint:'he → has'},
+    {t:'fill',q:'I ___ (not/feel) well for a week.',a:"haven't been feeling",hint:"haven't + been + V-ing"},
+    {t:'fill',q:'The children ___ (play) outside all afternoon.',a:'have been playing',hint:'have + been + V-ing'},
+    {t:'fill',q:'She ___ (teach) English for 10 years.',a:'has been teaching',hint:'has + been + V-ing'},
+    {t:'fill',q:'It ___ (rain) all day.',a:'has been raining',hint:'it → has + been + V-ing'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:"She's been studying all morning.",a:"She hasn't been studying all morning.",hint:"hasn't + been + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:"They've been waiting.",a:'Have they been waiting?',hint:'Have + podmiot + been + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:"He's been working all day.",a:"He hasn't been working all day.",hint:"hasn't + been + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'You have been sleeping.',a:'Have you been sleeping?',hint:'Have + podmiot + been + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:"It's been raining.",a:"It hasn't been raining.",hint:"hasn't + been + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She has been cooking.',a:'Has she been cooking?',hint:'Has + podmiot + been + V-ing + ?'},
+  ]
+},
+
+'past-simple':{
+  name:'Past Simple',pl:'Czas przeszły prosty',group:'Past',
+  qs:[
+    {t:'mcq',q:'Past Simple tworzymy używając:',o:['do/does + V1','V2 (II formy czasownika)','have/has + V3','was/were + V-ing'],a:1},
+    {t:'mcq',q:'„She ___ to the cinema yesterday." Brakujące słowo:',o:['goes','is going','went','has gone'],a:2},
+    {t:'mcq',q:'Które wyrażenie pasuje do Past Simple?',o:['just','already','last year','since'],a:2},
+    {t:'mcq',q:'Poprawna forma przeczenia: „He ___ the film."',o:["didn't went to see","didn't go to see","doesn't went to see","hadn't go to see"],a:1},
+    {t:'mcq',q:'„They ___ football last Saturday." Brakujące słowo:',o:['played','play','are playing','have played'],a:0},
+    {t:'mcq',q:'Która forma jest V2 od „buy"?',o:['buyed','bought','buys','buying'],a:1},
+    {t:'mcq',q:'„___ she call you yesterday?" Brakujący wyraz:',o:['Did','Does','Has','Was'],a:0},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:['I worked all day.','She went to Paris.','He didn\'t saw the film.','We stayed at home.'],a:2},
+    {t:'mcq',q:'Kiedy używamy Past Simple?',o:['Czynność trwa właśnie teraz','Czynność zakończona w konkretnym momencie przeszłości','Czynność z efektem teraźniejszym','Plan na przyszłość'],a:1},
+    {t:'mcq',q:'Forma V2 od „write" to:',o:['writed','written','wrote','writes'],a:2},
+    {t:'mcq',q:'Które pytanie jest zbudowane poprawnie?',o:['Did she went to the party?','Did she go to the party?','Does she went to the party?','Was she go to the party?'],a:1},
+    {t:'mcq',q:'„I ___ (not/go) to school yesterday." Poprawna forma:',o:["didn't go","don't go","wasn't go","hadn't go"],a:0},
+    {t:'fill',q:'She ___ (visit) her grandma last Sunday.',a:'visited',hint:'regularny: +ed'},
+    {t:'fill',q:'They ___ (not/come) to the meeting.',a:"didn't come",hint:"didn't + V1 (V2 odpada)"},
+    {t:'fill',q:'___ you see that film last week? (Did/Does)',a:'Did',hint:'pytanie w PS → Did'},
+    {t:'fill',q:'He ___ (buy) a new car last month.',a:'bought',hint:'buy → bought (nieregularny)'},
+    {t:'fill',q:'We ___ (have) a great time at the party.',a:'had',hint:'have → had (nieregularny)'},
+    {t:'fill',q:'She ___ (not/like) the food.',a:"didn't like",hint:"didn't + V1"},
+    {t:'fill',q:'I ___ (wake up) at 7 a.m. this morning.',a:'woke up',hint:'wake → woke (nieregularny)'},
+    {t:'fill',q:'___ they enjoy the concert? (Did/Does)',a:'Did',hint:'PS pytanie → Did + V1'},
+    {t:'fill',q:'The film ___ (start) at 8 o\'clock.',a:'started',hint:'regularny: +ed'},
+    {t:'fill',q:'He ___ (not/study) at all last week.',a:"didn't study",hint:"didn't + V1"},
+    {t:'fill',q:'I ___ (write) a long letter to my friend.',a:'wrote',hint:'write → wrote (nieregularny)'},
+    {t:'fill',q:'She ___ (be) very happy yesterday.',a:'was',hint:'be → was (lp) / were (lm)'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She watched TV last night.',a:"She didn't watch TV last night.",hint:"didn't + V1 (bez -ed)"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'He went to Paris last year.',a:'Did he go to Paris last year?',hint:'Did + podmiot + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'They arrived early.',a:"They didn't arrive early.",hint:"didn't + V1"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She bought a new dress.',a:'Did she buy a new dress?',hint:'Did + podmiot + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'We had a good time.',a:"We didn't have a good time.",hint:"didn't + V1"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'He wrote an email.',a:'Did he write an email?',hint:'Did + podmiot + V1 + ?'},
+  ]
+},
+
+'past-continuous':{
+  name:'Past Continuous',pl:'Czas przeszły ciągły',group:'Past',
+  qs:[
+    {t:'mcq',q:'Past Continuous tworzymy z:',o:['did + V1','was/were + V-ing','have/has + V3','will + V1'],a:1},
+    {t:'mcq',q:'„At 8 p.m. she ___ TV." Brakujące słowo:',o:['watches','was watching','is watching','watched'],a:1},
+    {t:'mcq',q:'Które wyrażenie charakteryzuje Past Continuous?',o:['while / at that moment in the past','yesterday','already','just'],a:0},
+    {t:'mcq',q:'„They ___ football when it started to rain."',o:['played','were playing','are playing','have played'],a:1},
+    {t:'mcq',q:'Poprawna forma przeczenia:',o:["He wasn't sleeping.","He didn't sleeping.","He not was sleeping.","He weren't sleeping."],a:0},
+    {t:'mcq',q:'„___ she talking on the phone?" Brakujący wyraz:',o:['Was','Were','Did','Does'],a:0},
+    {t:'mcq',q:'Które zdanie opisuje czynność przerwaną przez inną?',o:['I was having dinner when she called.','I had dinner yesterday.','I have had dinner.','I will have dinner.'],a:0},
+    {t:'mcq',q:'„I ___ when he arrived." Brakujące słowo:',o:['slept','sleep','was sleeping','have slept'],a:2},
+    {t:'mcq',q:'Kiedy NIE używamy Past Continuous?',o:['Czynność trwała w danym momencie przeszłości','Czynność była tłem dla innej','Czynność jednorazowa, zakończona w konkretnym momencie','Dwie równoległe czynności w przeszłości'],a:2},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:["She was cook dinner.","She were cooking dinner.","She was cooking dinner.","She cooking dinner."],a:2},
+    {t:'mcq',q:'V-ing od „sit" to:',o:['siting','sitting','sitted','sits'],a:1},
+    {t:'mcq',q:'„While he ___ a book, the phone rang."',o:['read','reads','was reading','has read'],a:2},
+    {t:'fill',q:'At 10 p.m. she ___ (sleep).',a:'was sleeping',hint:'she → was + V-ing'},
+    {t:'fill',q:'They ___ (have) lunch when I arrived.',a:'were having',hint:'they → were + V-ing'},
+    {t:'fill',q:'I ___ (not/watch) TV at 9 last night.',a:"wasn't watching",hint:'was not / wasn\'t + V-ing'},
+    {t:'fill',q:'___ he working at midnight? (Was/Were)',a:'Was',hint:'he → Was'},
+    {t:'fill',q:'While she ___ (read), the phone rang.',a:'was reading',hint:'she → was + V-ing'},
+    {t:'fill',q:'We ___ (walk) in the park when it started to rain.',a:'were walking',hint:'we → were + V-ing'},
+    {t:'fill',q:'The children ___ (play) outside all afternoon.',a:'were playing',hint:'they → were + V-ing'},
+    {t:'fill',q:'She ___ (not/pay) attention during the lecture.',a:"wasn't paying",hint:'was not / wasn\'t + V-ing'},
+    {t:'fill',q:'___ they talking about me? (Was/Were)',a:'Were',hint:'they → Were'},
+    {t:'fill',q:'He ___ (drive) to work when he saw the accident.',a:'was driving',hint:'he → was + V-ing'},
+    {t:'fill',q:'What were you ___ (do) at 8 last night?',a:'doing',hint:'were + V-ing'},
+    {t:'fill',q:'I ___ (try) to call you all morning!',a:'was trying',hint:'try → trying (y → ying)'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She was sleeping.',a:"She wasn't sleeping.",hint:'was not / wasn\'t + V-ing'},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'They were playing tennis.',a:'Were they playing tennis?',hint:'Were + podmiot + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'He was working late.',a:"He wasn't working late.",hint:'wasn\'t + V-ing'},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She was reading a book.',a:'Was she reading a book?',hint:'Was + podmiot + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'We were having dinner.',a:"We weren't having dinner.",hint:'were not / weren\'t + V-ing'},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'It was raining heavily.',a:'Was it raining heavily?',hint:'Was + it + V-ing + ?'},
+  ]
+},
+
+'past-perfect':{
+  name:'Past Perfect',pl:'Czas przeszły dokonany',group:'Past',
+  qs:[
+    {t:'mcq',q:'Past Perfect tworzymy z:',o:['did + V1','had + V3','was/were + V3','have/has + V3'],a:1},
+    {t:'mcq',q:'„She ___ already left when I arrived." Brakujące słowo:',o:['has','had','was','did'],a:1},
+    {t:'mcq',q:'Które wyrażenie pasuje do Past Perfect?',o:['right now','by the time / before','just now','for two hours (now)'],a:1},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:['I had saw this film.','I had seen this film.','I have seen this film yesterday.','I had see this film.'],a:1},
+    {t:'mcq',q:'„___ you finished before she arrived?" Brakujące słowo:',o:['Had','Have','Did','Was'],a:0},
+    {t:'mcq',q:'Kiedy używamy Past Perfect?',o:['Czynność w toku w danym momencie przeszłości','Czynność wcześniejsza od innej czynności przeszłej','Czynność z efektem teraźniejszym','Plan na przyszłość'],a:1},
+    {t:'mcq',q:'„When I got home, she ___ dinner." Brakujące słowo:',o:['was cooking','cooked','had cooked','has cooked'],a:2},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:['She had left before he arrived.','By the time I called, they had gone.','I had never been there before.','He had went to the shop.'],a:3},
+    {t:'mcq',q:'„She was upset because she ___ her keys." Brakujące słowo:',o:['lost','has lost','had lost','was losing'],a:2},
+    {t:'mcq',q:'„By 2020 they ___ the project." Brakujące słowo:',o:['finished','had finished','have finished','were finishing'],a:1},
+    {t:'mcq',q:'Skrócona forma „she had" to:',o:["she's","she'd","she'll","she'd've"],a:1},
+    {t:'mcq',q:'Forma V3 od „break" to:',o:['breaked','broke','broken','breaking'],a:2},
+    {t:'fill',q:'When he arrived, she ___ (already/leave).',a:'had already left',hint:'had + already + V3'},
+    {t:'fill',q:'I ___ (not/see) that film before.',a:"hadn't seen",hint:"hadn't + V3"},
+    {t:'fill',q:'___ you eaten before the party? (Had/Have)',a:'Had',hint:'PP przeszły → Had'},
+    {t:'fill',q:'By the time they got there, the film ___ (start).',a:'had started',hint:'had + V3'},
+    {t:'fill',q:'She was tired because she ___ (work) all day.',a:'had worked',hint:'had + V3'},
+    {t:'fill',q:'He ___ (not/finish) his homework when she called.',a:"hadn't finished",hint:"hadn't + V3"},
+    {t:'fill',q:'I ___ (never/be) to Japan before that trip.',a:'had never been',hint:'had + never + V3'},
+    {t:'fill',q:'They ___ (already/eat) when we arrived.',a:'had already eaten',hint:'eat → eaten (nieregularny)'},
+    {t:'fill',q:'___ she ever seen snow before? (Had/Has)',a:'Had',hint:'przed inną czynnością przeszłą → Had'},
+    {t:'fill',q:'By noon, he ___ (write) three reports.',a:'had written',hint:'write → written (nieregularny)'},
+    {t:'fill',q:'She ___ (lose) her phone, so she couldn\'t call.',a:'had lost',hint:'lose → lost (nieregularny)'},
+    {t:'fill',q:'I ___ (not/meet) her before the conference.',a:"hadn't met",hint:'meet → met (nieregularny)'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She had finished the task.',a:"She hadn't finished the task.",hint:"hadn't + V3"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'He had called before.',a:'Had he called before?',hint:'Had + podmiot + V3 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'They had already left.',a:"They hadn't already left.",hint:"hadn't + V3"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She had seen the film.',a:'Had she seen the film?',hint:'Had + podmiot + V3 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'We had met before.',a:"We hadn't met before.",hint:"hadn't + V3"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'He had written the report.',a:'Had he written the report?',hint:'Had + podmiot + V3 + ?'},
+  ]
+},
+
+'past-perfect-continuous':{
+  name:'Past Perfect Continuous',pl:'Czas przeszły dokonany ciągły',group:'Past',
+  qs:[
+    {t:'mcq',q:'Past Perfect Continuous tworzymy z:',o:['had + V3','had + been + V-ing','was/were + V-ing','did + V1'],a:1},
+    {t:'mcq',q:'„She was tired because she ___ been running." Brakujące słowo:',o:['had','has','was','did'],a:0},
+    {t:'mcq',q:'Które wyrażenia pasują do PPC?',o:['just, already, ever','for / since (przed przeszłą czynnością)','yesterday, last week','soon, tomorrow'],a:1},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:["I'd been waiting for hours.","I'd been wait for hours.","I had been waited for hours.","I been waiting for hours."],a:0},
+    {t:'mcq',q:'PPC podkreśla przede wszystkim:',o:['Zakończony skutek','Czas trwania czynności poprzedzającej inną przeszłą','Konkretny moment','Czynność wielokrotną'],a:1},
+    {t:'mcq',q:'„How long ___ you been working there before you quit?"',o:['had','have','did','were'],a:0},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:["She'd been studying all evening.","They'd been talking for hours.","He'd been knowing about it for weeks.","I'd been sleeping when he called."],a:2},
+    {t:'mcq',q:'„He was exhausted because he ___ been working for 12 hours."',o:['is','was','has','had'],a:3},
+    {t:'mcq',q:'PPC w porównaniu do PP bardziej podkreśla:',o:['zakończony skutek','czas trwania / ciągłość','konkretny moment','liczbę czynności'],a:1},
+    {t:'mcq',q:'Skrócona forma „I had been" to:',o:["I'd been","I've been","I'll been","I'd have been"],a:0},
+    {t:'mcq',q:'Poprawne przeczenie PPC:',o:["She hadn't been sleeping.","She wasn't been sleeping.","She didn't been sleeping.","She weren't been sleeping."],a:0},
+    {t:'mcq',q:'W PPC V3 jest zawsze:',o:['V3 od danego czasownika','been','V-ing','V1'],a:1},
+    {t:'fill',q:'She was exhausted because she ___ (study) all night.',a:'had been studying',hint:'had + been + V-ing'},
+    {t:'fill',q:'___ you been waiting long before he arrived? (Had/Have)',a:'Had',hint:'przed inną czynnością przeszłą → Had'},
+    {t:'fill',q:'They ___ (work) on the car for three hours when it finally started.',a:'had been working',hint:'had + been + V-ing'},
+    {t:'fill',q:'He ___ (not/sleep) well for weeks before the exam.',a:"hadn't been sleeping",hint:"hadn't + been + V-ing"},
+    {t:'fill',q:'By the time I called, she ___ (cry) for an hour.',a:'had been crying',hint:'had + been + V-ing'},
+    {t:'fill',q:'I ___ (run) all morning, that\'s why I was so tired.',a:'had been running',hint:'had + been + V-ing'},
+    {t:'fill',q:'How long ___ they been arguing before you came? (had/have)',a:'had',hint:'przed przeszłą czynnością → had'},
+    {t:'fill',q:'She ___ (teach) there for ten years before she retired.',a:'had been teaching',hint:'had + been + V-ing'},
+    {t:'fill',q:'The children were dirty because they ___ (play) in the garden.',a:'had been playing',hint:'had + been + V-ing'},
+    {t:'fill',q:'It ___ (rain) for days when the river finally flooded.',a:'had been raining',hint:'had + been + V-ing'},
+    {t:'fill',q:'He ___ (not/feel) well for weeks before the diagnosis.',a:"hadn't been feeling",hint:"hadn't + been + V-ing"},
+    {t:'fill',q:'She ___ (wait) for two hours by the time he showed up.',a:'had been waiting',hint:'had + been + V-ing'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She had been studying all evening.',a:"She hadn't been studying all evening.",hint:"hadn't + been + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'They had been waiting for hours.',a:'Had they been waiting for hours?',hint:'Had + podmiot + been + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'He had been working all day.',a:"He hadn't been working all day.",hint:"hadn't + been + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She had been crying.',a:'Had she been crying?',hint:'Had + podmiot + been + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'It had been raining for days.',a:"It hadn't been raining for days.",hint:"hadn't + been + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'You had been sleeping.',a:'Had you been sleeping?',hint:'Had + podmiot + been + V-ing + ?'},
+  ]
+},
+
+'future-simple':{
+  name:'Future Simple (will)',pl:'Czas przyszły prosty',group:'Future',
+  qs:[
+    {t:'mcq',q:'Future Simple tworzymy z:',o:['will + V1','am/is/are + V-ing','going to + V1','have/has + V3'],a:0},
+    {t:'mcq',q:'„She ___ call you tomorrow." Brakujące słowo:',o:['will','is going','goes','would'],a:0},
+    {t:'mcq',q:'Które wyrażenie pasuje do Future Simple?',o:['yesterday','every day','tomorrow / in the future','right now'],a:2},
+    {t:'mcq',q:'Poprawna forma przeczenia: „She ___ come."',o:["won't","willn't","doesn't will","isn't will"],a:0},
+    {t:'mcq',q:'„___ you help me?" Brakujące słowo:',o:['Will','Do','Are','Have'],a:0},
+    {t:'mcq',q:'Kiedy używamy „will"?',o:['Spontaniczna decyzja, obietnica, przepowiednia','Zaplanowana czynność (mamy już bilet)','Czynność w toku w przyszłości','Czynność nawykowa'],a:0},
+    {t:'mcq',q:'„A: I\'m cold. B: I ___ close the window." Brakujące słowo:',o:["'ll","going to","go to","am about to"],a:0},
+    {t:'mcq',q:'„I promise I ___ be there on time." Brakujące słowo:',o:['will','go to','would','am'],a:0},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:['She will comes tomorrow.','She will come tomorrow.','She wills come tomorrow.','She will to come tomorrow.'],a:1},
+    {t:'mcq',q:'„They ___ probably arrive late." Brakujące słowo:',o:['will','are','do','have'],a:0},
+    {t:'mcq',q:'Skrócona forma „I will" to:',o:["I'll","I'd","I've","I'm"],a:0},
+    {t:'mcq',q:'Które zdanie niepoprawnie używa will?',o:["I'll call you later.","It will rain tomorrow.","I'm going to the concert tomorrow — I've had tickets for weeks. (→ should be will)","She won't accept it."],a:2},
+    {t:'fill',q:'I ___ (help) you with that.',a:'will help',hint:'will + V1'},
+    {t:'fill',q:'She ___ (not/come) to the party.',a:"won't come",hint:'will not / won\'t + V1'},
+    {t:'fill',q:'___ you be there tomorrow? (Will/Do)',a:'Will',hint:'Future Simple pytanie → Will'},
+    {t:'fill',q:'I promise I ___ (call) you.',a:'will call',hint:'will + V1'},
+    {t:'fill',q:'She ___ (not/tell) anyone about this.',a:"won't tell",hint:'won\'t + V1'},
+    {t:'fill',q:'___ it rain tomorrow? (Will/Does)',a:'Will',hint:'Future Simple pytanie → Will'},
+    {t:'fill',q:'He ___ (be) 30 years old next year.',a:'will be',hint:'will + V1 (be nie zmienia formy)'},
+    {t:'fill',q:'I don\'t think she ___ (like) this idea.',a:'will like',hint:'will + V1'},
+    {t:'fill',q:'___ they join us for dinner? (Will/Do)',a:'Will',hint:'pytanie → Will'},
+    {t:'fill',q:'Don\'t worry, everything ___ (be) fine.',a:'will be',hint:'will + V1'},
+    {t:'fill',q:'He ___ (not/remember) to call — remind him.',a:"won't remember",hint:'won\'t + V1'},
+    {t:'fill',q:'I ___ (definitely/pass) the exam — I\'ve studied hard!',a:'will definitely pass',hint:'will + przysłówek + V1'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She will call tomorrow.',a:"She won't call tomorrow.",hint:'will not / won\'t + V1'},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'He will come.',a:'Will he come?',hint:'Will + podmiot + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'They will finish on time.',a:"They won't finish on time.",hint:"won't + V1"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She will help us.',a:'Will she help us?',hint:'Will + podmiot + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'It will be cold tomorrow.',a:"It won't be cold tomorrow.",hint:"won't + V1"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'You will understand one day.',a:'Will you understand one day?',hint:'Will + podmiot + V1 + ?'},
+  ]
+},
+
+'be-going-to':{
+  name:'Be Going To',pl:'Zamierzam / mam zamiar',group:'Future',
+  qs:[
+    {t:'mcq',q:'„Be going to" tworzymy z:',o:['will + V1','am/is/are + going to + V1','have/has + V3','did + V1'],a:1},
+    {t:'mcq',q:'„She ___ going to study medicine." Brakujące słowo:',o:['is','are','was','will'],a:0},
+    {t:'mcq',q:'„Be going to" używamy gdy:',o:['Spontaniczna decyzja podjęta w tej chwili','Zaplanowana czynność lub widoczna oznaka w teraźniejszości','Czynność nawykowa','Czynność zakończona'],a:1},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:['She is going study.','She is going to study.','She going to study.','She will going to study.'],a:1},
+    {t:'mcq',q:'„Look! She ___ fall!" Brakujące słowo:',o:['is going to','will','goes to','would'],a:0},
+    {t:'mcq',q:'„I\'ve decided. I ___ learn Spanish." (zaplanowane) Brakujące słowo:',o:["'m going to","will","go to","'m to"],a:0},
+    {t:'mcq',q:'Pytanie: „___ she going to call him?"',o:['Is','Are','Will','Does'],a:0},
+    {t:'mcq',q:'Przeczenie: „He ___ going to accept it."',o:["isn't","aren't","won't","doesn't"],a:0},
+    {t:'mcq',q:'Różnica will vs going to: „A: Tea or coffee? B: I ___ have tea." (spontaniczna decyzja)',o:["'m going to","'ll","go to","would"],a:1},
+    {t:'mcq',q:'Które zdanie jest pytaniem?',o:['She is going to pass?','Is she going to pass?','She going to pass?','Will she going to pass?'],a:1},
+    {t:'mcq',q:'Forma dla „I" to:',o:['I is going to','I are going to','I am going to','I will going to'],a:2},
+    {t:'mcq',q:'„They ___ a new house. (Znaleźli już dom.)"',o:['will buy','are going to buy','buy','bought'],a:1},
+    {t:'fill',q:'She ___ (study) medicine next year.',a:'is going to study',hint:'she → is going to + V1'},
+    {t:'fill',q:'I ___ (not/take) the bus. I\'ll walk.',a:"am not going to take",hint:'am not going to + V1'},
+    {t:'fill',q:'___ he going to call her? (Is/Are)',a:'Is',hint:'he → Is'},
+    {t:'fill',q:'Look at the sky! It ___ (rain).',a:'is going to rain',hint:'widoczna oznaka → is going to'},
+    {t:'fill',q:'They ___ (move) to London next month.',a:'are going to move',hint:'they → are going to + V1'},
+    {t:'fill',q:'She ___ (not/accept) the offer.',a:"isn't going to accept",hint:'is not / isn\'t going to + V1'},
+    {t:'fill',q:'We ___ (have) a party on Saturday.',a:'are going to have',hint:'we → are going to + V1'},
+    {t:'fill',q:'___ you going to tell him? (Is/Are)',a:'Are',hint:'you → Are'},
+    {t:'fill',q:'He ___ (buy) a new phone. (Już wybrał model.)',a:'is going to buy',hint:'podjęta decyzja → is going to'},
+    {t:'fill',q:'The baby ___ (cry) — look at its face!',a:'is going to cry',hint:'widoczna oznaka → is going to'},
+    {t:'fill',q:'I\'ve decided: I ___ (learn) French.',a:'am going to learn',hint:'I → am going to + V1'},
+    {t:'fill',q:'She ___ (not/come) to the meeting.',a:"isn't going to come",hint:'isn\'t going to + V1'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She is going to study.',a:"She isn't going to study.",hint:"isn't going to + V1"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'They are going to travel.',a:'Are they going to travel?',hint:'Are + podmiot + going to + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'He is going to call.',a:"He isn't going to call.",hint:"isn't going to + V1"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She is going to buy a car.',a:'Is she going to buy a car?',hint:'Is + podmiot + going to + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'We are going to move.',a:"We aren't going to move.",hint:"aren't going to + V1"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'It is going to rain.',a:'Is it going to rain?',hint:'Is + it + going to + V1 + ?'},
+  ]
+},
+
+'future-continuous':{
+  name:'Future Continuous',pl:'Czas przyszły ciągły',group:'Future',
+  qs:[
+    {t:'mcq',q:'Future Continuous tworzymy z:',o:['will + V-ing','will + be + V-ing','will + have + V3','am/is/are + V-ing'],a:1},
+    {t:'mcq',q:'„At 8 p.m. she ___ dinner." Brakujące słowo:',o:['will cook','will be cooking','cooks','is cooking'],a:1},
+    {t:'mcq',q:'Które wyrażenie pasuje do Future Continuous?',o:['yesterday','just','at this time tomorrow','already'],a:2},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:['She will be cook.','She will cooking.','She will be cooking.','She will have cooking.'],a:2},
+    {t:'mcq',q:'„This time next week I ___ on the beach." Brakujące słowo:',o:['will lie','will be lying','am lying','will have lied'],a:1},
+    {t:'mcq',q:'Poprawna forma przeczenia: „He ___ at 10 tomorrow."',o:["won't be working","isn't working","won't working","doesn't be working"],a:0},
+    {t:'mcq',q:'„___ you be joining us?" Brakujące słowo:',o:['Will','Are','Do','Have'],a:0},
+    {t:'mcq',q:'Kiedy używamy Future Continuous?',o:['Czynność zakończona do pewnego momentu w przyszłości','Czynność trwająca w danym momencie przyszłości','Spontaniczna decyzja','Zaplanowany wyjazd (mamy bilety)'],a:1},
+    {t:'mcq',q:'„Don\'t call at 9 — I ___ an exam." Brakujące słowo:',o:['will be taking','will take','take','took'],a:0},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:["I'll be waiting for you.","She'll be working at noon.","They'll be known the answer.","He'll be sleeping."],a:2},
+    {t:'fill',q:'This time next year she ___ (study) in London.',a:'will be studying',hint:'will + be + V-ing'},
+    {t:'fill',q:'I ___ (not/watch) TV at 8 — I\'ll be out.',a:"won't be watching",hint:"won't + be + V-ing"},
+    {t:'fill',q:'Will she ___ (work) at this time tomorrow?',a:'be working',hint:'will + be + V-ing'},
+    {t:'fill',q:'Don\'t call at noon — they ___ (have) lunch.',a:'will be having',hint:'will + be + V-ing'},
+    {t:'fill',q:'I ___ (drive) all night to get there.',a:'will be driving',hint:'will + be + V-ing'},
+    {t:'fill',q:'She ___ (not/sleep) at midnight — she works nights.',a:"won't be sleeping",hint:"won't + be + V-ing"},
+    {t:'fill',q:'This time next week we ___ (fly) to Spain.',a:'will be flying',hint:'will + be + V-ing'},
+    {t:'fill',q:'___ you be waiting for me? (Will/Are)',a:'Will',hint:'Future Continuous pytanie → Will'},
+    {t:'fill',q:'At midnight he ___ (work) on his thesis.',a:'will be working',hint:'will + be + V-ing'},
+    {t:'fill',q:'They ___ (celebrate) when we arrive.',a:'will be celebrating',hint:'will + be + V-ing'},
+    {t:'fill',q:'In ten minutes I ___ (talk) to the director.',a:'will be talking',hint:'will + be + V-ing'},
+    {t:'fill',q:'Don\'t worry — she ___ (not/use) the car at 5.',a:"won't be using",hint:"won't + be + V-ing"},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She will be cooking dinner.',a:"She won't be cooking dinner.",hint:"won't + be + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'They will be working.',a:'Will they be working?',hint:'Will + podmiot + be + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'He will be studying all night.',a:"He won't be studying all night.",hint:"won't + be + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She will be sleeping.',a:'Will she be sleeping?',hint:'Will + podmiot + be + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'We will be travelling.',a:"We won't be travelling.",hint:"won't + be + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'It will be raining.',a:'Will it be raining?',hint:'Will + it + be + V-ing + ?'},
+  ]
+},
+
+'future-perfect':{
+  name:'Future Perfect',pl:'Czas przyszły dokonany',group:'Future',
+  qs:[
+    {t:'mcq',q:'Future Perfect tworzymy z:',o:['will + V-ing','will + be + V-ing','will + have + V3','have/has + V3'],a:2},
+    {t:'mcq',q:'„By 5 p.m. she ___ finished." Brakujące słowo:',o:['will','will have','will be','is going to'],a:1},
+    {t:'mcq',q:'Które wyrażenie pasuje do Future Perfect?',o:['at this time tomorrow','by tomorrow / by 6 p.m.','right now','usually'],a:1},
+    {t:'mcq',q:'„By the time you arrive, we ___ dinner." Brakujące słowo:',o:['will eat','will have eaten','are eating','eat'],a:1},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:['She will have finish.','She will have finished.','She will finished.','She has finished tomorrow.'],a:1},
+    {t:'mcq',q:'Poprawna forma przeczenia: „She ___ finished by then."',o:["won't have finished","will haven't finished","won't finished","didn't will finish"],a:0},
+    {t:'mcq',q:'Kiedy używamy Future Perfect?',o:['Czynność trwająca w danym momencie w przyszłości','Czynność zakończona do określonego momentu w przyszłości','Spontaniczna decyzja','Zaplanowany wyjazd'],a:1},
+    {t:'mcq',q:'„___ you have finished by 6?" Brakujące słowo:',o:['Will','Have','Are','Do'],a:0},
+    {t:'mcq',q:'„By 2030 scientists ___ a cure." Brakujące słowo:',o:['will find','will have found','have found','found'],a:1},
+    {t:'mcq',q:'Forma V3 od „eat" to:',o:['eated','ate','eaten','eating'],a:2},
+    {t:'fill',q:'By 6 p.m. she ___ (finish) work.',a:'will have finished',hint:'will + have + V3'},
+    {t:'fill',q:'I ___ (not/complete) it by then.',a:"won't have completed",hint:"won't + have + V3"},
+    {t:'fill',q:'Will you ___ (leave) by the time I arrive?',a:'have left',hint:'will + have + V3'},
+    {t:'fill',q:'By next year she ___ (save) enough money.',a:'will have saved',hint:'will + have + V3'},
+    {t:'fill',q:'They ___ (not/finish) the project by Friday.',a:"won't have finished",hint:"won't + have + V3"},
+    {t:'fill',q:'Will he ___ (complete) the course by June?',a:'have completed',hint:'will + have + V3'},
+    {t:'fill',q:'By the time we get there, they ___ (go) to bed.',a:'will have gone',hint:'go → gone (nieregularny)'},
+    {t:'fill',q:'She ___ (study) for 10 hours by midnight.',a:'will have studied',hint:'will + have + V3'},
+    {t:'fill',q:'By 2025 I ___ (work) here for 5 years.',a:'will have worked',hint:'will + have + V3'},
+    {t:'fill',q:'They ___ (already/arrive) by the time you call.',a:'will have already arrived',hint:'will + have + already + V3'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She will have finished by then.',a:"She won't have finished by then.",hint:"won't + have + V3"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'He will have left by 5.',a:'Will he have left by 5?',hint:'Will + podmiot + have + V3 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'They will have completed it.',a:"They won't have completed it.",hint:"won't + have + V3"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She will have arrived.',a:'Will she have arrived?',hint:'Will + podmiot + have + V3 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'We will have met before.',a:"We won't have met before.",hint:"won't + have + V3"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'It will have stopped raining.',a:'Will it have stopped raining?',hint:'Will + podmiot + have + V3 + ?'},
+  ]
+},
+
+'future-perfect-continuous':{
+  name:'Future Perfect Continuous',pl:'Czas przyszły dokonany ciągły',group:'Future',
+  qs:[
+    {t:'mcq',q:'Future Perfect Continuous tworzymy z:',o:['will + V-ing','will + have + V3','will + have + been + V-ing','will + be + V-ing'],a:2},
+    {t:'mcq',q:'„By 5 p.m. she ___ been waiting for 3 hours." Brakujące słowo:',o:['will have','will be','has','will'],a:0},
+    {t:'mcq',q:'Które wyrażenie typowe dla FPC?',o:['just','already','for … by …','tomorrow'],a:2},
+    {t:'mcq',q:'Które zdanie jest poprawne?',o:["I'll have been studying for 5 hours by midnight.","I'll have studying for 5 hours.","I'll been studying for 5 hours.","I will studying for 5 hours."],a:0},
+    {t:'mcq',q:'FPC podkreśla przede wszystkim:',o:['Zakończony skutek','Czas trwania czynności do określonego momentu w przyszłości','Spontaniczną decyzję','Czynność nawykową'],a:1},
+    {t:'mcq',q:'„By the time she retires, she ___ been teaching for 40 years."',o:['will be','will have','would have','is going to have'],a:1},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:["I'll have been waiting for an hour by then.","By June she'll have been studying for a year.","He'll have been knowing her for 10 years.","They'll have been working here for decades."],a:2},
+    {t:'mcq',q:'Poprawna forma przeczenia w FPC:',o:["She won't have been working.","She will haven't been working.","She won't been working.","She not will have been working."],a:0},
+    {t:'mcq',q:'FPC vs FC: FPC podkreśla ___',o:['czynność trwającą w danym momencie przyszłości','czas trwania czynności zakończonej do momentu w przyszłości','spontaniczną decyzję','zaplanowany wyjazd'],a:1},
+    {t:'mcq',q:'„How long ___ you have been waiting by then?"',o:['will','have','are','do'],a:0},
+    {t:'fill',q:'By midnight I ___ (study) for 6 hours.',a:'will have been studying',hint:'will + have + been + V-ing'},
+    {t:'fill',q:'By next year she ___ (teach) for 20 years.',a:'will have been teaching',hint:'will + have + been + V-ing'},
+    {t:'fill',q:'___ he have been working here for a year by June? (Will/Have)',a:'Will',hint:'FPC pytanie → Will'},
+    {t:'fill',q:'By the time they finish, they ___ (build) for three years.',a:'will have been building',hint:'will + have + been + V-ing'},
+    {t:'fill',q:'I ___ (not/sleep) for 24 hours by tomorrow morning.',a:"won't have been sleeping",hint:"won't + have + been + V-ing"},
+    {t:'fill',q:'She ___ (run) for two hours by the time I pick her up.',a:'will have been running',hint:'will + have + been + V-ing'},
+    {t:'fill',q:'By 2030 they ___ (research) this topic for a decade.',a:'will have been researching',hint:'will + have + been + V-ing'},
+    {t:'fill',q:'How long will you ___ (wait) by the time he arrives?',a:'have been waiting',hint:'will + have + been + V-ing'},
+    {t:'fill',q:'By graduation he ___ (study) for 5 years.',a:'will have been studying',hint:'will + have + been + V-ing'},
+    {t:'fill',q:'They ___ (not/work) together for long by then.',a:"won't have been working",hint:"won't + have + been + V-ing"},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She will have been studying.',a:"She won't have been studying.",hint:"won't + have + been + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'They will have been waiting.',a:'Will they have been waiting?',hint:'Will + podmiot + have + been + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'He will have been working all day.',a:"He won't have been working all day.",hint:"won't + have + been + V-ing"},
+    {t:'tr',inst:'Zamień na pytanie ogólne:',q:'She will have been sleeping.',a:'Will she have been sleeping?',hint:'Will + podmiot + have + been + V-ing + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'We will have been travelling for hours.',a:"We won't have been travelling for hours.",hint:"won't + have + been + V-ing"},
+  ]
+},
+
+'conditionals':{
+  name:'Okresy warunkowe',pl:'Conditionals 0/1/2/3',group:'Dodatkowe',
+  qs:[
+    {t:'mcq',q:'W Zero Conditional (0. okresu warunkowym) używamy:',o:['If + PS, will + V1','If + PS, PS','If + Past Simple, would + V1','If + PP, would have + V3'],a:1},
+    {t:'mcq',q:'„If you heat water to 100°C, it ___." Brakujące słowo:',o:['boils','will boil','would boil','boiled'],a:0},
+    {t:'mcq',q:'W First Conditional (1. okresu warunkowym) używamy:',o:['If + PS, PS','If + PS, will + V1','If + Past Simple, would + V1','If + PP, would have + V3'],a:1},
+    {t:'mcq',q:'„If it rains tomorrow, I ___ stay at home." Brakujące słowo:',o:['will','would','stayed','had stayed'],a:0},
+    {t:'mcq',q:'W Second Conditional (2. okresu warunkowym) używamy:',o:['If + PS, PS','If + PS, will + V1','If + Past Simple, would + V1','If + PP, would have + V3'],a:2},
+    {t:'mcq',q:'„If I ___ rich, I would travel the world." Brakujące słowo:',o:['am','was','were','will be'],a:2},
+    {t:'mcq',q:'W Third Conditional (3. okresu warunkowym) używamy:',o:['If + PS, will + V1','If + Past Simple, would + V1','If + PP, would have + V3','If + PS, PS'],a:2},
+    {t:'mcq',q:'„If she had studied harder, she ___ passed." Brakujące słowo:',o:['will have','would have','had','would'],a:1},
+    {t:'mcq',q:'„I wish I ___ taller." Brakujące słowo:',o:['am','was','were','will be'],a:2},
+    {t:'mcq',q:'Które zdanie to 2. okres warunkowy?',o:['If it rains, I\'ll stay home.','If it rained, I would stay home.','If it had rained, I would have stayed home.','When it rains, I stay home.'],a:1},
+    {t:'mcq',q:'Które zdanie to 3. okres warunkowy?',o:['If she works hard, she will succeed.','If she worked hard, she would succeed.','If she had worked hard, she would have succeeded.','When she works hard, she succeeds.'],a:2},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:['If she works hard, she will succeed.','If he were taller, he could play basketball.','If she had left earlier, she wouldn\'t have missed the train.','If I will study, I will pass.'],a:3},
+    {t:'fill',q:'If you heat ice, it ___ (melt). (Zero Conditional)',a:'melts',hint:'Zero: If + PS, PS'},
+    {t:'fill',q:'If it rains, I ___ (take) an umbrella. (First Conditional)',a:'will take',hint:'First: If + PS, will + V1'},
+    {t:'fill',q:'If I ___ (be) you, I would apologize. (Second Conditional)',a:'were',hint:'Second: If + were/Past Simple'},
+    {t:'fill',q:'If she had arrived earlier, she ___ (meet) him. (Third Conditional)',a:'would have met',hint:'Third: would + have + V3'},
+    {t:'fill',q:'I wish I ___ (speak) French fluently.',a:'could speak',hint:'I wish + could + V1 (życzenie nierealne)'},
+    {t:'fill',q:'If they ___ (study), they will pass the exam.',a:'study',hint:'First: If + PS, will + V1'},
+    {t:'fill',q:'If he ___ (have) more money, he would buy a car.',a:'had',hint:'Second: If + Past Simple'},
+    {t:'fill',q:'If we ___ (leave) earlier, we wouldn\'t have missed the bus.',a:'had left',hint:'Third: If + Past Perfect'},
+    {t:'fill',q:'Unless you ___ (hurry), you\'ll be late.',a:'hurry',hint:'Unless = If + not → PS'},
+    {t:'fill',q:'If I ___ (win) the lottery, I\'d buy a house.',a:'won',hint:'Second: If + Past Simple (nie: would)'},
+    {t:'fill',q:'Water ___ (boil) if you heat it to 100°C.',a:'boils',hint:'Zero: ogólna prawda → PS'},
+    {t:'fill',q:'If she had studied harder, she ___ (pass) the exam.',a:'would have passed',hint:'Third: would + have + V3'},
+    {t:'tr',inst:'Uzupełnij (1. okres warunkowy):',q:'If it ___ (rain), we will cancel the trip.',a:'rains',hint:'If + Present Simple, will + V1'},
+    {t:'tr',inst:'Uzupełnij (2. okres warunkowy):',q:'If I ___ (be) you, I would talk to her.',a:'were',hint:'If + were (2. os. war. — zawsze were)'},
+    {t:'tr',inst:'Uzupełnij (3. okres warunkowy):',q:'If they ___ (leave) earlier, they wouldn\'t have missed the train.',a:'had left',hint:'If + Past Perfect, would have + V3'},
+    {t:'tr',inst:'Uzupełnij (1. okres warunkowy):',q:'If he works hard, he ___ (succeed).',a:'will succeed',hint:'If + PS, will + V1'},
+    {t:'tr',inst:'Uzupełnij (2. okres warunkowy):',q:'If we had more money, we ___ (travel) the world.',a:'would travel',hint:'If + Past Simple, would + V1'},
+    {t:'tr',inst:'Uzupełnij (3. okres warunkowy):',q:'If she ___ (study) harder, she would have passed.',a:'had studied',hint:'If + Past Perfect, would have + V3'},
+  ]
+},
+
+'passive-voice':{
+  name:'Strona bierna',pl:'Passive Voice',group:'Dodatkowe',
+  qs:[
+    {t:'mcq',q:'Stronę bierną tworzymy z:',o:['do/does + V1','be (odpowiedni czas) + V3','have/has + V3','will + V1'],a:1},
+    {t:'mcq',q:'Zamień na stronę bierną: „They clean the office every day." → „The office ___ every day."',o:['cleans','is cleaned','was cleaned','has been cleaned'],a:1},
+    {t:'mcq',q:'W którym czasie jest zdanie: „The letter was written by John."',o:['Present Simple','Past Simple','Present Perfect','Future Simple'],a:1},
+    {t:'mcq',q:'Które zdanie jest w stronie biernej?',o:['She wrote the letter.','The letter was written.','She writes every day.','They are writing now.'],a:1},
+    {t:'mcq',q:'„The film ___ by Spielberg." (Present Simple passive)',o:['directs','is directed','was directed','has directed'],a:1},
+    {t:'mcq',q:'„The building ___ last year." (Past Simple passive)',o:['is built','was built','has been built','will be built'],a:1},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:['The car was repaired.','English is spoken here.','The cake has been ate.','The project will be finished.'],a:2},
+    {t:'mcq',q:'„The results ___ next week." (Future passive)',o:['will announce','will be announced','are announced','were announced'],a:1},
+    {t:'mcq',q:'Aby powiedzieć, kto wykonał czynność w stronie biernej, używamy:',o:['with','for','by','from'],a:2},
+    {t:'mcq',q:'Zamień: „They have found a solution." na stronę bierną:',o:['A solution found.','A solution has been found.','A solution was found.','A solution is found.'],a:1},
+    {t:'fill',q:'English ___ (speak) all over the world.',a:'is spoken',hint:'Present Simple passive: is/are + V3'},
+    {t:'fill',q:'This bridge ___ (build) in 1902.',a:'was built',hint:'Past Simple passive: was/were + V3'},
+    {t:'fill',q:'The letter ___ (already/send).',a:'has already been sent',hint:'Present Perfect passive: has/have + been + V3'},
+    {t:'fill',q:'The project ___ (finish) by Friday.',a:'will be finished',hint:'Future passive: will + be + V3'},
+    {t:'fill',q:'My car ___ (steal) last night!',a:'was stolen',hint:'Past Simple passive: was + V3'},
+    {t:'fill',q:'These cars ___ (make) in Germany.',a:'are made',hint:'Present Simple passive: are + V3'},
+    {t:'fill',q:'The results ___ (announce) tomorrow.',a:'will be announced',hint:'Future passive: will + be + V3'},
+    {t:'fill',q:'He ___ (invite) to the party last week.',a:'was invited',hint:'Past Simple passive: was + V3'},
+    {t:'fill',q:'New roads ___ (build) in this area every year.',a:'are built',hint:'Present Simple passive: are + V3'},
+    {t:'fill',q:'The error ___ (not/notice) until it was too late.',a:"wasn't noticed",hint:'Past Simple passive negative'},
+    {t:'fill',q:'I ___ (give) a prize at the ceremony.',a:'was given',hint:'Past Simple passive: was + V3'},
+    {t:'fill',q:'The report ___ (write) by three people.',a:'was written',hint:'write → written (nieregularny)'},
+    {t:'tr',inst:'Zamień na stronę bierną:',q:'They clean the office every day.',a:'The office is cleaned every day.',hint:'is/are + V3 (Present Simple passive)'},
+    {t:'tr',inst:'Zamień na stronę bierną:',q:'Mozart wrote this symphony.',a:'This symphony was written by Mozart.',hint:'was/were + V3 + by … (Past Simple passive)'},
+    {t:'tr',inst:'Zamień na stronę bierną:',q:'They will finish the project.',a:'The project will be finished.',hint:'will + be + V3'},
+    {t:'tr',inst:'Zamień na stronę bierną:',q:'They have arrested the thief.',a:'The thief has been arrested.',hint:'has/have + been + V3'},
+    {t:'tr',inst:'Zamień na stronę bierną:',q:'Someone stole my car.',a:'My car was stolen.',hint:'was + V3 (Past Simple passive)'},
+    {t:'tr',inst:'Zamień na stronę bierną:',q:'They are building a new road.',a:'A new road is being built.',hint:'is/are + being + V3 (Present Continuous passive)'},
+  ]
+},
+
+'modal-verbs':{
+  name:'Czasowniki modalne',pl:'Modal Verbs',group:'Dodatkowe',
+  qs:[
+    {t:'mcq',q:'Który czasownik wyraża obowiązek / konieczność?',o:['can','should','must','might'],a:2},
+    {t:'mcq',q:'„You ___ eat so much sugar — it\'s bad for you."',o:['should','shouldn\'t','must','can'],a:1},
+    {t:'mcq',q:'„___ I open the window?" (prośba o pozwolenie — formalnie)',o:['May','Must','Should','Have'],a:0},
+    {t:'mcq',q:'Różnica must vs have to: „must" wyraża...',o:['zewnętrzny obowiązek (prawo, przepisy)','wewnętrzny obowiązek lub nakaz od mówiącego','zdolność','możliwość'],a:1},
+    {t:'mcq',q:'„She ___ swim very well when she was young."',o:['could','can','must','might'],a:0},
+    {t:'mcq',q:'„You ___ come — it\'s optional." (brak konieczności)',o:["don't have to","mustn't","couldn't","shouldn't"],a:0},
+    {t:'mcq',q:'„I ___ be wrong — let me check again." (niepewność)',o:['might','can','must','should'],a:0},
+    {t:'mcq',q:'„You ___ smoke here — it\'s forbidden!" (zakaz)',o:["mustn't","don't have to","shouldn't","mightn't"],a:0},
+    {t:'mcq',q:'„___ you pass me the salt, please?" (grzeczna prośba)',o:['Could','Must','Should','Have'],a:0},
+    {t:'mcq',q:'Które zdanie zawiera błąd?',o:['She can speak three languages.','You should to see a doctor.','I must finish this today.','He might come later.'],a:1},
+    {t:'fill',q:'___ you help me with this? (grzeczna prośba)',a:'Could',hint:'Could = grzeczna prośba'},
+    {t:'fill',q:'You ___ (not/have to) pay — it\'s free.',a:"don't have to",hint:'don\'t have to = brak konieczności'},
+    {t:'fill',q:'She ___ speak five languages fluently. (zdolność)',a:'can',hint:'can = zdolność'},
+    {t:'fill',q:'You ___ (must) see this film — it\'s amazing!',a:'must',hint:'must = silna rekomendacja'},
+    {t:'fill',q:'___ I borrow your pen? (formalna prośba o pozwolenie)',a:'May',hint:'May = formalne pozwolenie'},
+    {t:'fill',q:'He ___ (should) apologize — it was his fault.',a:'should',hint:'should = rada / powinność'},
+    {t:'fill',q:'It ___ (might) rain later — take an umbrella.',a:'might',hint:'might = możliwość'},
+    {t:'fill',q:'You ___ (mustn\'t) park here — it\'s illegal.',a:"mustn't",hint:"mustn't = zakaz"},
+    {t:'fill',q:'I ___ (could) swim when I was five.',a:'could',hint:'could = zdolność w przeszłości'},
+    {t:'fill',q:'She ___ (need) come if she\'s busy. (brak konieczności)',a:"needn't|doesn't need to",hint:'needn\'t / doesn\'t need to = brak konieczności'},
+    {t:'fill',q:'You ___ (had better) hurry or you\'ll miss the train.',a:'had better',hint:'had better = ostrzeżenie / silna rada'},
+    {t:'fill',q:'___ we start the meeting? (Shall — sugestia)',a:'Shall',hint:'Shall we = sugestia / propozycja'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'She can swim.',a:"She can't swim.",hint:"can + not → can't"},
+    {t:'tr',inst:'Zamień na pytanie:',q:'He should apologize.',a:'Should he apologize?',hint:'Should + podmiot + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'They must leave now.',a:"They mustn't leave now.",hint:"must + not → mustn't"},
+    {t:'tr',inst:'Zamień na pytanie:',q:'She can help us.',a:'Can she help us?',hint:'Can + podmiot + V1 + ?'},
+    {t:'tr',inst:'Zamień na przeczenie:',q:'You should go.',a:"You shouldn't go.",hint:"should + not → shouldn't"},
+    {t:'tr',inst:'Zamień na pytanie:',q:'We should try again.',a:'Should we try again?',hint:'Should + podmiot + V1 + ?'},
+  ]
+},
+
+'reported-speech':{
+  name:'Mowa zależna',pl:'Reported Speech',group:'Dodatkowe',
+  qs:[
+    {t:'mcq',q:'W mowie zależnej Present Simple zmienia się na:',o:['Present Simple','Past Simple','Past Perfect','Future Simple'],a:1},
+    {t:'mcq',q:'„She said: \'I am tired.\'" → Mowa zależna:',o:['She said that she is tired.','She said that she was tired.','She said that she were tired.','She said that she has been tired.'],a:1},
+    {t:'mcq',q:'W mowie zależnej Past Simple zmienia się na:',o:['Present Simple','Past Simple','Past Perfect','Future Simple'],a:2},
+    {t:'mcq',q:'„Will" w mowie zależnej zmienia się na:',o:['will','would','should','could'],a:1},
+    {t:'mcq',q:'„He said: \'I will call you.\'" → Mowa zależna:',o:['He said he will call me.','He said he would call me.','He said he called me.','He said he had called me.'],a:1},
+    {t:'mcq',q:'„Can" w mowie zależnej zmienia się na:',o:['can','could','should','would'],a:1},
+    {t:'mcq',q:'Wyrażenie „now" w mowie zależnej zmienia się na:',o:['now','then','here','there'],a:1},
+    {t:'mcq',q:'Pytanie ogólne (yes/no) w mowie zależnej wprowadza:',o:['that','if / whether','what','how'],a:1},
+    {t:'mcq',q:'„She asked: \'Do you speak English?\'" → Mowa zależna:',o:['She asked if I speak English.','She asked if I spoke English.','She asked do I speak English.','She asked that I speak English.'],a:1},
+    {t:'mcq',q:'Które zdanie zawiera błąd w mowie zależnej?',o:['He said he was tired.','She told me she would come.','They said they have finished.','He told her he loved her.'],a:2},
+    {t:'fill',q:'She said: "I am happy." → She said she ___ happy.',a:'was',hint:'PS → Past Simple'},
+    {t:'fill',q:'He said: "I will help you." → He said he ___ help me.',a:'would',hint:'will → would'},
+    {t:'fill',q:'She said: "I can swim." → She said she ___ swim.',a:'could',hint:'can → could'},
+    {t:'fill',q:'He told me: "I have finished." → He told me he ___ finished.',a:'had',hint:'Present Perfect → Past Perfect'},
+    {t:'fill',q:'She said: "I am going to London tomorrow." → She said she ___ going to London the next day.',a:'was',hint:'PS → Past Simple (am → was)'},
+    {t:'fill',q:'He asked: "Do you like coffee?" → He asked if I ___ coffee.',a:'liked',hint:'Present Simple → Past Simple'},
+    {t:'fill',q:'She said: "I must leave now." → She said she ___ to leave then.',a:'had',hint:'must → had to'},
+    {t:'fill',q:'He said: "I saw her yesterday." → He said he ___ her the day before.',a:'had seen',hint:'Past Simple → Past Perfect'},
+    {t:'fill',q:'She asked: "Where do you live?" → She asked where I ___.',a:'lived',hint:'do + V1 → Past Simple'},
+    {t:'fill',q:'He said: "I don\'t know." → He said he ___ know.',a:"didn't",hint:"don't → didn't"},
+    {t:'fill',q:'She said: "We will come." → She said they ___ come.',a:'would',hint:'will → would'},
+    {t:'fill',q:'He told her: "I love you." → He told her he ___ her.',a:'loved',hint:'PS → Past Simple'},
+    {t:'tr',inst:'Zamień na mowę zależną (She said):',q:'"I am tired."',a:'She said that she was tired.',hint:'PS → Past Simple: am → was'},
+    {t:'tr',inst:'Zamień na mowę zależną (He said):',q:'"I will call you."',a:'He said that he would call me.',hint:'will → would'},
+    {t:'tr',inst:'Zamień na mowę zależną (She said):',q:'"I can\'t come."',a:"She said that she couldn't come.",hint:"can't → couldn't"},
+    {t:'tr',inst:'Zamień na mowę zależną (He told her):',q:'"I love you."',a:'He told her that he loved her.',hint:'PS → Past Simple: love → loved'},
+    {t:'tr',inst:'Zamień na mowę zależną (She asked him):',q:'"Do you like music?"',a:'She asked him if he liked music.',hint:'pytanie ogólne: if + PS → Past Simple'},
+    {t:'tr',inst:'Zamień na mowę zależną (He said):',q:'"I have never been here."',a:'He said that he had never been there.',hint:'PP → Past Perfect; here → there'},
+  ]
+},
+
+// ──TESTS_END──
+
+}; // end TESTS
+
+// ═══════════════════════════════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════════════════════════════
+const TOTAL = 17;
+let done = new Set(JSON.parse(localStorage.getItem('sz_eng_test_done') || '[]'));
+let currentId = null;
+let checked = false;
+
+function saveDone() {
+  localStorage.setItem('sz_eng_test_done', JSON.stringify([...done]));
+  refreshProgress();
+}
+
+function refreshProgress() {
+  document.getElementById('prog-text').textContent = done.size + ' / ' + TOTAL;
+  document.getElementById('prog-fill').style.width = (done.size / TOTAL * 100) + '%';
+  document.querySelectorAll('.nav-item').forEach(el => {
+    const id = el.id.replace('nav-', '');
+    el.classList.toggle('done', done.has(id));
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NORMALIZE (case-insensitive, apostrophe-neutral, punct-stripped)
+// ═══════════════════════════════════════════════════════════════
+function norm(s) {
+  return s.trim().toLowerCase()
+    .replace(/[''`]/g, "'")
+    .replace(/[?.!,]$/, '')
+    .replace(/\s+/g, ' ')
+    .replace(/doesn't/g, 'does not')
+    .replace(/don't/g, 'do not')
+    .replace(/isn't/g, 'is not')
+    .replace(/aren't/g, 'are not')
+    .replace(/wasn't/g, 'was not')
+    .replace(/weren't/g, 'were not')
+    .replace(/hasn't/g, 'has not')
+    .replace(/haven't/g, 'have not')
+    .replace(/hadn't/g, 'had not')
+    .replace(/won't/g, 'will not')
+    .replace(/wouldn't/g, 'would not')
+    .replace(/can't/g, 'cannot')
+    .replace(/couldn't/g, 'could not')
+    .replace(/shouldn't/g, 'should not')
+    .replace(/mustn't/g, 'must not')
+    .replace(/needn't/g, 'need not')
+    .replace(/i'm/g, 'i am')
+    .replace(/he's/g, 'he is')
+    .replace(/she's/g, 'she is')
+    .replace(/it's/g, 'it is')
+    .replace(/we're/g, 'we are')
+    .replace(/they're/g, 'they are')
+    .replace(/you're/g, 'you are')
+    .replace(/i've/g, 'i have')
+    .replace(/you've/g, 'you have')
+    .replace(/we've/g, 'we have')
+    .replace(/they've/g, 'they have')
+    .replace(/he's been/g, 'he has been')
+    .replace(/she's been/g, 'she has been')
+    .replace(/it's been/g, 'it has been');
+}
+
+function checkAns(userVal, correctVal) {
+  const u = norm(userVal);
+  const parts = correctVal.split('|');
+  return parts.some(p => norm(p) === u);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATE
+// ═══════════════════════════════════════════════════════════════
+function navigate(id) {
+  currentId = id;
+  checked = false;
+
+  document.getElementById('welcome-view').style.display = 'none';
+  document.getElementById('test-view').style.display = 'block';
+
+  const test = TESTS[id];
+  document.getElementById('tb-title').textContent = test ? test.name : id;
+
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+
+  if (!test) {
+    document.getElementById('test-view').innerHTML = `
+      <div class="coming-soon">
+        <div class="coming-soon-icon">✏️</div>
+        <div class="coming-soon-title">Ten test jest w przygotowaniu</div>
+        Zajrzyj wkrótce — zostanie dodany w kolejnej aktualizacji.
+      </div>`;
+    closeSidebar();
+    return;
+  }
+
+  renderTest(test, id);
+  closeSidebar();
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+const L = ['A','B','C','D'];
+
+function renderTest(test, id) {
+  const mcqs  = test.qs.filter(q => q.t === 'mcq');
+  const fills = test.qs.filter(q => q.t === 'fill');
+  const trs   = test.qs.filter(q => q.t === 'tr');
+  const total = test.qs.length;
+
+  let n = 0;
+  let html = `
+    <div id="score-banner" style="display:none">
+      <div class="sb-title">Wynik testu</div>
+      <div class="sb-score" id="sb-num"></div>
+      <div class="sb-grade" id="sb-grade"></div>
+      <div class="sb-bar"><div class="sb-bar-fill" id="sb-bar"></div></div>
+    </div>
+    <div class="test-header">
+      <div>
+        <div class="test-name-label">${test.group}</div>
+        <div class="test-name">${test.name}</div>
+        <div class="test-count">${total} pytań · ${mcqs.length} ABCD · ${fills.length} uzupełnianie · ${trs.length} transformacje</div>
+      </div>
+      <div class="test-score-badge">
+        <div id="live-score">–</div>
+        <div class="tsb-label">wynik</div>
+      </div>
+    </div>`;
+
+  if (mcqs.length) {
+    html += `<div class="q-section-header">Część I — Pytania wielokrotnego wyboru (ABCD)</div>`;
+    mcqs.forEach(q => { html += buildMCQ(q, n, test.qs.indexOf(q)); n++; });
+  }
+  if (fills.length) {
+    html += `<div class="q-section-header">Część II — Uzupełnij zdanie odpowiednią formą czasownika</div>`;
+    fills.forEach(q => { html += buildFill(q, n, test.qs.indexOf(q)); n++; });
+  }
+  if (trs.length) {
+    html += `<div class="q-section-header">Część III — Transformacje zdań</div>`;
+    trs.forEach(q => { html += buildTr(q, n, test.qs.indexOf(q)); n++; });
+  }
+
+  html += `
+    <div id="test-bottom">
+      <button class="btn-check" onclick="checkAll('${id}')">Sprawdź test</button>
+      <button class="btn-reset" onclick="resetTest('${id}')">Zacznij od nowa</button>
+    </div>`;
+
+  document.getElementById('test-view').innerHTML = html;
+}
+
+function buildMCQ(q, disp, idx) {
+  const opts = q.o.map((opt, i) => `
+    <button class="q-opt" onclick="pickOpt(this,${idx},${i})" data-qi="${idx}" data-oi="${i}">
+      <span class="opt-letter">${L[i]}</span>${opt}
+    </button>`).join('');
+  return `<div class="q-block" id="qb-${idx}"><div class="q-row">
+    <div class="q-num">${disp+1}</div>
+    <div class="q-body"><div class="q-text">${q.q}</div><div class="q-opts">${opts}</div></div>
+  </div></div>`;
+}
+
+function buildFill(q, disp, idx) {
+  return `<div class="q-block" id="qb-${idx}"><div class="q-row">
+    <div class="q-num">${disp+1}</div>
+    <div class="q-body">
+      <div class="q-text">${q.q}</div>
+      <input class="q-input" id="inp-${idx}" type="text" placeholder="wpisz formę…" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div class="q-hint" id="hint-${idx}">💡 ${q.hint}</div>
+    </div>
+  </div></div>`;
+}
+
+function buildTr(q, disp, idx) {
+  return `<div class="q-block" id="qb-${idx}"><div class="q-row">
+    <div class="q-num">${disp+1}</div>
+    <div class="q-body">
+      <div class="q-inst">${q.inst}</div>
+      <div class="q-orig">"${q.q}"</div>
+      <input class="q-input" id="inp-${idx}" type="text" placeholder="wpisz całe zdanie…" autocomplete="off" autocorrect="off" spellcheck="false" style="max-width:100%">
+      <div class="q-hint" id="hint-${idx}">💡 ${q.hint}</div>
+    </div>
+  </div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INTERACTION
+// ═══════════════════════════════════════════════════════════════
+function pickOpt(btn, qi, oi) {
+  if (checked) return;
+  document.querySelectorAll(`[data-qi="${qi}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHECK
+// ═══════════════════════════════════════════════════════════════
+function checkAll(id) {
+  const test = TESTS[id];
+  checked = true;
+  let correct = 0;
+
+  test.qs.forEach((q, i) => {
+    const block = document.getElementById('qb-' + i);
+    if (!block) return;
+
+    if (q.t === 'mcq') {
+      const sel = block.querySelector('.q-opt.selected');
+      const selIdx = sel ? +sel.dataset.oi : -1;
+      const ok = selIdx === q.a;
+      if (ok) correct++;
+      block.className = 'q-block ' + (ok ? 'correct' : 'wrong');
+      block.querySelectorAll('.q-opt').forEach((opt, oi) => {
+        opt.style.pointerEvents = 'none';
+        if (oi === q.a) opt.classList.add('opt-correct');
+        else if (opt.classList.contains('selected') && !ok) opt.classList.add('opt-wrong');
+      });
+    } else {
+      const inp = document.getElementById('inp-' + i);
+      if (!inp) return;
+      const ok = checkAns(inp.value, q.a);
+      if (ok) correct++;
+      inp.disabled = true;
+      inp.classList.add(ok ? 'inp-correct' : 'inp-wrong');
+      block.className = 'q-block ' + (ok ? 'correct' : 'wrong');
+      if (!ok) {
+        const hintEl = document.getElementById('hint-' + i);
+        if (hintEl) {
+          hintEl.innerHTML = `✅ Poprawna odpowiedź: <strong style="color:var(--grn)">${q.a}</strong>`;
+          hintEl.className = 'q-hint reveal';
+        }
+      }
+    }
+  });
+
+  const total = test.qs.length;
+  const pct = Math.round(correct / total * 100);
+  const color = pct >= 80 ? 'var(--grn)' : pct >= 50 ? 'var(--gold)' : 'var(--red)';
+
+  document.getElementById('live-score').textContent = correct + '/' + total;
+  document.getElementById('live-score').style.color = color;
+
+  const banner = document.getElementById('score-banner');
+  banner.style.display = 'block';
+  const numEl = document.getElementById('sb-num');
+  numEl.textContent = correct + ' / ' + total;
+  numEl.style.color = color;
+  document.getElementById('sb-grade').textContent =
+    pct >= 90 ? 'Doskonale! Świetna znajomość tego czasu! 🎉' :
+    pct >= 75 ? 'Bardzo dobrze! Znasz ten czas. 👍' :
+    pct >= 50 ? 'Nieźle, ale warto przejrzeć teorię i spróbować ponownie.' :
+    'Powtórz materiał z działu Nauka, a następnie spróbuj ponownie.';
+  const barEl = document.getElementById('sb-bar');
+  barEl.style.width = '0%';
+  barEl.style.background = color;
+  setTimeout(() => barEl.style.width = pct + '%', 60);
+
+  banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  if (pct >= 60) {
+    done.add(id);
+    saveDone();
+    const navEl = document.getElementById('nav-' + id);
+    if (navEl) navEl.classList.add('done');
+  }
+}
+
+function resetTest(id) {
+  checked = false;
+  navigate(id);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SIDEBAR MOBILE
+// ═══════════════════════════════════════════════════════════════
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+refreshProgress();
+
+// ═══════════════════════════════════════════════════════════════
+// STARS
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  var c=document.getElementById('stars-canvas'),ctx=c.getContext('2d'),stars=[],W,H;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  function make(){stars=[];var n=Math.floor((W*H)/3200);for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+.2,alpha:Math.random()*.7+.2,speed:Math.random()*.008+.003,phase:Math.random()*Math.PI*2,color:Math.random()>.92?'#b4e4ff':Math.random()>.85?'#ffe0f0':'#fff'});}
+  var tick=0;
+  function draw(){ctx.clearRect(0,0,W,H);tick+=.016;for(var i=0;i<stars.length;i++){var s=stars[i],a=s.alpha*(.55+.45*Math.sin(tick*s.speed*60+s.phase));ctx.save();ctx.globalAlpha=a;var g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*3.5);g.addColorStop(0,s.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x,s.y,s.r*3.5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=Math.min(a*1.6,1);ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();ctx.restore();}requestAnimationFrame(draw);}
+  resize();make();draw();
+  window.addEventListener('resize',function(){resize();make();});
+})();
+</script>
+</body>
+</html>

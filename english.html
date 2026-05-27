@@ -12,6 +12,8 @@
     --c-test-g:rgba(180,79,255,.12);
     --c-verb: #00c853;
     --c-verb-g:rgba(0,200,83,.12);
+    --c-sum:  #ffd166;
+    --c-sum-g:rgba(255,209,102,.12);
     --card:   rgba(18,18,26,.85);
     --border: rgba(255,255,255,.08);
     --text:   #e8e8f0;
@@ -122,8 +124,9 @@
   .hub-card:hover::after { opacity: 1; }
 
   .hub-card.learn { --nc: var(--c-eng);  --ng: var(--c-eng-g); }
-  .hub-card.tests { --nc: var(--c-test); --ng: var(--c-test-g); opacity: .7; pointer-events: none; }
-  .hub-card.verbs { --nc: var(--c-verb); --ng: var(--c-verb-g); }
+  .hub-card.tests { --nc: var(--c-test); --ng: var(--c-test-g); }
+  .hub-card.summary { --nc: var(--c-sum);  --ng: var(--c-sum-g); }
+  .hub-card.verbs   { --nc: var(--c-verb); --ng: var(--c-verb-g); }
 
   .hub-emblem {
     font-size: 2.8rem; line-height: 1;
@@ -206,18 +209,31 @@
       </div>
     </a>
 
-    <div class="hub-card tests">
+    <a class="hub-card tests" href="english-tests.html">
       <div class="hub-emblem">✏️</div>
       <div class="hub-body">
-        <div class="hub-title">Testy <span class="chip-soon">Wkrótce</span></div>
+        <div class="hub-title">Testy</div>
         <div class="hub-subtitle">Ćwiczenia i sprawdziany</div>
-        <div class="hub-desc">Testy do każdego działu — pytania ABCD, uzupełnianie zdań i inne ćwiczenia.</div>
+        <div class="hub-desc">Testy do każdego działu — pytania ABCD, uzupełnianie zdań i transformacje. 17 testów.</div>
       </div>
       <div class="hub-footer">
-        <span class="hub-badge" style="color:var(--c-test);background:rgba(180,79,255,.1);border-color:rgba(180,79,255,.2);">W przygotowaniu</span>
+        <span class="hub-badge">17 testów</span>
         <span class="hub-arrow">→</span>
       </div>
-    </div>
+    </a>
+
+    <a class="hub-card summary" href="english-summary.html">
+      <div class="hub-emblem">📋</div>
+      <div class="hub-body">
+        <div class="hub-title">Ściągawka</div>
+        <div class="hub-subtitle">Tabela wszystkich czasów</div>
+        <div class="hub-desc">Budowa, przykłady i zastosowanie wszystkich 13 czasów i 4 struktur w jednym miejscu.</div>
+      </div>
+      <div class="hub-footer">
+        <span class="hub-badge">17 tematów</span>
+        <span class="hub-arrow">→</span>
+      </div>
+    </a>
 
     <a class="hub-card verbs" href="english-verbs.html">
       <div class="hub-emblem">📋</div>
