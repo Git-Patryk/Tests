@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nauka – Angielski – StudyZone</title>
 <style>
+html{font-size:17px;}
 :root{
   --eng:#00b4d8;--eng2:#0077b6;--pur:#b44fff;
   --card:rgba(18,18,26,.9);--border:rgba(255,255,255,.08);
@@ -66,11 +67,19 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);flex-shrink:0;transition:background .2s;}
 .nav-item.done .nav-dot{background:var(--eng);}
 .nav-item.active .nav-dot{background:var(--eng);box-shadow:0 0 6px var(--eng);}
-.nav-icon{font-size:1rem;width:1.2rem;text-align:center;flex-shrink:0;}
+.nav-icon{font-size:1rem;min-width:2rem;width:2rem;text-align:center;flex-shrink:0;}
 
 /* MAIN */
 #main{margin-left:260px;flex:1;padding:2rem 2.5rem 4rem;max-width:calc(100% - 260px);}
-#topic-view{max-width:740px;margin:0 auto;}
+#topic-view{
+  max-width:740px;margin:0 auto;
+  background:rgba(12,12,24,.78);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:20px;
+  padding:2.2rem 2.4rem;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
 
 /* TOPIC CONTENT */
 .t-breadcrumb{font-size:.72rem;color:var(--muted);margin-bottom:1.2rem;letter-spacing:.05em;}
@@ -836,7 +845,7 @@ extra:[{title:'WILL vs BE GOING TO — kiedy co wybrać?',body:`
 <div class="ex-row pos-ex">✓ <strong>I'll</strong> get it! <em>(spontaniczne — właśnie zdecydowałem)</em></div>
 <div class="ex-row pos-ex">✓ Don't worry, I'm <strong>going to</strong> call them back later. <em>(plan sprzed chwili)</em></div>`}]
 },
-{id:'future-continuous',group:'future',icon:'1️⃣1️⃣',name:'Future Continuous',polish:'Czas przyszły ciągły',
+{id:'future-continuous',group:'future',icon:'⏩',name:'Future Continuous',polish:'Czas przyszły ciągły',
 what:'Opisuje czynność, która będzie <strong>trwała w określonym momencie w przyszłości</strong>. Podkreśla ciągłość działania lub zaplanowany przebieg zdarzeń.',
 when:[
   ['Czynność w toku w danym momencie przyszłości','At this time tomorrow, I will be flying to Paris.'],
@@ -861,7 +870,7 @@ examples:[
   ['?','What will you be doing this time next year?','Co będziesz robić o tej porze za rok?'],
 ],extra:[]
 },
-{id:'future-perfect',group:'future',icon:'1️⃣2️⃣',name:'Future Perfect',polish:'Czas przyszłościowo-przeszły',
+{id:'future-perfect',group:'future',icon:'🎯',name:'Future Perfect',polish:'Czas przyszłościowo-przeszły',
 what:'Opisuje czynność, która zostanie <strong>zakończona przed określonym momentem w przyszłości</strong>. Patrzymy z przyszłości wstecz na to, co będzie już gotowe.',
 when:[
   ['Czynność zakończona przed momentem w przyszłości','By Friday, I will have finished this project.'],
@@ -887,7 +896,7 @@ examples:[
   ['?','Will they have left by the time we arrive?','Czy oni już odejdą zanim dotrzemy?'],
 ],extra:[]
 },
-{id:'future-perfect-continuous',group:'future',icon:'🔢',name:'Future Perfect Continuous',polish:'Czas przyszłościowo-przeszły ciągły',
+{id:'future-perfect-continuous',group:'future',icon:'⏳',name:'Future Perfect Continuous',polish:'Czas przyszłościowo-przeszły ciągły',
 what:'Podkreśla <strong>długotrwały przebieg</strong> czynności aż do określonego momentu w przyszłości. Skupia się na czasie trwania procesu — nie na jego wyniku.',
 when:[
   ['Trwanie czynności przez pewien czas do momentu w przyszłości','By June, I will have been learning English for 5 years.'],
