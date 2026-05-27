@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nieregularne czasowniki – Angielski – StudyZone</title>
+<style>
+:root{
+  --eng:#00b4d8;--grn:#00c853;--pur:#b44fff;
+  --card:rgba(18,18,26,.9);--border:rgba(255,255,255,.08);
+  --text:#e8e8f0;--muted:#6b6b8a;--bg:#000008;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:17px;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+#stars-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,8,.7) 100%);pointer-events:none;z-index:1;}
+
+/* TOPBAR */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:56px;
+  display:flex;align-items:center;gap:1rem;padding:0 1.4rem;
+  background:rgba(0,0,8,.88);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.tb-back{color:var(--muted);text-decoration:none;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:color .2s;}
+.tb-back:hover{color:var(--grn);}
+.tb-title{font-size:.9rem;font-weight:700;color:#fff;flex:1;}
+#count-badge{
+  font-size:.72rem;font-weight:700;letter-spacing:.04em;
+  background:rgba(0,200,83,.12);color:var(--grn);
+  border:1px solid rgba(0,200,83,.25);padding:.2rem .7rem;border-radius:20px;
+  white-space:nowrap;
+}
+
+/* PAGE LAYOUT */
+#page{
+  position:relative;z-index:10;
+  max-width:900px;margin:0 auto;
+  padding:72px 1.4rem 4rem;
+}
+
+/* SEARCH */
+#search-wrap{
+  margin-bottom:1.8rem;
+  background:rgba(12,12,24,.82);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:1.4rem 1.6rem;
+  backdrop-filter:blur(10px);
+}
+.search-label{
+  font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:.7rem;display:block;
+}
+.search-row{display:flex;gap:.8rem;align-items:center;}
+#search{
+  flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:.65rem 1rem;color:#fff;font-size:.95rem;
+  font-family:inherit;outline:none;transition:border-color .2s;
+}
+#search::placeholder{color:var(--muted);}
+#search:focus{border-color:var(--grn);box-shadow:0 0 0 3px rgba(0,200,83,.12);}
+#clear-btn{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:var(--muted);font-size:.85rem;padding:.6rem .9rem;border-radius:10px;
+  cursor:pointer;transition:all .2s;white-space:nowrap;display:none;
+}
+#clear-btn:hover{color:#fff;border-color:rgba(255,255,255,.2);}
+#result-info{
+  margin-top:.7rem;font-size:.78rem;color:var(--muted);
+  display:flex;align-items:center;gap:.5rem;
+}
+#result-count{color:var(--grn);font-weight:700;}
+.search-hint{font-size:.72rem;color:var(--muted);margin-top:.3rem;}
+
+/* TABLE WRAPPER */
+#table-wrap{
+  background:rgba(12,12,24,.82);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;overflow:hidden;
+  backdrop-filter:blur(10px);
+}
+#verb-table{width:100%;border-collapse:collapse;}
+#verb-table thead tr{background:rgba(0,200,83,.08);border-bottom:1px solid rgba(0,200,83,.2);}
+#verb-table th{
+  padding:.75rem 1rem;text-align:left;
+  font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+}
+th.h-v1{color:var(--grn);}
+th.h-v2{color:var(--eng);}
+th.h-v3{color:var(--pur);}
+th.h-pl{color:var(--muted);}
+
+#verb-table tbody tr{
+  border-bottom:1px solid rgba(255,255,255,.04);
+  transition:background .15s;
+}
+#verb-table tbody tr:hover{background:rgba(255,255,255,.03);}
+#verb-table tbody tr:last-child{border-bottom:none;}
+#verb-table td{padding:.6rem 1rem;font-size:.88rem;vertical-align:middle;}
+
+td.v1{color:#fff;font-weight:600;}
+td.v2{color:var(--eng);}
+td.v3{color:var(--pur);}
+td.pl{color:var(--muted);font-size:.8rem;}
+
+/* same-as-v1 indicator */
+td.v2.same,td.v3.same{opacity:.55;}
+
+/* highlight matched text */
+mark{background:rgba(0,200,83,.25);color:#fff;border-radius:2px;padding:0 1px;}
+
+/* NO RESULTS */
+#no-results{
+  display:none;text-align:center;padding:3rem 1rem;
+  color:var(--muted);font-size:.9rem;
+}
+#no-results span{display:block;font-size:2rem;margin-bottom:.7rem;}
+
+/* MOBILE */
+@media(max-width:600px){
+  #page{padding:66px .8rem 3rem;}
+  #verb-table th,#verb-table td{padding:.5rem .6rem;font-size:.78rem;}
+  th.h-pl,td.pl{display:none;}
+  .search-row{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas"></canvas>
+
+<div id="topbar">
+  <a href="english.html" class="tb-back">← Angielski</a>
+  <span class="tb-title">Nieregularne czasowniki</span>
+  <span id="count-badge">140 czasowników</span>
+</div>
+
+<div id="page">
+  <div id="search-wrap">
+    <span class="search-label">Wyszukaj czasownik</span>
+    <div class="search-row">
+      <input type="text" id="search" placeholder="np. go, went, gone, iść…" autocomplete="off" spellcheck="false">
+      <button id="clear-btn" onclick="clearSearch()">✕ Wyczyść</button>
+    </div>
+    <div id="result-info">
+      Wyniki: <span id="result-count">140</span> / <span id="total-count">140</span>
+    </div>
+    <div class="search-hint">Szukaj po dowolnej formie (V1, V2, V3) lub polskim tłumaczeniu</div>
+  </div>
+
+  <div id="table-wrap">
+    <table id="verb-table">
+      <thead>
+        <tr>
+          <th class="h-v1">V1 — Bezokolicznik</th>
+          <th class="h-v2">V2 — Past Simple</th>
+          <th class="h-v3">V3 — Past Participle</th>
+          <th class="h-pl">Znaczenie</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div id="no-results"><span>🔍</span>Nie znaleziono czasownika.<br>Sprawdź pisownię lub spróbuj innej formy.</div>
+  </div>
+</div>
+
+<script>
+const VERBS = [
+  ['arise','arose','arisen','powstawać, pojawiać się'],
+  ['awake','awoke','awoken','budzić się'],
+  ['be','was / were','been','być'],
+  ['bear','bore','born / borne','nosić, rodzić'],
+  ['beat','beat','beaten','bić, pokonać'],
+  ['become','became','become','stawać się'],
+  ['begin','began','begun','zaczynać'],
+  ['bend','bent','bent','zginać, wyginać'],
+  ['bet','bet','bet','zakładać się'],
+  ['bind','bound','bound','wiązać'],
+  ['bite','bit','bitten','gryźć'],
+  ['bleed','bled','bled','krwawić'],
+  ['blow','blew','blown','wiać, dąć, dmuchać'],
+  ['break','broke','broken','łamać, psuć'],
+  ['breed','bred','bred','hodować'],
+  ['bring','brought','brought','przynosić'],
+  ['broadcast','broadcast','broadcast','nadawać (radio/TV)'],
+  ['build','built','built','budować'],
+  ['burn','burnt / burned','burnt / burned','palić, spalać'],
+  ['burst','burst','burst','wybuchać, pękać'],
+  ['buy','bought','bought','kupować'],
+  ['cast','cast','cast','rzucać, obsadzać (rolę)'],
+  ['catch','caught','caught','łapać'],
+  ['choose','chose','chosen','wybierać'],
+  ['cling','clung','clung','przyczepiać się, trzymać się'],
+  ['come','came','come','przychodzić, przyjeżdżać'],
+  ['cost','cost','cost','kosztować'],
+  ['creep','crept','crept','czołgać się, skradać'],
+  ['cut','cut','cut','ciąć'],
+  ['deal','dealt','dealt','zajmować się, rozdawać'],
+  ['dig','dug','dug','kopać'],
+  ['do','did','done','robić'],
+  ['draw','drew','drawn','rysować, ciągnąć'],
+  ['dream','dreamt / dreamed','dreamt / dreamed','śnić, marzyć'],
+  ['drink','drank','drunk','pić'],
+  ['drive','drove','driven','prowadzić (auto)'],
+  ['eat','ate','eaten','jeść'],
+  ['fall','fell','fallen','upadać, spadać'],
+  ['feed','fed','fed','karmić'],
+  ['feel','felt','felt','czuć, odczuwać'],
+  ['fight','fought','fought','walczyć'],
+  ['find','found','found','znajdować'],
+  ['flee','fled','fled','uciekać'],
+  ['fly','flew','flown','latać'],
+  ['forbid','forbade','forbidden','zakazywać'],
+  ['forecast','forecast','forecast','prognozować'],
+  ['forget','forgot','forgotten','zapominać'],
+  ['forgive','forgave','forgiven','wybaczać'],
+  ['freeze','froze','frozen','zamrażać, marznąć'],
+  ['get','got','got / gotten','dostać, stać się'],
+  ['give','gave','given','dawać'],
+  ['go','went','gone','iść, jechać'],
+  ['grind','ground','ground','mleć, szlifować'],
+  ['grow','grew','grown','rosnąć, hodować'],
+  ['hang','hung / hanged','hung / hanged','wieszać'],
+  ['have','had','had','mieć'],
+  ['hear','heard','heard','słyszeć'],
+  ['hide','hid','hidden','ukrywać'],
+  ['hit','hit','hit','uderzać, trafić'],
+  ['hold','held','held','trzymać'],
+  ['hurt','hurt','hurt','ranić, boleć'],
+  ['keep','kept','kept','trzymać, przechowywać'],
+  ['kneel','knelt / kneeled','knelt / kneeled','klęczeć'],
+  ['knit','knit / knitted','knit / knitted','dziergać, robić na drutach'],
+  ['know','knew','known','wiedzieć, znać'],
+  ['lay','laid','laid','kłaść (coś)'],
+  ['lead','led','led','prowadzić, kierować'],
+  ['lean','leant / leaned','leant / leaned','opierać się, pochylać'],
+  ['learn','learnt / learned','learnt / learned','uczyć się'],
+  ['leave','left','left','opuszczać, zostawiać'],
+  ['lend','lent','lent','pożyczać (komuś)'],
+  ['let','let','let','pozwalać, wynajmować'],
+  ['lie','lay','lain','leżeć'],
+  ['light','lit / lighted','lit / lighted','zapalać, oświetlać'],
+  ['lose','lost','lost','tracić, przegrywać'],
+  ['make','made','made','robić, tworzyć'],
+  ['mean','meant','meant','znaczyć, mieć na myśli'],
+  ['meet','met','met','spotykać'],
+  ['mistake','mistook','mistaken','mylić, pomylić'],
+  ['overcome','overcame','overcome','przezwyciężać, pokonać'],
+  ['overtake','overtook','overtaken','wyprzedzać, prześcigać'],
+  ['pay','paid','paid','płacić'],
+  ['prove','proved','proved / proven','udowadniać'],
+  ['put','put','put','kłaść, stawiać, wkładać'],
+  ['quit','quit','quit','rezygnować, rzucać'],
+  ['read','read','read','czytać (wym. V2/V3: "red")'],
+  ['rid','rid','rid','pozbywać się'],
+  ['ride','rode','ridden','jeździć (konno/rowerem)'],
+  ['ring','rang','rung','dzwonić'],
+  ['rise','rose','risen','wstawać, wznosić się'],
+  ['run','ran','run','biegać'],
+  ['say','said','said','mówić, powiedzieć'],
+  ['see','saw','seen','widzieć'],
+  ['seek','sought','sought','szukać, dążyć do'],
+  ['sell','sold','sold','sprzedawać'],
+  ['send','sent','sent','wysyłać'],
+  ['set','set','set','ustawiać, wyznaczać'],
+  ['sew','sewed','sewn / sewed','szyć'],
+  ['shake','shook','shaken','trząść, wstrząsać'],
+  ['shed','shed','shed','tracić (włosy/liście), ronić łzy'],
+  ['shine','shone / shined','shone / shined','świecić, błyszczeć'],
+  ['shoot','shot','shot','strzelać'],
+  ['show','showed','shown / showed','pokazywać'],
+  ['shrink','shrank','shrunk','kurczyć się'],
+  ['shut','shut','shut','zamykać'],
+  ['sing','sang','sung','śpiewać'],
+  ['sink','sank','sunk','tonąć, opadać'],
+  ['sit','sat','sat','siedzieć'],
+  ['sleep','slept','slept','spać'],
+  ['slide','slid','slid','ślizgać się, przesuwać'],
+  ['smell','smelt / smelled','smelt / smelled','wąchać, pachnieć'],
+  ['speak','spoke','spoken','mówić'],
+  ['spend','spent','spent','spędzać, wydawać pieniądze'],
+  ['spill','spilt / spilled','spilt / spilled','rozlewać'],
+  ['split','split','split','dzielić, rozłupywać'],
+  ['spoil','spoilt / spoiled','spoilt / spoiled','psuć, rozpieszczać'],
+  ['spread','spread','spread','rozprzestrzeniać, rozsmarowywać'],
+  ['spring','sprang','sprung','skakać, tryskać'],
+  ['stand','stood','stood','stać'],
+  ['steal','stole','stolen','kraść'],
+  ['stick','stuck','stuck','przyklejać, wbijać'],
+  ['sting','stung','stung','żądlić, ukąsić, szczypać'],
+  ['strike','struck','struck / stricken','uderzać, strajkować'],
+  ['swear','swore','sworn','przysięgać, przeklinać'],
+  ['sweep','swept','swept','zamiatać'],
+  ['swim','swam','swum','pływać'],
+  ['swing','swung','swung','huśtać, kołysać'],
+  ['take','took','taken','brać, zabierać'],
+  ['teach','taught','taught','uczyć (kogoś)'],
+  ['tear','tore','torn','drzeć, rozrywać'],
+  ['tell','told','told','mówić, powiedzieć komuś'],
+  ['think','thought','thought','myśleć'],
+  ['throw','threw','thrown','rzucać'],
+  ['undergo','underwent','undergone','przechodzić (procedurę/zmiany)'],
+  ['understand','understood','understood','rozumieć'],
+  ['undo','undid','undone','cofać, odpiąć, odwiązać'],
+  ['upset','upset','upset','denerwować, zaburzać'],
+  ['wake','woke','woken','budzić (kogoś/się)'],
+  ['wear','wore','worn','nosić (ubranie)'],
+  ['weep','wept','wept','płakać, szlochać'],
+  ['win','won','won','wygrywać'],
+  ['wind','wound','wound','nawijać, wić się'],
+  ['withdraw','withdrew','withdrawn','wycofywać, wypłacać'],
+  ['wring','wrung','wrung','wykręcać, wyżymać'],
+  ['write','wrote','written','pisać'],
+];
+
+/* ── BUILD TABLE ─────────────────────────── */
+const tbody = document.getElementById('tbody');
+const totalEl = document.getElementById('total-count');
+const countEl = document.getElementById('result-count');
+const badgeEl = document.getElementById('count-badge');
+const noRes   = document.getElementById('no-results');
+const clearBtn= document.getElementById('clear-btn');
+
+totalEl.textContent = VERBS.length;
+badgeEl.textContent = VERBS.length + ' czasowników';
+
+function esc(s){ return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function highlight(text, q){
+  if(!q) return esc(text);
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if(idx < 0) return esc(text);
+  return esc(text.slice(0,idx)) + '<mark>' + esc(text.slice(idx, idx+q.length)) + '</mark>' + esc(text.slice(idx+q.length));
+}
+
+function buildRows(q){
+  const frag = document.createDocumentFragment();
+  let shown = 0;
+  VERBS.forEach(([v1,v2,v3,pl])=>{
+    const match = !q ||
+      v1.toLowerCase().includes(q) ||
+      v2.toLowerCase().includes(q) ||
+      v3.toLowerCase().includes(q) ||
+      pl.toLowerCase().includes(q);
+    if(!match) return;
+    shown++;
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      `<td class="v1">${highlight(v1,q)}</td>` +
+      `<td class="v2${v2===v1?' same':''}">${highlight(v2,q)}</td>` +
+      `<td class="v3${v3===v1||v3===v2?' same':''}">${highlight(v3,q)}</td>` +
+      `<td class="pl">${highlight(pl,q)}</td>`;
+    frag.appendChild(tr);
+  });
+  tbody.innerHTML = '';
+  tbody.appendChild(frag);
+  countEl.textContent = shown;
+  noRes.style.display = shown===0 ? 'block' : 'none';
+}
+
+buildRows('');
+
+/* ── SEARCH ──────────────────────────────── */
+const searchEl = document.getElementById('search');
+
+searchEl.addEventListener('input', ()=>{
+  const q = searchEl.value.trim().toLowerCase();
+  clearBtn.style.display = q ? 'block' : 'none';
+  buildRows(q);
+});
+
+function clearSearch(){
+  searchEl.value = '';
+  clearBtn.style.display = 'none';
+  buildRows('');
+  searchEl.focus();
+}
+
+/* ── STARS ───────────────────────────────── */
+(function(){
+  var c=document.getElementById('stars-canvas'),ctx=c.getContext('2d'),S=[],W,H;
+  function rsz(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  function mkS(){S=[];var n=Math.floor(W*H/3200);for(var i=0;i<n;i++)S.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+.2,a:Math.random()*.7+.2,sp:Math.random()*.008+.003,ph:Math.random()*Math.PI*2,cl:Math.random()>.92?'#b4e4ff':Math.random()>.85?'#ffe0f0':'#ffffff'});}
+  var tk=0;
+  function draw(){ctx.clearRect(0,0,W,H);tk+=.016;for(var i=0;i<S.length;i++){var s=S[i],a=s.a*(.55+.45*Math.sin(tk*s.sp*60+s.ph));ctx.save();ctx.globalAlpha=a;var g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*3.5);g.addColorStop(0,s.cl);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x,s.y,s.r*3.5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=Math.min(a*1.6,1);ctx.fillStyle=s.cl;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();ctx.restore();}requestAnimationFrame(draw);}
+  rsz();mkS();draw();window.addEventListener('resize',function(){rsz();mkS();});
+})();
+</script>
+</body>
+</html>

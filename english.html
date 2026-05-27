@@ -10,6 +10,8 @@
     --c-eng-g:rgba(0,180,216,.12);
     --c-test: #b44fff;
     --c-test-g:rgba(180,79,255,.12);
+    --c-verb: #00c853;
+    --c-verb-g:rgba(0,200,83,.12);
     --card:   rgba(18,18,26,.85);
     --border: rgba(255,255,255,.08);
     --text:   #e8e8f0;
@@ -87,7 +89,7 @@
   }
   .hub-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1.6rem;
   }
   .hub-card {
@@ -121,6 +123,7 @@
 
   .hub-card.learn { --nc: var(--c-eng);  --ng: var(--c-eng-g); }
   .hub-card.tests { --nc: var(--c-test); --ng: var(--c-test-g); opacity: .7; pointer-events: none; }
+  .hub-card.verbs { --nc: var(--c-verb); --ng: var(--c-verb-g); }
 
   .hub-emblem {
     font-size: 2.8rem; line-height: 1;
@@ -214,6 +217,19 @@
         <span class="hub-badge" style="color:var(--c-test);background:rgba(180,79,255,.1);border-color:rgba(180,79,255,.2);">W przygotowaniu</span>
         <span class="hub-arrow">→</span>
       </div>
+    <a class="hub-card verbs" href="english-verbs.html">
+      <div class="hub-emblem">📋</div>
+      <div class="hub-body">
+        <div class="hub-title">Nieregularne</div>
+        <div class="hub-subtitle">Tabela czasowników</div>
+        <div class="hub-desc">Pełna tabela nieregularnych form V1, V2, V3 z polskimi tłumaczeniami i wyszukiwarką.</div>
+      </div>
+      <div class="hub-footer">
+        <span class="hub-badge">~140 czasowników</span>
+        <span class="hub-arrow">→</span>
+      </div>
+    </a>
+
     </div>
 
   </div>
