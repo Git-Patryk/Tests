@@ -113,8 +113,15 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .q-input:focus{border-color:rgba(180,79,255,.5);background:rgba(180,79,255,.06);}
 .q-input.inp-correct{border-color:var(--grn);background:rgba(0,200,83,.08);color:var(--grn);}
 .q-input.inp-wrong{border-color:var(--red);background:rgba(255,107,107,.06);color:var(--red);}
-.q-hint{font-size:.72rem;color:var(--muted);margin-top:.5rem;line-height:1.5;}
-.q-hint.reveal{color:var(--grn);font-weight:600;}
+.q-hint{font-size:.72rem;color:var(--muted);margin-top:.5rem;line-height:1.5;display:none;}
+.q-hint.visible{display:block;}
+.q-hint.reveal{display:block;color:var(--grn);font-weight:600;}
+.hint-btn{background:none;border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:.28rem .52rem;cursor:pointer;font-size:.85rem;color:var(--muted);transition:border-color .15s,color .15s,background .15s;flex-shrink:0;}
+.hint-btn:hover{border-color:rgba(255,209,102,.45);color:#ffd166;}
+.hint-btn.active{border-color:rgba(255,209,102,.5);color:#ffd166;background:rgba(255,209,102,.09);}
+.font-ctrl{display:flex;gap:.25rem;}
+.font-btn{background:none;border:1px solid rgba(255,255,255,.12);border-radius:6px;cursor:pointer;color:var(--muted);font-weight:700;font-size:.75rem;padding:.22rem .55rem;transition:border-color .15s,color .15s;line-height:1;letter-spacing:.02em;}
+.font-btn:hover{border-color:rgba(255,255,255,.3);color:#fff;}
 .q-orig{font-size:.86rem;color:rgba(232,232,240,.55);margin-bottom:.6rem;font-style:italic;}
 
 /* BOTTOM BAR */
@@ -152,6 +159,10 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   <div class="tb-prog">
     <span class="tb-prog-text" id="prog-text">0 / 17</span>
     <div class="prog-track"><div id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="font-ctrl">
+    <button class="font-btn" onclick="adjFont(-1)" title="Zmniejsz czcionkę">A−</button>
+    <button class="font-btn" onclick="adjFont(1)"  title="Powiększ czcionkę">A+</button>
   </div>
 </div>
 
@@ -991,8 +1002,11 @@ function buildFill(q, disp, idx) {
     <div class="q-num">${disp+1}</div>
     <div class="q-body">
       <div class="q-text">${q.q}</div>
-      <input class="q-input" id="inp-${idx}" type="text" placeholder="wpisz formę…" autocomplete="off" autocorrect="off" spellcheck="false">
-      <div class="q-hint" id="hint-${idx}">💡 ${q.hint}</div>
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+        <input class="q-input" id="inp-${idx}" type="text" placeholder="wpisz formę…" autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="hint-btn" id="hbtn-${idx}" onclick="toggleHint(${idx})" title="Pokaż / ukryj podpowiedź">💡</button>
+      </div>
+      <div class="q-hint" id="hint-${idx}">${q.hint}</div>
     </div>
   </div></div>`;
 }
@@ -1003,8 +1017,11 @@ function buildTr(q, disp, idx) {
     <div class="q-body">
       <div class="q-inst">${q.inst}</div>
       <div class="q-orig">"${q.q}"</div>
-      <input class="q-input" id="inp-${idx}" type="text" placeholder="wpisz całe zdanie…" autocomplete="off" autocorrect="off" spellcheck="false" style="max-width:100%">
-      <div class="q-hint" id="hint-${idx}">💡 ${q.hint}</div>
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+        <input class="q-input" id="inp-${idx}" type="text" placeholder="wpisz całe zdanie…" autocomplete="off" autocorrect="off" spellcheck="false" style="max-width:100%;flex:1;min-width:200px;">
+        <button class="hint-btn" id="hbtn-${idx}" onclick="toggleHint(${idx})" title="Pokaż / ukryj podpowiedź">💡</button>
+      </div>
+      <div class="q-hint" id="hint-${idx}">${q.hint}</div>
     </div>
   </div></div>`;
 }
@@ -1055,6 +1072,8 @@ function checkAll(id) {
           hintEl.innerHTML = `✅ Poprawna odpowiedź: <strong style="color:var(--grn)">${q.a}</strong>`;
           hintEl.className = 'q-hint reveal';
         }
+        const hbtn = document.getElementById('hbtn-' + i);
+        if (hbtn) hbtn.classList.add('active');
       }
     }
   });
@@ -1094,6 +1113,28 @@ function checkAll(id) {
 function resetTest(id) {
   checked = false;
   navigate(id);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HINT TOGGLE
+// ═══════════════════════════════════════════════════════════════
+function toggleHint(idx) {
+  const h = document.getElementById('hint-' + idx);
+  const btn = document.getElementById('hbtn-' + idx);
+  if (!h) return;
+  const now = h.classList.toggle('visible');
+  if (btn) btn.classList.toggle('active', now);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FONT SIZE
+// ═══════════════════════════════════════════════════════════════
+let fontSize = parseInt(localStorage.getItem('sz_font_size') || '17');
+(function applyFont() { document.documentElement.style.fontSize = fontSize + 'px'; })();
+function adjFont(d) {
+  fontSize = Math.max(14, Math.min(22, fontSize + d));
+  localStorage.setItem('sz_font_size', fontSize);
+  document.documentElement.style.fontSize = fontSize + 'px';
 }
 
 // ═══════════════════════════════════════════════════════════════
