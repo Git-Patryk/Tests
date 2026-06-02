@@ -29,7 +29,6 @@
     position: relative;
   }
 
-  /* STARFIELD CANVAS */
   #stars-canvas {
     position: fixed;
     inset: 0;
@@ -39,7 +38,6 @@
     z-index: 0;
   }
 
-  /* subtle vignette */
   body::after {
     content: '';
     position: fixed;
@@ -49,7 +47,6 @@
     z-index: 1;
   }
 
-  /* HEADER */
   header {
     position: relative;
     z-index: 10;
@@ -102,7 +99,6 @@
     margin: 2rem auto 0;
   }
 
-  /* SECTION */
   .section {
     position: relative;
     z-index: 10;
@@ -121,7 +117,6 @@
     text-align: center;
   }
 
-  /* UNI GRID */
   .uni-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -146,7 +141,6 @@
     cursor: pointer;
   }
 
-  /* glow top-right orb */
   .uni-card::before {
     content: '';
     position: absolute;
@@ -168,7 +162,6 @@
   .uni-card::before { background: radial-gradient(circle, var(--nc), transparent 70%); }
   .uni-card:hover   { border-color: var(--nc); box-shadow: 0 0 40px color-mix(in srgb, var(--nc) 20%, transparent), 0 8px 32px rgba(0,0,0,.4); }
 
-  /* inner glow overlay on hover */
   .uni-card::after {
     content: '';
     position: absolute;
@@ -240,7 +233,6 @@
   }
   .uni-card:hover .uni-arrow { transform: translateX(5px); }
 
-  /* COMING SOON CHIP */
   .chip-soon {
     font-size: .65rem;
     font-weight: 700;
@@ -255,7 +247,6 @@
     vertical-align: middle;
   }
 
-  /* FOOTER */
   footer {
     position: relative;
     z-index: 10;
@@ -290,7 +281,7 @@
   <div class="section-label">Wybierz uczelnię</div>
   <div class="uni-grid">
 
-    <a class="uni-card uw" href="uw.html">
+    <a class="uni-card uw" href="wum.html">
       <div class="uni-emblem">🏛️</div>
       <div class="uni-body">
         <div class="uni-name">WUM</div>
@@ -383,7 +374,6 @@
       ctx.save();
       ctx.globalAlpha = a;
 
-      // glow
       var grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 3.5);
       grd.addColorStop(0, s.color);
       grd.addColorStop(1, 'transparent');
@@ -392,7 +382,6 @@
       ctx.arc(s.x, s.y, s.r * 3.5, 0, Math.PI * 2);
       ctx.fill();
 
-      // core dot
       ctx.globalAlpha = Math.min(a * 1.6, 1);
       ctx.fillStyle = s.color;
       ctx.beginPath();
