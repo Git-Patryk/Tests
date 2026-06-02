@@ -7,12 +7,14 @@
 <style>
   :root {
     --bg:    #0a0a0f;
-    --card:  #12121a;
+    --card:  rgba(18,18,26,.85);
     --border:#1e1e2e;
     --text:  #e8e8f0;
     --muted: #6b6b8a;
     --nc:    #ff6b35;
     --ng:    rgba(255,107,53,.10);
+    --nc2:   #b44fff;
+    --ng2:   rgba(180,79,255,.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -32,6 +34,7 @@
     background-size: 40px 40px;
     pointer-events: none; z-index: 0;
   }
+
   nav {
     position: relative; z-index: 1;
     padding: 1.2rem 1.5rem;
@@ -43,70 +46,269 @@
   nav .sep { color: var(--border); font-size: .85rem; }
   nav .current { color: var(--text); font-weight: 600; font-size: .85rem; }
 
-  .center {
+  .page {
     position: relative; z-index: 1;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 1.5rem;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+    width: 100%;
   }
-  .soon-card {
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .page-icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 0 14px var(--nc));
+    margin-bottom: .8rem;
+  }
+  .page-title {
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    font-weight: 900;
+    background: linear-gradient(90deg, #fff 30%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: .4rem;
+  }
+  .page-sub {
+    font-size: .85rem;
+    color: var(--muted);
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+
+  /* TOP TWO CARDS */
+  .top-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+    margin-bottom: 2.8rem;
+  }
+
+  .mode-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 22px;
-    padding: 3.5rem 3rem;
-    text-align: center;
-    max-width: 460px;
-    width: 100%;
+    border-radius: 18px;
+    padding: 2rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform .25s, border-color .25s, box-shadow .25s;
   }
-  .soon-card::before {
+  .mode-card::before {
     content: '';
     position: absolute;
-    top: -80px; right: -80px;
-    width: 220px; height: 220px;
+    top: -50px; right: -50px;
+    width: 130px; height: 130px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,107,53,.18), transparent 70%);
+    opacity: .3;
     pointer-events: none;
   }
-  .soon-icon {
-    font-size: 3.5rem;
-    margin-bottom: 1.2rem;
-    filter: drop-shadow(0 0 12px var(--nc));
-    position: relative; z-index: 1;
+  .mode-card.tests  { --mc: var(--nc);  --mg: var(--ng); }
+  .mode-card.notes  { --mc: var(--nc2); --mg: var(--ng2); }
+  .mode-card::before { background: radial-gradient(circle, var(--mc), transparent 70%); }
+
+  /* disabled state */
+  .mode-card.disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    pointer-events: none;
   }
-  .soon-card h1 {
-    font-size: 1.6rem; font-weight: 800; margin-bottom: .5rem;
-    position: relative; z-index: 1;
-    background: linear-gradient(90deg, #fff 40%, var(--nc));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .soon-card p {
-    color: var(--muted); font-size: .9rem; line-height: 1.65;
-    position: relative; z-index: 1; margin-bottom: 1.8rem;
-  }
-  .back-btn {
-    display: inline-block;
-    background: var(--ng);
-    color: var(--nc);
-    border: 1px solid color-mix(in srgb, var(--nc) 30%, transparent);
-    border-radius: 10px;
-    padding: .75rem 1.8rem;
-    font-size: .92rem;
-    font-weight: 700;
+
+  /* active state */
+  .mode-card.active {
+    cursor: pointer;
     text-decoration: none;
-    transition: background .2s, transform .15s;
+    color: inherit;
+  }
+  .mode-card.active:hover {
+    transform: translateY(-5px);
+    border-color: var(--mc);
+    box-shadow: 0 0 36px color-mix(in srgb, var(--mc) 20%, transparent), 0 8px 28px rgba(0,0,0,.4);
+  }
+  .mode-card.active::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--mg);
+    opacity: 0;
+    transition: opacity .3s;
+    border-radius: 18px;
+    pointer-events: none;
+  }
+  .mode-card.active:hover::after { opacity: 1; }
+
+  .mode-emblem {
+    font-size: 2.4rem;
+    position: relative; z-index: 1;
+    filter: drop-shadow(0 0 8px var(--mc));
+  }
+  .mode-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #fff;
     position: relative; z-index: 1;
   }
-  .back-btn:hover { background: rgba(255,107,53,.2); transform: translateY(-2px); }
+  .mode-desc {
+    font-size: .8rem;
+    color: rgba(232,232,240,.6);
+    line-height: 1.55;
+    position: relative; z-index: 1;
+  }
+  .mode-footer {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: .8rem;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .mode-badge {
+    font-size: .68rem;
+    font-weight: 700;
+    padding: .24rem .65rem;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--mc) 15%, transparent);
+    color: var(--mc);
+    border: 1px solid color-mix(in srgb, var(--mc) 30%, transparent);
+  }
+  .mode-arrow {
+    color: var(--mc);
+    font-size: 1.1rem;
+    transition: transform .2s;
+  }
+  .mode-card.active:hover .mode-arrow { transform: translateX(5px); }
+
+  .chip-soon {
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    padding: .18rem .55rem;
+    border-radius: 6px;
+    background: rgba(255,107,53,.15);
+    color: var(--nc);
+    border: 1px solid rgba(255,107,53,.25);
+    margin-left: .5rem;
+    vertical-align: middle;
+  }
+
+  /* SUBJECTS GRID */
+  .subjects-label {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+
+  .subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .subj-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem 1.4rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform .22s, border-color .22s, box-shadow .22s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .subj-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--ng2);
+    opacity: 0;
+    transition: opacity .3s;
+    border-radius: 14px;
+    pointer-events: none;
+  }
+
+  /* available subject */
+  .subj-card.available:hover {
+    transform: translateY(-4px);
+    border-color: var(--nc2);
+    box-shadow: 0 0 28px color-mix(in srgb, var(--nc2) 18%, transparent), 0 6px 20px rgba(0,0,0,.35);
+  }
+  .subj-card.available:hover::after { opacity: 1; }
+
+  /* inactive subject */
+  .subj-card.inactive {
+    opacity: .45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .subj-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    position: relative; z-index: 1;
+    filter: drop-shadow(0 0 6px var(--nc2));
+  }
+  .subj-name {
+    font-size: .95rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.35;
+    position: relative; z-index: 1;
+  }
+  .subj-meta {
+    font-size: .75rem;
+    color: var(--muted);
+    position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: .5rem;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .subj-tag {
+    font-size: .65rem;
+    font-weight: 700;
+    padding: .2rem .55rem;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--nc2) 15%, transparent);
+    color: var(--nc2);
+    border: 1px solid color-mix(in srgb, var(--nc2) 25%, transparent);
+  }
+  .subj-arrow {
+    color: var(--nc2);
+    font-size: 1rem;
+    transition: transform .2s;
+  }
+  .subj-card.available:hover .subj-arrow { transform: translateX(4px); }
 
   footer {
     position: relative; z-index: 1;
     text-align: center; padding: 1.5rem;
     color: var(--muted); font-size: .73rem;
     border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+
+  @media (max-width: 580px) {
+    .top-grid { grid-template-columns: 1fr; }
+    .subjects-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -118,15 +320,94 @@
   <span class="current">SWPS</span>
 </nav>
 
-<div class="center">
-  <div class="soon-card">
-    <div class="soon-icon">🧬</div>
-    <h1>Uniwersytet SWPS</h1>
-    <p>Testy dla tego kierunku są w przygotowaniu. Wróć tu wkrótce – treści pojawią się po dodaniu materiałów do platformy.</p>
-    <a class="back-btn" href="index.html">← Wróć na stronę główną</a>
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-icon">🧬</div>
+    <div class="page-title">Uniwersytet SWPS</div>
+    <div class="page-sub">Wybierz tryb nauki</div>
   </div>
+
+  <div class="section-label">Tryb</div>
+  <div class="top-grid">
+
+    <div class="mode-card tests disabled">
+      <div class="mode-emblem">📝</div>
+      <div class="mode-name">Testy <span class="chip-soon">Wkrótce</span></div>
+      <div class="mode-desc">Quizy i testy sprawdzające wiedzę z poszczególnych przedmiotów</div>
+      <div class="mode-footer">
+        <span class="mode-badge">W przygotowaniu</span>
+        <span class="mode-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="mode-card notes active" id="notes-toggle" style="cursor:pointer;">
+      <div class="mode-emblem">📖</div>
+      <div class="mode-name">Notatki</div>
+      <div class="mode-desc">Materiały i opracowania do przedmiotów SWPS</div>
+      <div class="mode-footer">
+        <span class="mode-badge">5 przedmiotów</span>
+        <span class="mode-arrow" id="notes-arrow">↓</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="subjects-section">
+    <div class="subjects-label">Przedmioty — Notatki</div>
+    <div class="subjects-grid">
+
+      <a class="subj-card available" href="etyka.html">
+        <div class="subj-icon">⚖️</div>
+        <div class="subj-name">Etyka w zastosowaniach psychologii</div>
+        <div class="subj-meta">
+          <span class="subj-tag">Notatki</span>
+          <span class="subj-arrow">→</span>
+        </div>
+      </a>
+
+      <div class="subj-card inactive">
+        <div class="subj-icon">🎲</div>
+        <div class="subj-name">Decyzje i ryzyko</div>
+        <div class="subj-meta">
+          <span class="subj-tag">Wkrótce</span>
+          <span class="subj-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="subj-card inactive">
+        <div class="subj-icon">📊</div>
+        <div class="subj-name">Zaawansowana psychometria</div>
+        <div class="subj-meta">
+          <span class="subj-tag">Wkrótce</span>
+          <span class="subj-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="subj-card inactive">
+        <div class="subj-icon">🗣️</div>
+        <div class="subj-name">Komunikacja i perswazja</div>
+        <div class="subj-meta">
+          <span class="subj-tag">Wkrótce</span>
+          <span class="subj-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="subj-card inactive">
+        <div class="subj-icon">🔬</div>
+        <div class="subj-name">Zaawansowana metodologia badań</div>
+        <div class="subj-meta">
+          <span class="subj-tag">Wkrótce</span>
+          <span class="subj-arrow">→</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <footer>StudyZone &mdash; materiały pomocnicze do nauki</footer>
+
 </body>
 </html>
