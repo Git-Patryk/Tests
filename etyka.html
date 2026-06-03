@@ -23,8 +23,8 @@
     --c-text:   #1e1b3a;
     --c-muted:  #5b5880;
     --c-border: #d6eaf8;
-    --c-head:   #065f46;
-    --c-head2:  #1e3a8a;
+    --c-head:   #6d28d9;
+    --c-head2:  #7c3aed;
     --c-row:    #edfaf3;
 
     /* status colors */
@@ -180,7 +180,7 @@
   .lcard h3 {
     font-size: .97rem; font-weight: 800;
     color: var(--c-head); margin-bottom: .85rem;
-    padding-bottom: .5rem; border-bottom: 2px solid #d1fae5;
+    padding-bottom: .5rem; border-bottom: 2px solid #ede8ff;
     display: flex; align-items: center; gap: .5rem;
   }
   .lcard h3 .num {
@@ -219,7 +219,7 @@
   .ltable { width: 100%; border-collapse: collapse; font-size: .835rem; margin: .6rem 0; border-radius: 10px; overflow: hidden; }
   .ltable th {
     text-align: left; padding: .55rem .85rem;
-    background: #0d7a5f; color: #fff;
+    background: var(--nc); color: #fff;
     font-size: .73rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
   }
   .ltable th:first-child { border-radius: 0; }
@@ -297,22 +297,6 @@
   @media (max-width: 480px) {
     .exam-strip { grid-template-columns: 1fr; }
   }
-
-  /* ── PER-SECTION H2 COLORS ── */
-  #W1 .section-header-text h2 { color: #065f46; }   /* zasady etyki — zieleń */
-  #W2 .section-header-text h2 { color: #1e3a8a; }   /* prawo — granat */
-  #W3 .section-header-text h2 { color: #c2410c; }   /* media — pomarańcz/cegła */
-  #W4 .section-header-text h2 { color: #0369a1; }   /* zgoda — błękit */
-  #W5 .section-header-text h2 { color: #7e22ce; }   /* tajemnica — fiolet */
-  #W6 .section-header-text h2 { color: #991b1b; }   /* wymiar sprawiedliwości — czerwień */
-  #W7 .section-header-text h2 { color: #166534; }   /* dyskryminacja — ciemna zieleń */
-  #C1 .section-header-text h2 { color: #0d5f7a; }   /* pomoc psychologiczna — ciemny błękit */
-  #C2 .section-header-text h2 { color: #854d0e; }   /* diagnoza/dokumentacja — brązowy */
-  #C3 .section-header-text h2 { color: #1e3a8a; }   /* standardy diagnozy — granat */
-  #C4 .section-header-text h2 { color: #92400e; }   /* biznes — ciemny pomarańcz */
-  #C5 .section-header-text h2 { color: #14532d; }   /* edukacja — ciemna zieleń */
-  #C6 .section-header-text h2 { color: #1e4a6b; }   /* na odległość — ciemny błękit */
-
   /* ── SEMANTIC COLOR HELPERS ── */
   .zakaz  { color: #dc2626; font-weight: 700; }   /* zakaz/naruszenie — czerwień */
   .zasada { color: #15803d; font-weight: 700; }   /* pozytywna zasada — zieleń */
