@@ -84,6 +84,7 @@
   }
   .mode-card.tests  { --mc: var(--nc);  --mg: var(--ng); }
   .mode-card.notes  { --mc: var(--nc2); --mg: var(--ng2); }
+  .mode-card.cards  { --mc: #34d399; --mg: rgba(52,211,153,.10); }
   .mode-card::before { background: radial-gradient(circle, var(--mc), transparent 70%); }
 
   .mode-card.disabled { opacity: .38; cursor: not-allowed; pointer-events: none; }
@@ -160,6 +161,16 @@
       <div class="mode-emblem">📖</div>
       <div class="mode-name">Notatki</div>
       <div class="mode-desc">Opracowania z wykładów, kodeksy i kluczowe pojęcia</div>
+      <div class="mode-footer">
+        <span class="mode-badge">Dostępne</span>
+        <span class="mode-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="mode-card cards active" href="etyka-fiszki.html">
+      <div class="mode-emblem">🃏</div>
+      <div class="mode-name">Fiszki</div>
+      <div class="mode-desc">Aktywne przypominanie: pojęcia, artykuły i daty z W1–W7 do szybkiej powtórki</div>
       <div class="mode-footer">
         <span class="mode-badge">Dostępne</span>
         <span class="mode-arrow">→</span>
