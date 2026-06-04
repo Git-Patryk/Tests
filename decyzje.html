@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decyzje i ryzyko – Notatki</title>
+<style>
+  :root {
+    --bg:       #08080f;
+    --card:     #111118;
+    --border:   #1f1f30;
+    --text:     #e8e8f0;
+    --muted:    #6b6b8a;
+
+    /* teal accent */
+    --nc:       #14b8a6;
+    --nc-dim:   rgba(20,184,166,.13);
+    --nc-glow:  rgba(20,184,166,.28);
+    --nc-border:rgba(20,184,166,.30);
+
+    /* light content area */
+    --c-bg:     #f4fbfa;
+    --c-text:   #16302c;
+    --c-muted:  #4f6a65;
+    --c-border: #cdeae6;
+    --c-head:   #0f766e;
+    --c-head2:  #0d9488;
+    --c-row:    #eafaf7;
+
+    /* status colors */
+    --green:  #4ade80;
+    --blue:   #60a5fa;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(20,184,166,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20,184,166,.018) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    padding: .9rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,8,15,.94);
+    backdrop-filter: blur(14px);
+    display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+  nav a:hover { color: var(--nc); }
+  nav .sep { color: var(--border); font-size: .82rem; }
+  nav .current { color: var(--text); font-weight: 600; font-size: .82rem; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2.8rem;
+    align-items: start;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    position: sticky; top: 60px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 1.4rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .toc::-webkit-scrollbar { width: 3px; }
+  .toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .toc-title {
+    font-size: .63rem; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted);
+    padding-bottom: .7rem; border-bottom: 1px solid var(--border); margin-bottom: .9rem;
+  }
+  .toc-group { margin-bottom: 1.1rem; }
+  .toc-group-label {
+    font-size: .6rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--nc); opacity: .7; margin-bottom: .3rem;
+  }
+  .toc a {
+    display: block; padding: .28rem .55rem; border-radius: 5px;
+    font-size: .78rem; color: var(--muted); text-decoration: none; line-height: 1.4;
+    transition: color .15s, background .15s;
+  }
+  .toc a:hover { color: var(--text); background: var(--nc-dim); }
+  .toc a.active { color: var(--nc); background: var(--nc-dim); font-weight: 600; }
+
+  /* ── MAIN ── */
+  .content { min-width: 0; padding: 2.2rem 0; }
+
+  /* Page header */
+  .page-header { margin-bottom: 2.4rem; }
+  .subject-icon { font-size: 2.6rem; margin-bottom: .7rem; filter: drop-shadow(0 0 14px var(--nc)); }
+  .subject-tag {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    border-radius: 20px; padding: .22rem .8rem;
+    font-size: .7rem; font-weight: 700; color: var(--nc);
+    text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem;
+  }
+  .page-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 800; line-height: 1.2; margin-bottom: .5rem;
+    background: linear-gradient(90deg, #fff 50%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .page-header .subtitle { color: var(--muted); font-size: .88rem; max-width: 560px; }
+  .accent-line { width: 44px; height: 2px; background: var(--nc); box-shadow: 0 0 8px var(--nc); border-radius: 2px; margin: 1rem 0; }
+
+  /* Exam strip */
+  .exam-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: .7rem; margin-bottom: 2.8rem; }
+  .exam-badge { background: var(--card); border: 1px solid var(--border); border-radius: 11px; padding: .9rem 1.1rem; }
+  .exam-badge .label { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .25rem; }
+  .exam-badge .value { font-size: .92rem; font-weight: 700; color: var(--text); }
+  .exam-badge.hi { border-color: var(--nc-border); background: var(--nc-dim); }
+  .exam-badge.hi .value { color: var(--nc); }
+
+  /* Group divider */
+  .group-divider { display: flex; align-items: center; gap: 1rem; margin: 2.8rem 0 1.8rem; }
+  .group-divider-label {
+    font-size: .66rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; white-space: nowrap;
+    padding: .28rem .85rem; border-radius: 20px;
+  }
+  .gdl-fund     { background: rgba(96,165,250,.12); color: var(--blue);   border: 1px solid rgba(96,165,250,.25); }
+  .gdl-cwiczenia{ background: var(--nc-dim);          color: var(--nc);    border: 1px solid var(--nc-border); }
+  .gdl-lit      { background: rgba(74,222,128,.1);     color: var(--green); border: 1px solid rgba(74,222,128,.2); }
+  .group-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── SECTION ── */
+  section { margin-bottom: 3rem; scroll-margin-top: 72px; }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: .9rem;
+    margin-bottom: 1.2rem; padding-bottom: .9rem; border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 900; color: var(--nc);
+  }
+  .section-header-text h2 { font-size: 1.1rem; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: .18rem; }
+  .section-header-text .src-tag { font-size: .7rem; color: var(--muted); font-style: italic; }
+  .section-header-text .src-tag span { color: var(--nc); opacity: .85; font-style: normal; }
+
+  /* ── LIGHT CONTENT CARD ── */
+  .lcard {
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 13px;
+    padding: 1.5rem 1.7rem;
+    margin-bottom: .9rem;
+    color: var(--c-text);
+  }
+
+  .lcard h3 {
+    font-size: .97rem; font-weight: 800;
+    color: var(--c-head); margin-bottom: .85rem;
+    padding-bottom: .5rem; border-bottom: 2px solid #d7f2ee;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .lcard h4 {
+    font-size: .88rem; font-weight: 700;
+    color: var(--c-head2); margin: 1rem 0 .5rem;
+  }
+  .lcard > p { font-size: .875rem; line-height: 1.68; color: var(--c-text); margin-bottom: .6rem; }
+
+  /* Arrow list */
+  .alist { list-style: none; padding: 0; }
+  .alist li {
+    position: relative; padding: .38rem .4rem .38rem 1.5rem;
+    font-size: .875rem; line-height: 1.68; color: var(--c-text);
+    border-bottom: 1px solid rgba(20,184,166,.1);
+  }
+  .alist li:last-child { border-bottom: none; }
+  .alist li::before { content: '→'; position: absolute; left: 0; top: .38rem; color: var(--nc); font-weight: 700; }
+  .alist li strong { color: var(--c-head); }
+  .alist li em { color: var(--c-muted); font-style: italic; }
+
+  /* Numbered list */
+  .nlist { padding-left: 1.3rem; }
+  .nlist li {
+    font-size: .875rem; line-height: 1.7; color: var(--c-text);
+    padding: .25rem 0; border-bottom: 1px solid rgba(20,184,166,.07);
+  }
+  .nlist li:last-child { border-bottom: none; }
+  .nlist li strong { color: var(--c-head); }
+
+  /* Table */
+  .ltable { width: 100%; border-collapse: collapse; font-size: .835rem; margin: .6rem 0; border-radius: 10px; overflow: hidden; }
+  .ltable th {
+    text-align: left; padding: .55rem .85rem;
+    background: var(--nc); color: #fff;
+    font-size: .73rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .ltable td { padding: .5rem .85rem; color: var(--c-text); border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; }
+  .ltable tr:last-child td { border-bottom: none; }
+  .ltable tr:nth-child(even) td { background: rgba(20,184,166,.05); }
+  .ltable tr:hover td { background: rgba(20,184,166,.09); }
+  .ltable td strong { color: var(--c-head); }
+
+  /* Two-col grid */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-bottom: .8rem; }
+
+  /* Pill */
+  .pill { display: inline-block; padding: .12rem .5rem; border-radius: 5px; font-size: .73rem; font-weight: 700; }
+  .pill-v { background: var(--nc-dim); color: var(--nc); border: 1px solid var(--nc-border); }
+  .pill-g { background: rgba(74,222,128,.1); color: var(--green); border: 1px solid rgba(74,222,128,.2); }
+  .pill-b { background: rgba(96,165,250,.1); color: var(--blue); border: 1px solid rgba(96,165,250,.2); }
+  .pill-y { background: rgba(251,191,36,.1); color: #b8860b; border: 1px solid rgba(251,191,36,.2); }
+  .pill-r { background: rgba(220,38,38,.1); color: #dc2626; border: 1px solid rgba(220,38,38,.25); }
+
+  /* Callout */
+  .callout {
+    border-radius: 9px; padding: .85rem 1.1rem;
+    margin: .7rem 0; font-size: .855rem; line-height: 1.72;
+    display: flex; gap: .75rem; align-items: flex-start;
+    color: var(--text);
+  }
+  .callout .ci { font-size: .95rem; flex-shrink: 0; margin-top: .05rem; }
+  .callout.exam  { background: rgba(20,184,166,.16); border-left: 3px solid var(--nc); }
+  .callout.tip   { background: rgba(74,222,128,.13);  border-left: 3px solid var(--green); }
+  .callout.warn  { background: rgba(251,191,36,.14);  border-left: 3px solid var(--yellow); }
+  .callout.info  { background: rgba(96,165,250,.13);  border-left: 3px solid var(--blue); }
+  .callout strong { color: #fff; }
+
+  /* Callout wewnątrz jasnych kart — ciemny tekst */
+  .lcard .callout { color: var(--c-text); }
+  .lcard .callout strong { color: var(--c-head); }
+
+  /* Section summary box */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(20,184,166,.12), rgba(13,148,136,.06));
+    border: 1px solid var(--nc-border); border-radius: 13px;
+    padding: 1.3rem 1.5rem; margin-top: 1rem;
+  }
+  .summary-box h4 { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--nc); margin-bottom: .8rem; }
+  .summary-box ul { list-style: none; padding: 0; }
+  .summary-box li { font-size: .855rem; line-height: 1.6; color: var(--text); padding: .25rem 0 .25rem 1.4rem; position: relative; }
+  .summary-box li::before { content: '◆'; position: absolute; left: 0; color: var(--nc); font-size: .7rem; top: .45rem; }
+  .summary-box li strong { color: #fff; }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 2rem; color: var(--muted); font-size: .72rem; border-top: 1px solid var(--border); }
+
+  /* Mobile */
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 0 1rem 4rem; }
+    .toc { position: static; max-height: none; overflow: visible; border: 1px solid var(--border); border-radius: 12px; background: var(--card); padding: 1rem 1.2rem; margin: 1rem 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .exam-strip { grid-template-columns: 1fr 1fr; }
+    .ltable { font-size: .78rem; }
+    .ltable th, .ltable td { padding: .4rem .6rem; }
+  }
+  @media (max-width: 480px) {
+    .exam-strip { grid-template-columns: 1fr; }
+  }
+  /* ── SEMANTIC COLOR HELPERS ── */
+  .zysk   { color: #15803d; font-weight: 700; }   /* zysk / pozytyw */
+  .strata { color: #dc2626; font-weight: 700; }   /* strata / błąd */
+  .term   { color: #0f766e; font-weight: 700; }   /* termin kluczowy */
+  .uwaga  { color: #d97706; font-weight: 700; }   /* uwaga / wyjątek */
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <a href="swps.html">SWPS</a>
+  <span class="sep">/</span>
+  <a href="swps-decyzje.html">Decyzje i ryzyko</a>
+  <span class="sep">/</span>
+  <span class="current">Notatki</span>
+</nav>
+
+<div class="layout">
+
+<!-- ── TOC ── -->
+<aside class="toc">
+  <div class="toc-title">Spis treści</div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">⚡ Zaliczenie</div>
+    <a href="#zaliczenie">Warunki i punktacja</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🧠 Podstawy</div>
+    <a href="#S1">1 · System 1 i System 2</a>
+    <a href="#S2">2 · Pomiar myślenia (CRT, numeracy)</a>
+    <a href="#S3">3 · Heurystyki i błędy poznawcze</a>
+    <a href="#S4">4 · Teoria perspektywy</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🎲 Ryzyko i style</div>
+    <a href="#S5">5 · Postawy wobec ryzyka i ich pomiar</a>
+    <a href="#S6">6 · Maksymalizacja vs satysfakcja</a>
+    <a href="#S7">7 · Komunikowanie ryzyka</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🛠️ Zastosowania</div>
+    <a href="#S8">8 · Interwencje: nudging vs boosting</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📚 Literatura</div>
+    <a href="#lit">Zestawienie</a>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="content">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="subject-icon">🎲</div>
+    <div class="subject-tag">SWPS · Rok 4 · Semestr letni 2025/2026</div>
+    <h1>Decyzje i ryzyko</h1>
+    <div class="accent-line"></div>
+    <p class="subtitle">Psychologia decyzji na styku z ekonomią: dwa systemy myślenia, heurystyki i błędy poznawcze, teoria perspektywy, postawy wobec ryzyka, style decyzyjne, komunikowanie ryzyka oraz interwencje behawioralne (nudging i boosting).</p>
+  </div>
+
+  <!-- ZALICZENIE -->
+  <div class="exam-strip" id="zaliczenie">
+    <div class="exam-badge hi">
+      <div class="label">Test wiedzy</div>
+      <div class="value">Wykłady + ćwiczenia · 31–60 pkt</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Projekt zespołowy</div>
+      <div class="value">Casus decyzyjny · prezentacja · 5–10 pkt</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Aktywność / prace</div>
+      <div class="value">Zadania na zajęciach · 15–30 pkt</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Zaliczenie</div>
+      <div class="value">51/100 pkt · min. 50% z każdej formy</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ci">ℹ️</span><div>Koordynator: <strong>dr Jakub Krawiec</strong>; wykład: dr hab. Robert Mackiewicz, prof. USWPS. Ćwiczenia: mgr Franciszek Ostaszewski / mgr Marcin Terlecki. 4 ECTS. Test wiedzy obejmuje <strong>wszystko</strong> z wykładów, seminariów (slajdy) i literatury. Udział w ćwiczeniach obowiązkowy — dozwolona 1 nieusprawiedliwiona nieobecność.</div>
+  </div>
+
+  <!-- ══════════ PODSTAWY ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-fund">🧠 Podstawy psychologii decyzji</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S1 -->
+  <section id="S1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-header-text">
+        <h2>System 1 i System 2 — dualizm poznania</h2>
+        <div class="src-tag">Źródło: <span>Kahneman (2012) „Pułapki myślenia”; Stanovich &amp; West; Strack &amp; Deutsch (2015)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Dwa systemy myślenia</h3>
+      <p>Pojęcie dwóch systemów wprowadzili <strong>Keith Stanovich i Richard West</strong>, a spopularyzowali <strong>Daniel Kahneman i Amos Tversky</strong>. Oba systemy są stale aktywne: System 1 działa automatycznie, System 2 zwykle trwa w trybie niskiego wysiłku.</p>
+      <table class="ltable">
+        <tr><th>Cecha</th><th>System 1 — szybki</th><th>System 2 — wolny</th></tr>
+        <tr><td><strong>Tryb</strong></td><td>Automatyczny, intuicyjny, nieświadomy</td><td>Kontrolowany, refleksyjny, świadomy</td></tr>
+        <tr><td><strong>Wysiłek</strong></td><td>Brak poczucia kontroli, działa w tle</td><td>Wysiłkowy, seryjny, wymaga uwagi</td></tr>
+        <tr><td><strong>Opiera się na</strong></td><td>Skojarzeniach, wrażeniach, emocjach</td><td>Regułach logicznych i analitycznych</td></tr>
+        <tr><td><strong>Przykłady</strong></td><td>Mówienie w ojczystym języku, jazda znaną trasą, łaknienia</td><td>Nauka obcego języka, planowanie nowej trasy, liczenie kalorii</td></tr>
+      </table>
+      <p>System 1 bez przerwy generuje dla Systemu 2 sugestie (wrażenia, przeczucia, intencje). Gdy System 2 je zatwierdzi, stają się przekonaniami i działaniami. Gdy idzie gładko — System 2 akceptuje sugestie Systemu 1 niemal bez zmian.</p>
+      <h4>Kiedy aktywuje się System 2?</h4>
+      <ul class="alist">
+        <li>Gdy System 1 napotyka <strong>trudność</strong> i nie zna odpowiedzi</li>
+        <li>Gdy zdarzenie <strong>zaskakuje</strong> / jest sprzeczne z modelem rzeczywistości (eksperyment z gorylem — niewidzialny goryl)</li>
+        <li>Odpowiada też za <strong>samokontrolę</strong> (uprzejmość mimo złości, czuwanie za kierownicą)</li>
+      </ul>
+      <h4>Co wzmacnia dominację Systemu 1?</h4>
+      <p>Zajętość poznawcza, rozproszenie uwagi, presja czasu, pozytywny nastrój. System 2 wzmacnia się, gdy decyzja jest ważna, ma znaczenie osobiste lub gdy decydent jest <em>rozliczany</em> przez innych (Samson i Voyer, 2012/2014).</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Klasyczne zagadki — intuicja kontra logika</h3>
+      <table class="ltable">
+        <tr><th>Zadanie</th><th>Odpowiedź S1 (błędna)</th><th>Odpowiedź S2 (poprawna)</th></tr>
+        <tr><td><strong>Linda</strong> (31 l., aktywistka): kasjerka czy kasjerka-feministka?</td><td>„Kasjerka + feministka” — pasuje do narracji</td><td>Sama „kasjerka” — koniunkcja nie może być bardziej prawdopodobna niż pojedyncze zdarzenie</td></tr>
+        <tr><td><strong>Cegła</strong> waży 1 kg i pół cegły</td><td>1,5 kg</td><td>2 kg (x = 1 + 0,5x)</td></tr>
+        <tr><td><strong>Kij i piłka</strong> (test CRT)</td><td>10 centów</td><td>5 centów</td></tr>
+        <tr><td><strong>Sylogizm:</strong> wszystkie róże to kwiaty; niektóre kwiaty więdną → niektóre róże więdną?</td><td>„Poprawny” (bo wniosek brzmi wiarygodnie)</td><td>Błędny — możliwe, że wśród więdnących nie ma róż</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Gdy działa System 1, <strong>najpierw pojawia się wniosek, potem argumenty</strong>. Uznając wniosek za prawdziwy, wierzymy też w przemawiające za nim argumenty — nawet fałszywe.</div></div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section id="S2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-header-text">
+        <h2>Pomiar myślenia: CRT, zdolności numeryczne, style</h2>
+        <div class="src-tag">Źródło: <span>Frederick (2005); Cokely i in. (2012); Toplak, West &amp; Stanovich (2011); Pacini &amp; Epstein (1999)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Test refleksji poznawczej (CRT — Cognitive Reflection Test)</h3>
+      <ul class="alist">
+        <li><strong>Co mierzy:</strong> zdolność <em>stłumienia</em> intuicyjnej, spontanicznej, lecz błędnej odpowiedzi Systemu 1 i uruchomienia Systemu 2</li>
+        <li><strong>Mechanizm:</strong> sprawdza, jak uważnie System 2 monitoruje sugestie Systemu 1 (klasyczny przykład: kij i piłka)</li>
+        <li><strong>Trafność prognostyczna:</strong> niższe wyniki = większa podatność na heurystyki, trudności z <em>odroczeniem gratyfikacji</em> i samokontrolą (Frederick 2005; Toplak i in. 2011)</li>
+        <li><strong>Dwie strony:</strong> miara myśli racjonalnej oraz miara ulegania błędom kognitywnym</li>
+      </ul>
+      <div class="callout tip"><span class="ci">💡</span><div>Osoba odpowiadająca „10 centów” nie sprawdziła odpowiedzi — minimalnym wysiłkiem można było ją odrzucić. To „wyznawcy minimalizacji wysiłku”; osoby unikające odpowiedzi intuicyjnej mają umysł bardziej aktywny.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Zdolności numeryczne (statistical numeracy)</h3>
+      <p>Mierzone np. <strong>Berlińskim Testem Numerycznym</strong> (Cokely i in., 2012) — rozumienie prawdopodobieństwa, proporcji i informacji statystycznych. Umiarkowanie skorelowany z CRT (r = 0,34–0,59); wg części autorów mierzą tę samą zmienną latentną.</p>
+      <h4>Osoby z wysokimi zdolnościami numerycznymi:</h4>
+      <ul class="alist">
+        <li>Podejmują <strong>lepsze decyzje</strong> zdrowotne i finansowe</li>
+        <li>Bardziej liniowo przekształcają wartości obiektywne; większa wrażliwość na prawdopodobieństwo (mniej zniekształcone funkcje ważenia)</li>
+        <li>Mniej podatne na incydentalne <em>wpływy afektywne</em>; dokonują wyborów adaptacyjnych do struktury zadania</li>
+      </ul>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Kluczowe pytanie badaczy: czy irracjonalność napędza <strong>błąd w procesie myślenia</strong> (brak hamowania intuicji), czy raczej <strong>brak wiedzy</strong> (kompetencje numeryczne)? Niskie umiejętności numeryczne kosztują W. Brytanię 2,4–20 mld funtów rocznie.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Kwestionariusz stylów myślenia REI-40 (Pacini &amp; Epstein, 1999)</h3>
+      <p>40 stwierdzeń na 5-stopniowej skali Likerta. Mierzy dwa style myślenia w czterech podskalach (uśrednienie po 10 pozycji):</p>
+      <ul class="alist">
+        <li><strong>Styl racjonalny</strong> — Zdolność Racjonalna + Zaangażowanie Racjonalne (≈ System 2)</li>
+        <li><strong>Styl doświadczeniowy</strong> — Zdolność Doświadczeniowa + Zaangażowanie Doświadczeniowe (≈ System 1)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section id="S3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-header-text">
+        <h2>Heurystyki i błędy poznawcze</h2>
+        <div class="src-tag">Źródło: <span>Kahneman &amp; Tversky; Kahneman (2011/2012); Tyszka; Zielonka (finanse behawioralne)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Definicje</h3>
+      <ul class="alist">
+        <li><strong class="term">Heurystyka</strong> — uproszczona reguła wnioskowania, stosowana nieświadomie; „skrót” zmniejszający złożoność osądu i wyboru (często niedoskonały)</li>
+        <li><strong class="term">Błąd poznawczy (bias)</strong> — <em>systematyczny</em> (powtarzalny między ludźmi i sytuacjami) błąd wynikający z polegania na heurystykach; luka między zachowaniem normatywnym a wynikiem podążania za heurystyką</li>
+      </ul>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Najsłynniejsze dzieło Kahnemana i Tversky'ego opisało ok. 20 błędów poznawczych jako przejaw heurystyk. Przystępnie: „Pułapki myślenia”.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Efekty wynikające z teorii dualnego procesu</h3>
+      <ul class="alist">
+        <li><strong>Łatwość poznawcza</strong> — podążanie ścieżką najmniejszego oporu</li>
+        <li><strong>Zastępowanie pytań</strong> — na trudne pytanie odpowiadamy łatwiejszym poznawczo</li>
+        <li><strong class="term">WYSIATI</strong> (What You See Is All There Is) — „istnieje tylko to, co widzisz”; System 1 jest niewrażliwy na jakość i ilość informacji, buduje spójne historie z fragmentów (źródło nadmiernej pewności siebie)</li>
+        <li><strong>Efekt halo (aureoli)</strong> — jedna cecha barwi całościową ocenę</li>
+        <li><strong>Ramowanie i architektura wyboru</strong> — opinia zmienia się zależnie od sposobu pytania (90% przeżycia vs 10% zgonu; wędlina „10% tłuszczu” vs „90% wolna od tłuszczu”)</li>
+        <li><strong>Ignorowanie stopy bazowej</strong> — przeceniamy to, co „wydaje się” słuszne, lekceważymy statystykę (Jan → bibliotekarz, choć rolników jest więcej)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Najważniejsze heurystyki i błędy — przegląd</h3>
+      <table class="ltable">
+        <tr><th>Mechanizm</th><th>Na czym polega</th></tr>
+        <tr><td><strong>Dostępności</strong></td><td>Ocena prawdopodobieństwa wg łatwości przypomnienia. Żywe, medialne, świeże przykłady wydają się częstsze (przecenianie ryzyka katastrof lotniczych)</td></tr>
+        <tr><td><strong>Reprezentatywności</strong></td><td>Ocena wg podobieństwa do „typowego” przypadku (Linda, Jan). Bywa trafna, ale ignoruje stopę bazową i wielkość próby</td></tr>
+        <tr><td><strong>Afektu</strong> („jak czuję, tak decyduję”)</td><td>Zamiast analizy „za i przeciw” umysł pyta: „co czuję wobec X?”. Dobry nastrój → widzimy korzyści; zły → zagrożenia</td></tr>
+        <tr><td><strong>Zakotwiczenie</strong></td><td>Pierwsza liczba/sugestia („kotwica”) wpływa na ocenę. Koło fortuny i % krajów afrykańskich w ONZ; ceny domów u agentów; „ograniczona ilość w promocji”</td></tr>
+        <tr><td><strong>Iluzja kontroli</strong></td><td>Przecenianie wpływu na zdarzenia losowe (rzucanie kostką mocniej dla wyższych liczb; „panuję nad rynkiem”) — Langer (1975)</td></tr>
+        <tr><td><strong>Błąd konfirmacji</strong></td><td>Szukanie/interpretacja dowodów potwierdzających przekonania, ignorowanie kontrdowodów (Lord i in., 1979; teorie spiskowe)</td></tr>
+        <tr><td><strong>Nadmierna pewność siebie</strong></td><td>Przecenianie wiedzy i kontroli, niedocenianie ryzyka — zwłaszcza po szybkim sukcesie w nowej dziedzinie (Nofsinger, 2001)</td></tr>
+        <tr><td><strong>Efekt podczepienia</strong></td><td>Przyjmowanie zachowania, „bo wszyscy tak robią” (bandwagon)</td></tr>
+        <tr><td><strong>Krótkowzroczność poznawcza</strong></td><td>Ignorowanie części informacji: <em>czasowa</em> (skupienie na krótkim terminie) i <em>horyzontalna</em> (pomijanie celów spoza własnej specjalizacji)</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Statystyka, której System 1 nie rozumie</h3>
+      <h4>Regresja (powrót) do średniej</h4>
+      <p>Skrajnie wysokie/niskie wyniki w pierwszym pomiarze z dużym prawdopodobieństwem zostaną zastąpione wynikami bliższymi średniej — bo skrajny rezultat jest w dużej mierze dziełem przypadku. Przykład: zawodnik strzela 3 gole (zbieg okoliczności), w kolejnym meczu wraca do przeciętnej; fundusz z rekordowym rokiem później osiąga przeciętny wynik. <span class="strata">Ignorowanie regresji</span> → nieostrożne inwestycje, przecenianie wyjątkowych osiągnięć.</p>
+      <h4>Małe próby statystyczne</h4>
+      <p>Skrajne wyniki łatwiej zaobserwować na małej próbie. Wraz ze wzrostem próby wyniki zbiegają do stabilnej częstości (rzut monetą → 50% dopiero przy dużej próbie, nie przy 2–4 rzutach).</p>
+      <h4>Pułapka reprezentatywności na rynku</h4>
+      <ul class="alist">
+        <li><strong>Generalizacja z małej próby</strong> — 2 nieudane inwestycje → brak zaufania do rynków wschodzących</li>
+        <li><strong>Nierespektowanie regresji do średniej</strong> — wiara, że trend się nie zmieni (nie ma akcji, które stale rosną/spadają)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Niezależność zdarzeń: pułapka gracza vs gorąca ręka</h3>
+      <table class="ltable">
+        <tr><th></th><th>Złudzenie gracza (gambler's fallacy)</th><th>Efekt gorącej ręki (hot hand)</th></tr>
+        <tr><td><strong>Przekonanie</strong></td><td>Po serii czarnych „musi” wypaść czerwone</td><td>Kto wygrywa, ma większą szansę na kolejny sukces („karta sprzyja”)</td></tr>
+        <tr><td><strong>Błąd</strong></td><td>Ignorowanie niezależności zdarzeń losowych</td><td>Doszukiwanie się serii tam, gdzie ich nie ma</td></tr>
+        <tr><td><strong>Przykład</strong></td><td>Monte Carlo 1913 — 26 razy czarne z rzędu, ludzie tracili fortuny obstawiając czerwone</td><td>Koszykówka — Gilovich, Vallone &amp; Tversky (1985): „gorąca ręka” to mit (w zdarzeniach losowych)</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div><strong>Klucz:</strong> 10 reszek z rzędu z góry ma p = 1/1024, ale po 9 reszkach kolejny rzut nadal ma p = 50% — moneta „nie pamięta” historii. Na rynku: <em>momentum</em> (liczenie na kontynuację trendu, nadmierna pewność) vs <em>contrarian</em> (działanie odwrotne — Barberis, Shleifer &amp; Vishny, 1998).</div></div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section id="S4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-header-text">
+        <h2>Teoria perspektywy (prospect theory)</h2>
+        <div class="src-tag">Źródło: <span>Kahneman &amp; Tversky (1979) — Nagroda Nobla z ekonomii 2002</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Od „ekonów” do ludzi</h3>
+      <p>Klasyczna ekonomia zakłada <strong>teorię oczekiwanej użyteczności</strong> — racjonalnego, samolubnego uczestnika rynku o stałych preferencjach (<em>homo economicus</em>). Richard Thaler nazwał ich „ekonami”. Kahneman i Tversky zmodyfikowali ten model, by tłumaczył realne zachowania ludzi: awersję do ryzyka, niespójność, czynniki „ludzkie”. Tekst ukazał się w czasopiśmie <em>ekonomicznym</em> — stąd ogromny wpływ; w 2002 r. Kahneman dostał Nobla z ekonomii (Tversky już nie żył).</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Cztery filary teorii perspektywy</h3>
+      <ol class="nlist">
+        <li><strong>Strata bardziej boli niż zysk cieszy</strong> — utrata 1000 zł boli silniej, niż cieszy zysk 1000 zł (awersja do strat)</li>
+        <li><strong>Ważenie prawdopodobieństw</strong> — ludzie <em>nie doszacowują</em> średnich i wysokich prawdopodobieństw, a <em>przeceniają</em> niskie</li>
+        <li><strong>Punkt odniesienia = zysk</strong> → decydent wykazuje <span class="strata">awersję do ryzyka</span> (woli pewne)</li>
+        <li><strong>Punkt odniesienia = strata</strong> → decydent wykazuje <span class="zysk">skłonność do ryzyka</span> (próbuje uniknąć straty: „może się uda”)</li>
+      </ol>
+      <div class="callout exam"><span class="ci">🎯</span><div>Ludzie nadają wartości <strong>zyskom i stratom</strong>, a nie stanowi posiadania. Punkt odniesienia decyduje o nastawieniu do ryzyka.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Awersja do strat — pomiar i konsekwencje</h3>
+      <p>Zakład: reszka = strata 100 zł, orzeł = wygrana 150 zł. Wartość oczekiwana dodatnia, ale większość odrzuca — obawa przed stratą 100 zł jest silniejsza niż nadzieja na 150 zł. Pytanie diagnostyczne: „jaki najmniejszy zysk zrównoważyłby ryzyko straty 100 zł?”. Typowo ~200 zł → <strong>współczynnik awersji do strat 1,5–2,5</strong> (zysk musi być ~2× większy od straty).</p>
+      <h4 class="strata">Efekt utopionych kosztów (sunk cost)</h4>
+      <p>Ze strachu przed zmarnowaniem dotychczasowego wkładu inwestujemy jeszcze więcej, by go „obronić”. Przykład: granie „aż się odkuję”; „skoro już poświęciłem tyle czasu/pieniędzy…”.</p>
+    </div>
+  </section>
+
+  <!-- ══════════ RYZYKO I STYLE ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-cwiczenia">🎲 Ryzyko, style decyzyjne, komunikacja</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S5 -->
+  <section id="S5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-header-text">
+        <h2>Postawy wobec ryzyka i ich pomiar</h2>
+        <div class="src-tag">Źródło: <span>Tyszka &amp; Domurat (2004); MacCrimmon &amp; Wehrung (1990); Warneryd (1996); DOSPERT; BART</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Czy istnieje ogólna skłonność do ryzyka?</h3>
+      <p>Teoria decyzji zakłada indywidualny stosunek decydenta do ryzyka — banki chciałyby go mierzyć, by dopasować instrumenty inwestycyjne. Problem: różne techniki pomiaru dają <strong>niezgodne</strong> wyniki.</p>
+      <p><strong>Tyszka &amp; Domurat (2004)</strong> — argument <em>przeciwko</em> istnieniu ogólnej skłonności do ryzyka. Struktura wielowymiarowa, 4 czynniki (dziedziny):</p>
+      <ul class="alist">
+        <li><strong>Z</strong> — ryzyko zdrowotne i konsumenckie</li>
+        <li><strong>S</strong> — ryzyko w sferze relacji społecznych</li>
+        <li><strong>F</strong> — ryzyko finansowe (inwestowanie, hazard)</li>
+        <li><strong>A</strong> — ryzyko antycypacyjne (niezabezpieczanie się: brak ubezpieczeń, rezerwacji itd.)</li>
+      </ul>
+      <h4>Wyniki socjo-demograficzne</h4>
+      <ul class="alist">
+        <li><strong>Dochody:</strong> osoby o wyższych dochodach — więcej ryzyka finansowego (F) i społecznego (S), ale <em>nie</em> zdrowotnego/antycypacyjnego (kierunek przyczynowy nieznany)</li>
+        <li><strong>Narodowość:</strong> Grecy — więcej ryzyka antycypacyjnego (A) i społecznego (S); Polacy — więcej zdrowotno-konsumenckiego (Z)</li>
+        <li><strong class="uwaga">Płeć:</strong> mężczyźni podejmują więcej ryzyka we <em>wszystkich czterech</em> dziedzinach — płeć jedyną zmienną wpływającą wszędzie (por. Byrnes, Miller &amp; Schafer, 1999)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Metody pomiaru</h3>
+      <ul class="alist">
+        <li><strong>Loterie</strong> — najczęstszy sposób; porównanie opcji o równej lub różnej wartości oczekiwanej (EV = prawdopodobieństwo × kwota)</li>
+        <li><strong>BART</strong> (Balloon Analog Risk Task) — skomputeryzowane zadanie: pompowanie balonu po nagrodę, do pęknięcia. Palacze i ryzykowni kierowcy → więcej pompowań (wyższa skłonność do ryzyka)</li>
+        <li><strong>DOSPERT</strong> — kwestionariuszowy pomiar postaw wobec ryzyka w różnych domenach</li>
+        <li><strong>Miary deklaratywne</strong> (hipotetyczne sytuacje) vs <strong>behawioralne</strong> (realne zachowanie)</li>
+      </ul>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>Problem pomiaru:</strong> miary deklaratywne i behawioralne często dają różne tendencje. <strong>MacCrimmon &amp; Wehrung (1990)</strong> — 509 dyrektorów banków: stosunek do ryzyka tej samej osoby był różny wg różnych miar. <strong>Warneryd (1996)</strong> — deklarowane postawy nie miały związku z realnym portfelem; ~60% „ostrożnych” Holendrów grało w gry loteryjne.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Cztery warianty stosunku do ryzyka (macierz)</h3>
+      <p>Zależnie od tego, czy chodzi o zysk/stratę oraz wysokie/niskie prawdopodobieństwo, ujawnia się inny stosunek do ryzyka (przykład: spór sądowy — ugoda vs proces):</p>
+      <table class="ltable">
+        <tr><th></th><th>Duże prawdopodobieństwo</th><th>Małe prawdopodobieństwo</th></tr>
+        <tr><td><strong>ZYSK</strong></td><td><span class="strata">Awersja do ryzyka</span> — strach przed rozczarowaniem; bierzemy pewne (powód: 90% kwoty od ręki)</td><td><span class="zysk">Skłonność do ryzyka</span> — nadmierna waga małej szansy (pozew jak los na loterii)</td></tr>
+        <tr><td><strong>STRATA</strong></td><td><span class="zysk">Skłonność do ryzyka</span> — pozwany walczy dalej, byle uniknąć pewnej straty</td><td><span class="strata">Awersja do ryzyka</span> — nadmierna waga małego ryzyka; ugoda = „zakup ubezpieczenia”</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Decyzje w 4 wariantach nie są oczywiście nierozsądne — ale na dłuższą metę systematyczne odchylenia od wartości oczekiwanej (nadawanie nadmiernej wagi mało prawdopodobnym rezultatom) <strong>kosztują</strong> i dają gorsze wyniki.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Po co znać profil ryzyka? — zastosowania</h3>
+      <ul class="alist">
+        <li><strong>Finanse:</strong> identyfikacja profilu inwestora → dobór produktu i narracji sprzedażowej</li>
+        <li><strong>Emerytury:</strong> osoby z awersją łatwiej zapisać do programu; ryzykantom potrzebna inna narracja</li>
+        <li><strong>Zdrowie:</strong> trafna ocena ryzyka → zachowania profilaktyczne, przestrzeganie obostrzeń</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section id="S6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-header-text">
+        <h2>Maksymalizacja vs reguła satysfakcji</h2>
+        <div class="src-tag">Źródło: <span>Schwartz i in. (2002); Parker, Bruine de Bruin &amp; Fischhoff (2007); Simon</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Dwa style decyzyjne</h3>
+      <table class="ltable">
+        <tr><th></th><th>Maksymalizacja (maximizing)</th><th>Reguła satysfakcji (satisficing)</th></tr>
+        <tr><td><strong>Cel</strong></td><td>Opcja obiektywnie najlepsza</td><td>Opcja „wystarczająco dobra” (spełnia główne kryteria)</td></tr>
+        <tr><td><strong>Proces</strong></td><td>Żmudne porównania, długa analiza, lęk przed pominięciem lepszej oferty</td><td>Krótki przegląd, akceptacja pierwszej wystarczającej opcji</td></tr>
+        <tr><td><strong>Emocje</strong></td><td>Przeciążenie informacjami, żal („a gdybym wybrał inaczej?”)</td><td>Mniejszy stres, większe zadowolenie z decyzji</td></tr>
+        <tr><td><strong>Autorzy</strong></td><td>Schwartz i in. (2002)</td><td>Herbert Simon (pojęcie), spopularyzowane przez Schwartza</td></tr>
+      </table>
+      <p>Przykład (zakup telefonu): maksymalizator porównuje dziesiątki modeli i recenzji, a po zakupie nadal się waha; satysfakcjoner wybiera spełniający kilka kryteriów i nie roztrząsa decyzji.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Konsekwencje dla dobrostanu</h3>
+      <ul class="alist">
+        <li><strong>Schwartz i in. (2002):</strong> maksymalizatorzy częściej wybierają obiektywnie „lepsze” opcje, ale częściej odczuwają <em>niezadowolenie</em> i żal</li>
+        <li><strong>Parker, Bruine de Bruin &amp; Fischhoff (2007):</strong> obraz bardziej złożony — maksymalizatorzy mają lepsze „twarde” wskaźniki (wyższa pensja, lepsze warunki umowy), ale niekoniecznie wyższą satysfakcję/szczęście</li>
+        <li><strong>Skala maksymalizacji Schwartza</strong> — narzędzie mierzące skłonność do porównań, poszukiwania „opcji idealnej” i odkładania decyzji</li>
+      </ul>
+      <div class="callout tip"><span class="ci">💡</span><div>Nie istnieje jeden „właściwy” styl. Maksymalizacja bywa cenna w ważnych decyzjach (uczelnia, inwestycje), satysfakcja — w codziennych, mniej znaczących wyborach. Marketing celowo zwiększa liczbę wariantów, by wciągać (zwłaszcza maksymalizatorów) w niekończący się research.</div></div>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section id="S7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-header-text">
+        <h2>Komunikowanie ryzyka i danych</h2>
+        <div class="src-tag">Źródło: <span>Gigerenzer i in. (2007); Gigerenzer &amp; Galesic (2012); Tversky &amp; Kahneman</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Ryzyko względne vs bezwzględne</h3>
+      <p>Umiejętność korzystania z danych = czytanie, rozumienie i ocenianie informacji. Jako konsumenci musimy rozpoznawać dane wprowadzające w błąd.</p>
+      <ul class="alist">
+        <li><strong class="strata">Ryzyko względne</strong> zniekształca i wzmacnia percepcję — „PODWAJA ryzyko” / „trzykrotny wzrost” brzmi groźnie</li>
+        <li><strong class="zysk">Ryzyko bezwzględne</strong> (z klasą referencyjną / częstości naturalne) pozwala uchwycić realną skalę — „czy w ogóle warto się tym przejmować”</li>
+      </ul>
+      <div class="callout info"><span class="ci">ℹ️</span><div><strong>Przykład — pigułki antykoncepcyjne (UK, 1995):</strong> „podwajają ryzyko zakrzepicy” = wzrost z <strong>1 na 7000</strong> do <strong>2 na 7000</strong> kobiet (0,014% → 0,028%). Po panice liczba niechcianych ciąż wzrosła o ~15 000. Cytat Gigerenzera: ryzyko względne bez bezwzględnego jest jak kupon „-50%” bez wiedzy, czy dotyczy diamentów, czy gumy do żucia.</div></div>
+      <p>Dwuznaczność klasy referencyjnej: „Prozac — 30–50% szans na problemy seksualne” (Gigerenzer &amp; Galesic, 2012) — czy 30–50% <em>pacjentów</em>, czy 30–50% <em>kontaktów</em>? Bez klasy referencyjnej komunikat jest mylący.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Framing — to samo, inaczej ujęte</h3>
+      <p>Klasyczny eksperyment Tversky'ego i Kahnemana z lekarzami (leczenie nowotworu):</p>
+      <table class="ltable">
+        <tr><th>Ujęcie</th><th>Treść</th><th>Operację wybrało</th></tr>
+        <tr><td><span class="pill pill-g">Pozytywne</span></td><td>„Chirurgia daje 90% przeżycia po miesiącu”</td><td><strong>84%</strong> lekarzy</td></tr>
+        <tr><td><span class="pill pill-r">Negatywne</span></td><td>„Chirurgia wiąże się z 10% śmiertelności”</td><td><strong>50%</strong> lekarzy</td></tr>
+      </table>
+      <p>Te same dane — dramatycznie różne decyzje. „95% pasażerów przeżyło” vs „zginęło 5% pasażerów”. Sterowanie odbiorem: chcesz przekonać do terapii → mów o szansach przeżycia; zniechęcić → o ryzyku zgonu.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Manipulacje przy prezentacji danych</h3>
+      <ul class="alist">
+        <li><strong class="strata">Cherry picking</strong> — pokazanie fragmentu danych zamiast całości; dobór korzystnego przedziału. <em>Przykład:</em> „Mail on Sunday” (2012) — „globalne ocieplenie zatrzymało się 16 lat temu” (wybrano 1997–2012; dane 1900–2020 pokazują wyraźny trend)</li>
+        <li><strong class="strata">Rozciągnięta skala osi Y</strong> — oś obejmuje nadmiernie szeroki zakres → realne zmiany wydają się płaskie i nieistotne (umniejszanie problemu)</li>
+        <li><strong>Zmiana skali / framing wizualny</strong> — manipulacja proporcjami wykresu</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div>Brak umiejętności statystycznych pozostawia obywateli, pacjentów i lekarzy podatnymi na techniki celowo wykorzystujące ograniczoną wiedzę statystyczną — co czyni ideały <strong>świadomej zgody</strong> i <strong>wspólnego podejmowania decyzji</strong> nieosiągalnymi (Gigerenzer i in., 2007; Gigerenzer, 2010).</div></div>
+    </div>
+  </section>
+
+  <!-- ══════════ ZASTOSOWANIA ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-lit">🛠️ Zastosowania — interwencje behawioralne</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S8 -->
+  <section id="S8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-header-text">
+        <h2>Interwencje behawioralne: nudging vs boosting</h2>
+        <div class="src-tag">Źródło: <span>Thaler &amp; Sunstein (2008); Hertwig &amp; Grüne-Yanoff (2016/2019); Gigerenzer; BIT</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Dwie szkoły racjonalności</h3>
+      <table class="ltable">
+        <tr><th></th><th>Szkoła Heurystyk Prostych (Gigerenzer)</th><th>Szkoła Heurystyk i Błędów (Kahneman &amp; Tversky)</th></tr>
+        <tr><td><strong>Ograniczona racjonalność</strong></td><td>Ocenia <em>pozytywnie</em> — ludzie skutecznie używają heurystyk w realnym, ubogim w informacje środowisku</td><td>Skupia się na <em>ograniczeniach</em> kognicji prowadzących do systematycznych błędów</td></tr>
+        <tr><td><strong>Heurystyki</strong></td><td>Inteligentne strategie, często trafne przy mniejszym wysiłku; wykorzystują strukturę środowiska</td><td>Konieczne, ale wadliwe — prowadzą do uprzedzeń i błędów</td></tr>
+        <tr><td><strong>Filozofia</strong></td><td>Racjonalność <em>ekologiczna</em> (dopasowanie do środowiska)</td><td>Heurystyki i przechyły — odstępstwa od modelu racjonalnego, które można poprawić</td></tr>
+        <tr><td><strong>Aplikacja</strong></td><td><span class="pill pill-b">Boosting</span></td><td><span class="pill pill-v">Nudging</span></td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Nudging vs boosting</h3>
+      <div class="two-col">
+        <div>
+          <h4 class="term">Nudging (Thaler &amp; Sunstein, 2008)</h4>
+          <ul class="alist">
+            <li>Promuje wybór wyznaczonych opcji — <em>kieruje</em> zachowanie, bez zakazów ani wycofywania opcji</li>
+            <li>Działa na architekturę sytuacji decyzyjnej</li>
+            <li>Wywodzi się ze szkoły Kahnemana &amp; Tversky'ego</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="term">Boosting (Hertwig &amp; Grüne-Yanoff, 2016)</h4>
+          <ul class="alist">
+            <li><em>Wzmacnia kompetencje</em> decydenta, by mógł świadomie zdecydować</li>
+            <li>Buduje trwałą umiejętność, nie tylko jednorazowy wybór</li>
+            <li>Kontynuacja myśli Gigerenzera</li>
+          </ul>
+        </div>
+      </div>
+      <p>Obszar zastosowań: polityki publiczne, zachowania konsumenckie i obywatelskie.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Sztandarowy przykład: PPK / Save More Tomorrow</h3>
+      <p><strong>Thaler &amp; Benartzi (2004)</strong> — jak przekonać do oszczędzania na emeryturę (USA: 401k, Polska: <strong>PPK</strong> — oparte na opcjach domyślnych). Bariery: awersja do strat (oszczędzanie jako „strata”), prokrastynacja/inercja, orientacja na teraźniejszość.</p>
+      <h4>Mechanizmy pokonujące bariery:</h4>
+      <ol class="nlist">
+        <li>Zapisanie się jako <strong>opcja domyślna</strong> (opt-out — można się wypisać)</li>
+        <li>Start oszczędzania <strong>w przyszłości</strong> (np. za 6 miesięcy — nie odczuwamy od razu)</li>
+        <li>Start <strong>przy pierwszej podwyżce</strong></li>
+        <li><strong>Zwiększanie kwoty</strong> przy każdej kolejnej podwyżce</li>
+      </ol>
+      <p>Wynik: ~70% zaczyna oszczędzać w pierwszym roku, wielu oszczędza nadal.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Model EAST — projektowanie nudge'ów (BIT)</h3>
+      <table class="ltable">
+        <tr><th>Zasada</th><th>Treść i przykłady</th></tr>
+        <tr><td><strong>E</strong>asy — łatwo</td><td>Nie zasypuj korzyściami — po prostu <em>ułatw</em> (lub celowo utrudnij). Opt-in vs opt-out: dawcy organów 99% (PL) vs 12% (DE); nakrętki na lekach (Ontario 1974 → −91% zatruć dzieci). Kask w Niemczech 1980 → spadek śmiertelności, ale <strong>efekt Peltzmana</strong> i −60% kradzieży motocykli</td></tr>
+        <tr><td><strong>A</strong>ttractive — przyciągaj</td><td><strong>Efekt von Restorff</strong> — co się wyróżnia, zwraca uwagę. Pianino na schodach (Sztokholm, VW 2009 → +66% wyboru schodów); namalowany obraz na schodach (Melbourne 2014)</td></tr>
+        <tr><td><strong>S</strong>ocial — wymiar społeczny</td><td>Norma <em>opisowa/deskryptywna</em> (co inni robią) vs <em>nakazowa</em> (jak należy). Listy podatkowe BIT: „sąsiedzi płacą na czas” → +5% wpłat (Hallsworth i in., 2017)</td></tr>
+        <tr><td><strong>T</strong>imely — odpowiedni moment</td><td>Kiedy „włączyć zapalnik”. 40% codziennych zachowań to nawyki (Duhigg); im świeższe zachowanie, tym łatwiej je zmienić/ugruntować</td></tr>
+      </table>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>Pułapka normy społecznej:</strong> podawanie <em>niskiego</em> odsetka osób robiących coś źle („tylko 11% rzuca niedopałki”) może działać odwrotnie — odbiorca uznaje, że może dołączyć do mniejszości. Lepiej podkreślać normę większości („89% nie rzuca petów”).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Inne interwencje — przegląd</h3>
+      <ul class="alist">
+        <li><strong>Nudge przeciw fake newsom</strong> (Pennycook i in., 2020) — prośba o ocenę rzetelności źródła przy udostępnianiu ~3× zwiększyła rozpoznawanie prawdziwych informacji</li>
+        <li><strong>Boost / „szczepienie” (inoculation)</strong> — Van der Linden &amp; Roozenbeek (2019); gra <em>getbadnews</em> (budowanie „trollowego imperium”) → lepsze rozpoznawanie fake newsów</li>
+        <li><strong>Implementacja intencji</strong> (Gollwitzer, 1999) — gotowy schemat „Jeśli/Gdy X, to wówczas Y” (np. ograniczanie dotykania twarzy)</li>
+        <li><strong>Wiązanie pokusy</strong> (temptation bundling; Kirgios i in., 2020) — łączenie obowiązku z przyjemnością → częstsze kontynuowanie ćwiczeń (efekt 10–12%)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Schemat budowania interwencji (BIT &amp; RIMU, 2020)</h3>
+      <ol class="nlist">
+        <li>Identyfikacja obecnego zachowania</li>
+        <li>Psychologiczno-behawioralne podstawy zachowania</li>
+        <li>Propozycje interwencji zmieniających zachowanie</li>
+        <li>Zachowanie docelowe</li>
+        <li><strong>Testuj, ucz się, adaptuj</strong></li>
+      </ol>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Testowanie interwencji: <strong>RCT</strong> (randomizowane badania kontrolne), metaanalizy, zagadnienia etyczne, potencjalne moderatory. <strong>Efekt Peltzmana:</strong> gdy postrzegane bezpieczeństwo rośnie, podejmujemy bardziej ryzykowne zachowania (pasy → szybsza jazda).</div></div>
+    </div>
+
+    <div class="summary-box">
+      <h4>🎯 Najważniejsze do zapamiętania</h4>
+      <ul>
+        <li><strong>System 1 vs 2</strong> — szybki/intuicyjny vs wolny/analityczny; źródło heurystyk i błędów</li>
+        <li><strong>Heurystyka vs bias</strong> — skrót myślowy vs wynikający z niego systematyczny błąd</li>
+        <li><strong>Teoria perspektywy</strong> — straty bolą bardziej (×1,5–2,5); awersja do ryzyka w zyskach, skłonność w stratach; punkt odniesienia</li>
+        <li><strong>Ryzyko</strong> — brak ogólnej skłonności (Tyszka &amp; Domurat: Z/S/F/A); mężczyźni > kobiety; miary deklaratywne ≠ behawioralne</li>
+        <li><strong>Style</strong> — maksymalizacja (lepsze wyniki, mniej satysfakcji) vs satysfakcja</li>
+        <li><strong>Komunikacja ryzyka</strong> — ryzyko bezwzględne > względne; framing; manipulacje (cherry picking, oś Y)</li>
+        <li><strong>Interwencje</strong> — nudging (Thaler/Sunstein) vs boosting (Hertwig/Gigerenzer); model EAST; PPK/Save More Tomorrow</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- LITERATURA -->
+  <section id="lit">
+    <div class="section-header">
+      <div class="section-num">📚</div>
+      <div class="section-header-text">
+        <h2>Literatura — zestawienie</h2>
+        <div class="src-tag">Wg sylabusu przedmiotu</div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Obowiązkowa</h3>
+      <ul class="alist">
+        <li>Kahneman, D. (2012). <em>Pułapki myślenia. O myśleniu szybkim i wolnym.</em> Media Rodzina.</li>
+        <li>Gigerenzer, G., Todd, P. M. (2018). <em>Zagadki heurystyk decyzyjnych.</em> CeDeWu (wybrane rozdziały).</li>
+        <li>Thaler, R., Sunstein, C. (2012). <em>Impuls. Jak podejmować właściwe decyzje…</em> Zysk i S-ka.</li>
+        <li>Hertwig, R., &amp; Grüne-Yanoff, T. (2017). Nudging and Boosting. <em>Perspectives on Psychological Science</em>, 12(6), 973–986.</li>
+        <li>Frederick, S. (2005). Cognitive Reflection and Decision Making. <em>J. Economic Perspectives</em>, 19(4), 25–42.</li>
+        <li>Schwartz, B. i in. (2002). Maximizing versus satisficing. <em>JPSP</em>.</li>
+        <li>Parker, A., Bruine de Bruin, W., &amp; Fischhoff, B. (2007). Maximizers versus satisficers. <em>Judgment and Decision Making</em>, 2(6), 342–350.</li>
+        <li>Tyszka, T., &amp; Domurat, A. (2004). Czy istnieje ogólna skłonność jednostki do ryzyka? <em>Decyzje</em>, 2, 85–104.</li>
+        <li>Roozenbeek, J., &amp; van der Linden, S. (2019). Fake news game confers psychological resistance. <em>Palgrave Communications</em>, 5, 65.</li>
+        <li>Zielonka, P. (2003/2015). Finanse behawioralne / <em>Giełda i psychologia.</em> NBP / PWN.</li>
+      </ul>
+      <h4>Dodatkowa</h4>
+      <ul class="alist">
+        <li>Hogarth, R. M. (2015). What's a „Good” Decision? W: <em>Wiley Blackwell Handbook of Judgment and Decision Making.</em></li>
+        <li>Soll, J. B., Milkman, K. L., Payne, J. W. (2015). A User's Guide to Debiasing. <em>Tamże.</em></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<footer>StudyZone &mdash; Decyzje i ryzyko · notatka na podstawie prezentacji z ćwiczeń i sylabusu · materiał pomocniczy do nauki</footer>
+
+<script>
+// Podświetlanie aktywnej sekcji w spisie treści
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) map[id] = a;
+  });
+  var sections = Object.keys(map).map(function (id) { return document.getElementById(id); });
+  function onScroll() {
+    var pos = window.scrollY + 90;
+    var current = null;
+    sections.forEach(function (s) { if (s.offsetTop <= pos) current = s.id; });
+    links.forEach(function (a) { a.classList.remove('active'); });
+    if (current && map[current]) map[current].classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>
