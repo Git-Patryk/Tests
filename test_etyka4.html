@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 4 – Etyka w zastosowaniach psychologii</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #6a1ba0 0%, var(--purple2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #e9d8fd;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--purple2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #6a1ba0; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #6a1ba0; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a1ba0, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #6a1ba0; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="etyka-testy.html">← Wróć do listy testów</a>
+  <h1>Etyka w zastosowaniach psychologii</h1>
+  <p>Test 4 · Poziom 4 · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POZIOM 4</div>
+    <h2>Witaj w Teście 4!</h2>
+    <p>Ten test obejmuje <strong>tajemnicę zawodową, media, relacje z wymiarem sprawiedliwości i przeciwdziałanie dyskryminacji</strong>. Zakres jest inny niż w poprzednich testach, a poziom trudności zbliżony do Testu 2 – liczy się rozumienie zasad i ich granic w praktyce.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Psycholog w mediach (reklama, role, efekt Wertera, szacunek) · zakres i granice tajemnicy zawodowej · ujawnianie w celach dydaktycznych · denuncjacja prawna i społeczna · przemoc w rodzinie · biegły sądowy · tajemnica wobec sądu (art. 180 KPK) · podwójna lojalność · formy dyskryminacji · etyczna i nieetyczna odmowa świadczenia</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    q: "Czego – wg 3 standardów reklamy APA – nie może zawierać reklama usług psychologicznych?",
+    opts: [
+      { t: "Informacji dotyczących skuteczności stosowanych metod", c: true },
+      { t: "Rzetelnej informacji o kwalifikacjach psychologa", c: false },
+      { t: "Danych kontaktowych gabinetu", c: false },
+      { t: "Nazwy ukończonej uczelni", c: false },
+    ],
+    exp: "Wg standardów APA reklama nie może zawierać informacji o skuteczności metod. Powinna za to rzetelnie przedstawiać kwalifikacje, a psycholog ma zachować ostrożność przy wyborze miejsca reklamy. W Polsce brak osobnych uregulowań (Ustawa 2001, Kodeks PTP 2018)."
+  },
+  {
+    q: "Kiedy psycholog powinien odmówić udziału w wywiadzie medialnym ze względu na jego cel?",
+    opts: [
+      { t: "Gdy celem jest zdyskredytowanie osób lub wykorzystanie cudzej tragedii", c: true },
+      { t: "Gdy program jest emitowany na żywo", c: false },
+      { t: "Zawsze, gdy temat dotyczy zdrowia psychicznego", c: false },
+      { t: "Gdy redakcja prosi o autoryzację wypowiedzi", c: false },
+    ],
+    exp: "Przed wywiadem psycholog sprawdza m.in. cel: musi być zgodny z etyką. Odmawia udziału, gdy celem jest zdyskredytowanie osób lub wykorzystanie cudzej tragedii. Emisja na żywo czy autoryzacja to kwestie techniczne, nie powód odmowy."
+  },
+  {
+    q: "Która funkcja NIE jest właściwą rolą psychologa występującego w mediach?",
+    opts: [
+      { t: "Terapeutyczna – wystąpienie medialne nie tworzy relacji pomocy ani nie zastępuje diagnozy/terapii", c: true },
+      { t: "Edukacyjna i popularyzatorska", c: false },
+      { t: "Profilaktyczna", c: false },
+      { t: "Komentatorska (bez diagnozowania konkretnych osób)", c: false },
+    ],
+    exp: "Role medialne psychologa to: edukacyjna/popularyzatorska, profilaktyczna i komentatorska. Wystąpienie w mediach NIE jest relacją terapeutyczną – nie tworzy relacji pomocy ani nie zastępuje diagnozy czy terapii."
+  },
+  {
+    q: "Na czym polega efekt Wertera i jak psycholog powinien na niego reagować?",
+    opts: [
+      { t: "To naśladowcze samobójstwa po sensacyjnym, szczegółowym relacjonowaniu; psycholog przeciwdziała mu, m.in. nie podając metody i miejsca, a zawsze kontakt do pomocy (zalecenia WHO)", c: true },
+      { t: "To ochronny efekt odpowiedzialnego przekazu – należy go wzmacniać sensacją", c: false },
+      { t: "To wzrost zaufania do psychologów po występach medialnych", c: false },
+      { t: "To zjawisko niezwiązane z pracą psychologa w mediach", c: false },
+    ],
+    exp: "Efekt Wertera to naśladowcze samobójstwa po sensacyjnym, szczegółowym relacjonowaniu (opis metody, gloryfikacja). Zalecenia WHO: nie podawać metody i miejsca, nie umieszczać na pierwszych stronach, zawsze podać kontakt do pomocy. Jego przeciwieństwem jest ochronny efekt Papagena."
+  },
+  {
+    q: "Czy psycholog w mediach może formułować oceny dotyczące ludzi?",
+    opts: [
+      { t: "Może oceniać konkretne zachowania, ale zawsze z szacunkiem dla człowieka; obowiązuje zakaz negatywnych wypowiedzi o osobach i grupach", c: true },
+      { t: "Może swobodnie oceniać osoby i grupy, jeśli służy to oglądalności", c: false },
+      { t: "Nie może wypowiadać żadnych ocen moralnych w ogóle", c: false },
+      { t: "Może diagnozować publicznie osoby znane, jeśli są politykami", c: false },
+    ],
+    exp: "Psycholog może formułować oceny moralne dotyczące konkretnych zachowań, ale zawsze z szacunkiem do człowieka. Obowiązuje zakaz negatywnych wypowiedzi o osobach i grupach oraz zakaz publicznego diagnozowania osób bez ich zgody."
+  },
+  {
+    q: "Jaki jest zakres podmiotowy tajemnicy zawodowej – kogo obowiązuje?",
+    opts: [
+      { t: "Psychologa oraz wszystkich, którym powierzono informacje (np. superwizora, personel)", c: true },
+      { t: "Wyłącznie psychologa prowadzącego, nikogo poza nim", c: false },
+      { t: "Tylko kierownika placówki", c: false },
+      { t: "Wszystkich pracowników instytucji, niezależnie od kontaktu ze sprawą", c: false },
+    ],
+    exp: "Tajemnica obejmuje psychologa i wszystkich, którym powierzono informacje (superwizor, personel). Obowiązuje też po zakończeniu relacji, a nawet po śmierci klienta."
+  },
+  {
+    q: "Kiedy dokumentacja psychologiczna może zostać udostępniona organom procesowym?",
+    opts: [
+      { t: "Tylko na pisemne postanowienie sądu o zwolnieniu z tajemnicy", c: true },
+      { t: "Na każde ustne żądanie prokuratora", c: false },
+      { t: "Na wniosek pracodawcy psychologa", c: false },
+      { t: "Zawsze, gdy poprosi o nią rodzina klienta", c: false },
+    ],
+    exp: "Dokumentacja podlega ścisłej ochronie i może być udostępniona tylko na pisemne postanowienie sądu o zwolnieniu z tajemnicy."
+  },
+  {
+    q: "Jakich zasad psycholog przestrzega, ujawniając przypadek w celach dydaktycznych?",
+    opts: [
+      { t: "Nigdy nie podaje prawdziwych danych, zmienia jak najwięcej szczegółów (płeć, wiek, miejsce); zgoda jest pożądana, a nagrania głosu/wizerunku wyłącznie za pisemną zgodą", c: true },
+      { t: "Może podać prawdziwe dane, jeśli grupa jest niewielka", c: false },
+      { t: "Nie musi nic zmieniać, gdy przypadek jest anonimowy", c: false },
+      { t: "Może publikować nagrania bez zgody w celach naukowych", c: false },
+    ],
+    exp: "W celach dydaktycznych: nigdy prawdziwe dane, zmienić jak najwięcej szczegółów, pożądana zgoda odbiorcy (nawet dla przypadków anonimowych), a nagrania głosu/wizerunku tylko za pisemną zgodą."
+  },
+  {
+    q: "Czy zagrożenie dobrego imienia psychologa lub jego dóbr materialnych uzasadnia odstąpienie od tajemnicy?",
+    opts: [
+      { t: "Nie – zagrożenie mniej ważnych wartości nie uzasadnia odstąpienia; dopiero gdy odbiorca pozywa psychologa, prawo do obrony może mieć prymat nad tajemnicą", c: true },
+      { t: "Tak, każde naruszenie dobrego imienia zwalnia z tajemnicy", c: false },
+      { t: "Tak, jeśli chodzi o spór o honorarium", c: false },
+      { t: "Nie, prawo do obrony nigdy nie ma pierwszeństwa przed tajemnicą", c: false },
+    ],
+    exp: "Zagrożenie mniej ważnych wartości (dobre imię, dobra materialne) nie jest wskazaniem do odstąpienia od tajemnicy. Wyjątek: gdy odbiorca pozywa psychologa, prawo do obrony może uzyskać prymat nad tajemnicą."
+  },
+  {
+    q: "Czym charakteryzuje się prawny obowiązek denuncjacji (Art. 240 §1 KK) w odróżnieniu od obowiązku społecznego?",
+    opts: [
+      { t: "Dotyczy zamkniętego katalogu najcięższych przestępstw, a jego niedopełnienie zagrożone jest sankcją karną", c: true },
+      { t: "Dotyczy każdego przestępstwa ściganego z urzędu i nie wiąże się z żadną sankcją", c: false },
+      { t: "Dotyczy wyłącznie przestępstw skarbowych", c: false },
+      { t: "Obowiązuje tylko osoby prywatne, nigdy profesjonalistów", c: false },
+    ],
+    exp: "Obowiązek prawny (Art. 240 §1 KK) dotyczy zamkniętego katalogu najcięższych przestępstw i jest sankcjonowany karnie. Obowiązek społeczny (Art. 304 §1 KPK) dotyczy każdego przestępstwa ściganego z urzędu, ale jest niesankcjonowany; psycholog-profesjonalista jest z niego zwolniony."
+  },
+  {
+    q: "Jak psycholog powinien traktować przemoc w rodzinie i jak postąpić wobec odbiorcy?",
+    opts: [
+      { t: "Traktować ją jako zagrożenie życia i zdrowia oraz – realizując obowiązek zawiadomienia – dać odbiorcy możliwość samodzielnego podjęcia decyzji o zgłoszeniu, by nie traktować go przedmiotowo", c: true },
+      { t: "Zignorować, bo obejmuje ją tajemnica zawodowa bez wyjątków", c: false },
+      { t: "Zgłosić anonimowo, nie informując o tym odbiorcy w żadnym wypadku", c: false },
+      { t: "Czekać, aż przemoc się powtórzy, zanim podejmie działania", c: false },
+    ],
+    exp: "Przemoc w rodzinie należy traktować jako zagrożenie życia i zdrowia (raz zaistniała – prawdopodobnie się powtórzy). Ustawa o przeciwdziałaniu przemocy nakłada obowiązek zawiadomienia, ale psycholog powinien dać odbiorcy szansę samodzielnego zgłoszenia, by nie traktować go przedmiotowo."
+  },
+  {
+    q: "Czy psycholog – tak jak adwokat – może uchylić tajemnicę zawodową na samo życzenie klienta?",
+    opts: [
+      { t: "Nie; wg PTP psycholog nie może uchylić tajemnicy na samo życzenie – decyzja wymaga analizy sytuacji, a przy terapii par wymagana jest zgoda obu stron", c: true },
+      { t: "Tak, na każde ustne życzenie klienta", c: false },
+      { t: "Tak, ale tylko w terapii grupowej", c: false },
+      { t: "Nie, tajemnicy nie można uchylić w żadnych okolicznościach", c: false },
+    ],
+    exp: "Inaczej niż adwokat, psycholog (wg PTP) nie może uchylić tajemnicy na samo życzenie – każdą prośbę analizuje, a w terapii par wymaga zgody obu stron. Materia jest prawnie niedoprecyzowana."
+  },
+  {
+    q: "Na czyje zlecenie działa psycholog jako biegły sądowy i jakie są tego konsekwencje?",
+    opts: [
+      { t: "Na zlecenie sądu, nie stron – jest zobowiązany do obiektywności i bezstronności", c: true },
+      { t: "Na zlecenie strony, która go opłaca – działa w jej interesie", c: false },
+      { t: "Na zlecenie badanego, którego reprezentuje", c: false },
+      { t: "Na zlecenie własnego pracodawcy, kierując się jego interesem", c: false },
+    ],
+    exp: "Biegły działa na zlecenie sądu, a nie stron, i jest zobowiązany do obiektywności i bezstronności. Odpowiada wyłącznie na pytania sądu, nie wykraczając poza tezę dowodową."
+  },
+  {
+    q: "Do której kategorii tajemnic w KPK należy tajemnica zawodowa psychologa?",
+    opts: [
+      { t: "Do tajemnicy zawodowej „zwykłej” (art. 180 §1 KPK), a nie do tajemnic kwalifikowanych z §2 (adwokacka, lekarska, notarialna, dziennikarska itd.)", c: true },
+      { t: "Do tajemnic kwalifikowanych z art. 180 §2 KPK", c: false },
+      { t: "Do tajemnicy państwowej", c: false },
+      { t: "Do tajemnicy, której nie da się uchylić w żadnym trybie", c: false },
+    ],
+    exp: "Tajemnica psychologa to tajemnica zawodowa „zwykła” (art. 180 §1 KPK). Nie należy do tajemnic kwalifikowanych z §2 (adwokacka, radcy prawnego, doradcy podatkowego, lekarska, notarialna, dziennikarska) – środowisko psychologów postuluje objęcie ich §2."
+  },
+  {
+    q: "Pod jakimi warunkami osoba zobowiązana do tajemnicy zawodowej może być przesłuchana co do okoliczności nią objętych (art. 180 §1 KPK)?",
+    opts: [
+      { t: "Tylko gdy jest to niezbędne dla dobra wymiaru sprawiedliwości, a okoliczności nie da się ustalić w inny sposób", c: true },
+      { t: "Zawsze, gdy zażąda tego którakolwiek ze stron procesu", c: false },
+      { t: "Nigdy – tajemnica zawodowa jest bezwzględna", c: false },
+      { t: "Tylko za pisemną zgodą samego klienta", c: false },
+    ],
+    exp: "Wg art. 180 §1 KPK przesłuchanie co do okoliczności objętych tajemnicą jest dopuszczalne tylko gdy jest to niezbędne dla dobra wymiaru sprawiedliwości i nie da się ich ustalić inaczej; zwalnia prokurator (postęp. przygotowawcze) lub sąd (postęp. sądowe)."
+  },
+  {
+    q: "Co dzieje się z informacjami, gdy psycholog pracuje w ochronie zdrowia (wyjątek leczniczy)?",
+    opts: [
+      { t: "Część informacji może być objęta także tajemnicą medyczną i jej reżimem", c: true },
+      { t: "Tajemnica przestaje obowiązywać, bo to placówka medyczna", c: false },
+      { t: "Pracodawca uzyskuje pełny wgląd we wszystkie informacje", c: false },
+      { t: "Informacje stają się jawne dla całego personelu", c: false },
+    ],
+    exp: "Gdy psycholog pracuje w ochronie zdrowia, część informacji może podlegać dodatkowo tajemnicy medycznej i jej reżimowi prawnemu."
+  },
+  {
+    q: "W których instytucjach najczęściej pojawia się problem „podwójnej lojalności” psychologa?",
+    opts: [
+      { t: "W instytucjach wymiaru sprawiedliwości – sąd, OZSS, zakład karny, policja – gdzie ściera się dobro badanego z interesem instytucji", c: true },
+      { t: "Wyłącznie w prywatnych gabinetach terapeutycznych", c: false },
+      { t: "Tylko w szkołach podstawowych", c: false },
+      { t: "W mediach publicznych", c: false },
+    ],
+    exp: "Podwójna lojalność dotyczy psychologów zatrudnionych w instytucjach wymiaru sprawiedliwości (sąd, OZSS, zakład karny, policja). W razie konfliktu prymat mają zasady etyczne zawodu nad lojalnością instytucjonalną."
+  },
+  {
+    q: "Jakie szczególne ryzyko etyczne wiąże się z pracą psychologa penitencjarnego lub w policji?",
+    opts: [
+      { t: "Ryzyko instrumentalizacji wiedzy psychologicznej – zatarcia granicy między pomocą osadzonemu a realizacją celów instytucji", c: true },
+      { t: "Brak dostępu do jakichkolwiek narzędzi diagnostycznych", c: false },
+      { t: "Obowiązek prowadzenia terapii każdego osadzonego", c: false },
+      { t: "Całkowity zakaz kontaktu z badanym", c: false },
+    ],
+    exp: "U psychologa penitencjarnego/policyjnego występuje szczególne ryzyko instrumentalizacji wiedzy psychologicznej – granica między pomocą osobie a realizacją celów instytucji bywa nieostra; psycholog broni niezależności opinii i nie ulega presji na „zamówioną” treść."
+  },
+  {
+    q: "Na czym polega dyskryminacja bezpośrednia wg definicji ustawowych?",
+    opts: [
+      { t: "Na traktowaniu osoby mniej korzystnie ze względu na cechę chronioną niż traktuje się inną osobę w porównywalnej sytuacji", c: true },
+      { t: "Na pozornie neutralnym kryterium powodującym niekorzystne dysproporcje", c: false },
+      { t: "Wyłącznie na molestowaniu seksualnym", c: false },
+      { t: "Na każdej różnicy w traktowaniu dwóch klientów", c: false },
+    ],
+    exp: "Dyskryminacja bezpośrednia to mniej korzystne traktowanie osoby ze względu na cechę chronioną niż innej osoby w porównywalnej sytuacji. Pozornie neutralne kryterium dające niekorzystne dysproporcje to dyskryminacja pośrednia."
+  },
+  {
+    q: "Kiedy odmowa świadczenia z powodu ograniczeń kompetencji psychologa jest etyczna?",
+    opts: [
+      { t: "Gdy powodem jest krytyczna ocena własnych kompetencji wobec problemu odbiorcy, odbiorca nie zostaje bez pomocy, a psycholog stara się uzupełniać kompetencje", c: true },
+      { t: "Zawsze, gdy psycholog nie ma ochoty zajmować się danym problemem", c: false },
+      { t: "Gdy psycholog powołuje się na klauzulę sumienia", c: false },
+      { t: "Gdy odmowa dotyczy całej grupy odbiorców", c: false },
+    ],
+    exp: "Odmowa z powodu ograniczeń kompetencji jest etyczna, gdy: powodem jest krytyczna ocena własnych kompetencji, odbiorca nie zostaje bez pomocy, a psycholog stara się uzupełniać kompetencje. Nieetyczne jest odmawianie z powodu nieaktualizowania kompetencji we własnej dziedzinie."
+  },
+  {
+    q: "Który przypadek odmowy świadczenia jest zawsze NIEETYCZNY?",
+    opts: [
+      { t: "Systemowe odmawianie świadczeń całej grupie odbiorców (np. ze względu na orientację seksualną)", c: true },
+      { t: "Jednorazowa odmowa przy uprzedzeniach, gdy psycholog pracuje nad postawą i nie zostawia odbiorcy bez pomocy", c: false },
+      { t: "Odmowa z powodu krytycznej oceny własnych kompetencji przy zapewnieniu pomocy", c: false },
+      { t: "Skierowanie odbiorcy do innego specjalisty z powodu braku kompetencji", c: false },
+    ],
+    exp: "Systemowe odmawianie całej grupie odbiorców (np. ze względu na orientację seksualną) jest zawsze nieetyczne – podobnie jak odmowa motywowana światopoglądem bez jakichkolwiek starań o zmianę postawy. Etyczna odmowa jest jednorazowa i nie pozostawia odbiorcy bez pomocy."
+  },
+  {
+    q: "Komu Ustawa z 3.12.2010 r. (o wdrożeniu przepisów UE o równym traktowaniu) powierza realizację zasady równego traktowania?",
+    opts: [
+      { t: "Pełnomocnikowi Rządu ds. Równego Traktowania oraz Rzecznikowi Praw Obywatelskich (RPO)", c: true },
+      { t: "Wyłącznie sądom powszechnym", c: false },
+      { t: "Samorządowi zawodowemu psychologów", c: false },
+      { t: "Pełnomocnikowi Rządu ds. Osób Niepełnosprawnych", c: false },
+    ],
+    exp: "Ustawa z 3.12.2010 r. wskazuje formy dyskryminacji, a jej realizację powierza Pełnomocnikowi Rządu ds. Równego Traktowania oraz Rzecznikowi Praw Obywatelskich (RPO)."
+  },
+  {
+    q: "Które z poniższych są – obok dyskryminacji bezpośredniej i pośredniej – formami dyskryminacji wg definicji ustawowych?",
+    opts: [
+      { t: "Molestowanie, molestowanie seksualne oraz zachęcanie do dyskryminacji", c: true },
+      { t: "Wrażliwość kulturowa i superwizja", c: false },
+      { t: "Zgoda kumulatywna i przyzwolenie", c: false },
+      { t: "Autoryzacja i minimalizacja wtargnięcia", c: false },
+    ],
+    exp: "Ustawowe formy dyskryminacji to – obok bezpośredniej i pośredniej – molestowanie, molestowanie seksualne i zachęcanie do dyskryminacji."
+  },
+  {
+    q: "Który przykład ilustruje błąd merytoryczny wynikający z ograniczeń kompetencji wobec grup mniejszościowych?",
+    opts: [
+      { t: "Stosowanie standardowych testów IQ bez uwzględnienia języka i kultury odbiorcy", c: true },
+      { t: "Skierowanie odbiorcy do specjalisty o właściwych kompetencjach", c: false },
+      { t: "Uwzględnienie kontekstu kulturowego przy interpretacji objawów", c: false },
+      { t: "Korzystanie z superwizji przy trudnym przypadku", c: false },
+    ],
+    exp: "Brak kompetencji do pracy z grupami mniejszościowymi – np. stosowanie standardowych testów IQ bez uwzględnienia języka i kultury – może być poważnym błędem merytorycznym. Psycholog ma obowiązek podnosić kwalifikacje wobec specyficznych odbiorców."
+  },
+  {
+    q: "Dlaczego nieuwzględnienie zagrożenia stereotypem jest błędem w pracy psychologa?",
+    opts: [
+      { t: "Bo negatywne stereotypy mają realną cenę psychologiczną (poznawczą, emocjonalną, zdrowotną), a ich pominięcie prowadzi do błędnych interpretacji", c: true },
+      { t: "Bo stereotypy nie mają żadnego wpływu na funkcjonowanie odbiorcy", c: false },
+      { t: "Bo zagrożenie stereotypem dotyczy wyłącznie psychologa, nie odbiorcy", c: false },
+      { t: "Bo nakazuje to wyłącznie wzgląd na wizerunek zawodu", c: false },
+    ],
+    exp: "Zagrożenie stereotypem ma realną cenę psychologiczną (poznawczą, emocjonalną, zdrowotną). Jego pominięcie prowadzi do błędnych interpretacji wyników i zachowań odbiorcy."
+  },
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6a1ba0'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#9b35e8'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#d18bff'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

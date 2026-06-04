@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 5 – Etyka w zastosowaniach psychologii</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #6a1ba0 0%, var(--purple2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #e9d8fd;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--purple2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #6a1ba0; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #6a1ba0; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a1ba0, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #6a1ba0; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="etyka-testy.html">← Wróć do listy testów</a>
+  <h1>Etyka w zastosowaniach psychologii</h1>
+  <p>Test 5 · Poziom 5 · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POZIOM 5</div>
+    <h2>Witaj w Teście 5!</h2>
+    <p>To <strong>egzamin próbny – najtrudniejszy poziom</strong>. Pytania wymagają precyzyjnej znajomości konkretnych artykułów, dat i liczb z całego materiału W1–W7. Jeśli zaliczysz ten test, jesteś gotowy/a na egzamin.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Orzeczenie TK K 41/05 · Art. 17, 32, 47 Konstytucji · daty i artykuły Nowej Ustawy 2026 (Art. 3, 5, 6, 126, opiekun 150 h) · kary dyscyplinarne (Art. 94) · Art. 266 §1 KK · Art. 14 Ustawy 2001 · Art. 180 §1/§2 i 199 KPK · Art. 240 KK i 304 KPK · ustawa o ochronie zdrowia psychicznego (art. 22, 23, 24, 29, 18) · ustawa z 3.12.2010 · granice wiekowe · numeracja standardów APA</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    q: "Pod jaką sygnaturą Trybunał Konstytucyjny sformułował katalog 7 cech zawodu zaufania publicznego?",
+    opts: [
+      { t: "K 41/05 (orzeczenie z 2007 r.)", c: true },
+      { t: "K 17/97", c: false },
+      { t: "P 12/01", c: false },
+      { t: "SK 7/06", c: false },
+    ],
+    exp: "Katalog 7 cech zawodu zaufania publicznego pochodzi z orzeczenia Trybunału Konstytucyjnego o sygnaturze K 41/05 (2007 r.)."
+  },
+  {
+    q: "Z którym artykułem Konstytucji RP (1997) wiąże się pojęcie zawodu zaufania publicznego?",
+    opts: [
+      { t: "Art. 17 – jest to specyficznie polski twór, niefunkcjonujący w innych krajach europejskich", c: true },
+      { t: "Art. 47", c: false },
+      { t: "Art. 32", c: false },
+      { t: "Art. 68", c: false },
+    ],
+    exp: "Pojęcie zawodu zaufania publicznego wiąże się z Art. 17 Konstytucji RP (1997) i jest specyficznie polskim tworem – nie funkcjonuje w innych krajach europejskich."
+  },
+  {
+    q: "Kiedy Nowa Ustawa o zawodzie psychologa (2026) została ogłoszona w Dzienniku Ustaw?",
+    opts: [
+      { t: "18 lutego 2026 (poz. 127)", c: true },
+      { t: "23 stycznia 2026", c: false },
+      { t: "8 czerwca 2001", c: false },
+      { t: "1 maja 2028", c: false },
+    ],
+    exp: "Nowa Ustawa została ogłoszona w Dzienniku Ustaw 18 lutego 2026 r. (poz. 127). 23 stycznia 2026 to data uchwalenia ustawy."
+  },
+  {
+    q: "Kiedy Nowa Ustawa 2026 wchodzi w pełni w życie i traci moc Ustawa z 2001 r.?",
+    opts: [
+      { t: "W maju 2028 r. – 2 lata i 3 miesiące od ogłoszenia", c: true },
+      { t: "Natychmiast po ogłoszeniu, w lutym 2026 r.", c: false },
+      { t: "W styczniu 2027 r.", c: false },
+      { t: "Dopiero w 2030 r.", c: false },
+    ],
+    exp: "Pełne wejście w życie następuje w maju 2028 r. (2 lata i 3 miesiące od ogłoszenia z 18.02.2026); wtedy Ustawa z 2001 r. traci moc."
+  },
+  {
+    q: "Co stanowi Art. 3 ust. 1 Nowej Ustawy 2026?",
+    opts: [
+      { t: "Że zawód psychologa jest zawodem zaufania publicznego", c: true },
+      { t: "Że tytuł „psycholog” nie podlega ochronie", c: false },
+      { t: "Że samorząd zawodowy jest fakultatywny", c: false },
+      { t: "Że psycholog może uchylić tajemnicę na życzenie klienta", c: false },
+    ],
+    exp: "Art. 3 ust. 1 Nowej Ustawy 2026 wprost stanowi, że zawód psychologa jest zawodem zaufania publicznego – czego brakowało w Ustawie 2001."
+  },
+  {
+    q: "Jaką sankcję przewiduje Art. 126 Nowej Ustawy 2026?",
+    opts: [
+      { t: "Karę grzywny za posługiwanie się tytułem „psycholog” bez prawa wykonywania zawodu", c: true },
+      { t: "Karę pozbawienia wolności do lat 3 za naruszenie tajemnicy", c: false },
+      { t: "Odebranie dyplomu magistra psychologii", c: false },
+      { t: "Obowiązkowy staż u opiekuna przez 5 lat", c: false },
+    ],
+    exp: "Art. 126 Nowej Ustawy 2026 przewiduje karę grzywny za posługiwanie się chronionym tytułem „psycholog” bez prawa wykonywania zawodu."
+  },
+  {
+    q: "Jaki jest wymiar stażu pod kierunkiem opiekuna psychologa (Nowa Ustawa 2026, Art. 17–20)?",
+    opts: [
+      { t: "150 godzin łącznie (min. 75 h stacjonarnie), w okresie 9–24 miesięcy", c: true },
+      { t: "300 godzin łącznie w okresie 5 lat", c: false },
+      { t: "75 godzin łącznie w okresie 6 miesięcy", c: false },
+      { t: "1000 godzin łącznie w okresie 3 lat", c: false },
+    ],
+    exp: "Staż u opiekuna obejmuje 150 godzin łącznie (min. 75 h stacjonarnie) i trwa 9–24 miesięcy od wskazania opiekuna przez regionalną radę."
+  },
+  {
+    q: "W jakim terminie rozpatrywany jest wniosek o wpis do Rejestru psychologów (Art. 6 Nowej Ustawy)?",
+    opts: [
+      { t: "W 30 dni; opłata za wpis maks. 10% przeciętnego wynagrodzenia, a zaświadczenie o wpisie kosztuje 50 zł", c: true },
+      { t: "W 7 dni; wpis jest bezpłatny", c: false },
+      { t: "W 90 dni; opłata wynosi 500 zł", c: false },
+      { t: "W 14 dni; opłata to równowartość przeciętnego wynagrodzenia", c: false },
+    ],
+    exp: "Wniosek o wpis rozpatrywany jest w 30 dni; opłata to maks. 10% przeciętnego wynagrodzenia, a zaświadczenie o wpisie – 50 zł."
+  },
+  {
+    q: "W jakim wymiarze może zostać nałożona kara pieniężna w katalogu kar dyscyplinarnych (Nowa Ustawa 2026, Art. 94)?",
+    opts: [
+      { t: "Od ⅓ do 4-krotności przeciętnego wynagrodzenia", c: true },
+      { t: "Od 1000 do 5000 zł", c: false },
+      { t: "Maksymalnie 10% przeciętnego wynagrodzenia", c: false },
+      { t: "Dokładnie jednokrotność przeciętnego wynagrodzenia", c: false },
+    ],
+    exp: "Kara pieniężna (Art. 94) mieści się w przedziale od ⅓ do 4-krotności przeciętnego wynagrodzenia. Katalog obejmuje też m.in. zawieszenie prawa wykonywania zawodu na 1–5 lat."
+  },
+  {
+    q: "Czego dotyczy Art. 47 Konstytucji RP (1997)?",
+    opts: [
+      { t: "Prawa do ochrony życia prywatnego, rodzinnego, czci i dobrego imienia oraz decydowania o swoim życiu", c: true },
+      { t: "Równości wobec prawa i zakazu dyskryminacji", c: false },
+      { t: "Wolności sumienia i religii", c: false },
+      { t: "Pojęcia zawodu zaufania publicznego", c: false },
+    ],
+    exp: "Art. 47 Konstytucji RP gwarantuje prawo do ochrony życia prywatnego, rodzinnego, czci i dobrego imienia oraz decydowania o swoim życiu – to konstytucyjna podstawa tajemnicy zawodowej."
+  },
+  {
+    q: "Jaką karę przewiduje Art. 266 §1 Kodeksu karnego za bezprawne ujawnienie informacji uzyskanych w związku z pracą?",
+    opts: [
+      { t: "Grzywnę, ograniczenie wolności albo pozbawienie wolności do lat 2; ściganie następuje na wniosek pokrzywdzonego", c: true },
+      { t: "Wyłącznie grzywnę, ścigane z urzędu", c: false },
+      { t: "Pozbawienie wolności do lat 5", c: false },
+      { t: "Karę dyscyplinarną w postaci nagany", c: false },
+    ],
+    exp: "Art. 266 §1 KK: za ujawnienie/wykorzystanie informacji wbrew przepisom lub zobowiązaniu grozi grzywna, ograniczenie wolności albo pozbawienie wolności do lat 2; ściganie na wniosek pokrzywdzonego (§3)."
+  },
+  {
+    q: "Co stanowi Art. 14 Ustawy o zawodzie psychologa z 2001 r. w sprawie tajemnicy?",
+    opts: [
+      { t: "Obowiązek zachowania w tajemnicy informacji o kliencie, nieograniczony w czasie; wyjątki to zagrożenie zdrowia/życia lub przepisy prawa", c: true },
+      { t: "Że tajemnica wygasa po zakończeniu relacji z klientem", c: false },
+      { t: "Że psycholog może uchylić tajemnicę na życzenie klienta", c: false },
+      { t: "Że tajemnica nie obejmuje dokumentacji", c: false },
+    ],
+    exp: "Art. 14 Ustawy 2001 nakłada obowiązek zachowania tajemnicy informacji o kliencie, nieograniczony w czasie; wyjątki: zagrożenie zdrowia/życia lub przepisy prawa."
+  },
+  {
+    q: "Do której kategorii tajemnic z art. 180 KPK należy tajemnica psychologa?",
+    opts: [
+      { t: "Do §1 (tajemnica „zwykła”); §2 obejmuje tajemnice kwalifikowane: adwokacką, radcy prawnego, doradcy podatkowego, lekarską, notarialną i dziennikarską", c: true },
+      { t: "Do §2 – na równi z tajemnicą adwokacką i lekarską", c: false },
+      { t: "Do tajemnicy państwowej", c: false },
+      { t: "Do żadnej – psychologa nie można w ogóle przesłuchać", c: false },
+    ],
+    exp: "Tajemnica psychologa należy do art. 180 §1 KPK (zwykła). §2 obejmuje tajemnice kwalifikowane (adwokacka, radcy prawnego, doradcy podatkowego, lekarska, notarialna, dziennikarska), zwalniane wyłącznie przez sąd; środowisko psychologów postuluje objęcie ich §2."
+  },
+  {
+    q: "Co reguluje Art. 199 KPK w odniesieniu do badania przez biegłego?",
+    opts: [
+      { t: "Oświadczenia oskarżonego co do zarzucanego czynu, złożone wobec biegłego podczas opiniowania, nie mogą stanowić dowodu (zakaz dowodowy)", c: true },
+      { t: "Biegły ma obowiązek przekazać te oświadczenia prokuraturze", c: false },
+      { t: "Oświadczenia oskarżonego stają się głównym dowodem", c: false },
+      { t: "Oświadczenia można wykorzystać za zgodą biegłego", c: false },
+    ],
+    exp: "Art. 199 KPK ustanawia zakaz dowodowy: oświadczenia oskarżonego dotyczące zarzucanego czynu, złożone wobec biegłego (lekarza/psychologa) podczas wydawania opinii, nie mogą stanowić dowodu – chroni to szczerość relacji badawczej."
+  },
+  {
+    q: "Jaką sankcję przewiduje Art. 240 §1 KK za niedopełnienie prawnego obowiązku denuncjacji?",
+    opts: [
+      { t: "Karę pozbawienia wolności do lat 3 (dotyczy zamkniętego katalogu najcięższych przestępstw)", c: true },
+      { t: "Wyłącznie grzywnę", c: false },
+      { t: "Karę dyscyplinarną w postaci zawieszenia", c: false },
+      { t: "Brak sankcji – obowiązek jest jedynie społeczny", c: false },
+    ],
+    exp: "Art. 240 §1 KK: niezawiadomienie organów ścigania o przestępstwie z zamkniętego katalogu najcięższych czynów jest zagrożone karą pozbawienia wolności do lat 3."
+  },
+  {
+    q: "Czego dotyczy Art. 304 §1 KPK?",
+    opts: [
+      { t: "Społecznego (niesankcjonowanego) obowiązku zawiadomienia o przestępstwie ściganym z urzędu – z którego psycholog-profesjonalista jest zwolniony", c: true },
+      { t: "Prawnego, sankcjonowanego obowiązku denuncjacji najcięższych przestępstw", c: false },
+      { t: "Zakazu dowodowego wobec oświadczeń oskarżonego", c: false },
+      { t: "Zasad zwalniania z tajemnicy zawodowej przez sąd", c: false },
+    ],
+    exp: "Art. 304 §1 KPK ustanawia społeczny (niesankcjonowany) obowiązek zawiadamiania o przestępstwie ściganym z urzędu. Psycholog, który dowiedział się o czynie jako profesjonalista, jest z tego obowiązku zwolniony (chroni go tajemnica)."
+  },
+  {
+    q: "Tryb nagły przyjęcia bez zgody (Art. 23 ustawy o ochronie zdrowia psychicznego) – kto decyduje i jakie są terminy kontroli?",
+    opts: [
+      { t: "Decyduje lekarz; przyjęcie zatwierdza ordynator w 48 h, a sąd opiekuńczy zawiadamia się w 72 h", c: true },
+      { t: "Decyduje psycholog; sąd zatwierdza w 7 dni", c: false },
+      { t: "Decyduje sąd opiekuńczy z góry, na wniosek rodziny", c: false },
+      { t: "Decyduje dyrektor szpitala; bez obowiązku zawiadamiania sądu", c: false },
+    ],
+    exp: "W trybie nagłym (art. 23 u.o.z.p.) decyzję podejmuje lekarz (osoba chora psychicznie zagrażająca bezpośrednio życiu/zdrowiu). Przyjęcie zatwierdza ordynator w 48 h, a sąd opiekuńczy zawiadamia się w 72 h."
+  },
+  {
+    q: "Ile może trwać obserwacja w trybie obserwacyjnym przyjęcia bez zgody (Art. 24 ustawy o ochronie zdrowia psychicznego)?",
+    opts: [
+      { t: "Do 10 dni", c: true },
+      { t: "Do 48 godzin", c: false },
+      { t: "Do 30 dni", c: false },
+      { t: "Do 6 miesięcy", c: false },
+    ],
+    exp: "Tryb obserwacyjny (art. 24 u.o.z.p.) – przy wątpliwości, czy osoba jest chora psychicznie – pozwala na przyjęcie w celu obserwacji trwającej do 10 dni; decyduje lekarz."
+  },
+  {
+    q: "Kto decyduje o przyjęciu bez zgody w trybie wnioskowym (Art. 29 ustawy o ochronie zdrowia psychicznego)?",
+    opts: [
+      { t: "Sąd opiekuńczy – na wniosek (m.in. małżonka, krewnych, opiekuna, organu pomocy społecznej)", c: true },
+      { t: "Lekarz samodzielnie, w trybie nagłym", c: false },
+      { t: "Ordynator oddziału psychiatrycznego", c: false },
+      { t: "Psycholog prowadzący diagnozę", c: false },
+    ],
+    exp: "Tryb wnioskowy (art. 29 u.o.z.p.) – gdy brak bezpośredniego zagrożenia, ale nieprzyjęcie spowoduje znaczne pogorszenie zdrowia lub osoba nie zaspokaja podstawowych potrzeb – o przyjęciu decyduje sąd opiekuńczy na wniosek."
+  },
+  {
+    q: "Czego dotyczy Art. 18 ustawy o ochronie zdrowia psychicznego?",
+    opts: [
+      { t: "Przymusu bezpośredniego – przytrzymania, przymusowego podania leków, unieruchomienia lub izolacji, tylko w sytuacjach określonych w ustawie", c: true },
+      { t: "Trybu wnioskowego przyjęcia do szpitala", c: false },
+      { t: "Obowiązku prowadzenia dokumentacji psychologicznej", c: false },
+      { t: "Zasad uzyskiwania świadomej zgody na terapię", c: false },
+    ],
+    exp: "Art. 18 u.o.z.p. reguluje przymus bezpośredni (przytrzymanie, przymusowe podanie leków, unieruchomienie, izolacja) – dopuszczalny tylko w sytuacjach określonych w ustawie, z kontrolą i dokumentowaniem."
+  },
+  {
+    q: "Z którego roku pochodzi ustawa o ochronie zdrowia psychicznego (u.o.z.p.) i jaką zasadę wyraża jej art. 22?",
+    opts: [
+      { t: "Z 1994 r. (19.08.1994); art. 22 wyraża zasadę leczenia i świadczenia za świadomą zgodą", c: true },
+      { t: "Z 2001 r.; art. 22 wprowadza przymus bezpośredni jako regułę", c: false },
+      { t: "Z 2010 r.; art. 22 dotyczy równego traktowania", c: false },
+      { t: "Z 1997 r.; art. 22 to przepis konstytucyjny", c: false },
+    ],
+    exp: "Ustawa o ochronie zdrowia psychicznego pochodzi z 19.08.1994 r. Jej art. 22 wyraża zasadę, że leczenie i świadczenie odbywa się za świadomą zgodą; przymus jest ściśle reglamentowanym wyjątkiem."
+  },
+  {
+    q: "Czego dotyczy Art. 32 Konstytucji RP (1997)?",
+    opts: [
+      { t: "Równości wobec prawa i zakazu dyskryminacji z jakiejkolwiek przyczyny", c: true },
+      { t: "Ochrony życia prywatnego i dobrego imienia", c: false },
+      { t: "Pojęcia zawodu zaufania publicznego", c: false },
+      { t: "Wolności sumienia i religii", c: false },
+    ],
+    exp: "Art. 32 Konstytucji RP stanowi, że wszyscy są wobec prawa równi i nikt nie może być dyskryminowany z jakiejkolwiek przyczyny. (Życie prywatne to art. 47, zawód zaufania publicznego – art. 17.)"
+  },
+  {
+    q: "Z jakiej daty pochodzi ustawa o wdrożeniu przepisów UE w zakresie równego traktowania?",
+    opts: [
+      { t: "Z 3 grudnia 2010 r.", c: true },
+      { t: "Z 8 czerwca 2001 r.", c: false },
+      { t: "Z 19 sierpnia 1994 r.", c: false },
+      { t: "Z 18 lutego 2026 r.", c: false },
+    ],
+    exp: "Ustawa o wdrożeniu niektórych przepisów UE w zakresie równego traktowania pochodzi z 3 grudnia 2010 r.; jej realizację powierzono Pełnomocnikowi Rządu ds. Równego Traktowania i RPO."
+  },
+  {
+    q: "Od którego wieku stosuje się wzorzec „zgody kumulatywnej” (pacjent + rodzic) zaczerpnięty z medycyny?",
+    opts: [
+      { t: "Od 16 lat (poniżej 13 lat – całkowita niezdolność do czynności prawnych; od 18 lat – pełnoletność)", c: true },
+      { t: "Od 13 lat", c: false },
+      { t: "Od 7 lat", c: false },
+      { t: "Od 18 lat", c: false },
+    ],
+    exp: "Zgoda kumulatywna (pacjent + rodzic) to wzorzec stosowany od 16. roku życia. Poniżej 13 lat – całkowita niezdolność do czynności prawnych; od 18 lat – pełna zdolność (pełnoletność)."
+  },
+  {
+    q: "Których zagadnień dotyczą standardy APA o numeracji 3.05 i 9.01?",
+    opts: [
+      { t: "3.05 – role wielokrotne (relacje); 9.01 – podstawy diagnozy (assessment)", c: true },
+      { t: "3.05 – podstawy diagnozy; 9.01 – reklama usług", c: false },
+      { t: "3.05 – minimalizacja wtargnięcia; 9.01 – terapia", c: false },
+      { t: "3.05 – tajemnica zawodowa; 9.01 – kształcenie", c: false },
+    ],
+    exp: "W numeracji standardów APA 3.05 dotyczy ról wielokrotnych (grupa 3 – Human Relations), a 9.01 – podstaw diagnozy (grupa 9 – Assessment). Dla porównania 4.02 to minimalizacja wtargnięcia, a 1.03 – konflikt etyki z wymogami organizacji."
+  },
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6a1ba0'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#9b35e8'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#d18bff'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

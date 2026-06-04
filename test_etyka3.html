@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 3 – Etyka w zastosowaniach psychologii</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #6a1ba0 0%, var(--purple2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #e9d8fd;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--purple2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #6a1ba0; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #6a1ba0; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a1ba0, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #6a1ba0; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="etyka-testy.html">← Wróć do listy testów</a>
+  <h1>Etyka w zastosowaniach psychologii</h1>
+  <p>Test 3 · Poziom 3 · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POZIOM 3</div>
+    <h2>Witaj w Teście 3!</h2>
+    <p>Ten test sprawdza znajomość <strong>budowy zawodu, jego podstaw prawnych i zasad zgody</strong> na świadczenia. Zakres jest inny niż w Testach 1–2, a poziom trudności zbliżony do Testu 2: liczy się rozumienie regulacji, a nie tylko same definicje.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Struktura kodeksów PTP i APA · zasady ogólne · zawód zaufania publicznego · skutki braku samorządu · Ustawa 2001 vs 2026 · Rejestr i opiekun psychologa · kary dyscyplinarne · ubezpieczenie OC · świadoma zgoda i jej elementy · klasyfikacja świadczeń wg dobrowolności · zgoda dziecka i granice wiekowe</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    q: "Co Kodeks Etyczny PTP (2018) wskazuje w Preambule jako podstawę etyki zawodowej psychologa?",
+    opts: [
+      { t: "Dobro człowieka (primum non nocere), z Powszechną Deklaracją Praw Człowieka ONZ jako nadrzędnym punktem odniesienia", c: true },
+      { t: "Interes samorządu zawodowego psychologów", c: false },
+      { t: "Skuteczność stosowanych metod terapeutycznych", c: false },
+      { t: "Lojalność wobec instytucji zatrudniającej psychologa", c: false },
+    ],
+    exp: "Wg Preambuły (Rozdz. 1, Art. 1–3) podstawą etyki zawodowej jest dobro człowieka (primum non nocere), a nadrzędnym punktem odniesienia – Powszechna Deklaracja Praw Człowieka ONZ."
+  },
+  {
+    q: "Które uprawnienia zawiera Rozdz. 4 Kodeksu PTP – „Prawa psychologa” (Art. 13–17)?",
+    opts: [
+      { t: "Niezależność zawodową, tajemnicę zawodową, odmowę wykonania czynności, ochronę środowiska i prawo do obrony przy zarzutach", c: true },
+      { t: "Wyłącznie prawo do wynagrodzenia za świadczenia", c: false },
+      { t: "Prawo do uchylenia tajemnicy na życzenie klienta, jak adwokat", c: false },
+      { t: "Autonomię i podmiotowość odbiorcy oraz prawo do prywatności", c: false },
+    ],
+    exp: "Rozdz. 4 (Prawa psychologa) obejmuje: niezależność zawodową, tajemnicę zawodową, odmowę wykonania czynności, ochronę ze strony środowiska oraz obronę w razie zarzutów etyczno-zawodowych. Autonomia i prywatność odbiorcy to prawa odbiorcy (Rozdz. 3)."
+  },
+  {
+    q: "Na czym polega zasada solidarności zawodowej (Art. 9 Kodeksu PTP) i gdzie jest jej granica?",
+    opts: [
+      { t: "Na wsparciu środowiska zawodowego, ale nie kosztem ukrywania błędów i naruszeń standardów", c: true },
+      { t: "Na bezwarunkowej obronie każdego psychologa, także gdy naruszył standardy", c: false },
+      { t: "Na zakazie jakiejkolwiek krytyki innych psychologów", c: false },
+      { t: "Na obowiązku zgłaszania przełożonym każdej decyzji kolegi", c: false },
+    ],
+    exp: "Solidarność zawodowa oznacza wsparcie środowiska, ale nie może oznaczać ukrywania błędów ani naruszeń standardów – wartość prawdy i dobra odbiorcy ma pierwszeństwo."
+  },
+  {
+    q: "Czego dotyczy zasada „Kompetencja” (Art. 6 Kodeksu PTP)?",
+    opts: [
+      { t: "Znajomości granic własnych kompetencji, stałego rozwoju zawodowego i wrażliwości etycznej", c: true },
+      { t: "Obowiązku zapłaty odszkodowania za błąd", c: false },
+      { t: "Solidarnego wspierania kolegów po fachu", c: false },
+      { t: "Wyłącznie posiadania tytułu magistra psychologii", c: false },
+    ],
+    exp: "Zasada kompetencji (Art. 6) to znajomość granic własnych kompetencji, stały rozwój zawodowy i wrażliwość etyczna – psycholog działa w obszarze, w którym jest rzeczywiście przygotowany."
+  },
+  {
+    q: "Która zasada ogólna Kodeksu APA odpowiada za sprawiedliwość i równy dostęp do świadczeń?",
+    opts: [
+      { t: "Zasada D – Justice (Sprawiedliwość)", c: true },
+      { t: "Zasada A – Beneficence and Nonmaleficence", c: false },
+      { t: "Zasada C – Integrity", c: false },
+      { t: "Zasada E – Respect for People's Rights and Dignity", c: false },
+    ],
+    exp: "Zasada D (Justice) dotyczy sprawiedliwości i równego dostępu do świadczeń. A = dobro/unikanie szkody, C = uczciwość, E = szacunek dla praw i godności."
+  },
+  {
+    q: "Jakie są skutki prawne tego, że zawód psychologa jest zawodem zaufania publicznego?",
+    opts: [
+      { t: "Obowiązek zachowania tajemnicy, podwyższony standard staranności i nadzór samorządu zawodowego", c: true },
+      { t: "Zwolnienie z odpowiedzialności cywilnej i karnej", c: false },
+      { t: "Brak jakichkolwiek barier wejścia do zawodu", c: false },
+      { t: "Prawo do działania według poleceń pracodawcy ponad standardami etyki", c: false },
+    ],
+    exp: "Status zawodu zaufania publicznego (wynikający m.in. z asymetrii wiedzy i władzy) pociąga obowiązek tajemnicy, podwyższony standard staranności i nadzór samorządu zawodowego."
+  },
+  {
+    q: "Która z 7 cech zawodu zaufania publicznego (orzeczenie TK) oznacza, że profesjonalista nie podlega poleceniom zewnętrznym co do treści swoich działań?",
+    opts: [
+      { t: "Niezależność od hierarchii", c: true },
+      { t: "Szczególna doniosłość zawodu", c: false },
+      { t: "Immunitet karny", c: false },
+      { t: "Sformalizowana deontologia i nadzór samorządu", c: false },
+    ],
+    exp: "Niezależność od hierarchii oznacza, że profesjonalista nie podlega poleceniom zewnętrznym w zakresie treści swoich działań zawodowych – decyduje merytoryka, nie polecenie przełożonego."
+  },
+  {
+    q: "Jaka była konsekwencja braku samorządu zawodowego psychologów dla klientów?",
+    opts: [
+      { t: "Brak realnej drogi do ukarania nierzetelnego psychologa i brak możliwości ubiegania się o zadośćuczynienie za wyrządzone szkody", c: true },
+      { t: "Niższe ceny usług psychologicznych", c: false },
+      { t: "Łatwiejszy dostęp do dokumentacji własnej terapii", c: false },
+      { t: "Gwarancja jakości świadczeń ze strony państwa", c: false },
+    ],
+    exp: "Dla klientów brak samorządu oznaczał m.in. brak drogi do ukarania nierzetelnego psychologa, brak możliwości ubiegania się o zadośćuczynienie oraz utrudnioną ocenę jakości świadczeń."
+  },
+  {
+    q: "Dlaczego, mimo regulacji w ustawie z 2001 r., zawód psychologa de facto nie był zawodem zaufania publicznego?",
+    opts: [
+      { t: "Bo zabrakło regulacji i odpowiedzialności zawodowej – a to niezbędne rekwizyty tego statusu (samorząd nigdy nie powstał)", c: true },
+      { t: "Bo psychologów było zbyt mało, by utworzyć samorząd", c: false },
+      { t: "Bo tytuł „psycholog” był nadmiernie chroniony", c: false },
+      { t: "Bo psychologowie podlegali wyłącznie odpowiedzialności karnej", c: false },
+    ],
+    exp: "Niezbędnymi rekwizytami zawodu zaufania publicznego są regulacja i odpowiedzialność zawodowa. Ponieważ samorząd nigdy nie powstał, tych elementów brakowało – ustawa 2001 była „martwa”."
+  },
+  {
+    q: "Kiedy ubezpieczenie OC psychologa jest obowiązkowe, a kiedy jedynie zalecane?",
+    opts: [
+      { t: "Obowiązkowe – przy umowie z NFZ; zalecane przez PTP dla wszystkich psychologów z tytułem magistra", c: true },
+      { t: "Obowiązkowe dla wszystkich psychologów bez wyjątku", c: false },
+      { t: "Zalecane tylko dla biegłych sądowych", c: false },
+      { t: "Nieobowiązkowe i niezalecane – to wyłącznie decyzja prywatna", c: false },
+    ],
+    exp: "OC jest zalecane przez PTP wszystkim psychologom z tytułem magistra, a obowiązkowe dla psychologów z umową z NFZ (Rozporządzenie MF 22.12.2011) – chroni za działania i zaniechania."
+  },
+  {
+    q: "Czego psycholog nie może robić do czasu uzyskania pozytywnej opinii końcowej opiekuna (Nowa Ustawa 2026)?",
+    opts: [
+      { t: "Udzielać świadczeń na potrzeby postępowań karnych, sądowych, administracyjnych ani rekrutacji do służb publicznych", c: true },
+      { t: "Pracować z osobami dorosłymi", c: false },
+      { t: "Prowadzić jakąkolwiek działalność zawodową", c: false },
+      { t: "Używać tytułu magistra psychologii", c: false },
+    ],
+    exp: "Przed pozytywną opinią końcową opiekuna (staż 150 h) psycholog nie może udzielać świadczeń na potrzeby postępowań karnych, sądowych, administracyjnych ani rekrutacyjnych do służb publicznych."
+  },
+  {
+    q: "Z czym wiąże się odpowiedzialność karna psychologa?",
+    opts: [
+      { t: "Z Kodeksem karnym – grzywną, ograniczeniem lub pozbawieniem wolności, a także zakazem wykonywania zawodu", c: true },
+      { t: "Z odszkodowaniem lub zadośćuczynieniem na rzecz poszkodowanego", c: false },
+      { t: "Wyłącznie z upomnieniem lub wykluczeniem z samorządu", c: false },
+      { t: "Ze skreśleniem z listy studentów psychologii", c: false },
+    ],
+    exp: "Odpowiedzialność karna (Kodeks karny – np. naruszenie tajemnicy, błąd w sztuce) skutkuje grzywną, ograniczeniem lub pozbawieniem wolności oraz zakazem wykonywania zawodu. Odszkodowanie to odpowiedzialność cywilna, upomnienie – dyscyplinarna."
+  },
+  {
+    q: "Co w dostępie do zawodu wprowadza Nowa Ustawa 2026 w miejsce rozwiązań z 2001 r.?",
+    opts: [
+      { t: "Wpis do centralnego Rejestru oraz instytucję opiekuna psychologa (staż 150 h) zamiast rocznego stażu i wpisu na listę regionalnej izby", c: true },
+      { t: "Całkowite zniesienie wymogu wykształcenia psychologicznego", c: false },
+      { t: "Egzamin państwowy zamiast studiów magisterskich", c: false },
+      { t: "Automatyczne nadanie prawa wykonywania zawodu wszystkim absolwentom", c: false },
+    ],
+    exp: "Ustawa 2001 wymagała mgr psychologii + rocznego stażu + wpisu na listę regionalnej izby. Ustawa 2026 wprowadza wpis do centralnego Rejestru (Art. 5) i opiekuna psychologa ze stażem 150 h (Art. 17–20)."
+  },
+  {
+    q: "Jak Nowa Ustawa 2026 reguluje ochronę tytułu „psycholog”?",
+    opts: [
+      { t: "Tytuł jest chroniony prawnie i może go używać tylko osoba z prawem wykonywania zawodu; bezprawne użycie zagrożone grzywną", c: true },
+      { t: "Tytuł może stosować każdy, kto ukończył dowolny kierunek społeczny", c: false },
+      { t: "Tytuł nie podlega żadnej ochronie, podobnie jak w Ustawie 2001", c: false },
+      { t: "Tytuł przysługuje wyłącznie pracownikom uczelni", c: false },
+    ],
+    exp: "Nowa Ustawa (Art. 3 ust. 2–3) chroni tytuł „psycholog” – może go używać wyłącznie osoba z prawem wykonywania zawodu, a bezprawne posługiwanie się nim zagrożone jest grzywną (Art. 126). W Ustawie 2001 realnej ochrony brakowało."
+  },
+  {
+    q: "Co należy do zadań samorządu zawodowego psychologów (Nowa Ustawa 2026, Art. 34)?",
+    opts: [
+      { t: "Piecza nad należytym wykonywaniem zawodu, ustanawianie i egzekwowanie zasad etyki oraz prowadzenie postępowania dyscyplinarnego", c: true },
+      { t: "Wydawanie dyplomów ukończenia studiów psychologicznych", c: false },
+      { t: "Refundacja świadczeń psychologicznych z budżetu państwa", c: false },
+      { t: "Zatrudnianie wszystkich psychologów w kraju", c: false },
+    ],
+    exp: "Samorząd (Art. 34) sprawuje pieczę nad wykonywaniem zawodu, ustanawia i egzekwuje zasady etyki, prowadzi postępowanie dyscyplinarne oraz reprezentuje i chroni interesy zawodowe psychologów."
+  },
+  {
+    q: "Które dane są jawne w Rejestrze psychologów (Nowa Ustawa 2026, Art. 6)?",
+    opts: [
+      { t: "Imię i nazwisko, numer i data wpisu oraz status „wykonujący/niewykonujący zawód”", c: true },
+      { t: "Pełna dokumentacja prowadzonych przez psychologa spraw", c: false },
+      { t: "Adres zamieszkania i numer PESEL psychologa", c: false },
+      { t: "Treść opinii końcowej opiekuna psychologa", c: false },
+    ],
+    exp: "Rejestr jest jawny w zakresie: imienia i nazwiska, numeru i daty wpisu oraz statusu „wykonujący/niewykonujący zawód”. Nie obejmuje danych wrażliwych ani dokumentacji spraw."
+  },
+  {
+    q: "Co obejmuje element „Informacja” w ramach świadomej zgody (informed consent)?",
+    opts: [
+      { t: "Cel, metody, spodziewane efekty, potencjalne ryzyko oraz alternatywy", c: true },
+      { t: "Wyłącznie cenę świadczenia", c: false },
+      { t: "Jedynie kwalifikacje psychologa", c: false },
+      { t: "Tylko przewidywany czas trwania spotkania", c: false },
+    ],
+    exp: "Element „Informacja” to przekazanie celu, metod, spodziewanych efektów, potencjalnego ryzyka i alternatyw. Obok niego świadoma zgoda obejmuje zrozumienie, dobrowolność i kompetencję decyzyjną."
+  },
+  {
+    q: "Na kim spoczywa ciężar odpowiedzialności za udzielenie pełnej informacji potrzebnej do świadomej zgody?",
+    opts: [
+      { t: "Na psychologu – naganne jest stawianie odbiorcy w sytuacji niepewności i przerzucanie na niego odpowiedzialności za wyjaśnianie wątpliwości", c: true },
+      { t: "Na odbiorcy, który powinien sam dopytać o wszystko", c: false },
+      { t: "Na zleceniodawcy, np. pracodawcy", c: false },
+      { t: "Na samorządzie zawodowym", c: false },
+    ],
+    exp: "Ciężar udzielenia pełnej informacji spoczywa na psychologu. Naganne jest stawianie odbiorcy w sytuacji niepewności i przerzucanie na niego odpowiedzialności za wyjaśnianie wątpliwości."
+  },
+  {
+    q: "Czym charakteryzuje się świadczenie „wymuszone” w klasyfikacji wg stopnia dobrowolności?",
+    opts: [
+      { t: "Jest integralną częścią czegoś, o co osoba się ubiega (np. diagnoza do rekrutacji) – brak zgody oznacza rezygnację z ubiegania się", c: true },
+      { t: "Jest realizowane bez jakiejkolwiek zgody na podstawie przepisów prawa", c: false },
+      { t: "Wynika wyłącznie z inicjatywy i woli odbiorcy", c: false },
+      { t: "Polega na łagodnej presji zleceniodawcy bez realnych konsekwencji", c: false },
+    ],
+    exp: "Świadczenie wymuszone to integralna część czegoś, o co osoba się ubiega (np. diagnoza rekrutacyjna). Formalnie wyraża zgodę, ale brak zgody = rezygnacja z ubiegania się. Bez zgody na podstawie prawa to świadczenie przymusowe."
+  },
+  {
+    q: "Na jakiej podstawie realizowane jest świadczenie „przymusowe”?",
+    opts: [
+      { t: "Na wniosek zleceniodawcy, bez uzyskiwania zgody – na podstawie przepisów (Kodeks karny, KPK, ustawa o ochronie zdrowia psychicznego)", c: true },
+      { t: "Na podstawie pełnej, świadomej zgody odbiorcy", c: false },
+      { t: "Na podstawie ustnej akceptacji rodziny", c: false },
+      { t: "Wyłącznie na życzenie pracodawcy w procesie rekrutacji", c: false },
+    ],
+    exp: "Świadczenie przymusowe realizowane jest na wniosek zleceniodawcy, bez uzyskiwania zgody, na podstawie przepisów prawa (KK, KPK, ustawa o ochronie zdrowia psychicznego)."
+  },
+  {
+    q: "Jaki status prawny ma dziecko poniżej 13. roku życia w kontekście zgody na usługę psychologiczną?",
+    opts: [
+      { t: "Całkowita niezdolność do czynności prawnych – zgodę wyrażają rodzice/opiekunowie, a dziecko wyraża przyzwolenie", c: true },
+      { t: "Pełna zdolność do samodzielnego wyrażenia zgody", c: false },
+      { t: "Ograniczona zdolność – decyduje samodzielnie po informacji", c: false },
+      { t: "Zgoda kumulatywna razem z rodzicem", c: false },
+    ],
+    exp: "Dziecko poniżej 13 lat ma całkowitą niezdolność do czynności prawnych: zgodę wyrażają rodzice/opiekunowie, a samo dziecko wyraża przyzwolenie. Zgoda kumulatywna to wzorzec od 16 lat, pełna zdolność – od 18 lat."
+  },
+  {
+    q: "Kto rozstrzyga konflikt między małoletnim w wieku 16–18 lat a rodzicami co do zgody na świadczenie?",
+    opts: [
+      { t: "Sąd opiekuńczy i rodzinny", c: true },
+      { t: "Samodzielnie psycholog prowadzący", c: false },
+      { t: "Dyrektor szkoły lub instytucji", c: false },
+      { t: "Wyłącznie rodzice, których zdanie jest wiążące", c: false },
+    ],
+    exp: "Przy konflikcie między dzieckiem 16–18 lat a rodzicami (wzorzec zgody kumulatywnej z medycyny) decyzję podejmuje sąd opiekuńczy i rodzinny."
+  },
+  {
+    q: "O czym psycholog informuje dziecko, ubiegając się o jego przyzwolenie na kontakt?",
+    opts: [
+      { t: "O swojej roli i kompetencjach, celu usługi, spodziewanych korzyściach, czasie trwania, dobrowolności, zasadach poufności i jej ograniczeniach oraz prawach klienta", c: true },
+      { t: "Wyłącznie o tym, że rodzice już wyrazili zgodę", c: false },
+      { t: "Tylko o przewidywanej liczbie spotkań", c: false },
+      { t: "O niczym – wystarczy zgoda rodziców", c: false },
+    ],
+    exp: "Niezależnie od wieku psycholog ubiega się o przyzwolenie dziecka, wyjaśniając mu (w dostosowany sposób) rolę i kompetencje psychologa, cel, korzyści, czas trwania, dobrowolność, poufność i jej ograniczenia oraz prawa klienta. Dziecko można tylko zachęcać, nigdy zmuszać."
+  },
+  {
+    q: "Według Ustawy 2001 (Art. 12) świadczenie psychologiczne wymaga zgody klienta – kogo dotyczy wyjątek „bez zgody” wskazany wprost w tym przepisie?",
+    opts: [
+      { t: "Poborowych kierowanych do specjalności wojskowych oraz osób ubiegających się o przyjęcie do zawodowej służby wojskowej", c: true },
+      { t: "Wszystkich pracowników badanych na zlecenie pracodawcy", c: false },
+      { t: "Każdego ucznia w szkole", c: false },
+      { t: "Klientów terapii par", c: false },
+    ],
+    exp: "Art. 12 Ustawy 2001 dopuszcza świadczenie bez zgody m.in. wobec poborowych kierowanych do specjalności wojskowych i osób ubiegających się o przyjęcie do zawodowej służby wojskowej (poza ogólnymi wyjątkami z KK, KPK i u.o.z.p.)."
+  },
+  {
+    q: "Czego wymaga zasada minimalizacji wtargnięcia (standard APA 4.02)?",
+    opts: [
+      { t: "Zbierania tylko informacji niezbędnych do uzgodnionego celu świadczenia", c: true },
+      { t: "Gromadzenia jak największej ilości danych o kliencie na zapas", c: false },
+      { t: "Udostępniania danych klienta wszystkim członkom zespołu", c: false },
+      { t: "Rezygnacji z dokumentowania przebiegu pracy", c: false },
+    ],
+    exp: "Zasada minimalizacji wtargnięcia (standard 4.02) nakazuje zbierać wyłącznie informacje niezbędne do uzgodnionego celu – nie więcej, niż uzasadnia cel pomocy."
+  },
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6a1ba0'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#9b35e8'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#d18bff'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
