@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 2 – Etyka w zastosowaniach psychologii</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #4a1170 0%, #6a1ba0 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #e9d8fd;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--purple2); }
+
+  .difficulty-badge {
+    display: inline-block;
+    background: #4a1170;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    padding: .3rem .8rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #6a1ba0; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #6a1ba0; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a1ba0, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #6a1ba0; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="etyka-testy.html">← Wróć do listy testów</a>
+  <h1>Etyka w zastosowaniach psychologii</h1>
+  <p>Test 2 – Poziom rozszerzony · podstawy prawne i kazusy · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="difficulty-badge">★★ POZIOM ROZSZERZONY</div>
+    <h2>Witaj w Teście 2!</h2>
+    <p>Test wymaga <strong>szczegółowej</strong> znajomości materiału: konkretnych artykułów, trybów postępowania, wyjątków od tajemnicy oraz rozstrzygania kazusów etycznych. Jeśli Test 1 poszedł Ci dobrze — czas na wyższy poziom.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Orzeczenie TK (7 cech zawodu) · Nowa Ustawa 2026 (daty, opiekun, kary) · denuncjacja Art. 240 KK / 304 KPK · tajemnica a sąd (Art. 180 §1/§2, 199 KPK) · przymus psychiatryczny (Art. 23, 24, 29) · klasyfikacja świadczeń · 5 kategorii informacji · efekt Wertera/Papagena · warunki etycznej odmowy · podwójna lojalność</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // === W2. ZAWÓD ZAUFANIA PUBLICZNEGO I USTAWA ===
+  {
+    q: "Ile cech zawodu zaufania publicznego wskazał Trybunał Konstytucyjny w orzeczeniu K 41/05 (2007)?",
+    opts: [
+      { t: "5 cech", c: false },
+      { t: "7 cech", c: true },
+      { t: "10 cech", c: false },
+      { t: "3 cechy", c: false }
+    ],
+    exp: "TK w orzeczeniu K 41/05 (2007) wymienił 7 cech, m.in.: szczególną doniosłość, powierzanie informacji osobistych, tajemnicę zawodową, immunitet karny, pomoc w sytuacjach zagrożenia, niezależność od hierarchii oraz sformalizowaną deontologię i nadzór samorządu."
+  },
+  {
+    q: "Pojęcie „zawód zaufania publicznego” zakotwiczone jest w polskim porządku prawnym w:",
+    opts: [
+      { t: "Art. 17 Konstytucji RP (1997) – jest to konstrukcja specyficznie polska", c: true },
+      { t: "Dyrektywie Unii Europejskiej o zawodach regulowanych", c: false },
+      { t: "Powszechnej Deklaracji Praw Człowieka ONZ", c: false },
+      { t: "Kodeksie pracy", c: false }
+    ],
+    exp: "Pojęcie zawodu zaufania publicznego wynika z Art. 17 Konstytucji RP (1997). Jest to twór specyficznie polski – nie funkcjonuje w takiej postaci w innych krajach europejskich."
+  },
+  {
+    q: "Kiedy Nowa Ustawa o zawodzie psychologa (2026) wejdzie w pełni w życie, powodując utratę mocy ustawy z 2001 r.?",
+    opts: [
+      { t: "Natychmiast po ogłoszeniu w Dzienniku Ustaw", c: false },
+      { t: "W maju 2028 r. (2 lata i 3 miesiące od ogłoszenia)", c: true },
+      { t: "1 stycznia 2026 r.", c: false },
+      { t: "Dopiero po utworzeniu samorządu w 2030 r.", c: false }
+    ],
+    exp: "Nowa Ustawa została ogłoszona 18 lutego 2026 r. (Dz.U. poz. 127), a pełne wejście w życie przypada na maj 2028 r. (2 lata i 3 miesiące od ogłoszenia). Wtedy ustawa z 2001 r. traci moc."
+  },
+  {
+    q: "Ile godzin łącznie obejmuje staż pod kierunkiem opiekuna psychologa wg Nowej Ustawy 2026 (Art. 17–20)?",
+    opts: [
+      { t: "60 godzin", c: false },
+      { t: "150 godzin (w tym min. 75 h stacjonarnie)", c: true },
+      { t: "300 godzin", c: false },
+      { t: "Roczny staż liczony w miesiącach, bez limitu godzin", c: false }
+    ],
+    exp: "Opiekun psychologa to nowy obowiązek: staż obejmuje 150 godzin łącznie (min. 75 h stacjonarnie), w okresie 9–24 miesięcy. Do czasu pozytywnej opinii końcowej psycholog nie może np. udzielać świadczeń na potrzeby postępowań karnych i sądowych."
+  },
+  {
+    q: "Ile kar dyscyplinarnych liczy katalog z Nowej Ustawy 2026 (Art. 94)?",
+    opts: [
+      { t: "3 kary", c: false },
+      { t: "6 kar – od upomnienia po pozbawienie prawa wykonywania zawodu", c: true },
+      { t: "Tylko 1 – wykluczenie z samorządu", c: false },
+      { t: "Brak katalogu – kary ustala sąd powszechny", c: false }
+    ],
+    exp: "Katalog Art. 94 obejmuje 6 kar: upomnienie, nagana, kara pieniężna, ograniczenie zakresu czynności, zawieszenie prawa wykonywania zawodu (1–5 lat) oraz pozbawienie prawa wykonywania zawodu."
+  },
+
+  // === W5. DENUNCJACJA ===
+  {
+    q: "Prawny obowiązek denuncjacji (zawiadomienia o przestępstwie) wynika z:",
+    opts: [
+      { t: "Art. 304 §1 KPK – i dotyczy każdego przestępstwa ściganego z urzędu", c: false },
+      { t: "Art. 240 §1 KK – dotyczy zamkniętego katalogu ciężkich przestępstw, a jego niedopełnienie zagrożone jest karą do 3 lat", c: true },
+      { t: "Art. 266 §1 KK", c: false },
+      { t: "Kodeksu Etycznego PTP", c: false }
+    ],
+    exp: "Prawny obowiązek denuncjacji to Art. 240 §1 KK – dotyczy zamkniętego katalogu najcięższych przestępstw, a niezawiadomienie organów ścigania grozi karą pozbawienia wolności do 3 lat."
+  },
+  {
+    q: "Czy psycholog, który dowiedział się o przestępstwie jako profesjonalista, jest zwolniony ze społecznego obowiązku denuncjacji (Art. 304 §1 KPK)?",
+    opts: [
+      { t: "Nie – obowiązek społeczny dotyczy go tak samo jak prawny", c: false },
+      { t: "Tak – tajemnica zawodowa wyklucza społeczny obowiązek denuncjacji; inaczej, gdyby dowiedział się jako osoba prywatna", c: true },
+      { t: "Tak, ale tylko za zgodą sądu", c: false },
+      { t: "Nie ma żadnego obowiązku denuncjacji w polskim prawie", c: false }
+    ],
+    exp: "Społeczny obowiązek denuncjacji (Art. 304 §1 KPK, niesankcjonowany) nie obejmuje psychologa, który dowiedział się o przestępstwie jako profesjonalista – tajemnica zawodowa to wyklucza. Inaczej, gdyby dowiedział się jako osoba prywatna."
+  },
+  {
+    q: "Na czym polega kluczowa różnica między obowiązkiem prawnym (Art. 240 KK) a społecznym (Art. 304 KPK) denuncjacji?",
+    opts: [
+      { t: "Oba są tożsame i sankcjonowane karnie", c: false },
+      { t: "Prawny: zamknięty katalog przestępstw + sankcja karna; społeczny: każde przestępstwo z urzędu, ale bez sankcji", c: true },
+      { t: "Prawny dotyczy tylko psychologów, społeczny tylko lekarzy", c: false },
+      { t: "Społeczny jest surowszy i zawsze ma pierwszeństwo", c: false }
+    ],
+    exp: "Obowiązek prawny (Art. 240 KK) = zamknięty katalog ciężkich przestępstw + sankcja karna (do 3 lat). Obowiązek społeczny (Art. 304 KPK) = każde przestępstwo ścigane z urzędu, ale niesankcjonowany. Psycholog-profesjonalista jest zwolniony tylko z obowiązku społecznego."
+  },
+
+  // === W6. TAJEMNICA A SĄD ===
+  {
+    q: "Kto zwalnia psychologa z tajemnicy zawodowej na etapie postępowania przygotowawczego (Art. 180 §1 KPK)?",
+    opts: [
+      { t: "Sąd", c: false },
+      { t: "Prokurator (w postępowaniu sądowym zwalnia sąd)", c: true },
+      { t: "Komendant policji", c: false },
+      { t: "Sam psycholog", c: false }
+    ],
+    exp: "Zgodnie z Art. 180 §1 KPK w postępowaniu przygotowawczym zwalnia prokurator, a w postępowaniu sądowym – sąd. Na postanowienie przysługuje zażalenie. Przesłuchanie jest możliwe tylko gdy jest to niezbędne dla dobra wymiaru sprawiedliwości."
+  },
+  {
+    q: "Do której kategorii tajemnic zawodowych w KPK należy tajemnica psychologa?",
+    opts: [
+      { t: "Do tajemnic kwalifikowanych z Art. 180 §2 KPK (jak adwokacka czy lekarska)", c: false },
+      { t: "Do tajemnicy „zwykłej” z Art. 180 §1 KPK – nie jest kwalifikowana", c: true },
+      { t: "Jest tajemnicą państwową", c: false },
+      { t: "Nie podlega żadnej regulacji KPK", c: false }
+    ],
+    exp: "Tajemnica psychologa to tajemnica zawodowa „zwykła” (Art. 180 §1 KPK), a nie kwalifikowana z §2 (adwokacka, radcy prawnego, doradcy podatkowego, lekarska, notarialna, dziennikarska). Środowisko psychologów postuluje objęcie ich §2."
+  },
+  {
+    q: "Co stanowi Art. 199 KPK w odniesieniu do oświadczeń oskarżonego składanych wobec biegłego?",
+    opts: [
+      { t: "Są one najważniejszym dowodem w sprawie", c: false },
+      { t: "Oświadczenia dotyczące zarzucanego czynu, złożone wobec biegłego podczas opiniowania, nie mogą stanowić dowodu", c: true },
+      { t: "Muszą być nagrywane i przekazane prokuraturze", c: false },
+      { t: "Zwalniają psychologa z tajemnicy zawodowej", c: false }
+    ],
+    exp: "Art. 199 KPK ustanawia zakaz dowodowy: oświadczenia oskarżonego dotyczące zarzucanego czynu, złożone wobec biegłego (lekarza/psychologa) podczas wydawania opinii, nie mogą stanowić dowodu – chroni to relację badawczą."
+  },
+
+  // === W4. PRZYMUS PSYCHIATRYCZNY I ZGODA ===
+  {
+    q: "Na podstawie ustawy o ochronie zdrowia psychicznego (1994), kto decyduje o przyjęciu do szpitala w trybie nagłym – przy bezpośrednim zagrożeniu życia lub zdrowia (Art. 23)?",
+    opts: [
+      { t: "Sąd opiekuńczy przed przyjęciem", c: false },
+      { t: "Lekarz (w razie potrzeby po zasięgnięciu opinii drugiego lekarza lub psychologa); ordynator zatwierdza w 48 h, sąd jest zawiadamiany w 72 h", c: true },
+      { t: "Rodzina pacjenta", c: false },
+      { t: "Dyrektor szpitala", c: false }
+    ],
+    exp: "Tryb nagły (Art. 23 u.o.z.p.) – decyzję podejmuje lekarz przy bezpośrednim zagrożeniu życia/zdrowia. Ordynator zatwierdza przyjęcie w 48 h, a sąd opiekuńczy jest zawiadamiany w 72 h. Psycholog nie decyduje o przyjęciu."
+  },
+  {
+    q: "Przyjęcie do szpitala psychiatrycznego w trybie wnioskowym (Art. 29 u.o.z.p.), bez bezpośredniego zagrożenia, następuje na podstawie decyzji:",
+    opts: [
+      { t: "Lekarza dyżurnego", c: false },
+      { t: "Sądu opiekuńczego – na wniosek (m.in. małżonka, krewnych, opiekuna, organu pomocy społecznej)", c: true },
+      { t: "Ordynatora oddziału", c: false },
+      { t: "Policji", c: false }
+    ],
+    exp: "Tryb wnioskowy (Art. 29) dotyczy sytuacji bez bezpośredniego zagrożenia, gdy nieprzyjęcie spowoduje znaczne pogorszenie zdrowia. O przyjęciu decyduje sąd opiekuńczy na wniosek uprawnionych osób. Obserwacja z Art. 24 może trwać do 10 dni."
+  },
+  {
+    q: "Ile rodzajów świadczeń wyróżnia klasyfikacja wg stopnia dobrowolności i jakie to rodzaje?",
+    opts: [
+      { t: "2: dobrowolne i przymusowe", c: false },
+      { t: "4: dobrowolne, pod presją, wymuszone i przymusowe", c: true },
+      { t: "3: dobrowolne, płatne i bezpłatne", c: false },
+      { t: "5: w tym świadczenia medialne", c: false }
+    ],
+    exp: "Klasyfikacja wyróżnia 4 rodzaje: dobrowolne (pełna świadoma zgoda), pod presją (przyzwolenie/akceptacja), wymuszone (np. diagnoza do rekrutacji – brak zgody = rezygnacja z ubiegania się) oraz przymusowe (bez zgody, np. na podstawie KK, KPK, u.o.z.p.)."
+  },
+  {
+    q: "Kto rozstrzyga konflikt, gdy małoletni w wieku 16–18 lat wyraża zgodę inną niż jego rodzice (przedstawiciele ustawowi)?",
+    opts: [
+      { t: "Decyduje wyłącznie rodzic", c: false },
+      { t: "Decyduje wyłącznie sam małoletni", c: false },
+      { t: "Sąd opiekuńczy i rodzinny", c: true },
+      { t: "Psycholog według własnej oceny", c: false }
+    ],
+    exp: "Przy zgodzie kumulatywnej (pacjent + rodzic) w przedziale 16–18 lat, w razie konfliktu oświadczeń małoletniego i przedstawiciela ustawowego sprawę rozstrzyga sąd opiekuńczy i rodzinny."
+  },
+  {
+    q: "Która z poniższych NIE jest jedną z 5 kategorii informacji niezbędnych do świadomej zgody?",
+    opts: [
+      { t: "Kwalifikacje psychologa oraz ich ograniczenia", c: false },
+      { t: "Poufność i jej ograniczenia", c: false },
+      { t: "Wysokość dochodów odbiorcy i jego sytuacja majątkowa", c: true },
+      { t: "Cel, zakres i sposób realizacji świadczenia", c: false }
+    ],
+    exp: "5 kategorii to: kwalifikacje psychologa, metoda pracy i alternatywy, poufność i jej ograniczenia, cel/zakres/sposób realizacji oraz prawa odbiorcy. Sytuacja majątkowa odbiorcy nie należy do tego katalogu."
+  },
+
+  // === W3. MEDIA ===
+  {
+    q: "Jak nazywa się zjawisko naśladowczych samobójstw po sensacyjnym, szczegółowym relacjonowaniu (z opisem metody, gloryfikacją)?",
+    opts: [
+      { t: "Efekt Papagena", c: false },
+      { t: "Efekt Wertera", c: true },
+      { t: "Efekt Barnuma", c: false },
+      { t: "Efekt halo", c: false }
+    ],
+    exp: "Efekt Wertera to naśladowcze samobójstwa po sensacyjnym przekazie. Jego przeciwieństwem jest efekt Papagena – ochronny skutek odpowiedzialnego przekazu (pokazywanie radzenia sobie z kryzysem i dróg uzyskania pomocy)."
+  },
+  {
+    q: "Które zalecenie WHO dotyczące relacjonowania samobójstw jest prawidłowe?",
+    opts: [
+      { t: "Umieszczać informacje na pierwszych stronach dla zwiększenia świadomości", c: false },
+      { t: "Nie podawać metody ani miejsca, unikać sensacji i zawsze podać kontakt do pomocy (telefon zaufania)", c: true },
+      { t: "Szczegółowo opisać metodę, aby ostrzec czytelników", c: false },
+      { t: "Podać dane osobowe ofiary dla wiarygodności", c: false }
+    ],
+    exp: "Zalecenia WHO: nie podawać metody i miejsca, nie umieszczać na pierwszych stronach, unikać sensacji oraz zawsze podać kontakt do pomocy (telefon zaufania). To przeciwdziała efektowi Wertera."
+  },
+
+  // === W5. PODSTAWY PRAWNE TAJEMNICY ===
+  {
+    q: "Który przepis przewiduje odpowiedzialność karną (do 2 lat) za ujawnienie informacji wbrew przyjętemu zobowiązaniu, ścigane na wniosek pokrzywdzonego?",
+    opts: [
+      { t: "Art. 240 §1 KK", c: false },
+      { t: "Art. 266 §1 Kodeksu karnego", c: true },
+      { t: "Art. 47 Konstytucji RP", c: false },
+      { t: "Art. 180 §2 KPK", c: false }
+    ],
+    exp: "Art. 266 §1 KK: ujawnienie lub wykorzystanie informacji uzyskanych w związku z pracą lub funkcją, wbrew przepisom lub zobowiązaniu, grozi grzywną, ograniczeniem lub pozbawieniem wolności do 2 lat; ściganie następuje na wniosek pokrzywdzonego."
+  },
+  {
+    q: "Która z poniższych sytuacji NIE jest wyjątkiem od tajemnicy zawodowej wymienionym w Nowej Ustawie 2026 (Art. 27 ust. 2)?",
+    opts: [
+      { t: "Zagrożenie życia lub zdrowia odbiorcy albo innych osób (ujawnienie w niezbędnym zakresie)", c: false },
+      { t: "Pisemna zgoda odbiorcy po uprzednim poinformowaniu o skutkach ujawnienia", c: false },
+      { t: "Prośba dziennikarza przygotowującego materiał o kliencie", c: true },
+      { t: "Konsultacja z innym specjalistą w celu udzielenia dalszych świadczeń (za zgodą odbiorcy)", c: false }
+    ],
+    exp: "Wyjątki z Art. 27 ust. 2 to m.in.: odrębne przepisy prawa, zagrożenie życia/zdrowia, konsultacja z innym specjalistą za zgodą odbiorcy, zlecenie podmiotu uprawnionego, pisemna zgoda odbiorcy, postępowanie dyscyplinarne. Prośba dziennikarza nie należy do tego katalogu."
+  },
+
+  // === W7. DYSKRYMINACJA I ODMOWA ===
+  {
+    q: "Kiedy odmowa świadczenia z powodu uprzedzeń psychologa jest ETYCZNA?",
+    opts: [
+      { t: "Zawsze, gdy psycholog czuje niechęć do klienta", c: false },
+      { t: "Tylko gdy spełnione są WSZYSTKIE warunki: świadomość uprzedzeń, niepozostawienie odbiorcy bez pomocy, praca nad zmianą postawy i jednorazowość odmowy", c: true },
+      { t: "Gdy odmowa dotyczy całej grupy odbiorców", c: false },
+      { t: "Nigdy – każda odmowa jest nieetyczna", c: false }
+    ],
+    exp: "Odmowa przy uprzedzeniach jest etyczna tylko gdy spełnione są wszystkie warunki: psycholog jest świadomy, że uprzedzenia uniemożliwiają profesjonalizm, odbiorca nie zostaje bez pomocy, psycholog pracuje nad zmianą postawy, a odmowa jest jednorazowa."
+  },
+  {
+    q: "Czym jest tzw. „zdrowa paranoja” w kontekście pracy z osobami z grup mniejszościowych?",
+    opts: [
+      { t: "Zaburzenie psychiczne wymagające diagnozy", c: false },
+      { t: "Uzasadniona nieufność klientów z mniejszości wobec psychologów, wynikająca z wiedzy o możliwych uprzedzeniach profesjonalistów", c: true },
+      { t: "Nadmierna ostrożność psychologa w diagnozie", c: false },
+      { t: "Lęk psychologa przed popełnieniem błędu", c: false }
+    ],
+    exp: "„Zdrowa paranoja” to uzasadniona nieufność klientów z mniejszości do psychologów, wynikająca ze świadomości możliwych uprzedzeń profesjonalistów. Jest racjonalną reakcją, a nie objawem zaburzenia."
+  },
+  {
+    q: "Na czym polega zasada postępowania przy „podwójnej lojalności” psychologa zatrudnionego w instytucji (np. OZSS, zakład karny)?",
+    opts: [
+      { t: "Interes instytucji ma zawsze pierwszeństwo", c: false },
+      { t: "W razie konfliktu lojalność wobec standardów etycznych zawodu ma pierwszeństwo nad lojalnością instytucjonalną", c: true },
+      { t: "Psycholog realizuje „zamówioną” treść opinii zgodnie z oczekiwaniem przełożonych", c: false },
+      { t: "Psycholog nie informuje badanego, komu trafią wyniki", c: false }
+    ],
+    exp: "Przy podwójnej lojalności prymat mają zasady etyczne zawodu nad interesem instytucji. Psycholog jasno określa, kto jest klientem i komu trafią wyniki, informuje o ograniczonej poufności i nie ulega presji na „zamówioną” opinię."
+  },
+  {
+    q: "Czym jest dyskryminacja pośrednia według definicji ustawowych?",
+    opts: [
+      { t: "Bezpośrednio gorszym traktowaniem osoby ze względu na cechę chronioną", c: false },
+      { t: "Pozornie neutralnym kryterium lub działaniem, które powoduje niekorzystne dysproporcje dla osób z cechą chronioną (chyba że jest obiektywnie uzasadnione)", c: true },
+      { t: "Wyłącznie molestowaniem seksualnym", c: false },
+      { t: "Każdą różnicą w traktowaniu klientów", c: false }
+    ],
+    exp: "Dyskryminacja pośrednia to sytuacja, w której pozornie neutralne kryterium lub działanie powoduje niekorzystne dysproporcje dla osób z cechą chronioną – chyba że jest to obiektywnie uzasadnione. Dyskryminacja bezpośrednia to wprost mniej korzystne traktowanie."
+  },
+  {
+    q: "Komu Ustawa z 3.12.2010 r. (o równym traktowaniu) powierza realizację zasady równego traktowania?",
+    opts: [
+      { t: "Wyłącznie sądom powszechnym", c: false },
+      { t: "Pełnomocnikowi Rządu ds. Równego Traktowania oraz Rzecznikowi Praw Obywatelskich", c: true },
+      { t: "Polskiemu Towarzystwu Psychologicznemu", c: false },
+      { t: "Ministrowi Zdrowia", c: false }
+    ],
+    exp: "Ustawa z 3.12.2010 r. o wdrożeniu przepisów UE dot. równego traktowania wskazuje formy dyskryminacji, a jej realizację powierza Pełnomocnikowi Rządu ds. Równego Traktowania oraz Rzecznikowi Praw Obywatelskich (RPO)."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6a1ba0'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#9b35e8'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#d18bff'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
