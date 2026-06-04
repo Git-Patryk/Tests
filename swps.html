@@ -27,7 +27,7 @@
   }
 
   #stars-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-  #center-veil  {
+  #center-veil {
     position: fixed; inset: 0; pointer-events: none; z-index: 2;
     background: radial-gradient(ellipse 62% 110% at 50% 50%, rgba(0,0,14,.82) 0%, rgba(0,0,14,.50) 55%, transparent 100%);
   }
@@ -68,86 +68,52 @@
     text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem;
   }
 
-  .top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin-bottom: 2.8rem; }
-
-  .mode-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 18px;
-    padding: 2rem 1.6rem; display: flex; flex-direction: column; gap: .8rem;
-    position: relative; overflow: hidden;
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    transition: transform .25s, border-color .25s, box-shadow .25s;
+  .subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.2rem;
   }
-  .mode-card::before {
-    content: ''; position: absolute; top: -50px; right: -50px;
-    width: 130px; height: 130px; border-radius: 50%; opacity: .3; pointer-events: none;
-  }
-  .mode-card.tests  { --mc: var(--nc);  --mg: var(--ng); }
-  .mode-card.notes  { --mc: var(--nc2); --mg: var(--ng2); }
-  .mode-card::before { background: radial-gradient(circle, var(--mc), transparent 70%); }
-  .mode-card.disabled { opacity: .45; cursor: not-allowed; pointer-events: none; }
-  .mode-card.active { cursor: pointer; text-decoration: none; color: inherit; }
-  .mode-card.active:hover { transform: translateY(-5px); border-color: var(--mc); box-shadow: 0 0 36px color-mix(in srgb, var(--mc) 20%, transparent), 0 8px 28px rgba(0,0,0,.4); }
-  .mode-card.active::after {
-    content: ''; position: absolute; inset: 0; background: var(--mg);
-    opacity: 0; transition: opacity .3s; border-radius: 18px; pointer-events: none;
-  }
-  .mode-card.active:hover::after { opacity: 1; }
-
-  .mode-emblem { font-size: 2.4rem; position: relative; z-index: 1; filter: drop-shadow(0 0 8px var(--mc)); }
-  .mode-name   { font-size: 1.25rem; font-weight: 800; color: #fff; position: relative; z-index: 1; }
-  .mode-desc   { font-size: .8rem; color: rgba(232,232,240,.6); line-height: 1.55; position: relative; z-index: 1; }
-  .mode-footer {
-    position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between;
-    padding-top: .8rem; border-top: 1px solid var(--border); margin-top: auto;
-  }
-  .mode-badge {
-    font-size: .68rem; font-weight: 700; padding: .24rem .65rem; border-radius: 20px;
-    background: color-mix(in srgb, var(--mc) 15%, transparent); color: var(--mc);
-    border: 1px solid color-mix(in srgb, var(--mc) 30%, transparent);
-  }
-  .mode-arrow { color: var(--mc); font-size: 1.1rem; transition: transform .2s; }
-  .mode-card.active:hover .mode-arrow { transform: translateX(5px); }
-
-  .chip-soon {
-    font-size: .6rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
-    padding: .18rem .55rem; border-radius: 6px;
-    background: rgba(255,107,53,.15); color: var(--nc);
-    border: 1px solid rgba(255,107,53,.25); margin-left: .5rem; vertical-align: middle;
-  }
-
-  .subjects-label {
-    font-size: .68rem; font-weight: 700; letter-spacing: .18em;
-    text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem;
-  }
-  .subjects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
 
   .subj-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-    padding: 1.4rem 1.4rem 1.2rem; display: flex; flex-direction: column; gap: .6rem;
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.8rem 1.6rem 1.5rem; display: flex; flex-direction: column; gap: .7rem;
     position: relative; overflow: hidden;
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     transition: transform .22s, border-color .22s, box-shadow .22s;
     text-decoration: none; color: inherit;
   }
+  .subj-card::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 110px; height: 110px; border-radius: 50%;
+    background: radial-gradient(circle, var(--nc2), transparent 70%);
+    opacity: .25; pointer-events: none;
+  }
   .subj-card::after {
     content: ''; position: absolute; inset: 0; background: var(--ng2);
-    opacity: 0; transition: opacity .3s; border-radius: 14px; pointer-events: none;
+    opacity: 0; transition: opacity .3s; border-radius: 16px; pointer-events: none;
   }
-  .subj-card.available:hover { transform: translateY(-4px); border-color: var(--nc2); box-shadow: 0 0 28px color-mix(in srgb, var(--nc2) 18%, transparent), 0 6px 20px rgba(0,0,0,.35); }
+  .subj-card.available:hover {
+    transform: translateY(-4px);
+    border-color: var(--nc2);
+    box-shadow: 0 0 28px color-mix(in srgb, var(--nc2) 18%, transparent), 0 6px 20px rgba(0,0,0,.35);
+  }
   .subj-card.available:hover::after { opacity: 1; }
-  .subj-card.inactive { opacity: .45; cursor: not-allowed; pointer-events: none; }
+  .subj-card.inactive { opacity: .38; cursor: not-allowed; pointer-events: none; }
 
-  .subj-icon { font-size: 1.8rem; line-height: 1; position: relative; z-index: 1; filter: drop-shadow(0 0 6px var(--nc2)); }
-  .subj-name { font-size: .95rem; font-weight: 700; color: #fff; line-height: 1.35; position: relative; z-index: 1; }
+  .subj-icon { font-size: 2rem; line-height: 1; position: relative; z-index: 1; filter: drop-shadow(0 0 6px var(--nc2)); }
+  .subj-name { font-size: 1rem; font-weight: 700; color: #fff; line-height: 1.35; position: relative; z-index: 1; }
   .subj-meta {
     font-size: .75rem; color: var(--muted); position: relative; z-index: 1;
     display: flex; align-items: center; justify-content: space-between;
-    padding-top: .5rem; border-top: 1px solid var(--border); margin-top: auto;
+    padding-top: .6rem; border-top: 1px solid var(--border); margin-top: auto;
   }
   .subj-tag {
     font-size: .65rem; font-weight: 700; padding: .2rem .55rem; border-radius: 12px;
     background: color-mix(in srgb, var(--nc2) 15%, transparent); color: var(--nc2);
     border: 1px solid color-mix(in srgb, var(--nc2) 25%, transparent);
+  }
+  .subj-tag.soon {
+    background: rgba(107,107,138,.1); color: var(--muted); border-color: rgba(107,107,138,.2);
   }
   .subj-arrow { color: var(--nc2); font-size: 1rem; transition: transform .2s; }
   .subj-card.available:hover .subj-arrow { transform: translateX(4px); }
@@ -158,7 +124,6 @@
   }
 
   @media (max-width: 580px) {
-    .top-grid { grid-template-columns: 1fr; }
     .subjects-grid { grid-template-columns: 1fr; }
   }
 </style>
@@ -179,67 +144,42 @@
   <div class="page-header">
     <div class="page-icon">🧬</div>
     <div class="page-title">Uniwersytet SWPS</div>
-    <div class="page-sub">Wybierz tryb nauki</div>
+    <div class="page-sub">Wybierz przedmiot</div>
   </div>
 
-  <div class="section-label">Tryb</div>
-  <div class="top-grid">
-    <div class="mode-card tests disabled">
-      <div class="mode-emblem">📝</div>
-      <div class="mode-name">Testy <span class="chip-soon">Wkrótce</span></div>
-      <div class="mode-desc">Quizy i testy sprawdzające wiedzę z poszczególnych przedmiotów</div>
-      <div class="mode-footer">
-        <span class="mode-badge">W przygotowaniu</span>
-        <span class="mode-arrow">→</span>
-      </div>
+  <div class="section-label">Przedmioty</div>
+  <div class="subjects-grid">
+
+    <a class="subj-card available" href="swps-etyka.html">
+      <div class="subj-icon">⚖️</div>
+      <div class="subj-name">Etyka w zastosowaniach psychologii</div>
+      <div class="subj-meta"><span class="subj-tag">Dostępne</span><span class="subj-arrow">→</span></div>
+    </a>
+
+    <div class="subj-card inactive">
+      <div class="subj-icon">🎲</div>
+      <div class="subj-name">Decyzje i ryzyko</div>
+      <div class="subj-meta"><span class="subj-tag soon">Wkrótce</span><span class="subj-arrow">→</span></div>
     </div>
 
-    <div class="mode-card notes active">
-      <div class="mode-emblem">📖</div>
-      <div class="mode-name">Notatki</div>
-      <div class="mode-desc">Materiały i opracowania do przedmiotów SWPS</div>
-      <div class="mode-footer">
-        <span class="mode-badge">5 przedmiotów</span>
-        <span class="mode-arrow">↓</span>
-      </div>
+    <div class="subj-card inactive">
+      <div class="subj-icon">🗣️</div>
+      <div class="subj-name">Komunikacja i perswazja</div>
+      <div class="subj-meta"><span class="subj-tag soon">Wkrótce</span><span class="subj-arrow">→</span></div>
     </div>
-  </div>
 
-  <div id="subjects-section">
-    <div class="subjects-label">Przedmioty — Notatki</div>
-    <div class="subjects-grid">
-
-      <a class="subj-card available" href="etyka.html">
-        <div class="subj-icon">⚖️</div>
-        <div class="subj-name">Etyka w zastosowaniach psychologii</div>
-        <div class="subj-meta"><span class="subj-tag">Notatki</span><span class="subj-arrow">→</span></div>
-      </a>
-
-      <div class="subj-card inactive">
-        <div class="subj-icon">🎲</div>
-        <div class="subj-name">Decyzje i ryzyko</div>
-        <div class="subj-meta"><span class="subj-tag">Wkrótce</span><span class="subj-arrow">→</span></div>
-      </div>
-
-      <div class="subj-card inactive">
-        <div class="subj-icon">📊</div>
-        <div class="subj-name">Zaawansowana psychometria</div>
-        <div class="subj-meta"><span class="subj-tag">Wkrótce</span><span class="subj-arrow">→</span></div>
-      </div>
-
-      <div class="subj-card inactive">
-        <div class="subj-icon">🗣️</div>
-        <div class="subj-name">Komunikacja i perswazja</div>
-        <div class="subj-meta"><span class="subj-tag">Wkrótce</span><span class="subj-arrow">→</span></div>
-      </div>
-
-      <div class="subj-card inactive">
-        <div class="subj-icon">🔬</div>
-        <div class="subj-name">Zaawansowana metodologia badań</div>
-        <div class="subj-meta"><span class="subj-tag">Wkrótce</span><span class="subj-arrow">→</span></div>
-      </div>
-
+    <div class="subj-card inactive">
+      <div class="subj-icon">📊</div>
+      <div class="subj-name">Zaawansowana psychometria</div>
+      <div class="subj-meta"><span class="subj-tag soon">Wkrótce</span><span class="subj-arrow">→</span></div>
     </div>
+
+    <div class="subj-card inactive">
+      <div class="subj-icon">🔬</div>
+      <div class="subj-name">Zaawansowana metodologia badań</div>
+      <div class="subj-meta"><span class="subj-tag soon">Wkrótce</span><span class="subj-arrow">→</span></div>
+    </div>
+
   </div>
 </div>
 
