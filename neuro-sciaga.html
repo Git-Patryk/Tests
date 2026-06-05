@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuroanatomia – Ściąga</title>
+<style>
+  :root{
+    --bg:#08080f; --card:#fffaf2; --border:#1f1f30; --text:#e8e8f0; --muted:#6b6b8a;
+    --nc:#f59e0b; --nc2:#d97706; --nc-dim:rgba(245,158,11,.13); --nc-border:rgba(245,158,11,.32);
+    --c-text:#2b2112; --c-muted:#6b5a3f; --c-border:#f0e2c8; --c-head:#b45309;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(245,158,11,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(245,158,11,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+  nav{position:sticky;top:0;z-index:100;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(8,8,15,.94);backdrop-filter:blur(14px);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+  nav a{color:var(--muted);text-decoration:none;font-size:.82rem;transition:color .2s;}
+  nav a:hover{color:var(--nc);}
+  nav .sep{color:var(--border);font-size:.82rem;} nav .current{color:var(--text);font-weight:600;font-size:.82rem;}
+  .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:2.4rem 1.3rem 5rem;}
+  .head{margin-bottom:1.6rem;}
+  .head .icon{font-size:2.4rem;filter:drop-shadow(0 0 14px var(--nc));margin-bottom:.5rem;}
+  .head h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:800;background:linear-gradient(90deg,#fff 45%,var(--nc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.4rem;}
+  .head p{color:var(--muted);font-size:.86rem;line-height:1.6;max-width:640px;}
+  .toolbar{position:sticky;top:52px;z-index:50;display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin:1.2rem 0 1.4rem;padding:.7rem 0;background:rgba(8,8,15,.92);backdrop-filter:blur(10px);}
+  #search{flex:1;min-width:200px;background:#12121c;border:1px solid var(--nc-border);border-radius:10px;color:var(--text);padding:.6rem .9rem;font-size:.9rem;font-family:inherit;}
+  #search:focus{outline:none;border-color:var(--nc);box-shadow:0 0 0 3px var(--nc-dim);}
+  #count{font-size:.78rem;color:var(--muted);white-space:nowrap;}
+  .jump{display:flex;gap:.4rem;}
+  .jump a{font-size:.72rem;font-weight:700;color:var(--nc);text-decoration:none;border:1px solid var(--nc-border);border-radius:20px;padding:.25rem .7rem;background:var(--nc-dim);transition:background .2s;}
+  .jump a:hover{background:var(--nc);color:#3a2600;}
+  .part-h{display:flex;align-items:center;gap:.8rem;margin:2rem 0 1rem;}
+  .part-h span{font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--nc);background:var(--nc-dim);border:1px solid var(--nc-border);border-radius:20px;padding:.3rem .85rem;white-space:nowrap;}
+  .part-h .line{flex:1;height:1px;background:var(--border);}
+  .cc{background:var(--card);border:1px solid var(--c-border);border-radius:11px;padding:.75rem 1rem;margin-bottom:.5rem;color:var(--c-text);}
+  .cc-term{font-size:.93rem;font-weight:800;color:var(--c-head);margin-bottom:.25rem;}
+  .cc-lat{font-style:italic;font-weight:600;color:var(--nc2);font-size:.85rem;}
+  .cc-ans{font-size:.85rem;line-height:1.6;color:var(--c-text);}
+  .cc-ans b{color:var(--nc2);font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;margin-right:.15rem;}
+  .cc-ans .segm{display:inline;}
+  .cc-ans .sep2{color:var(--c-border);margin:0 .35rem;font-weight:700;}
+  .nohit{display:none;}
+  .empty{color:var(--muted);font-size:.9rem;text-align:center;padding:2rem;}
+  footer{position:relative;z-index:1;text-align:center;padding:2rem;color:var(--muted);font-size:.72rem;border-top:1px solid var(--border);}
+  @media print{
+    body{background:#fff;color:#000;} body::before,nav,.toolbar,footer,.head .icon{display:none!important;}
+    .wrap{max-width:100%;padding:0;} .cc{border:1px solid #ccc;break-inside:avoid;margin-bottom:.25rem;padding:.4rem .6rem;}
+    .part-h span{color:#000;border-color:#000;background:#fff;} .head h1{-webkit-text-fill-color:#000;color:#000;}
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">🔭 StudyZone</a><span class="sep">/</span>
+  <a href="inne-neuro.html">Neuroanatomia</a><span class="sep">/</span>
+  <span class="current">Ściąga</span>
+</nav>
+
+<div class="wrap">
+  <div class="head">
+    <div class="icon">📋</div>
+    <h1>Ściąga — wszystkie pojęcia</h1>
+    <p>Wszystkie pojęcia w <strong>dokładnie tej samej kolejności co w POMOCNIKU</strong>, z jednozdaniową odpowiedzią na pytania: co? gdzie? z czego? po co? Użyj wyszukiwarki, by szybko znaleźć pojęcie. Stronę można też wydrukować (Ctrl/Cmd+P).</p>
+  </div>
+
+  <div class="toolbar">
+    <input id="search" type="text" placeholder="🔍 Szukaj pojęcia… (np. wzgórze, dwuznaczne, droga piramidowa)" autocomplete="off">
+    <div class="jump">
+      <a href="#pI">Cz. I</a><a href="#pII">Cz. II</a><a href="#pIII/IV">Cz. III/IV</a>
+    </div>
+    <span id="count"></span>
+  </div>
+
+  <div id="list"></div>
+  <div class="empty nohit" id="empty">Brak pojęć pasujących do wyszukiwania.</div>
+</div>
+
+<footer>StudyZone &mdash; materiały pomocnicze do nauki · Neuroanatomia (ściąga)</footer>
+
+<script src="neuro-data.js"></script>
+<script>
+(function(){
+  var list=document.getElementById('list');
+  var PARTS=[["I","Część I · Pojęcia anatomiczne"],["II","Część II · Podstawowe pojęcia"],["III/IV","Część III/IV · Drogi i tematy różne"]];
+  function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function seg(label,val){return val?'<span class="segm"><b>'+label+':</b> '+esc(val)+'</span>':'';}
+  PARTS.forEach(function(pr){
+    var items=NEURO_CONCEPTS.filter(function(c){return c.p===pr[0];});
+    var h=document.createElement('div'); h.className='part-h'; h.id='p'+pr[0];
+    h.innerHTML='<span>'+esc(pr[1])+' · '+items.length+'</span><span class="line"></span>';
+    list.appendChild(h);
+    items.forEach(function(c){
+      var d=document.createElement('div'); d.className='cc';
+      var segs=[seg('Co',c.co),seg('Gdzie',c.gd),seg('Z czego',c.zc),seg('Po co',c.pc)].filter(Boolean);
+      d.innerHTML='<div class="cc-term">'+esc(c.t)+(c.l?' <span class="cc-lat">('+esc(c.l)+')</span>':'')+'</div>'+
+                  '<div class="cc-ans">'+segs.join('<span class="sep2">·</span>')+'</div>';
+      d.dataset.s=((c.t||'')+' '+(c.l||'')+' '+(c.co||'')+' '+(c.gd||'')+' '+(c.zc||'')+' '+(c.pc||'')).toLowerCase();
+      list.appendChild(d);
+    });
+  });
+  var allCards=Array.prototype.slice.call(document.querySelectorAll('.cc'));
+  var allHeads=Array.prototype.slice.call(document.querySelectorAll('.part-h'));
+  var countEl=document.getElementById('count'), emptyEl=document.getElementById('empty');
+  function setCount(n){countEl.textContent=n+' / '+NEURO_CONCEPTS.length+' pojęć';}
+  setCount(NEURO_CONCEPTS.length);
+  var inp=document.getElementById('search');
+  inp.addEventListener('input',function(){
+    var q=inp.value.trim().toLowerCase(); var shown=0;
+    allCards.forEach(function(c){var ok=!q||c.dataset.s.indexOf(q)>=0;c.classList.toggle('nohit',!ok);if(ok)shown++;});
+    // hide empty part headers
+    allHeads.forEach(function(h){
+      var any=false,n=h.nextElementSibling;
+      while(n&&!n.classList.contains('part-h')){if(n.classList.contains('cc')&&!n.classList.contains('nohit')){any=true;break;}n=n.nextElementSibling;}
+      h.classList.toggle('nohit',!any);
+    });
+    setCount(shown); emptyEl.classList.toggle('nohit',shown>0);
+  });
+})();
+</script>
+</body>
+</html>
