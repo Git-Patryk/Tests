@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 2 – Komunikacja i perswazja</title>
+<style>
+  :root {
+    --vio:    #8b5cf6;
+    --vio2:   #7c3aed;
+    --vio3:   #c4b5fd;
+    --vio4:   #ede9fe;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f7f5ff;
+    --border: #e3dcf5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f6f3ff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #5b21b6 0%, var(--vio2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(124,58,237,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--vio2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #f1ecfe;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #ddd0fb;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--vio2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--vio2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--vio2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #5b21b6; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--vio2), var(--vio3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(124,58,237,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--vio2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--vio3); background: #f1ecfe; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--vio2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--vio4); border-color: var(--vio2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #5b21b6; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--vio4); border-left: 4px solid var(--vio2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(124,58,237,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--vio2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5b21b6, var(--vio2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(124,58,237,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #5b21b6; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--vio4); border-left: 3px solid var(--vio2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="komunikacja-testy.html">← Wróć do listy testów</a>
+  <h1>Komunikacja i perswazja</h1>
+  <p>Test 2 · Poziom 2 · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POZIOM 2</div>
+    <h2>Witaj w Teście 2!</h2>
+    <p>Test sprawdza <strong>mechanizmy, badania i techniki</strong> — funkcje postaw, działanie ELM, funkcje mowy niewerbalnej, mechanizmy mediów (priming, typy framingu, media bias), obronę przed dezinformacją oraz techniki wpływu społecznego.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>funkcje postaw (Katz) · manipulacja dystrakcją · funkcje mowy niewerbalnej · kontrola agendy · mechanizm dostępności (priming) · typy framingu i media bias · efekt źródła, Five F · kogo łowią fake news, prebunking · czynniki konformizmu i posłuszeństwa · stopa w drzwiach, drzwiami w twarz, niska piłka, reguła jedności · mimikra (efekt kameleona)</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // === 1. FUNKCJE POSTAW ===
+  {
+    q: "Którą funkcję postawy opisuje ochrona samooceny przed zagrażającymi informacjami?",
+    opts: [
+      { t: "Funkcję obrony ego", c: true },
+      { t: "Funkcję ekspresji wartości", c: false },
+      { t: "Funkcję orientacyjną (poznawczą)", c: false },
+      { t: "Funkcję instrumentalną (użyteczności)", c: false }
+    ],
+    exp: "Funkcja obrony ego chroni samoocenę przed zagrażającymi informacjami. Pozostałe funkcje (Katz, 1960) to: orientacyjna, instrumentalna, ekspresji wartości i społeczno-adaptacyjna."
+  },
+  {
+    q: "Której funkcji postawy odpowiada możliwość wyrażenia ważnych dla „ja” wartości i tożsamości?",
+    opts: [
+      { t: "Funkcji ekspresji wartości", c: true },
+      { t: "Funkcji instrumentalnej", c: false },
+      { t: "Funkcji orientacyjnej", c: false },
+      { t: "Funkcji społeczno-adaptacyjnej", c: false }
+    ],
+    exp: "Funkcja ekspresji wartości pozwala wyrazić ważne dla tożsamości wartości. Funkcja społeczno-adaptacyjna z kolei ułatwia przynależność i akceptację w grupie."
+  },
+  {
+    q: "Jaki wniosek praktyczny dla perswazji płynie z teorii funkcji postaw?",
+    opts: [
+      { t: "Argument warto dopasować do funkcji, jaką postawa pełni dla danej osoby", c: true },
+      { t: "Wszystkie postawy zmienia się tym samym argumentem", c: false },
+      { t: "Postaw w ogóle nie da się zmienić perswazją", c: false },
+      { t: "Liczy się tylko siła emocji w przekazie", c: false }
+    ],
+    exp: "Perswazja jest skuteczniejsza, gdy dopasujemy argument do funkcji postawy — np. do osoby kierującej się ekspresją wartości mówimy językiem wartości, a nie korzyści."
+  },
+
+  // === 2. ELM — MECHANIZMY ===
+  {
+    q: "Czym jest „manipulacja dystrakcją” w kontekście modelu ELM?",
+    opts: [
+      { t: "Rozpraszaniem odbiorcy, by utrudnić mu tor centralny i skłonić do ulegania wskazówkom peryferycznym", c: true },
+      { t: "Dostarczaniem dodatkowych mocnych argumentów", c: false },
+      { t: "Zwiększaniem motywacji odbiorcy do analizy", c: false },
+      { t: "Powtarzaniem tej samej tezy wielokrotnie", c: false }
+    ],
+    exp: "Rozpraszając uwagę, utrudniamy uruchomienie toru centralnego — odbiorca łatwiej ulega wtedy wskazówkom peryferycznym (atrakcyjność, autorytet) zamiast oceniać argumenty."
+  },
+  {
+    q: "Jakie warunki sprzyjają przetwarzaniu przekazu torem centralnym?",
+    opts: [
+      { t: "Wysoka motywacja, potrzeba poznania i zdolność oceny argumentów", c: true },
+      { t: "Niska motywacja i rozproszenie uwagi", c: false },
+      { t: "Brak zainteresowania tematem", c: false },
+      { t: "Silne zmęczenie i presja czasu", c: false }
+    ],
+    exp: "Tor centralny uruchamia się przy wysokiej motywacji, potrzebie poznania i zdolności oceny — wtedy decydują mocne argumenty, a zmiana postawy jest trwała."
+  },
+
+  // === 3. NIEWERBALNA — FUNKCJE ===
+  {
+    q: "Która z poniższych NIE jest funkcją mowy niewerbalnej (wg ujęcia z wykładu)?",
+    opts: [
+      { t: "Kodowanie informacji w postaci liczb i statystyk", c: true },
+      { t: "Komunikowanie postaw i emocji", c: false },
+      { t: "Funkcje autoprezentacyjne", c: false },
+      { t: "Podtrzymywanie komunikacji werbalnej", c: false }
+    ],
+    exp: "Funkcje mowy niewerbalnej to: komunikowanie postaw i emocji, autoprezentacja, funkcje rytualne i podtrzymywanie komunikacji werbalnej. „Kodowanie liczb i statystyk” do nich nie należy."
+  },
+  {
+    q: "Co sygnalizuje rozróżnienie „high power vs low power” w mowie ciała?",
+    opts: [
+      { t: "Otwartą, ekspansywną postawę dominacji vs zamkniętą postawę uległości", c: true },
+      { t: "Głośność mówienia vs szept", c: false },
+      { t: "Tempo wypowiedzi szybkie vs wolne", c: false },
+      { t: "Kontakt wzrokowy vs jego brak — i nic więcej", c: false }
+    ],
+    exp: "High power to otwarta, ekspansywna postawa ciała sygnalizująca dominację; low power to postawa skulona, zamknięta, sygnalizująca uległość. To element autoprezentacji i odbioru statusu."
+  },
+
+  // === 4. MEDIA — MECHANIZMY ===
+  {
+    q: "Od czego — wg koncepcji kontroli agendy — zależy spostrzegana „ważność” tematu?",
+    opts: [
+      { t: "Od „filtra medialnego” — tego, co wydawcy i dziennikarze uznają za istotne", c: true },
+      { t: "Wyłącznie od obiektywnej wagi zdarzenia", c: false },
+      { t: "Od samodzielnego monitorowania świata przez odbiorców", c: false },
+      { t: "Od liczby reklam w danym medium", c: false }
+    ],
+    exp: "Odbiorcy kierują uwagę selektywnie, a „ważność” w dużej mierze zależy od filtra medialnego — tego, co redakcje uznają za istotne i nagłaśniają."
+  },
+  {
+    q: "Jak działa mechanizm dostępności w primingu?",
+    opts: [
+      { t: "Bieżący przekaz wprowadza obiekt do pamięci pracującej i z niej korzystamy przy ocenie", c: true },
+      { t: "Im rzadziej o czymś słyszymy, tym łatwiej to oceniamy", c: false },
+      { t: "Ocena zależy wyłącznie od wykształcenia odbiorcy", c: false },
+      { t: "Priming usuwa temat z pamięci długotrwałej", c: false }
+    ],
+    exp: "Bieżący przekaz tymczasowo wzmaga dostępność obiektu, wprowadzając go do pamięci pracującej — i to z niej korzystamy przy ocenie. Częsta ekspozycja buduje dostępność chroniczną."
+  },
+  {
+    q: "Który z poniższych NIE jest typem framingu wg Semetko i Valkenburg?",
+    opts: [
+      { t: "Rama dostępności poznawczej", c: true },
+      { t: "Rama konfliktu", c: false },
+      { t: "Rama moralności", c: false },
+      { t: "Rama konsekwencji ekonomicznych", c: false }
+    ],
+    exp: "Semetko i Valkenburg (2000) wyróżnili 5 typów: konfliktu, koncentracji na człowieku (human interest), konsekwencji ekonomicznych, moralności i odpowiedzialności. „Rama dostępności poznawczej” nie należy do typologii."
+  },
+  {
+    q: "Czym jest gatekeeping bias?",
+    opts: [
+      { t: "Tendencyjną selekcją materiałów przeznaczonych do rozpowszechniania", c: true },
+      { t: "Tendencyjnym komentowaniem zdarzeń przez dziennikarzy", c: false },
+      { t: "Tendencyjną prezentacją dotyczącą fizycznych cech przekazu", c: false },
+      { t: "Brakiem jakichkolwiek zniekształceń w mediach", c: false }
+    ],
+    exp: "Gatekeeping bias to tendencyjna selekcja — decyzja, co w ogóle trafia do mediów. Coverage bias dotyczy prezentacji (cech fizycznych przekazu), a statement bias — komentowania."
+  },
+  {
+    q: "Czego dotyczy statement bias?",
+    opts: [
+      { t: "Tendencyjnego komentowania zdarzeń przez media", c: true },
+      { t: "Selekcji materiałów dopuszczonych do publikacji", c: false },
+      { t: "Ilości czasu antenowego poświęconego tematowi", c: false },
+      { t: "Technicznej jakości obrazu i dźwięku", c: false }
+    ],
+    exp: "Statement bias to tendencyjne komentowanie zdarzeń (oceny, ton wypowiedzi dziennikarzy). Selekcja to gatekeeping, a fizyczne cechy prezentacji to coverage bias (D'Alessio & Allen, 2000)."
+  },
+  {
+    q: "Na czym polega tzw. efekt źródła przy stosowaniu ram interpretacyjnych?",
+    opts: [
+      { t: "Nawet silna rama traci moc, jeśli pochodzi ze źródła bez autorytetu lub niezgodnego z sympatiami odbiorcy", c: true },
+      { t: "Siła ramy zależy wyłącznie od jej treści", c: false },
+      { t: "Każda rama działa identycznie niezależnie od nadawcy", c: false },
+      { t: "Słabe ramy zawsze przewyższają silne", c: false }
+    ],
+    exp: "Efekt źródła: rama uznana a priori za silną może przestać być postrzegana jako silna, gdy pochodzi z mało wiarygodnego źródła lub niezgodnego z przynależnością grupową odbiorcy."
+  },
+  {
+    q: "Co oznacza zasada „Five F” w relacjach z mediami?",
+    opts: [
+      { t: "Fast, Factual, Frank, Fair, Friendly", c: true },
+      { t: "Fast, Funny, Free, Fresh, Final", c: false },
+      { t: "Frame, Fact, Fake, Filter, Feed", c: false },
+      { t: "Focus, Force, Fear, Fame, Future", c: false }
+    ],
+    exp: "Five F to: Fast (szybko), Factual (rzeczowo), Frank (szczerze), Fair (uczciwie), Friendly (przyjaźnie) — zasady dobrych relacji z mediami."
+  },
+
+  // === 5. FAKE NEWS — MECHANIZMY ===
+  {
+    q: "Które osoby — wg badań — są szczególnie podatne na fake news?",
+    opts: [
+      { t: "Osoby o niskim poziomie myślenia analitycznego i wysokiej zależności emocjonalnej", c: true },
+      { t: "Osoby o wysokim poziomie myślenia analitycznego", c: false },
+      { t: "Wyłącznie osoby starsze, niezależnie od stylu myślenia", c: false },
+      { t: "Osoby całkowicie obojętne emocjonalnie wobec treści", c: false }
+    ],
+    exp: "Fake news „łowią” m.in. osoby o niskim myśleniu analitycznym (Pennycook i in.), wysokiej zależności emocjonalnej (Martel i in.) oraz skłonne do histerii (Escola-Gascon i in.)."
+  },
+  {
+    q: "Które działanie należy do metod obrony przed manipulacją?",
+    opts: [
+      { t: "Konfrontowanie różnych źródeł i refleksyjność", c: true },
+      { t: "Przyjmowanie pierwszej napotkanej informacji bez weryfikacji", c: false },
+      { t: "Unikanie zadawania pytań, by nie wyjść na niekompetentnego", c: false },
+      { t: "Kierowanie się wyłącznie emocjami", c: false }
+    ],
+    exp: "Metody obrony to: wiedza, refleksyjność, konfrontowanie różnych źródeł, odwaga zadawania pytań, świadomość celu przekazu i asertywność."
+  },
+  {
+    q: "Na czym polega prebunking (teoria inokulacji)?",
+    opts: [
+      { t: "Na uodparnianiu z wyprzedzeniem — pokazaniu osłabionej dawki manipulacji i jej mechanizmu, zanim odbiorca spotka ją „na serio”", c: true },
+      { t: "Na prostowaniu fałszu dopiero po jego rozpowszechnieniu", c: false },
+      { t: "Na całkowitym blokowaniu dostępu do mediów", c: false },
+      { t: "Na powtarzaniu fake newsa, aż przestanie działać", c: false }
+    ],
+    exp: "Prebunking (van der Linden, Roozenbeek) działa jak szczepionka: z wyprzedzeniem pokazuje osłabioną wersję manipulacji i jej mechanizm, budując odporność — w odróżnieniu od debunkingu (prostowania po fakcie)."
+  },
+
+  // === 6. KONFORMIZM I POSŁUSZEŃSTWO ===
+  {
+    q: "Który czynnik najsilniej OSŁABIA konformizm w grupie?",
+    opts: [
+      { t: "Znalezienie choć jednego sprzymierzeńca, który łamie jednomyślność grupy", c: true },
+      { t: "Wzrost jednomyślności grupy", c: false },
+      { t: "Niska samoocena osoby", c: false },
+      { t: "Silne poczucie zagrożenia", c: false }
+    ],
+    exp: "Konformizm osłabiają m.in.: wysoka samoocena, doświadczenie, kultura indywidualistyczna i — bardzo silnie — znalezienie min. jednego sprzymierzeńca, bo łamie jednomyślność grupy."
+  },
+  {
+    q: "Który czynnik zwiększa posłuszeństwo wobec autorytetu (wg Milgrama)?",
+    opts: [
+      { t: "Wciąganie metodą małych kroków i mały dystans fizyczny do autorytetu", c: true },
+      { t: "Obserwowanie cudzego nieposłuszeństwa", c: false },
+      { t: "Konflikt między dwoma autorytetami", c: false },
+      { t: "Duży dystans fizyczny między autorytetem a wykonawcą", c: false }
+    ],
+    exp: "Posłuszeństwo wzmacniają m.in.: nadzór, wielkość autorytetu, mały dystans fizyczny i metoda małych kroków. Osłabiają je: konflikty autorytetów i obserwacja cudzego nieposłuszeństwa."
+  },
+
+  // === 7. CIALDINI — TECHNIKI ===
+  {
+    q: "Na czym polega technika „stopa w drzwiach” (foot-in-the-door)?",
+    opts: [
+      { t: "Najpierw drobna prośba (łatwa do spełnienia), potem większa — bazuje na regule zaangażowania i konsekwencji", c: true },
+      { t: "Najpierw duża prośba (odrzucona), potem mniejsza", c: false },
+      { t: "Atrakcyjna oferta, której warunki potem się pogarsza", c: false },
+      { t: "Dawanie prezentu przed prośbą", c: false }
+    ],
+    exp: "Stopa w drzwiach: drobna prośba „rozmiękcza” — kto zgodził się na małe, częściej zgodzi się potem na duże. Opiera się na regule zaangażowania i konsekwencji."
+  },
+  {
+    q: "Na czym polega technika „drzwiami w twarz” (door-in-the-face)?",
+    opts: [
+      { t: "Najpierw duża prośba (odrzucona), potem mniejsza — odebrana jako ustępstwo, które wypada odwzajemnić zgodą", c: true },
+      { t: "Najpierw mała prośba, potem coraz większe", c: false },
+      { t: "Uzyskanie decyzji, a potem pogorszenie warunków", c: false },
+      { t: "Powtarzanie tej samej prośby aż do skutku", c: false }
+    ],
+    exp: "Drzwiami w twarz: zaczynamy od dużej prośby (odrzuconej), a następnie zgłaszamy mniejszą — odbieraną jako nasze ustępstwo, które na mocy reguły wzajemności wypada odwzajemnić zgodą."
+  },
+  {
+    q: "Na czym polega technika „niska piłka” (low-ball)?",
+    opts: [
+      { t: "Uzyskanie decyzji na atrakcyjnych warunkach, a potem ich „pogorszenie” — zaangażowanie już trzyma", c: true },
+      { t: "Najpierw duża prośba, potem mniejsza", c: false },
+      { t: "Wręczenie prezentu przed prośbą", c: false },
+      { t: "Powołanie się na większość („wszyscy tak robią”)", c: false }
+    ],
+    exp: "Niska piłka: najpierw zgoda na korzystnych warunkach, potem ich pogorszenie. Raz podjęte zaangażowanie sprawia, że człowiek trwa przy decyzji (reguła zaangażowania i konsekwencji)."
+  },
+  {
+    q: "Czego dotyczy siódma reguła wpływu — reguła jedności („My”) — dodana w „Pre-swazji”?",
+    opts: [
+      { t: "Wspólnej tożsamości — najsilniej ulegamy tym, z którymi czujemy, że „jesteśmy jednym”", c: true },
+      { t: "Odwzajemniania prezentów", c: false },
+      { t: "Ulegania ekspertom i autorytetom", c: false },
+      { t: "Cenienia rzeczy rzadkich", c: false }
+    ],
+    exp: "Reguła jedności (Cialdini, 2016) wykracza poza zwykłe lubienie: chodzi o poczucie wspólnej tożsamości („my to to samo”) — więzy rodzinne/„rodzinopodobne”, wspólne miejsce, współtworzenie."
+  },
+
+  // === 8. MOWA W PERSWAZJI ===
+  {
+    q: "Czym jest efekt kameleona (mimikra) i jak działa w perswazji?",
+    opts: [
+      { t: "Nieświadomym naśladowaniem rozmówcy, które działa jak „klej społeczny” — podnosi sympatię, napiwki i sprzedaż", c: true },
+      { t: "Świadomym przedrzeźnianiem klienta w celu zniechęcenia", c: false },
+      { t: "Unikaniem jakiegokolwiek kontaktu fizycznego", c: false },
+      { t: "Mówieniem zawsze przeciwnie do rozmówcy", c: false }
+    ],
+    exp: "Efekt kameleona to nieświadome naśladowanie gestów i mowy rozmówcy — „klej społeczny”. Mimikra werbalna podnosi napiwki (Kulesza i in., 2019), a niewerbalna — sprzedaż (Kulesza i in., 2014)."
+  },
+  {
+    q: "Kiedy — wg modelu Tannera i in. (1991) — reklama odwołująca się do lęku jest skuteczna?",
+    opts: [
+      { t: "Gdy poza wzbudzeniem lęku daje odbiorcy skuteczną rekomendację, jak zagrożenia uniknąć", c: true },
+      { t: "Zawsze — im silniejszy lęk, tym lepszy efekt", c: false },
+      { t: "Tylko gdy całkowicie pomija informację o zagrożeniu", c: false },
+      { t: "Wyłącznie gdy towarzyszy jej humor", c: false }
+    ],
+    exp: "Nie każda reklama lękowa działa: liczy się odpowiedni poziom lęku ORAZ skuteczna rekomendacja, jak zagrożenia uniknąć (model Tannera i in., 1991). Sam lęk bez „drogi wyjścia” bywa nieskuteczny."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6d28d9'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#7c3aed'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#8b5cf6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#d97706'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
