@@ -264,6 +264,15 @@
   .summary-box li::before { content: '◆'; position: absolute; left: 0; color: var(--nc); font-size: .7rem; top: .45rem; }
   .summary-box li strong { color: #fff; }
 
+  /* Summary-box wewnątrz jasnych kart — ciemny tekst na jasnym tle */
+  .lcard .summary-box {
+    background: linear-gradient(135deg, rgba(139,92,246,.10), rgba(124,58,237,.04));
+    border: 1px solid var(--c-border);
+  }
+  .lcard .summary-box h4 { color: var(--c-head); }
+  .lcard .summary-box li { color: var(--c-text); }
+  .lcard .summary-box li strong { color: var(--c-head); }
+
   footer { position: relative; z-index: 1; text-align: center; padding: 2rem; color: var(--muted); font-size: .72rem; border-top: 1px solid var(--border); }
 
   /* Mobile */
@@ -783,6 +792,80 @@
         <tr><td><strong>Niedostępności</strong></td><td>To, co rzadkie/ograniczone czasowo, wydaje się cenniejsze</td></tr>
         <tr><td><strong>„My" (jedności)</strong></td><td>Wspólna tożsamość („jesteśmy jednym") zwiększa uległość — siódma reguła z „Pre-swazji"</td></tr>
       </table>
+      <p style="margin-top:.6rem;">Reguły to <span class="term">automatyczne skróty decyzyjne</span> (heurystyki). Zwykle są trafne i oszczędzają wysiłek, dlatego działają „same z siebie" — ale właśnie dlatego bywają wykorzystywane przez praktyków wpływu. Cialdini nazywa je „narzędziami automatycznego wpływu".</p>
+    </div>
+
+    <div class="lcard">
+      <h3>1 · Reguła wzajemności</h3>
+      <p>Czujemy <strong>silną presję, by odwzajemnić</strong> to, co od kogoś dostaliśmy — nawet jeśli przysługa była nieproszona, a rewanż jest nieproporcjonalnie większy. Norma wzajemności jest jedną z najsilniejszych i najpowszechniejszych reguł społecznych.</p>
+      <ul class="alist">
+        <li><strong>Mechanizm:</strong> przyjęcie prezentu/przysługi tworzy <span class="term">poczucie zobowiązania</span> i dyskomfort, dopóki „dług" nie zostanie spłacony</li>
+        <li><strong>Techniki:</strong> darmowe próbki, drobny prezent przed prośbą, ustępstwo wywołujące wzajemne ustępstwo</li>
+        <li><span class="term">Drzwiami w twarz</span> (door-in-the-face): najpierw duża prośba (odrzucona), potem mniejsza — odebrana jako ustępstwo, które „wypada" odwzajemnić zgodą</li>
+        <li><strong>Przykład:</strong> darmowa degustacja w markecie, „gratis" dołączony do oferty, datek po otrzymaniu pocztówki od organizacji charytatywnej</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>2 · Reguła zaangażowania i konsekwencji</h3>
+      <p>Po podjęciu jakiegoś zobowiązania <strong>dążymy do zachowania spójnego</strong> z nim — dla pozytywnej samooceny i społecznego obrazu osoby konsekwentnej. Zaangażowanie działa najsilniej, gdy jest <span class="term">aktywne, publiczne, dobrowolne i wymagające wysiłku</span>.</p>
+      <ul class="alist">
+        <li><strong>Techniki:</strong> najpierw mała deklaracja, potem większa prośba</li>
+        <li><span class="term">Stopa w drzwiach</span> (foot-in-the-door): drobna prośba „rozmiękcza" — kto zgodził się na małe, częściej zgodzi się na duże</li>
+        <li><span class="term">Niska piłka</span> (low-ball): uzyskanie decyzji na atrakcyjnych warunkach, a potem „pogorszenie" oferty — zaangażowanie już trzyma</li>
+        <li><strong>Przykład:</strong> podpisanie petycji, deklaracja na głos, wpłata „na start"; im trudniejsza inicjacja, tym większe przywiązanie do grupy</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>3 · Społeczny dowód słuszności</h3>
+      <p>O tym, co właściwe, wnioskujemy z tego, <strong>co robią inni</strong> — zwłaszcza w sytuacji <span class="term">niepewności</span> oraz gdy „inni" są do nas <span class="term">podobni</span>. Powszechność postawy wydaje się dowodem jej słuszności.</p>
+      <ul class="alist">
+        <li><strong>Techniki:</strong> „bestseller", „już 10 000 klientów", listy oczekujących, kolejki, śmiech z puszki, rankingi i recenzje</li>
+        <li><strong>Cienie:</strong> <span class="uwaga">efekt widza</span> (rozproszenie odpowiedzialności) i <span class="uwaga">niewiedza wielu</span> (pluralistic ignorance) — gdy wszyscy czekają na reakcję innych, nikt nie reaguje</li>
+        <li><strong>Przykład:</strong> „9 na 10 dentystów poleca", komunikat hotelowy „większość gości używa ręczników wielokrotnie"</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>4 · Reguła autorytetu</h3>
+      <p>Mamy <strong>głęboko wpojony nawyk ulegania autorytetom</strong> — ekspertom i osobom o wysokim statusie. Często wystarczają same <span class="term">symbole</span> autorytetu, bez realnej kompetencji.</p>
+      <ul class="alist">
+        <li><strong>Symbole, które uruchamiają regułę:</strong> tytuł, strój (fartuch, mundur, garnitur), atrybuty statusu (drogie auto, gabinet)</li>
+        <li><strong>Wiarygodny autorytet</strong> = <span class="term">wiedza + zaufanie + dobra wola</span>; warto sprawdzać, czy to ekspert <em>w danej dziedzinie</em></li>
+        <li><strong>Skuteczna sztuczka:</strong> przyznanie się do drobnej wady na początku zwiększa zaufanie do dalszego przekazu</li>
+        <li><strong>Przykład:</strong> aktor „w roli lekarza" w reklamie leku; ekspert cytowany dla uwiarygodnienia kampanii (por. eksperyment Milgrama)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>5 · Reguła lubienia (sympatii)</h3>
+      <p>Chętniej mówimy „tak" osobom, które <strong>lubimy</strong>. Jeśli kogoś lubimy i mu ufamy — wiele jesteśmy w stanie wybaczyć; jeśli nie — wytkniemy i dobrze zapamiętamy jego błędy.</p>
+      <ul class="alist">
+        <li><strong>Co wzmaga sympatię:</strong> atrakcyjność fizyczna (efekt aureoli), <span class="term">podobieństwo</span>, komplementy, współpraca przy wspólnym celu, częsty kontakt (efekt czystej ekspozycji), pozytywne skojarzenia</li>
+        <li><strong>Technika:</strong> mimikra werbalna i niewerbalna jako „klej społeczny"; budowanie wrażenia „swój" przed prośbą</li>
+        <li><strong>Przykład:</strong> sprzedaż przez znajomych (spotkania domowe), sympatyczny sprzedawca, ambasador marki podobny do grupy docelowej</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>6 · Reguła niedostępności</h3>
+      <p>Rzeczy <strong>rzadkie i trudno dostępne cenimy wyżej</strong>; perspektywa utraty możliwości motywuje silniej niż perspektywa zysku. Wiąże się z <span class="term">reaktancją</span> (Brehm): gdy ktoś ogranicza naszą swobodę, rośnie chęć posiadania tego, co zagrożone.</p>
+      <ul class="alist">
+        <li><strong>Techniki:</strong> „ostatnie sztuki", „oferta tylko dziś", limitowane edycje, „bilety na wyczerpaniu"</li>
+        <li><strong>Wzmacniacze:</strong> niedostępność <em>świeża</em> (coś dopiero co stało się rzadkie) i <span class="term">rywalizacja</span> o ograniczone dobro działają najsilniej</li>
+        <li><strong>Przykład:</strong> zegar odliczający w sklepie online, „informacja na wyłączność", produkt „wycofywany ze sprzedaży"</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>7 · Reguła jedności („My")</h3>
+      <p>Siódma reguła dodana w <em>Pre-swazji</em> (2016). Najsilniej ulegamy tym, z którymi dzielimy <strong>wspólną tożsamość</strong> — „jednym z nas". To więcej niż lubienie: to poczucie, że <span class="term">„my to to samo"</span>.</p>
+      <ul class="alist">
+        <li><strong>Źródła jedności:</strong> więzy rodzinne i „rodzinopodobne", wspólne miejsce/pochodzenie, przynależność do tej samej grupy</li>
+        <li><strong>Współtworzenie:</strong> wspólne działanie i proszenie o radę budują poczucie wspólnoty i zaangażowania</li>
+        <li><strong>Przykład:</strong> komunikat „my, mieszkańcy…", marki budujące „społeczność", polityczne „swój głos na swojego"</li>
+      </ul>
     </div>
 
     <div class="lcard">
