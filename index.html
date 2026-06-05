@@ -12,6 +12,8 @@
     --c-swps-g:rgba(255,107,53,.12);
     --c-eng:   #00b4d8;
     --c-eng-g: rgba(0,180,216,.12);
+    --c-neuro: #f59e0b;
+    --c-neuro-g:rgba(245,158,11,.12);
     --card:    rgba(18,18,26,.85);
     --border:  rgba(255,255,255,.08);
     --text:    #e8e8f0;
@@ -169,6 +171,7 @@
   .uni-card.uw   { --nc: var(--c-uw);   --ng: var(--c-uw-g); }
   .uni-card.swps { --nc: var(--c-swps); --ng: var(--c-swps-g); }
   .uni-card.eng  { --nc: var(--c-eng);  --ng: var(--c-eng-g); }
+  .uni-card.neuro{ --nc: var(--c-neuro);--ng: var(--c-neuro-g); }
 
   .uni-card::before { background: radial-gradient(circle, var(--nc), transparent 70%); }
   .uni-card:hover   { border-color: var(--nc); box-shadow: 0 0 40px color-mix(in srgb, var(--nc) 20%, transparent), 0 8px 32px rgba(0,0,0,.4); }
@@ -265,6 +268,26 @@
       </div>
       <div class="uni-footer">
         <span class="uni-badge">1 notatka</span>
+        <span class="uni-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<div class="section" style="padding-top:0;">
+  <div class="section-label">Inne</div>
+  <div class="uni-grid">
+
+    <a class="uni-card neuro" href="inne-neuro.html">
+      <div class="uni-emblem">🧠</div>
+      <div class="uni-body">
+        <div class="uni-name">NEURO</div>
+        <div class="uni-fullname">Neuroanatomia — ośrodkowy i obwodowy układ nerwowy</div>
+        <div class="uni-desc">Kompletna notatka do egzaminu ustnego (wszystkie pojęcia z POMOCNIKA) oraz 5 testów</div>
+      </div>
+      <div class="uni-footer">
+        <span class="uni-badge">notatka + 5 testów</span>
         <span class="uni-arrow">→</span>
       </div>
     </a>

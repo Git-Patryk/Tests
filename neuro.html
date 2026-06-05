@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuroanatomia – Notatki</title>
+<style>
+  :root {
+    --bg:       #08080f;
+    --card:     #111118;
+    --border:   #1f1f30;
+    --text:     #e8e8f0;
+    --muted:    #6b6b8a;
+
+    /* amber accent */
+    --nc:       #f59e0b;
+    --nc-dim:   rgba(245,158,11,.13);
+    --nc-glow:  rgba(245,158,11,.28);
+    --nc-border:rgba(245,158,11,.32);
+
+    /* light content area */
+    --c-bg:     #fffaf2;
+    --c-text:   #2b2112;
+    --c-muted:  #6b5a3f;
+    --c-border: #f0e2c8;
+    --c-head:   #b45309;
+    --c-head2:  #d97706;
+    --c-row:    #fdf4e3;
+
+    /* status colors */
+    --green:  #4ade80;
+    --blue:   #60a5fa;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(245,158,11,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,158,11,.018) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    padding: .9rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,8,15,.94);
+    backdrop-filter: blur(14px);
+    display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+  nav a:hover { color: var(--nc); }
+  nav .sep { color: var(--border); font-size: .82rem; }
+  nav .current { color: var(--text); font-weight: 600; font-size: .82rem; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2.8rem;
+    align-items: start;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    position: sticky; top: 60px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 1.4rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .toc::-webkit-scrollbar { width: 3px; }
+  .toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .toc-title {
+    font-size: .63rem; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted);
+    padding-bottom: .7rem; border-bottom: 1px solid var(--border); margin-bottom: .9rem;
+  }
+  .toc-group { margin-bottom: 1.1rem; }
+  .toc-group-label {
+    font-size: .6rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--nc); opacity: .75; margin-bottom: .3rem;
+  }
+  .toc a {
+    display: block; padding: .26rem .55rem; border-radius: 5px;
+    font-size: .76rem; color: var(--muted); text-decoration: none; line-height: 1.4;
+    transition: color .15s, background .15s;
+  }
+  .toc a:hover { color: var(--text); background: var(--nc-dim); }
+  .toc a.active { color: var(--nc); background: var(--nc-dim); font-weight: 600; }
+
+  /* ── MAIN ── */
+  .content { min-width: 0; padding: 2.2rem 0; }
+
+  /* Page header */
+  .page-header { margin-bottom: 2.4rem; }
+  .subject-icon { font-size: 2.6rem; margin-bottom: .7rem; filter: drop-shadow(0 0 14px var(--nc)); }
+  .subject-tag {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    border-radius: 20px; padding: .22rem .8rem;
+    font-size: .7rem; font-weight: 700; color: var(--nc);
+    text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem;
+  }
+  .page-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 800; line-height: 1.2; margin-bottom: .5rem;
+    background: linear-gradient(90deg, #fff 50%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .page-header .subtitle { color: var(--muted); font-size: .88rem; max-width: 600px; line-height: 1.6; }
+  .accent-line { width: 44px; height: 2px; background: var(--nc); box-shadow: 0 0 8px var(--nc); border-radius: 2px; margin: 1rem 0; }
+
+  /* Exam strip */
+  .exam-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: .7rem; margin-bottom: 2.8rem; }
+  .exam-badge { background: var(--card); border: 1px solid var(--border); border-radius: 11px; padding: .9rem 1.1rem; }
+  .exam-badge .label { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .25rem; }
+  .exam-badge .value { font-size: .92rem; font-weight: 700; color: var(--text); }
+  .exam-badge.hi { border-color: var(--nc-border); background: var(--nc-dim); }
+  .exam-badge.hi .value { color: var(--nc); }
+
+  /* Group divider */
+  .group-divider { display: flex; align-items: center; gap: 1rem; margin: 3rem 0 1.8rem; }
+  .group-divider-label {
+    font-size: .66rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; white-space: nowrap;
+    padding: .28rem .85rem; border-radius: 20px;
+  }
+  .gdl-fund     { background: rgba(96,165,250,.12); color: var(--blue);   border: 1px solid rgba(96,165,250,.25); }
+  .gdl-core     { background: var(--nc-dim);         color: var(--nc);     border: 1px solid var(--nc-border); }
+  .gdl-media    { background: rgba(251,146,60,.12);  color: var(--orange); border: 1px solid rgba(251,146,60,.25); }
+  .gdl-lit      { background: rgba(74,222,128,.1);    color: var(--green);  border: 1px solid rgba(74,222,128,.2); }
+  .group-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── SECTION ── */
+  section { margin-bottom: 3rem; scroll-margin-top: 72px; }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: .9rem;
+    margin-bottom: 1.2rem; padding-bottom: .9rem; border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 900; color: var(--nc);
+  }
+  .section-header-text h2 { font-size: 1.1rem; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: .18rem; }
+  .section-header-text .src-tag { font-size: .7rem; color: var(--muted); font-style: italic; }
+  .section-header-text .src-tag span { color: var(--nc); opacity: .85; font-style: normal; }
+
+  /* ── LIGHT CONTENT CARD ── */
+  .lcard {
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 13px;
+    padding: 1.5rem 1.7rem;
+    margin-bottom: .9rem;
+    color: var(--c-text);
+  }
+
+  .lcard h3 {
+    font-size: .97rem; font-weight: 800;
+    color: var(--c-head); margin-bottom: .85rem;
+    padding-bottom: .5rem; border-bottom: 2px solid #f3e3c4;
+    display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+  }
+  .lcard h4 {
+    font-size: .88rem; font-weight: 700;
+    color: var(--c-head2); margin: 1rem 0 .5rem;
+  }
+  .lcard > p { font-size: .875rem; line-height: 1.68; color: var(--c-text); margin-bottom: .6rem; }
+
+  /* QGGP mini-grid: co / gdzie / z czego / po co */
+  .qggp { display: grid; grid-template-columns: 92px 1fr; gap: .3rem .8rem; margin: .5rem 0 .2rem; }
+  .qggp dt { font-size: .7rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--nc); padding-top: .15rem; }
+  .qggp dd { font-size: .87rem; line-height: 1.6; color: var(--c-text); }
+  .qggp dd strong { color: var(--c-head); }
+
+  /* Arrow list */
+  .alist { list-style: none; padding: 0; }
+  .alist li {
+    position: relative; padding: .38rem .4rem .38rem 1.5rem;
+    font-size: .875rem; line-height: 1.68; color: var(--c-text);
+    border-bottom: 1px solid rgba(245,158,11,.12);
+  }
+  .alist li:last-child { border-bottom: none; }
+  .alist li::before { content: '→'; position: absolute; left: 0; top: .38rem; color: var(--nc); font-weight: 700; }
+  .alist li strong { color: var(--c-head); }
+  .alist li em { color: var(--c-muted); font-style: italic; }
+
+  /* Numbered list */
+  .nlist { padding-left: 1.3rem; }
+  .nlist li {
+    font-size: .875rem; line-height: 1.7; color: var(--c-text);
+    padding: .25rem 0; border-bottom: 1px solid rgba(245,158,11,.08);
+  }
+  .nlist li:last-child { border-bottom: none; }
+  .nlist li strong { color: var(--c-head); }
+
+  /* Table */
+  .ltable { width: 100%; border-collapse: collapse; font-size: .835rem; margin: .6rem 0; border-radius: 10px; overflow: hidden; }
+  .ltable th {
+    text-align: left; padding: .55rem .85rem;
+    background: var(--nc); color: #3a2600;
+    font-size: .73rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  }
+  .ltable td { padding: .5rem .85rem; color: var(--c-text); border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; }
+  .ltable tr:last-child td { border-bottom: none; }
+  .ltable tr:nth-child(even) td { background: rgba(245,158,11,.06); }
+  .ltable tr:hover td { background: rgba(245,158,11,.11); }
+  .ltable td strong { color: var(--c-head); }
+
+  /* Two-col grid */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-bottom: .8rem; }
+
+  /* Pill */
+  .pill { display: inline-block; padding: .12rem .5rem; border-radius: 5px; font-size: .73rem; font-weight: 700; }
+  .pill-a { background: var(--nc-dim); color: var(--c-head); border: 1px solid var(--nc-border); }
+  .pill-g { background: rgba(74,222,128,.12); color: #15803d; border: 1px solid rgba(74,222,128,.25); }
+  .pill-b { background: rgba(96,165,250,.12); color: #1d4ed8; border: 1px solid rgba(96,165,250,.25); }
+  .pill-y { background: rgba(251,191,36,.14); color: #b8860b; border: 1px solid rgba(251,191,36,.3); }
+  .pill-r { background: rgba(220,38,38,.1); color: #dc2626; border: 1px solid rgba(220,38,38,.25); }
+
+  /* Callout */
+  .callout {
+    border-radius: 9px; padding: .85rem 1.1rem;
+    margin: .7rem 0; font-size: .855rem; line-height: 1.72;
+    display: flex; gap: .75rem; align-items: flex-start;
+    color: var(--text);
+  }
+  .callout .ci { font-size: .95rem; flex-shrink: 0; margin-top: .05rem; }
+  .callout.exam  { background: rgba(245,158,11,.16); border-left: 3px solid var(--nc); }
+  .callout.tip   { background: rgba(74,222,128,.13);  border-left: 3px solid var(--green); }
+  .callout.warn  { background: rgba(251,191,36,.14);  border-left: 3px solid var(--yellow); }
+  .callout.info  { background: rgba(96,165,250,.13);  border-left: 3px solid var(--blue); }
+  .callout strong { color: #fff; }
+
+  /* Callout wewnątrz jasnych kart — ciemny tekst */
+  .lcard .callout { color: var(--c-text); }
+  .lcard .callout strong { color: var(--c-head); }
+
+  /* Section summary box */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(245,158,11,.12), rgba(217,119,6,.06));
+    border: 1px solid var(--nc-border); border-radius: 13px;
+    padding: 1.3rem 1.5rem; margin-top: 1rem;
+  }
+  .summary-box h4 { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--nc); margin-bottom: .8rem; }
+  .summary-box ul { list-style: none; padding: 0; }
+  .summary-box li { font-size: .855rem; line-height: 1.6; color: var(--text); padding: .25rem 0 .25rem 1.4rem; position: relative; }
+  .summary-box li::before { content: '◆'; position: absolute; left: 0; color: var(--nc); font-size: .7rem; top: .45rem; }
+  .summary-box li strong { color: #fff; }
+
+  .lcard .summary-box {
+    background: linear-gradient(135deg, rgba(245,158,11,.10), rgba(217,119,6,.04));
+    border: 1px solid var(--c-border);
+  }
+  .lcard .summary-box h4 { color: var(--c-head); }
+  .lcard .summary-box li { color: var(--c-text); }
+  .lcard .summary-box li strong { color: var(--c-head); }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 2rem; color: var(--muted); font-size: .72rem; border-top: 1px solid var(--border); }
+
+  /* Mobile */
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 0 1rem 4rem; }
+    .toc { position: static; max-height: none; overflow: visible; border: 1px solid var(--border); border-radius: 12px; background: var(--card); padding: 1rem 1.2rem; margin: 1rem 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .exam-strip { grid-template-columns: 1fr 1fr; }
+    .ltable { font-size: .78rem; }
+    .ltable th, .ltable td { padding: .4rem .6rem; }
+    .qggp { grid-template-columns: 78px 1fr; }
+  }
+  @media (max-width: 480px) {
+    .exam-strip { grid-template-columns: 1fr; }
+  }
+  /* ── SEMANTIC COLOR HELPERS ── */
+  .lat    { color: var(--c-head2); font-style: italic; }   /* nazwa łacińska */
+  .term   { color: #b45309; font-weight: 700; }            /* termin kluczowy */
+  .uwaga  { color: #d97706; font-weight: 700; }            /* uwaga / wyjątek */
+  .ruch   { color: #1d4ed8; font-weight: 700; }            /* ruchowe */
+  .czuc   { color: #15803d; font-weight: 700; }            /* czuciowe */
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <a href="inne-neuro.html">Neuroanatomia</a>
+  <span class="sep">/</span>
+  <span class="current">Notatki</span>
+</nav>
+
+<div class="layout">
+
+<!-- ── TOC ── -->
+<aside class="toc">
+  <div class="toc-title">Spis treści</div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">⚡ O materiale</div>
+    <a href="#info">Zakres, źródła i metoda</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🧩 Cz. 1 · Podstawy i rdzeń</div>
+    <a href="#S1">1 · Komórka i tkanka nerwowa</a>
+    <a href="#S2">2 · Organizacja i czynność</a>
+    <a href="#S3">3 · Rozwój OUN — pęcherzyki</a>
+    <a href="#S4">4 · Rdzeń kręgowy — budowa</a>
+    <a href="#S5">5 · Rdzeń — jądra i pęczki</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🧠 Cz. 2 · Pień i nerwy czaszkowe</div>
+    <a href="#S6">6 · Rdzeń przedłużony</a>
+    <a href="#S7">7 · Most</a>
+    <a href="#S8">8 · Śródmózgowie</a>
+    <a href="#S9">9 · Twór siatkowaty</a>
+    <a href="#S10">10 · Jądra nerwów czaszkowych</a>
+    <a href="#S11">11 · Nerwy czaszkowe I–XII</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🌐 Cz. 3 · Móżdżek, międzymózgowie, opony</div>
+    <a href="#S12">12 · Móżdżek</a>
+    <a href="#S13">13 · Międzymózgowie</a>
+    <a href="#S14">14 · Komory i płyn m-r</a>
+    <a href="#S15">15 · Opony</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🎯 Cz. 4 · Kresomózgowie</div>
+    <a href="#S16">16 · Płaszcz, kora, zakręty</a>
+    <a href="#S17">17 · Jądra podstawne i istota biała</a>
+    <a href="#S18">18 · Układ limbiczny i węchomózgowie</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🛤️ Cz. 5 · Drogi i autonomika</div>
+    <a href="#S19">19 · Drogi czuciowe</a>
+    <a href="#S20">20 · Drogi piramidowe</a>
+    <a href="#S21">21 · Układ pozapiramidowy</a>
+    <a href="#S22">22 · Wstęgi</a>
+    <a href="#S23">23 · Układ autonomiczny</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">✍️ Dodatek</div>
+    <a href="#wlasne">Pojęcia opisane przeze mnie</a>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="content">
+
+  <div class="page-header">
+    <div class="subject-icon">🧠</div>
+    <div class="subject-tag">🧠 Neuroanatomia · egzamin ustny</div>
+    <h1>Neuroanatomia — kompletne opracowanie pojęć</h1>
+    <p class="subtitle">Wszystkie pojęcia z POMOCNIKA opisane wg schematu <strong>co? gdzie? z czego? po co?</strong> Materiał uporządkowany tematycznie (rozwojowo i topograficznie), a nie alfabetycznie — żeby układała się logiczna całość do nauki na egzamin ustny.</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="exam-strip">
+    <div class="exam-badge hi"><div class="label">Schemat odpowiedzi</div><div class="value">co · gdzie · z czego · po co</div></div>
+    <div class="exam-badge"><div class="label">Źródła</div><div class="value">Gołąb · Bochenek</div></div>
+    <div class="exam-badge"><div class="label">Części</div><div class="value">5 + dodatek</div></div>
+    <div class="exam-badge"><div class="label">Forma</div><div class="value">notatka + 5 testów</div></div>
+  </div>
+
+  <section id="info">
+    <div class="section-header">
+      <div class="section-num">i</div>
+      <div class="section-header-text">
+        <h2>Zakres, źródła i metoda</h2>
+        <span class="src-tag">na podstawie: <span>B. Gołąb — „Anatomia czynnościowa OUN" · W. Woźniak/Bochenek — „Anatomia człowieka"</span></span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>📌 Jak korzystać z notatki</h3>
+      <p>Każde pojęcie z POMOCNIKA jest opisane tak, by odpowiedzieć na cztery pytania egzaminacyjne. Nie każde pojęcie wymaga wszystkich czterech — przy strukturach czysto topograficznych wystarczy <strong>co?</strong> i <strong>gdzie?</strong></p>
+      <dl class="qggp">
+        <dt>Co?</dt><dd>czym jest dana struktura (rodzaj: jądro, droga, nerw, zakręt, opona…)</dd>
+        <dt>Gdzie?</dt><dd>topografia — czego jest częścią, gdzie leży</dd>
+        <dt>Z czego?</dt><dd>budowa — np. jakie włókna tworzą drogę/nerw i gdzie są ich ciała komórkowe (jądro początkowe)</dd>
+        <dt>Po co?</dt><dd>funkcja — co przewodzi, co umożliwia</dd>
+      </dl>
+      <div class="callout info"><span class="ci">🗺️</span><div>Układ notatki idzie <strong>od dołu ku górze</strong> (rdzeń → pień → móżdżek/międzymózgowie → kresomózgowie) i kończy się <strong>drogami</strong> oraz <strong>układem autonomicznym</strong>, bo do nich potrzebna jest znajomość wcześniejszych struktur. Podział na 5 części pokrywa się z 5 testami.</div></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Nazwy łacińskie podaję <span class="lat">kursywą</span> — na egzaminie ustnym warto znać przynajmniej najważniejsze (<span class="lat">nucleus, tractus, fasciculus, lemniscus, gyrus, sulcus</span>).</div></div>
+    </div>
+  </section>
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">Część 1 · Podstawy i rdzeń kręgowy</span>
+    <span class="group-divider-line"></span>
+  </div>
+
+  <section id="S1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-header-text">
+        <h2>Komórka i tkanka nerwowa</h2>
+        <span class="src-tag">budulec układu nerwowego — <span>neuron, glej, istota biała i szara</span></span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🔬 Neuron i jego części</h3>
+      <ul class="alist">
+        <li><strong>Neuron</strong> <span class="lat">(neuronum)</span> — podstawowa, pobudliwa komórka układu nerwowego; przewodzi impulsy. Zbudowany z ciała komórki i wypustek (dendrytów i neurytu). <em>Po co:</em> odbiór, przewodzenie i przetwarzanie informacji.</li>
+        <li><strong>Perikarion</strong> = <strong>neurocyt</strong> — ciało komórki nerwowej (z jądrem i organellami). To „centrum metaboliczne" neuronu; skupiska perikarionów tworzą istotę szarą i jądra.</li>
+        <li><strong>Dendryt</strong> — krótka, zwykle rozgałęziona wypustka; <em>odbiera</em> impulsy i przewodzi je <strong>do</strong> perikarionu (dośrodkowo).</li>
+        <li><strong>Neuryt = akson</strong> <span class="lat">(neuritum, axon)</span> — pojedyncza, długa wypustka; przewodzi impuls <strong>od</strong> perikarionu (odśrodkowo) do innych komórek. Tworzy włókna nerwowe.</li>
+        <li><strong>Neurofibryle</strong> — włókienka w cytoplazmie neuronu (cytoszkielet: neurofilamenty i mikrotubule); rola podporowa i transportowa.</li>
+        <li><strong>Osłonka mielinowa (rdzenna)</strong> <span class="lat">(myelin)</span> — lipidowa osłonka aksonu tworzona przez oligodendrocyty (OUN) lub komórki Schwanna (obwód). <em>Po co:</em> izolacja i <strong>skokowe</strong>, szybsze przewodzenie impulsu. Włókna z mieliną = rdzenne, bez = bezrdzenne.</li>
+        <li><strong>Neuron pozornie jednobiegunowy</strong> — neuron czuciowy zwoju rdzeniowego; ma jedną wypustkę dzielącą się w kształt litery T na gałąź obwodową (dendrytową) i ośrodkową (aksonalną). Stąd „pozornie".</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🔗 Synapsa, glej, neurosekrecja</h3>
+      <ul class="alist">
+        <li><strong>Synapsa</strong> — miejsce kontaktu między neuronami (lub neuronem i efektorem), gdzie impuls przekazywany jest najczęściej chemicznie. Elementy: błona presynaptyczna, szczelina, błona postsynaptyczna.</li>
+        <li><strong>Neurotransmiter (neuroprzekaźnik)</strong> — substancja chemiczna uwalniana w synapsie, przenosząca sygnał (np. acetylocholina, noradrenalina, GABA, glutaminian).</li>
+        <li><strong>Neurosekrecja</strong> — wydzielanie hormonów przez wyspecjalizowane neurony (np. jądra podwzgórza → wazopresyna, oksytocyna). Łączy układ nerwowy z hormonalnym.</li>
+        <li><strong>Glej (neuroglej)</strong> <span class="lat">(glia)</span> — komórki podporowe układu nerwowego (astrocyty, oligodendrocyty, mikroglej, ependyma). <em>Po co:</em> odżywianie, izolacja, obrona, tworzenie mieliny i bariery krew–mózg.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>⚪⚫ Istota biała i szara</h3>
+      <dl class="qggp">
+        <dt>Istota szara</dt><dd><span class="lat">(substantia grisea)</span> — skupiska <strong>perikarionów</strong> (ciał komórek). W mózgu na powierzchni (kora) i w głębi (jądra), w rdzeniu — w środku (rogi).</dd>
+        <dt>Istota biała</dt><dd><span class="lat">(substantia alba)</span> — skupiska <strong>włókien nerwowych</strong> (aksonów z mieliną). Tworzy drogi. W rdzeniu na zewnątrz (sznury), w mózgu w głębi.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section id="S2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-header-text">
+        <h2>Organizacja i czynność — pojęcia podstawowe</h2>
+        <span class="src-tag">jądra, ośrodki, drogi, odruch, czucie — <span>słownik neurofizjologii</span></span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>⚡ Pobudzenie i odruch</h3>
+      <ul class="alist">
+        <li><strong>Bodziec</strong> — zmiana w środowisku zdolna wywołać pobudzenie receptora (mechaniczny, termiczny, chemiczny, świetlny…).</li>
+        <li><strong>Impuls (nerwowy)</strong> — fala pobudzenia (potencjał czynnościowy) biegnąca wzdłuż włókna; „sygnał" układu nerwowego.</li>
+        <li><strong>Receptor</strong> — struktura odbierająca bodziec i zamieniająca go na impuls (np. receptory skóry, proprioceptory). <em>Początek</em> drogi czuciowej.</li>
+        <li><strong>Efektor</strong> — narząd wykonawczy odpowiadający na impuls: mięsień lub gruczoł. <em>Koniec</em> drogi ruchowej.</li>
+        <li><strong>Odruch</strong> — automatyczna odpowiedź efektora na bodziec, bez udziału woli.</li>
+        <li><strong>Łuk odruchowy</strong> — droga odruchu: receptor → neuron czuciowy (dośrodkowy) → ośrodek → neuron ruchowy (odśrodkowy) → efektor. Najprostszy = dwuneuronowy (np. odruch kolanowy).</li>
+        <li><strong>Sterowanie</strong> — nadrzędna regulacja czynności narządów przez układ nerwowy (sprzężenia zwrotne między ośrodkami a efektorami).</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>✋ Czucie i jego rodzaje</h3>
+      <p><strong>Czucie</strong> — uświadomiony lub nieuświadomiony odbiór bodźców. Kluczowy podział na egzamin:</p>
+      <table class="ltable">
+        <tr><th>Rodzaj</th><th>Co odbiera</th><th>Uwagi</th></tr>
+        <tr><td><strong>Protopatyczne</strong></td><td>czucie „grube": ból, temperatura, dotyk gruby</td><td>filogenetycznie starsze, mało precyzyjne; droga <span class="czuc">rdzeniowo-wzgórzowa</span></td></tr>
+        <tr><td><strong>Epikrytyczne</strong></td><td>czucie „dokładne": dotyk różnicujący, lokalizacja, czucie dyskryminacyjne (2 punktów)</td><td>precyzyjne; <strong>sznury tylne</strong> → wstęga przyśrodkowa</td></tr>
+        <tr><td><strong>Głębokie / proprioceptywne</strong></td><td>czucie z mięśni, ścięgien, stawów — położenie i ruch ciała</td><td>świadome (sznury tylne) i nieświadome (drogi rdzeniowo-móżdżkowe)</td></tr>
+        <tr><td><strong>Wisceralne (trzewne)</strong></td><td>czucie z narządów wewnętrznych (rozciąganie, ból trzewny)</td><td>przewodzone włóknami autonomicznymi</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>🧩 Istota szara zorganizowana — jądro, ośrodek</h3>
+      <ul class="alist">
+        <li><strong>Jądro nerwowe</strong> <span class="lat">(nucleus)</span> — skupisko perikarionów o wspólnej czynności <strong>w obrębie OUN</strong> (odpowiednik na obwodzie to zwój).</li>
+        <li><strong>Jądro ruchowe</strong> — zawiera ciała neuronów ruchowych (ich aksony wychodzą jako włókna ruchowe); <strong>jądro czuciowe</strong> — odbiera włókna czuciowe (np. jądra czaszkowe).</li>
+        <li><strong>Jądro początkowe</strong> — gdzie <em>zaczyna się</em> droga/nerw (leżą tam perikariony, których aksony tworzą włókna). <strong>Jądro końcowe</strong> — gdzie droga/nerw się <em>kończy</em> (włókna dochodzą do tych komórek).</li>
+        <li><strong>Jądro autonomiczne</strong> — jądro układu wegetatywnego; dzieli się na <strong>współczulne (sympatyczne)</strong> i <strong>przywspółczulne (parasympatyczne)</strong>.</li>
+        <li><strong>Ośrodek nerwowy</strong> — czynnościowe skupisko neuronów odpowiadające za daną funkcję (np. ośrodek oddechowy, naczynioruchowy); może obejmować kilka jąder.</li>
+        <li><strong>Zwój nerwowy</strong> <span class="lat">(ganglion)</span> — skupisko perikarionów <strong>poza OUN</strong> (czuciowe — np. zwój rdzeniowy; autonomiczne — np. zwoje pnia współczulnego).</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🛤️ Droga nerwowa i jej rodzaje</h3>
+      <p><strong>Droga nerwowa</strong> <span class="lat">(tractus)</span> — pęczek włókien o wspólnym początku, przebiegu i czynności (w istocie białej). Podziały:</p>
+      <table class="ltable">
+        <tr><th>Droga</th><th>Kierunek / rola</th></tr>
+        <tr><td><strong>Aferentna (dośrodkowa, czuciowa)</strong></td><td>ku ośrodkom — niesie informację z receptorów</td></tr>
+        <tr><td><strong>Eferentna (odśrodkowa, ruchowa)</strong></td><td>od ośrodków do efektorów</td></tr>
+        <tr><td><strong>Rzutowa (projekcyjna)</strong></td><td>łączy korę z niższymi piętrami (w dół/w górę) — np. korowo-rdzeniowa, wzgórzowo-korowa</td></tr>
+        <tr><td><strong>Kojarzeniowa (asocjacyjna)</strong></td><td>łączy okolice kory <strong>tej samej</strong> półkuli</td></tr>
+        <tr><td><strong>Spoidłowa (komisuralna)</strong></td><td>łączy okolice <strong>obu</strong> półkul (przez spoidła, np. ciało modzelowate)</td></tr>
+      </table>
+      <ul class="alist">
+        <li><strong>Spoidło</strong> <span class="lat">(commissura)</span> — pasmo włókien łączące symetryczne części obu połów mózgu (największe = ciało modzelowate).</li>
+        <li><strong>Włókno dośrodkowe</strong> = czuciowe (do OUN); <strong>włókno obwodowe</strong> — biegnące w nerwie na obwód (gałąź obwodowa neuronu czuciowego / akson ruchowy do efektora).</li>
+        <li><strong>Neuron ośrodkowy</strong> — leży w OUN; <strong>neuron obwodowy</strong> — którego ciało lub wypustka leży poza OUN (np. neuron zwoju, motoneuron obwodowy).</li>
+        <li><strong>Neuron przedzwojowy / zazwojowy</strong> — w układzie autonomicznym: przedzwojowy (ciało w OUN, akson do zwoju) i zazwojowy (ciało w zwoju, akson do narządu).</li>
+        <li><strong>Splot nerwowy</strong> <span class="lat">(plexus)</span> — sieć łączących się gałęzi nerwów (np. sploty: szyjny, ramienny, lędźwiowy, krzyżowy) wymieniających włókna.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>📐 Segmentacja ciała: neuromer i dermatom</h3>
+      <dl class="qggp">
+        <dt>Neuromer</dt><dd>segment (odcinek) rdzenia kręgowego odpowiadający jednej parze nerwów rdzeniowych — łącznie 31 neuromerów.</dd>
+        <dt>Dermatom</dt><dd>pas skóry unerwiony czuciowo przez jeden neuromer (jeden nerw rdzeniowy). Sąsiednie dermatomy zachodzą na siebie.</dd>
+      </dl>
+      <div class="callout info"><span class="ci">🔁</span><div>Pojęcia <strong>opona</strong> i <strong>splot naczyniówkowy</strong> (z części II POMOCNIKA) opisuję szczegółowo przy oponach (sekcja 15) i komorach (sekcja 14). <strong>Pęcherzyki mózgowe</strong> i <strong>torebki mózgowe</strong> — w sekcji 3.</div></div>
+    </div>
+  </section>
+
+  <section id="S3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-header-text">
+        <h2>Rozwój OUN — pęcherzyki mózgowe i podział</h2>
+        <span class="src-tag">skąd biorą się nazwy: <span>kres-, między-, śród-, tyło-, rdzenio-mózgowie</span></span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🥚 Pęcherzyki pierwotne i wtórne</h3>
+      <p><strong>Pęcherzyk mózgowy pierwotny</strong> — wczesne uwypuklenie cewy nerwowej; są <strong>3</strong>: przodomózgowie, śródmózgowie, tyłomózgowie. <strong>Pęcherzyk wtórny</strong> — z podziału pierwotnych powstaje <strong>5</strong> pęcherzyków wtórnych, dających ostateczne części mózgowia:</p>
+      <table class="ltable">
+        <tr><th>Pierwotny</th><th>Wtórny</th><th>Część dorosła</th><th>Jama</th></tr>
+        <tr><td rowspan="2">Przodomózgowie<br><span class="lat">prosencephalon</span></td><td><strong>Kresomózgowie</strong> <span class="lat">telencephalon</span></td><td>półkule, kora, jądra podstawne</td><td>komory boczne</td></tr>
+        <tr><td><strong>Międzymózgowie</strong> <span class="lat">diencephalon</span></td><td>wzgórze, podwzgórze</td><td>komora III</td></tr>
+        <tr><td>Śródmózgowie<br><span class="lat">mesencephalon</span></td><td><strong>Śródmózgowie</strong></td><td>konary, pokrywa</td><td>wodociąg</td></tr>
+        <tr><td rowspan="2">Tyłomózgowie<br><span class="lat">rhombencephalon</span></td><td><strong>Tyłomózgowie wtórne</strong> <span class="lat">metencephalon</span></td><td><strong>most + móżdżek</strong></td><td rowspan="2">komora IV</td></tr>
+        <tr><td><strong>Rdzeniomózgowie</strong> <span class="lat">myelencephalon</span></td><td><strong>rdzeń przedłużony (opuszka)</strong></td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Tyłomózgowie wtórne</strong> = most + móżdżek. <strong>Rdzeniomózgowie</strong> = rdzeń przedłużony. Razem (z przesmykiem) tworzą tyłomózgowie.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>🧠 Pień mózgu i podział filogenetyczny móżdżku</h3>
+      <ul class="alist">
+        <li><strong>Pień mózgu</strong> <span class="lat">(truncus encephali)</span> — rdzeń przedłużony + most + śródmózgowie (móżdżek leży z tyłu, nie zaliczany do pnia, ale z nim połączony). Zawiera jądra nerwów czaszkowych, twór siatkowaty i drogi.</li>
+        <li><strong>Torebki mózgowe</strong> — historyczne określenie warstw (otoczek) wyściełających pierwotne pęcherzyki/jamy mózgowia; w praktyce odnosi się do błon i ścian rozwijającego się mózgowia.</li>
+        <li><strong>Pramóżdżek</strong> <span class="lat">(archicerebellum)</span> — najstarsza część (płat grudkowo-kłaczkowy); związany z układem przedsionkowym (równowaga).</li>
+        <li><strong>Stary móżdżek</strong> <span class="lat">(paleocerebellum)</span> — robak i przyśrodkowe części półkul; czucie głębokie (postawa, napięcie mięśni).</li>
+        <li><strong>Nowy móżdżek</strong> <span class="lat">(neocerebellum)</span> — boczne części półkul; koordynacja ruchów dowolnych (precyzja).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="S4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-header-text">
+        <h2>Rdzeń kręgowy — budowa zewnętrzna i wewnętrzna</h2>
+        <span class="src-tag">rogi, sznury, zgrubienia, korzenie, zwój i nerw rdzeniowy</span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🪢 Kształt i zgrubienia</h3>
+      <ul class="alist">
+        <li><strong>Rdzeń kręgowy</strong> <span class="lat">(medulla spinalis)</span> — część OUN w kanale kręgowym; walcowaty, od otworu wielkiego do ~L1/L2.</li>
+        <li><strong>Zgrubienie szyjne</strong> <span class="lat">(intumescentia cervicalis)</span> — poszerzenie w odc. szyjno-piersiowym (C4–Th1); zaopatruje <strong>kończynę górną</strong> (więcej neuronów ruchowych → splot ramienny).</li>
+        <li><strong>Zgrubienie lędźwiowe</strong> <span class="lat">(intumescentia lumbosacralis)</span> — poszerzenie lędźwiowo-krzyżowe; zaopatruje <strong>kończynę dolną</strong>.</li>
+        <li><strong>Stożek rdzeniowy</strong> <span class="lat">(conus medullaris)</span> — stożkowate zakończenie rdzenia na wysokości L1–L2.</li>
+        <li><strong>Nić końcowa</strong> <span class="lat">(filum terminale)</span> — cienkie pasmo (głównie opona miękka + glej) biegnące od stożka w dół; mocuje rdzeń do kości guzicznej.</li>
+        <li><strong>Ogon koński</strong> <span class="lat">(cauda equina)</span> — pęczek korzeni nerwów lędźwiowych, krzyżowych i guzicznego biegnących w dół poniżej stożka (bo rdzeń jest krótszy niż kanał).</li>
+        <li><strong>Pozorne wstępowanie rdzenia</strong> — w rozwoju kręgosłup rośnie szybciej niż rdzeń, więc rdzeń kończy się coraz wyżej względem kręgów; korzenie muszą biec coraz bardziej skośnie w dół (stąd ogon koński). „Pozorne" — rdzeń się nie przesuwa, tylko kościec rośnie.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>✛ Przekrój: rogi (słupy) i sznury</h3>
+      <ul class="alist">
+        <li><strong>Róg (słup) rdzeniowy</strong> — wypustki istoty szarej (na przekroju „rogi", w przestrzeni „słupy"):
+          <br>• <span class="czuc">róg tylny</span> — czuciowy (odbiera włókna korzeni tylnych);
+          <br>• <span class="ruch">róg przedni</span> — ruchowy (motoneurony do mięśni szkieletowych);
+          <br>• róg boczny — autonomiczny (Th1–L2/3 współczulny; S2–S4 przywspółczulny).</li>
+        <li><strong>Sznur rdzeniowy</strong> <span class="lat">(funiculus)</span> — istota biała podzielona rogami na 3 sznury: <strong>przedni, boczny, tylny</strong>. Zawierają drogi (w przednim i bocznym — ruchowe i część czuciowych; w tylnym — czucie epikrytyczne i głębokie).</li>
+        <li><strong>Pole korzeniowe</strong> — strefa wnikania nici korzeniowych do rdzenia (przednio-boczna dla korzeni przednich, tylno-boczna dla tylnych).</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🌿 Korzenie, zwój i nerw rdzeniowy</h3>
+      <dl class="qggp">
+        <dt>Nici korzeniowe</dt><dd><span class="lat">(fila radicularia)</span> — drobne pasemka włókien wchodzące/wychodzące z rdzenia, które łączą się w korzeń.</dd>
+        <dt>Korzeń przedni</dt><dd><span class="ruch">ruchowy</span> — aksony motoneuronów rogu przedniego (i włókna autonomiczne); wychodzi z rdzenia.</dd>
+        <dt>Korzeń tylny</dt><dd><span class="czuc">czuciowy</span> — włókna neuronów zwoju rdzeniowego wchodzące do rdzenia; na nim leży zwój.</dd>
+        <dt>Zwój rdzeniowy</dt><dd><span class="lat">(ganglion spinale)</span> — skupisko ciał <strong>neuronów pozornie jednobiegunowych</strong> (czuciowych) na korzeniu tylnym. To <em>pierwszy neuron</em> każdej drogi czuciowej.</dd>
+        <dt>Nerw rdzeniowy</dt><dd><span class="lat">(31 par)</span> — powstaje z połączenia korzenia przedniego i tylnego; jest <strong>mieszany</strong> (włókna czuciowe + ruchowe + autonomiczne). „Pień nerwu rdzeniowego" to krótki odcinek tuż za połączeniem korzeni, przed podziałem na gałęzie.</dd>
+      </dl>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>31 par</strong> nerwów rdzeniowych = 8 szyjnych, 12 piersiowych, 5 lędźwiowych, 5 krzyżowych, 1 guziczny. Z gałęzi przednich (poza piersiowymi) tworzą się sploty.</div></div>
+    </div>
+  </section>
+
+  <section id="S5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-header-text">
+        <h2>Rdzeń kręgowy — jądra istoty szarej i pęczki własne</h2>
+        <span class="src-tag">gdzie zaczynają i kończą się drogi rdzenia</span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🟤 Jądra istoty szarej rdzenia</h3>
+      <table class="ltable">
+        <tr><th>Jądro</th><th>Gdzie</th><th>Funkcja</th></tr>
+        <tr><td><strong>Istota galaretowata</strong> <span class="lat">(Rolando)</span></td><td>szczyt rogu tylnego</td><td>czuciowe — modulacja <span class="czuc">bólu i temperatury</span> (bramka bólowa)</td></tr>
+        <tr><td><strong>Jądro własne rogu tylnego</strong></td><td>róg tylny</td><td>czuciowe — początek dróg <span class="czuc">rdzeniowo-wzgórzowych</span> (czucie protopatyczne)</td></tr>
+        <tr><td><strong>Jądro piersiowe (Clarke'a)</strong></td><td>podstawa rogu tylnego, C8–L2/3</td><td>początek drogi <strong>rdzeniowo-móżdżkowej tylnej</strong> (czucie głębokie nieświadome)</td></tr>
+        <tr><td><strong>Jądro pośrednio-przyśrodkowe</strong></td><td>istota pośrednia</td><td>czucie trzewne (wisceralne) — łączność z autonomiką</td></tr>
+        <tr><td><strong>Jądro pośrednio-boczne</strong></td><td>róg boczny, Th1–L2/3</td><td><strong>współczulne</strong> — neurony przedzwojowe układu sympatycznego</td></tr>
+        <tr><td><strong>Jądro przywspółczulne krzyżowe</strong></td><td>róg boczny, S2–S4</td><td><strong>przywspółczulne</strong> — narządy miednicy (pęcherz, jelito, narządy płciowe)</td></tr>
+      </table>
+      <p>W rogu przednim leżą skupiska <strong>motoneuronów</strong> (jądra ruchowe) — przyśrodkowe dla mięśni tułowia, boczne dla mięśni kończyn.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>📦 Pęczki sznurów (drogi rdzenia)</h3>
+      <p>W <strong>sznurze tylnym</strong> biegną wstępujące pęczki czucia epikrytycznego i głębokiego świadomego:</p>
+      <ul class="alist">
+        <li><strong>Pęczek smukły</strong> <span class="lat">(Golla, fasciculus gracilis)</span> — przyśrodkowy; czucie z <strong>dolnej</strong> połowy ciała (kończyna dolna, tułów). Kończy się w jądrze smukłym.</li>
+        <li><strong>Pęczek klinowaty</strong> <span class="lat">(Burdacha, fasciculus cuneatus)</span> — boczny; czucie z <strong>górnej</strong> połowy ciała (kończyna górna, szyja). Pojawia się od Th6 w górę. Kończy się w jądrze klinowatym.</li>
+      </ul>
+      <p>Pęczki <strong>własne</strong> i krótkie drogi spoidłowo-asocjacyjne rdzenia (łączą sąsiednie neuromery, obsługują odruchy wielosegmentowe):</p>
+      <ul class="alist">
+        <li><strong>Pęczek własny rdzenia kręgowego</strong> <span class="lat">(fasciculi proprii)</span> — warstwa istoty białej wokół istoty szarej; włókna łączące różne segmenty rdzenia (drogi własne, śródrdzeniowe).</li>
+        <li><strong>Pęczek międzypęczkowy</strong> (półksiężycowaty) i <strong>pęczek przegrodowo-brzeżny</strong> — to części pęczków własnych w sznurze tylnym, zawierające zstępujące włókna wewnątrzrdzeniowe.</li>
+      </ul>
+      <div class="callout info"><span class="ci">↗️</span><div>Jądra <strong>smukłe</strong> i <strong>klinowate</strong> (gdzie kończą się te pęczki) leżą już w rdzeniu przedłużonym — opis w sekcji 6. Drogi przez te pęczki — sekcja 19.</div></div>
+    </div>
+  </section>
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">Część 2 · Pień mózgu i nerwy czaszkowe</span>
+    <span class="group-divider-line"></span>
+  </div>
+
+  <section id="S6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-header-text">
+        <h2>Rdzeń przedłużony (opuszka)</h2>
+        <span class="src-tag">piramidy, oliwki, jądra sznurów tylnych, skrzyżowania</span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>📍 Co i gdzie</h3>
+      <p><strong>Opuszka = rdzeń przedłużony</strong> <span class="lat">(medulla oblongata, bulbus)</span> — najniższa część pnia mózgu, między rdzeniem kręgowym a mostem; pochodzi z <strong>rdzeniomózgowia</strong>. Górna część tworzy dolną połowę dna komory IV (dół równoległoboczny).</p>
+    </div>
+
+    <div class="lcard">
+      <h3>🏔️ Struktury powierzchni i wnętrza</h3>
+      <ul class="alist">
+        <li><strong>Piramida</strong> <span class="lat">(pyramis)</span> — para wałów na powierzchni przedniej; biegną w nich <span class="ruch">włókna drogi piramidowej</span> (korowo-rdzeniowej). <em>Po co:</em> ruch dowolny.</li>
+        <li><strong>Skrzyżowanie piramid</strong> <span class="lat">(decussatio pyramidum)</span> — na granicy z rdzeniem ~80–90% włókien korowo-rdzeniowych przechodzi na stronę przeciwną → droga korowo-rdzeniowa <strong>boczna</strong>. Stąd półkula steruje przeciwległą połową ciała.</li>
+        <li><strong>Oliwka</strong> <span class="lat">(oliva)</span> — owalne wyniesienie bocznie od piramidy; zawiera <strong>jądro oliwki</strong>.</li>
+        <li><strong>Jądro oliwki (dolnej)</strong> — pofałdowane jądro istoty szarej; związane z móżdżkiem — początek drogi <strong>oliwkowo-rdzeniowej</strong> i włókien do móżdżka (układ pozapiramidowy, koordynacja).</li>
+        <li><strong>Jądro smukłe</strong> <span class="lat">(nucleus gracilis)</span> i <strong>jądro klinowate</strong> <span class="lat">(nucleus cuneatus)</span> — leżą pod guzkami smukłym i klinowatym; <em>kończą się</em> w nich pęczki smukły i klinowaty (II neuron czucia epikrytycznego/głębokiego).</li>
+        <li><strong>Skrzyżowanie wstęg</strong> <span class="lat">(decussatio lemniscorum)</span> — aksony z jąder smukłego i klinowatego przechodzą na stronę przeciwną (jako włókna łukowate wewnętrzne) i tworzą <strong>wstęgę przyśrodkową</strong>.</li>
+        <li><strong>Wstęga przyśrodkowa</strong> <span class="lat">(lemniscus medialis)</span> — pasmo II neuronu czucia epikrytycznego i głębokiego, biegnące przez pień do wzgórza (opis dróg — sekcja 19 i 22).</li>
+        <li><strong>Dół równoległoboczny</strong> <span class="lat">(fossa rhomboidea)</span> — dno komory IV; jego dolna połowa należy do opuszki, górna do mostu. Na nim rzutują się jądra nerwów czaszkowych.</li>
+        <li><strong>Ośrodek naczynioruchowy</strong> — w tworze siatkowatym opuszki; reguluje napięcie naczyń i ciśnienie krwi (obok ośrodków oddechowego i sercowego — „ośrodki życiowe").</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="S7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-header-text">
+        <h2>Most</h2>
+        <span class="src-tag">pomost między półkulami móżdżku · konary móżdżku środkowe</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>📍 Co, gdzie, z czego, po co</h3>
+      <dl class="qggp">
+        <dt>Co?</dt><dd><strong>Most</strong> <span class="lat">(pons)</span> — środkowa część pnia mózgu, poprzeczny wał na powierzchni przedniej.</dd>
+        <dt>Gdzie?</dt><dd>między rdzeniem przedłużonym a śródmózgowiem; pochodzi z <strong>tyłomózgowia wtórnego</strong> (razem z móżdżkiem).</dd>
+        <dt>Z czego?</dt><dd><strong>część podstawna</strong> (włókna mostowo-móżdżkowe + korowo-rdzeniowe + jądra mostu) i <strong>nakrywka</strong> (jądra nerwów czaszkowych V, VI, VII, VIII, twór siatkowaty, drogi wstępujące).</dd>
+        <dt>Po co?</dt><dd>przekazuje informacje z kory do móżdżku (most → konar środkowy → móżdżek), zawiera jądra ww. nerwów i ośrodki (m.in. oddechowy — ośrodek pneumotaksyczny).</dd>
+      </dl>
+      <ul class="alist">
+        <li><strong>Konar móżdżku</strong> <span class="lat">(pedunculus cerebellaris)</span> — 3 pary pasm łączących móżdżek z pniem: <strong>górny</strong> (do śródmózgowia — głównie odprowadzający, m.in. droga zębato-czerwienna), <strong>środkowy</strong> (z mostu — największy, doprowadzający), <strong>dolny</strong> (z opuszki — m.in. droga rdzeniowo-móżdżkowa tylna, włókna oliwkowe).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="S8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-header-text">
+        <h2>Śródmózgowie</h2>
+        <span class="src-tag">pokrywa, blaszka czworacza, konary, istota czarna, jądro czerwienne</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>📍 Budowa — od tyłu ku przodowi</h3>
+      <ul class="alist">
+        <li><strong>Śródmózgowie</strong> <span class="lat">(mesencephalon)</span> — najkrótsza część pnia, między mostem a międzymózgowiem; jego jamą jest <strong>wodociąg mózgu</strong>.</li>
+        <li><strong>Pokrywa</strong> <span class="lat">(tectum)</span> — grzbietowa część (do tyłu od wodociągu).</li>
+        <li><strong>Blaszka czworacza = blaszka pokrywy</strong> <span class="lat">(lamina tecti / quadrigemina)</span> — płytka pokrywy z 4 wzgórkami:
+          <br>• <strong>Wzgórki górne pokrywy</strong> — ośrodek <span class="czuc">wzrokowy</span> podkorowy (odruchy wzrokowe, ruchy gałek/głowy za bodźcem); związane z ciałem kolankowatym bocznym.
+          <br>• <strong>Wzgórki dolne pokrywy</strong> — ośrodek <span class="czuc">słuchowy</span> podkorowy (odruchy słuchowe); związane z ciałem kolankowatym przyśrodkowym.</li>
+        <li><strong>Droga czworaczo-rdzeniowa = pokrywowo-rdzeniowa</strong> <span class="lat">(tractus tectospinalis)</span> — zaczyna się we wzgórkach (pokrywie), kończy w rdzeniu; pośredniczy w odruchowych ruchach głowy i tułowia na bodźce wzrokowe/słuchowe (układ pozapiramidowy).</li>
+        <li><strong>Konar śródmózgowia = odnoga mózgu + nakrywka</strong> — każdy konar dzieli się na: <strong>odnogę (konar) mózgu</strong> <span class="lat">(crus cerebri / pedunculus)</span> — pęczek dróg zstępujących (korowo-rdzeniowe, korowo-jądrowe, korowo-mostowe) na powierzchni przedniej — oraz <strong>nakrywkę</strong> <span class="lat">(tegmentum)</span> z jądrami i drogami wstępującymi. Granicę stanowi istota czarna.</li>
+        <li><strong>Istota czarna</strong> <span class="lat">(substantia nigra)</span> — duże jądro między odnogą a nakrywką; zawiera neurony z melaniną, produkuje <strong>dopaminę</strong>. Ośrodek <strong>pozapiramidowy</strong> (regulacja napięcia mięśni; uszkodzenie → choroba Parkinsona).</li>
+        <li><strong>Jądro czerwienne</strong> <span class="lat">(nucleus ruber)</span> — w nakrywce; ośrodek pozapiramidowy — początek drogi <strong>czerwienno-rdzeniowej</strong>; współpracuje z móżdżkiem (droga zębato-czerwienna) i prążkowiem.</li>
+        <li><strong>Nakrywka</strong> <span class="lat">(tegmentum)</span> — część konaru zawierająca twór siatkowaty, jądra nn. III i IV, jądro czerwienne, drogi wstępujące (wstęgi).</li>
+        <li><strong>Wodociąg mózgu</strong> <span class="lat">(aqueductus cerebri / Sylwiusza)</span> — wąski kanał łączący komorę III z IV; przewodzi płyn mózgowo-rdzeniowy. Zamknięcie → wodogłowie.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="S9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-header-text">
+        <h2>Twór siatkowaty</h2>
+        <span class="src-tag">temat z części IV POMOCNIKA</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>🕸️ Co, gdzie, po co</h3>
+      <dl class="qggp">
+        <dt>Co?</dt><dd><strong>Twór siatkowaty</strong> <span class="lat">(formatio reticularis)</span> — sieć rozproszonych neuronów i włókien w pniu mózgu (nie tworzy zwartych jąder ani dróg).</dd>
+        <dt>Gdzie?</dt><dd>w nakrywce całego pnia mózgu (opuszka, most, śródmózgowie), w części środkowej.</dd>
+        <dt>Po co?</dt><dd>• <strong>ARAS</strong> (wstępujący układ aktywujący) — czuwanie, sen, świadomość, uwaga;
+          <br>• ośrodki życiowe: <strong>oddechowy, naczynioruchowy, sercowy, wymiotny</strong>;
+          <br>• kontrola napięcia mięśni i postawy (drogi siatkowo-rdzeniowe);
+          <br>• modulacja bólu i odruchów.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section id="S10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-header-text">
+        <h2>Jądra nerwów czaszkowych</h2>
+        <span class="src-tag">kolumny czynnościowe w pniu mózgu — klucz do egzaminu</span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🔵 Jądra RUCHOWE somatyczne (do mięśni z mioto­mów)</h3>
+      <table class="ltable">
+        <tr><th>Jądro</th><th>Nerw</th><th>Położenie</th></tr>
+        <tr><td><strong>Jądro ruchowe n. III</strong></td><td>okoruchowy</td><td>śródmózgowie (wysokość wzgórków górnych)</td></tr>
+        <tr><td><strong>Jądro ruchowe n. IV</strong></td><td>bloczkowy</td><td>śródmózgowie (wysokość wzgórków dolnych)</td></tr>
+        <tr><td><strong>Jądro ruchowe n. VI</strong></td><td>odwodzący</td><td>most (pod wzgórkiem twarzowym dna k. IV)</td></tr>
+        <tr><td><strong>Jądro ruchowe n. XII</strong></td><td>podjęzykowy</td><td>opuszka (trójkąt nerwu podjęzykowego)</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>🟣 Jądra RUCHOWE skrzelopochodne (mięśnie łuków skrzelowych)</h3>
+      <table class="ltable">
+        <tr><th>Jądro</th><th>Nerw</th><th>Położenie / mięśnie</th></tr>
+        <tr><td><strong>Jądro ruchowe n. V</strong></td><td>trójdzielny</td><td>most; mięśnie żucia</td></tr>
+        <tr><td><strong>Jądro ruchowe n. VII</strong></td><td>twarzowy</td><td>most; mięśnie mimiczne</td></tr>
+        <tr><td><strong>Jądro dwuznaczne</strong> <span class="lat">(ambiguus)</span></td><td>IX, X, (XI cz. opuszkowa)</td><td>opuszka; mięśnie gardła i krtani</td></tr>
+        <tr><td><strong>Jądro ruchowe n. IX</strong></td><td>językowo-gardłowy</td><td>górna część jądra dwuznacznego; m. rylcowo-gardłowy</td></tr>
+        <tr><td><strong>Jądro ruchowe n. XI</strong></td><td>dodatkowy</td><td>jądro rdzeniowe C1–C5/6 (róg przedni); m. MOS i czworoboczny</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>🟢 Jądra PRZYWSPÓŁCZULNE (wegetatywne) i CZUCIOWE</h3>
+      <table class="ltable">
+        <tr><th>Jądro</th><th>Nerw</th><th>Funkcja</th></tr>
+        <tr><td><strong>Jądro dodatkowe n. III</strong> <span class="lat">(Westphala-Edingera)</span></td><td>III</td><td>przywspółczulne — zwężenie źrenicy, akomodacja</td></tr>
+        <tr><td><strong>Jądro ślinowe górne</strong></td><td>VII</td><td>ślinianki podżuchwowa i podjęzykowa, gruczoły łzowe</td></tr>
+        <tr><td><strong>Jądro ślinowe dolne</strong></td><td>IX</td><td>ślinianka przyuszna</td></tr>
+        <tr><td><strong>Jądro samotne</strong> <span class="lat">(solitarius)</span></td><td>VII, IX, X</td><td>czuciowe — <span class="czuc">smak</span> + czucie trzewne</td></tr>
+        <tr><td><strong>Jądro główne n. V</strong></td><td>V</td><td>czucie <span class="czuc">dotyku</span> z twarzy (epikrytyczne)</td></tr>
+        <tr><td><strong>Jądro pasma rdzeniowego n. V</strong></td><td>V (+VII, IX, X)</td><td>czucie <span class="czuc">bólu i temperatury</span> z twarzy (protopatyczne)</td></tr>
+        <tr><td><strong>Jądro pasma śródmózgowiowego n. V</strong></td><td>V</td><td>czucie <span class="czuc">proprioceptywne</span> z mięśni żucia (wyjątkowo — ciała I neuronu leżą w OUN)</td></tr>
+        <tr><td><strong>Jądra przedsionkowe</strong></td><td>VIII</td><td>równowaga (z błędnika); początek drogi przedsionkowo-rdzeniowej</td></tr>
+        <tr><td><strong>Jądra ślimakowe</strong></td><td>VIII</td><td>słuch (z ślimaka); początek drogi słuchowej → wstęga boczna</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>Jądro <strong>grzbietowe n. X</strong> (przywspółczulne, w opuszce) zaopatruje narządy klatki piersiowej i jamy brzusznej — to główne jądro autonomiczne nerwu błędnego (patrz sekcja 23).</div></div>
+    </div>
+  </section>
+
+  <section id="S11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div class="section-header-text">
+        <h2>Nerwy czaszkowe I–XII</h2>
+        <span class="src-tag">co · gdzie wychodzą · jakie włókna · po co</span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>👃👁️ I–IV</h3>
+      <ul class="alist">
+        <li><strong>I — nerw węchowy</strong> <span class="lat">(n. olfactorius)</span> — czuciowy specjalny (węch). Nici węchowe od błony śluzowej nosa → <strong>opuszka węchowa</strong> → pasmo węchowe → kora węchowa. Należy do węchomózgowia (nie ma klasycznego jądra w pniu).</li>
+        <li><strong>II — nerw wzrokowy</strong> <span class="lat">(n. opticus)</span> — czuciowy specjalny (wzrok); właściwie pasmo OUN. Z komórek zwojowych siatkówki → <strong>skrzyżowanie wzrokowe</strong> → pasmo wzrokowe → ciało kolankowate boczne → kora wzrokowa.</li>
+        <li><strong>III — nerw okoruchowy</strong> <span class="lat">(n. oculomotorius)</span> — ruchowy + przywspółczulny. Ze śródmózgowia. Unerwia 4 z 6 mięśni gałki + dźwigacz powieki; włókna przywspółczulne (jądro Westphala) → zwężenie źrenicy i akomodacja.</li>
+        <li><strong>IV — nerw bloczkowy</strong> <span class="lat">(n. trochlearis)</span> — ruchowy; jedyny wychodzący z <strong>tylnej</strong> powierzchni pnia. Unerwia m. skośny górny gałki ocznej.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>👄👂 V–VIII</h3>
+      <ul class="alist">
+        <li><strong>V — nerw trójdzielny</strong> <span class="lat">(n. trigeminus)</span> — mieszany; główny nerw <span class="czuc">czuciowy twarzy</span> (3 gałęzie: oczna V1, szczękowa V2, żuchwowa V3) + ruch (mięśnie żucia, w V3). Ciała neuronów czuciowych w <strong>zwoju trójdzielnym</strong>; jądra V — patrz sekcja 10.</li>
+        <li><strong>VI — nerw odwodzący</strong> <span class="lat">(n. abducens)</span> — ruchowy; m. prosty boczny gałki (odwodzi oko). Z mostu.</li>
+        <li><strong>VII — nerw twarzowy</strong> <span class="lat">(n. facialis)</span> — mieszany: ruch mięśni mimicznych + przywspółczulny (łzawienie, ślinianki podżuchw./podjęz.) + smak z 2/3 przednich języka (przez n. pośredni, do jądra samotnego). Z mostu (kąt mostowo-móżdżkowy).</li>
+        <li><strong>VIII — nerw przedsionkowo-ślimakowy = statyczno-słuchowy</strong> <span class="lat">(n. vestibulocochlearis)</span> — czuciowy specjalny: część <strong>przedsionkowa</strong> (równowaga → jądra przedsionkowe) i <strong>ślimakowa</strong> (słuch → jądra ślimakowe). Z kąta mostowo-móżdżkowego.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🗣️ IX–XII</h3>
+      <ul class="alist">
+        <li><strong>IX — nerw językowo-gardłowy</strong> <span class="lat">(n. glossopharyngeus)</span> — mieszany: ruch (m. rylcowo-gardłowy), przywspółczulny (ślinianka przyuszna), smak i czucie z 1/3 tylnej języka i gardła, czucie z kłębka i zatoki szyjnej. Z opuszki.</li>
+        <li><strong>X — nerw błędny</strong> <span class="lat">(n. vagus)</span> — najdłuższy, mieszany; główny nerw <strong>przywspółczulny</strong> narządów klatki piersiowej i jamy brzusznej (jądro grzbietowe n. X), ruch gardła/krtani (j. dwuznaczne), czucie trzewne i smak (j. samotne). Z opuszki.</li>
+        <li><strong>XI — nerw dodatkowy</strong> <span class="lat">(n. accessorius)</span> — ruchowy; część rdzeniowa (C1–C5) → m. mostkowo-obojczykowo-sutkowy i czworoboczny. Z opuszki/rdzenia szyjnego.</li>
+        <li><strong>XII — nerw podjęzykowy</strong> <span class="lat">(n. hypoglossus)</span> — ruchowy; mięśnie języka. Z opuszki (bruzda przednio-boczna).</li>
+      </ul>
+      <div class="callout tip"><span class="ci">💡</span><div><strong>Nerwy główne wszystkich splotów</strong> (obwód): splot <strong>szyjny</strong> → n. przeponowy; <strong>ramienny</strong> → nn. pośrodkowy, łokciowy, promieniowy, pachowy, mięśniowo-skórny; <strong>lędźwiowy</strong> → nn. udowy, zasłonowy; <strong>krzyżowy</strong> → n. kulszowy (najgrubszy nerw ciała) → piszczelowy i strzałkowy wspólny.</div></div>
+    </div>
+  </section>
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">Część 3 · Móżdżek, międzymózgowie, komory i opony</span>
+    <span class="group-divider-line"></span>
+  </div>
+
+  <section id="S12">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div class="section-header-text">
+        <h2>Móżdżek</h2>
+        <span class="src-tag">robak, konary, jądra, podział filogenetyczny</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>📍 Co, gdzie, po co</h3>
+      <dl class="qggp">
+        <dt>Co?</dt><dd><strong>Móżdżek</strong> <span class="lat">(cerebellum)</span> — część tyłomózgowia wtórnego, leży w tylnym dole czaszki, nad opuszką i mostem, pod namiotem móżdżku.</dd>
+        <dt>Z czego?</dt><dd>2 <strong>półkule</strong> + nieparzysty <strong>robak</strong> w środku; powierzchowna <strong>kora</strong> (istota szara) i wewnętrzne <strong>jądra</strong> w istocie białej („drzewo życia").</dd>
+        <dt>Po co?</dt><dd>koordynacja ruchów, napięcie mięśniowe, <strong>równowaga</strong> i postawa — bez móżdżku ruchy są niezborne (ataksja). Działa „po tej samej stronie" (ipsilateralnie).</dd>
+      </dl>
+      <ul class="alist">
+        <li><strong>Robak móżdżku</strong> <span class="lat">(vermis)</span> — część środkowa łącząca półkule; związany z osią ciała, postawą i napięciem mięśni.</li>
+        <li><strong>Konary móżdżku</strong> — górny, środkowy, dolny (łączą z pniem — patrz sekcja 7).</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🟤 Jądra móżdżku (od przyśrodka ku bokowi)</h3>
+      <table class="ltable">
+        <tr><th>Jądro</th><th>Położenie / związek</th></tr>
+        <tr><td><strong>Jądro wierzchu</strong> <span class="lat">(fastigii)</span></td><td>najbardziej przyśrodkowe; układ przedsionkowy, równowaga (pra-/staromóżdżek)</td></tr>
+        <tr><td><strong>Jądro kulkowate</strong> <span class="lat">(globosus)</span></td><td>przyśrodkowa część (z czopowatym = „jądro wtrącone"); napięcie mięśni</td></tr>
+        <tr><td><strong>Jądro czopowate</strong> <span class="lat">(emboliformis)</span></td><td>obok kulkowatego; staromóżdżek</td></tr>
+        <tr><td><strong>Jądro zębate</strong> <span class="lat">(dentatus)</span></td><td>największe, boczne; nowy móżdżek — koordynacja ruchów dowolnych; droga zębato-czerwienna i zębato-wzgórzowa przez konar górny</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">🔁</span><div>Podział <strong>pramóżdżek / stary / nowy móżdżek</strong> — opisany w sekcji 3. Drogi <strong>rdzeniowo-móżdżkowe</strong> (przednia i tylna) — w sekcji 19.</div></div>
+    </div>
+  </section>
+
+  <section id="S13">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <div class="section-header-text">
+        <h2>Międzymózgowie</h2>
+        <span class="src-tag">wzgórze, zawzgórze, podwzgórze i ich jądra</span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🧭 Wzgórze i jego jądra</h3>
+      <p><strong>Wzgórze</strong> <span class="lat">(thalamus)</span> — duże, parzyste skupisko istoty szarej, ściany boczne komory III; główna <strong>stacja przekaźnikowa czucia</strong> (prawie wszystkie drogi czuciowe — poza węchem — przełączają się tu na ostatni neuron biegnący do kory).</p>
+      <table class="ltable">
+        <tr><th>Jądro wzgórza</th><th>Co odbiera → dokąd</th></tr>
+        <tr><td><strong>Brzuszne tylno-boczne (VPL)</strong></td><td>czucie z <strong>tułowia i kończyn</strong> (wstęga przyśrodkowa, drogi rdzeniowo-wzgórzowe) → kora czuciowa</td></tr>
+        <tr><td><strong>Brzuszne tylno-przyśrodkowe (VPM)</strong></td><td>czucie z <strong>głowy</strong> (wstęga trójdzielna) i smak → kora czuciowa</td></tr>
+        <tr><td><strong>Jądro zatylno-boczne</strong></td><td>jądro kojarzeniowe (tylno-boczne) — integracja czuciowa, łączność z korą ciemieniową</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>🎚️ Zawzgórze (ciała kolankowate)</h3>
+      <ul class="alist">
+        <li><strong>Ciało kolankowate boczne</strong> <span class="lat">(corpus geniculatum laterale)</span> — podkorowy ośrodek <span class="czuc">wzroku</span>; odbiera pasmo wzrokowe → promienistość wzrokowa → kora wzrokowa.</li>
+        <li><strong>Ciało kolankowate przyśrodkowe</strong> — podkorowy ośrodek <span class="czuc">słuchu</span>; odbiera wstęgę boczną → kora słuchowa.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🌡️ Podwzgórze</h3>
+      <p><strong>Podwzgórze</strong> <span class="lat">(hypothalamus)</span> — dolna część międzymózgowia, dno i dolne ściany komory III; nadrzędny ośrodek <strong>autonomiczny i hormonalny</strong> (termoregulacja, głód/pragnienie, sen, popęd, neurosekrecja → przysadka). Struktury:</p>
+      <ul class="alist">
+        <li><strong>Ciała suteczkowate</strong> <span class="lat">(corpora mamillaria)</span> — para wyniosłości na powierzchni dolnej; element <strong>układu limbicznego</strong> (krąg Papeza — pamięć). Odbierają sklepienie, łączą się ze wzgórzem (pęczek suteczkowo-wzgórzowy).</li>
+        <li><strong>Guz popielaty</strong> <span class="lat">(tuber cinereum)</span> — wyniosłość istoty szarej ku przodowi od ciał suteczkowatych; przechodzi w <strong>lejek</strong> → przysadka. Pośredniczy w kontroli przysadki.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="S14">
+    <div class="section-header">
+      <div class="section-num">14</div>
+      <div class="section-header-text">
+        <h2>Komory mózgu i płyn mózgowo-rdzeniowy</h2>
+        <span class="src-tag">miejsce powstawania i drogi odpływu płynu (cz. IV)</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>💧 Układ komorowy</h3>
+      <ul class="alist">
+        <li><strong>Komory boczne</strong> (I i II) — w półkulach kresomózgowia; każda z rogiem przednim, trzonem, rogiem tylnym i dolnym. Łączą się z komorą III otworami międzykomorowymi (Monroego).</li>
+        <li><strong>Komora trzecia</strong> — szczelinowata jama międzymózgowia (między wzgórzami). Łączy się z IV przez <strong>wodociąg mózgu</strong>.</li>
+        <li><strong>Komora czwarta</strong> — jama tyłomózgowia (między mostem/opuszką a móżdżkiem); dnem jest <strong>dół równoległoboczny</strong>. Łączy się z przestrzenią podpajęczynówkową przez otwory Magendiego i Luschki, a ku dołowi przechodzi w kanał środkowy rdzenia.</li>
+        <li><strong>Splot naczyniówkowy</strong> <span class="lat">(plexus choroideus)</span> — silnie unaczyniona tkanka w komorach (bocznych, III i IV); <strong>wytwarza płyn mózgowo-rdzeniowy</strong>.</li>
+      </ul>
+    </div>
+    <div class="lcard">
+      <h3>🔄 Krążenie płynu mózgowo-rdzeniowego</h3>
+      <p><strong>Powstawanie:</strong> splot naczyniówkowy komór (gł. bocznych). <strong>Droga odpływu:</strong></p>
+      <ul class="nlist">
+        <li>komory boczne → <strong>otwory międzykomorowe</strong> → komora III</li>
+        <li>komora III → <strong>wodociąg mózgu</strong> → komora IV</li>
+        <li>komora IV → otwory <strong>Magendiego i Luschki</strong> → <strong>przestrzeń podpajęczynówkowa</strong> (wokół mózgu i rdzenia)</li>
+        <li>wchłanianie do krwi w <strong>ziarnistościach pajęczynówki</strong> (Pacchiona) → zatoki żylne opony twardej</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Po co płyn:</strong> ochrona mechaniczna (amortyzacja), wyporność mózgu, odżywianie i usuwanie produktów przemiany, stabilizacja środowiska. Blok odpływu → <strong>wodogłowie</strong>.</div></div>
+    </div>
+  </section>
+
+  <section id="S15">
+    <div class="section-header">
+      <div class="section-num">15</div>
+      <div class="section-header-text">
+        <h2>Opony mózgowo-rdzeniowe</h2>
+        <span class="src-tag">temat z cz. IV · opona, przestrzenie, wypustki</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>🛡️ Trzy opony (od zewnątrz)</h3>
+      <p><strong>Opona</strong> <span class="lat">(meninx)</span> — błona okrywająca mózgowie i rdzeń; chroni i podtrzymuje OUN. Trzy warstwy:</p>
+      <table class="ltable">
+        <tr><th>Opona</th><th>Cecha</th></tr>
+        <tr><td><strong>Twarda</strong> <span class="lat">(dura mater)</span></td><td>najgrubsza, włóknista; tworzy wypustki i zatoki żylne</td></tr>
+        <tr><td><strong>Pajęcza</strong> <span class="lat">(arachnoidea)</span> — „pajęczynówka"</td><td>cienka, beznaczyniowa; pod nią płyn m-r</td></tr>
+        <tr><td><strong>Miękka</strong> <span class="lat">(pia mater)</span></td><td>przylega ściśle do powierzchni mózgu/rdzenia, bogato unaczyniona</td></tr>
+      </table>
+      <ul class="alist">
+        <li><strong>Przestrzeń podpajęczynówkowa</strong> — między pajęczą a miękką; wypełniona <strong>płynem mózgowo-rdzeniowym</strong>, miejscowo poszerza się w zbiorniki.</li>
+      </ul>
+    </div>
+    <div class="lcard">
+      <h3>📐 Wypustki opony twardej</h3>
+      <ul class="alist">
+        <li><strong>Sierp mózgu</strong> <span class="lat">(falx cerebri)</span> — pionowa wypustka w szczelinie podłużnej, między półkulami.</li>
+        <li><strong>Namiot móżdżku</strong> <span class="lat">(tentorium cerebelli)</span> — pozioma wypustka oddzielająca móżdżek od płatów potylicznych.</li>
+        <li><strong>Sierp móżdżku</strong> <span class="lat">(falx cerebelli)</span> — mała wypustka między półkulami móżdżku.</li>
+        <li><strong>Przepona siodła tureckiego</strong> <span class="lat">(diaphragma sellae)</span> — blaszka nad siodłem; przykrywa przysadkę, przepuszczając lejek.</li>
+      </ul>
+    </div>
+  </section>
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">Część 4 · Kresomózgowie i układ limbiczny</span>
+    <span class="group-divider-line"></span>
+  </div>
+
+  <section id="S16">
+    <div class="section-header">
+      <div class="section-num">16</div>
+      <div class="section-header-text">
+        <h2>Kresomózgowie — płaszcz, kora i zakręty</h2>
+        <span class="src-tag">pola czynnościowe kory, zakręty i bruzdy</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>🧠 Płaszcz i kora</h3>
+      <ul class="alist">
+        <li><strong>Płaszcz</strong> <span class="lat">(pallium)</span> — warstwa istoty szarej (kora) pokrywająca półkule wraz z leżącą pod nią istotą białą; ewolucyjnie to „nowa" część kresomózgowia.</li>
+        <li><strong>Kora mózgu</strong> — pofałdowana warstwa istoty szarej; fałdy = <strong>zakręty</strong> <span class="lat">(gyri)</span>, rowki = <strong>bruzdy</strong> <span class="lat">(sulci)</span>. Dzieli się na 4 płaty: czołowy, ciemieniowy, skroniowy, potyliczny.</li>
+        <li><strong>Wyspa</strong> <span class="lat">(insula)</span> — kora ukryta w głębi bruzdy bocznej (Sylwiusza), przykryta wieczkami; związana ze smakiem, czuciem trzewnym i emocjami.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🎛️ Pola czynnościowe kory (co · gdzie)</h3>
+      <table class="ltable">
+        <tr><th>Pole / kora</th><th>Lokalizacja</th><th>Funkcja</th></tr>
+        <tr><td><strong>Kora ruchowa</strong> = somatomotoryczna</td><td><strong>zakręt przedśrodkowy</strong> (płat czołowy, przed bruzdą środkową)</td><td><span class="ruch">ruchy dowolne</span> — początek drogi piramidowej (homunkulus ruchowy)</td></tr>
+        <tr><td><strong>Kora czuciowa</strong> = somatosensoryczna</td><td><strong>zakręt zaśrodkowy</strong> (płat ciemieniowy, za bruzdą środkową)</td><td><span class="czuc">czucie</span> ze skóry i ciała (homunkulus czuciowy)</td></tr>
+        <tr><td><strong>Kora wzrokowa</strong></td><td>wokół <strong>bruzdy ostrogowej</strong> (płat potyliczny)</td><td><span class="czuc">wzrok</span></td></tr>
+        <tr><td><strong>Kora słuchowa</strong></td><td><strong>zakręty skroniowe</strong> poprzeczne (Heschla)</td><td><span class="czuc">słuch</span></td></tr>
+        <tr><td><strong>Kora smakowa</strong></td><td>dolna część zakrętu zaśrodkowego / wyspa</td><td><span class="czuc">smak</span></td></tr>
+      </table>
+      <p>Terminy <strong>somatomotoryczna</strong> i <strong>somatosensoryczna</strong> to po prostu kora ruchowa (zakręt przedśrodkowy) i czuciowa (zakręt zaśrodkowy) ciała.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>🗺️ Ważne zakręty i bruzdy</h3>
+      <ul class="alist">
+        <li><strong>Zakręt przedśrodkowy</strong> — kora ruchowa (przed bruzdą środkową).</li>
+        <li><strong>Zakręt zaśrodkowy</strong> — kora czuciowa (za bruzdą środkową).</li>
+        <li><strong>Płacik okołośrodkowy</strong> <span class="lat">(lobulus paracentralis)</span> — na powierzchni przyśrodkowej półkuli, przedłużenie obu zakrętów środkowych; <strong>część przednia = ruchowa</strong> (kończyna dolna i krocze), <strong>część tylna = czuciowa</strong> tych okolic. Zawiera ośrodki kontroli zwieraczy.</li>
+        <li><strong>Zakręty skroniowe</strong> — górny, środkowy, dolny (słuch, rozumienie mowy — ośrodek Wernickego w górnym).</li>
+        <li><strong>Zakręty oczodołowe</strong> — na dolnej (oczodołowej) powierzchni płata czołowego; związane z układem limbicznym, węchem i zachowaniem.</li>
+        <li><strong>Zakręt hipokampa</strong> <span class="lat">(gyrus parahippocampalis)</span> — na przyśrodkowej powierzchni płata skroniowego; część układu limbicznego (pamięć, węch).</li>
+        <li><strong>Bruzda ostrogowa</strong> <span class="lat">(sulcus calcarinus)</span> — na przyśrodkowej powierzchni płata potylicznego; wokół niej leży <strong>kora wzrokowa</strong>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="S17">
+    <div class="section-header">
+      <div class="section-num">17</div>
+      <div class="section-header-text">
+        <h2>Jądra podstawne i istota biała półkul</h2>
+        <span class="src-tag">prążkowie, torebka wewnętrzna, spoidła</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>🟤 Jądra podstawne (kresomózgowia)</h3>
+      <p>Skupiska istoty szarej w głębi półkul; główny składnik <strong>układu pozapiramidowego</strong> (kontrola ruchu, napięcie mięśni).</p>
+      <ul class="alist">
+        <li><strong>Ciało prążkowane = prążkowie</strong> <span class="lat">(corpus striatum)</span> — wspólna nazwa jądra ogoniastego + jądra soczewkowatego. Czynnościowo dzieli się na:
+          <br>• <strong>neostriatum (prążkowie nowe)</strong> = jądro ogoniaste + skorupa;
+          <br>• <strong>paleostriatum (prążkowie stare)</strong> = gałka blada.</li>
+        <li><strong>Jądro ogoniaste</strong> <span class="lat">(nucleus caudatus)</span> — wygięte jądro towarzyszące komorze bocznej (głowa, trzon, ogon).</li>
+        <li><strong>Jądro soczewkowate</strong> <span class="lat">(nucleus lentiformis)</span> — boczne; składa się z dwóch części:
+          <br>• <strong>skorupa</strong> <span class="lat">(putamen)</span> — boczna, ciemniejsza;
+          <br>• <strong>gałka blada</strong> <span class="lat">(globus pallidus)</span> — przyśrodkowa, jaśniejsza (główne jądro wyjściowe prążkowia).</li>
+        <li><strong>Przedmurze</strong> <span class="lat">(claustrum)</span> — cienka blaszka istoty szarej między skorupą a korą wyspy.</li>
+        <li><strong>Ciało migdałowate</strong> <span class="lat">(corpus amygdaloideum)</span> — jądro w biegunie skroniowym (przy ogonie j. ogoniastego); należy do <strong>układu limbicznego</strong> (emocje, lęk, agresja) — opis w sekcji 18.</li>
+      </ul>
+    </div>
+    <div class="lcard">
+      <h3>⚪ Istota biała półkul — spoidła i drogi rzutowe</h3>
+      <ul class="alist">
+        <li><strong>Ciało modzelowate = spoidło wielkie mózgu</strong> <span class="lat">(corpus callosum)</span> — największe spoidło; łączy korę obu półkul (włókna spoidłowe/komisuralne).</li>
+        <li><strong>Sklepienie</strong> <span class="lat">(fornix)</span> — łukowate pasmo istoty białej; główna droga <strong>odprowadzająca z hipokampa</strong> do ciał suteczkowatych (układ limbiczny, krąg Papeza).</li>
+        <li><strong>Torebka wewnętrzna</strong> <span class="lat">(capsula interna)</span> — warstwa istoty białej między jądrem soczewkowatym a wzgórzem/jądrem ogoniastym; przebiegają tędy główne <strong>drogi rzutowe</strong>. Części:
+          <br>• <strong>odnoga przednia</strong> (między ogoniastym a soczewkowatym) — drogi czołowo-mostowe;
+          <br>• <strong>kolanko</strong> — droga korowo-jądrowa;
+          <br>• <strong>odnoga tylna</strong> (między wzgórzem a soczewkowatym) — droga korowo-rdzeniowa, drogi czuciowe wzgórzowo-korowe, promienistość wzrokowa i słuchowa.</li>
+        <li><strong>Wieniec promienisty</strong> <span class="lat">(corona radiata)</span> — wachlarz włókien rzutowych łączący torebkę wewnętrzną z korą (powyżej torebki).</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Odnoga tylna torebki wewnętrznej</strong> to „wąskie gardło" — biegną tu zarówno droga ruchowa (korowo-rdzeniowa), jak i wstępujące drogi czuciowe do kory. Udar w tym miejscu daje rozległe porażenia i zaburzenia czucia po stronie przeciwnej.</div></div>
+    </div>
+  </section>
+
+  <section id="S18">
+    <div class="section-header">
+      <div class="section-num">18</div>
+      <div class="section-header-text">
+        <h2>Układ limbiczny i węchomózgowie</h2>
+        <span class="src-tag">temat z cz. IV · emocje, pamięć, węch</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>❤️ Układ limbiczny (brzeżny, rąbkowy)</h3>
+      <p><strong>Układ limbiczny = układ brzeżny = układ rąbkowy</strong> <span class="lat">(systema limbicum)</span> — czynnościowy zespół struktur na przyśrodkowej powierzchni półkul, „obrąbiający" pień; odpowiada za <strong>emocje, popędy, pamięć i zachowania</strong>. Główne elementy:</p>
+      <ul class="alist">
+        <li><strong>Hipokamp</strong> <span class="lat">(hippocampus)</span> — zawinięta kora na dnie rogu dolnego komory bocznej (płat skroniowy); kluczowy dla <strong>pamięci</strong> (konsolidacja śladów). Odprowadza włókna przez sklepienie.</li>
+        <li><strong>Zakręt hipokampa</strong> — kora przyśrodkowej powierzchni płata skroniowego sąsiadująca z hipokampem.</li>
+        <li><strong>Ciało migdałowate</strong> — ośrodek <strong>emocji</strong> (zwłaszcza lęku, agresji) i reakcji wegetatywnych z nimi związanych.</li>
+        <li><strong>Sklepienie</strong> i <strong>ciała suteczkowate</strong> — elementy <strong>kręgu Papeza</strong>: hipokamp → sklepienie → ciała suteczkowate → wzgórze → zakręt obręczy → hipokamp (obwód pamięci i emocji).</li>
+      </ul>
+    </div>
+    <div class="lcard">
+      <h3>👃 Węchomózgowie</h3>
+      <p><strong>Węchomózgowie</strong> <span class="lat">(rhinencephalon)</span> — filogenetycznie najstarsza część kresomózgowia związana z <strong>węchem</strong> (i powiązana z układem limbicznym).</p>
+      <ul class="alist">
+        <li><strong>Opuszka węchowa</strong> <span class="lat">(bulbus olfactorius)</span> — uwypuklenie na blaszce sitowej; <strong>kończą się w niej nici węchowe</strong> (nerw I) i zaczyna pasmo węchowe (tu leży II neuron drogi węchowej).</li>
+        <li><strong>Pasmo węchowe</strong> <span class="lat">(tractus olfactorius)</span> — prowadzi impulsy z opuszki do kory węchowej (na powierzchni dolnej płata czołowego i w płacie skroniowym), z pominięciem wzgórza.</li>
+        <li><strong>Nerw węchowy (I)</strong> — patrz sekcja 11.</li>
+      </ul>
+    </div>
+  </section>
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">Część 5 · Drogi, wstęgi i układ autonomiczny</span>
+    <span class="group-divider-line"></span>
+  </div>
+
+  <section id="S19">
+    <div class="section-header">
+      <div class="section-num">19</div>
+      <div class="section-header-text">
+        <h2>Drogi czuciowe (wstępujące)</h2>
+        <span class="src-tag">cz. III · 3 neurony czucia · tułów, kończyny i głowa</span>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🧩 Zasada 3 neuronów</h3>
+      <p>Świadoma droga czuciowa ma <strong>3 neurony</strong>: <strong>I</strong> w zwoju rdzeniowym (lub czuciowym nerwu czaszkowego), <strong>II</strong> w rdzeniu/pniu (tu droga się <strong>krzyżuje</strong>), <strong>III</strong> we <strong>wzgórzu</strong> → kora czuciowa. Dlatego półkula odbiera czucie z przeciwnej połowy ciała.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>🟢 Czucie z tułowia i kończyn</h3>
+      <table class="ltable">
+        <tr><th>Droga</th><th>Rodzaj czucia</th><th>I → II → III neuron / przebieg</th></tr>
+        <tr><td><strong>Rdzeniowo-wzgórzowa boczna</strong></td><td><span class="czuc">ból, temperatura</span> (protopatyczne)</td><td>zwój → jądro własne rogu tylnego → <strong>krzyżuje w rdzeniu</strong> (spoidło) → sznur boczny → VPL wzgórza → kora</td></tr>
+        <tr><td><strong>Rdzeniowo-wzgórzowa przednia</strong></td><td><span class="czuc">dotyk gruby</span>, ucisk (protopatyczne)</td><td>jak wyżej, ale sznur przedni</td></tr>
+        <tr><td><strong>Sznury tylne</strong> (smukły/klinowaty) → <strong>droga rdzeniowo-opuszkowa</strong></td><td><span class="czuc">epikrytyczne + głębokie świadome</span></td><td>zwój → (bez przełączenia w rdzeniu) pęczek smukły/klinowaty → jądra smukłe/klinowate opuszki → <strong>skrzyżowanie wstęg</strong> → wstęga przyśrodkowa → VPL → kora</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>Różnica miejsca skrzyżowania: czucie <strong>bólu/temp</strong> krzyżuje się <strong>w rdzeniu</strong> (od razu), czucie <strong>epikrytyczne/głębokie</strong> dopiero <strong>w opuszce</strong> (skrzyżowanie wstęg). To klucz do lokalizacji uszkodzeń (zespół Browna-Séquarda).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>🟦 Czucie nieświadome do móżdżku (drogi domóżdżkowe)</h3>
+      <ul class="alist">
+        <li><strong>Droga rdzeniowo-móżdżkowa tylna</strong> <span class="lat">(Flechsiga)</span> — z <strong>jądra piersiowego Clarke'a</strong> → sznur boczny → <strong>konar dolny</strong> → móżdżek (nieskrzyżowana). Czucie głębokie nieświadome z dolnej połowy ciała.</li>
+        <li><strong>Droga rdzeniowo-móżdżkowa przednia</strong> <span class="lat">(Gowersa)</span> → sznur boczny → <strong>konar górny</strong> → móżdżek (podwójnie skrzyżowana). <em>Po co:</em> bieżąca kontrola ruchu i napięcia mięśni przez móżdżek.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🟡 Czucie z głowy (nerw trójdzielny)</h3>
+      <ul class="alist">
+        <li>I neuron: <strong>zwój trójdzielny</strong> (wyjątek: propriocepcja — jądro pasma śródmózgowiowego).</li>
+        <li>II neuron w jądrach V: <span class="czuc">ból/temp</span> → jądro pasma rdzeniowego; <span class="czuc">dotyk</span> → jądro główne; <span class="czuc">propriocepcja</span> → jądro pasma śródmózgowiowego.</li>
+        <li>Aksony II neuronu krzyżują się i tworzą <strong>wstęgę trójdzielną</strong> → <strong>VPM</strong> wzgórza → kora czuciowa (dolna część zakrętu zaśrodkowego).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="S20">
+    <div class="section-header">
+      <div class="section-num">20</div>
+      <div class="section-header-text">
+        <h2>Drogi piramidowe (ruch dowolny)</h2>
+        <span class="src-tag">cz. III · oba neurony główne</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>🔵 Układ piramidowy — 2 neurony główne</h3>
+      <p><strong>Droga piramidowa</strong> przewodzi impulsy <strong>ruchów dowolnych</strong>. Ma <strong>2 neurony główne</strong>:</p>
+      <ul class="alist">
+        <li><strong>I neuron — ośrodkowy (górny)</strong>: kora ruchowa (zakręt przedśrodkowy, komórki Betza) → wieniec promienisty → <strong>torebka wewnętrzna</strong> → odnoga mózgu → most → piramida.</li>
+        <li><strong>II neuron — obwodowy (dolny)</strong>: motoneuron rogu przedniego rdzenia (lub jądra ruchowego nerwu czaszkowego) → przez nerw do mięśnia.</li>
+      </ul>
+      <table class="ltable">
+        <tr><th>Droga</th><th>Przebieg i skrzyżowanie</th><th>Cel</th></tr>
+        <tr><td><strong>Korowo-rdzeniowa boczna</strong></td><td>~80–90% włókien <strong>krzyżuje się</strong> w skrzyżowaniu piramid → sznur boczny</td><td>motoneurony kończyn (ruchy precyzyjne)</td></tr>
+        <tr><td><strong>Korowo-rdzeniowa przednia</strong></td><td>włókna nieskrzyżowane w piramidach → sznur przedni → krzyżują się na poziomie swojego segmentu</td><td>mięśnie tułowia i przykręgosłupowe</td></tr>
+        <tr><td><strong>Korowo-jądrowa</strong></td><td>przez <strong>kolanko</strong> torebki wewnętrznej do jąder ruchowych nerwów czaszkowych (głównie obustronnie)</td><td>mięśnie głowy i szyi</td></tr>
+      </table>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Uszkodzenie <strong>neuronu ośrodkowego</strong> (górnego) → porażenie spastyczne (wzmożone napięcie, odruchy, objaw Babińskiego). Uszkodzenie <strong>obwodowego</strong> (dolnego) → porażenie wiotkie z zanikiem mięśni.</div></div>
+    </div>
+  </section>
+
+  <section id="S21">
+    <div class="section-header">
+      <div class="section-num">21</div>
+      <div class="section-header-text">
+        <h2>Układ i drogi pozapiramidowe</h2>
+        <span class="src-tag">cz. III · ośrodki i drogi pozapiramidowe</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>⚙️ Ośrodki pozapiramidowe</h3>
+      <p>Układ <strong>pozapiramidowy</strong> reguluje <strong>napięcie mięśni, postawę, ruchy automatyczne i mimowolne</strong> (towarzyszące, wyuczone). Ośrodki: <strong>prążkowie, gałka blada, istota czarna, jądro czerwienne, jądra niskowzgórza, twór siatkowaty, jądra przedsionkowe, wzgórki pokrywy</strong>.</p>
+    </div>
+    <div class="lcard">
+      <h3>🟠 Drogi pozapiramidowe (zstępujące)</h3>
+      <table class="ltable">
+        <tr><th>Droga</th><th>Początek</th><th>Po co</th></tr>
+        <tr><td><strong>Czerwienno-rdzeniowa</strong></td><td>jądro czerwienne (krzyżuje się)</td><td>napięcie mięśni zginaczy, współpraca z móżdżkiem</td></tr>
+        <tr><td><strong>Przedsionkowo-rdzeniowa</strong></td><td>jądra przedsionkowe</td><td>postawa, równowaga, napięcie prostowników (antygrawitacja)</td></tr>
+        <tr><td><strong>Siatkowo-rdzeniowa</strong></td><td>twór siatkowaty mostu i opuszki</td><td>napięcie mięśni, ruchy automatyczne, modulacja odruchów</td></tr>
+        <tr><td><strong>Pokrywowo-rdzeniowa = czworaczo-rdzeniowa</strong></td><td>wzgórki pokrywy (blaszka czworacza)</td><td>odruchowe ruchy głowy/tułowia na bodźce wzrokowe i słuchowe</td></tr>
+        <tr><td><strong>Oliwkowo-rdzeniowa</strong></td><td>jądro oliwki</td><td>koordynacja ruchowa, modulacja napięcia mięśni</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">🔁</span><div>Pętle współpracy: kora → prążkowie → gałka blada → wzgórze → kora; oraz móżdżek: jądro zębate → konar górny → jądro czerwienne i wzgórze. Uszkodzenia → drżenie, sztywność, ruchy mimowolne (np. parkinsonizm, pląsawica).</div></div>
+    </div>
+  </section>
+
+  <section id="S22">
+    <div class="section-header">
+      <div class="section-num">22</div>
+      <div class="section-header-text">
+        <h2>Wstęgi</h2>
+        <span class="src-tag">pasma czuciowe (i słuchowe) w pniu mózgu</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>🎗️ Cztery wstęgi</h3>
+      <p><strong>Wstęga</strong> <span class="lat">(lemniscus)</span> — pasmo włókien czuciowych (II neuronu) biegnące przez pień do wzgórza (oprócz słuchowej).</p>
+      <table class="ltable">
+        <tr><th>Wstęga</th><th>Co przewodzi</th><th>Dokąd</th></tr>
+        <tr><td><strong>Przyśrodkowa</strong></td><td>czucie epikrytyczne i głębokie (z jąder smukłego/klinowatego)</td><td>VPL wzgórza</td></tr>
+        <tr><td><strong>Rdzeniowa</strong></td><td>czucie protopatyczne (drogi rdzeniowo-wzgórzowe w obrębie pnia)</td><td>VPL wzgórza</td></tr>
+        <tr><td><strong>Trójdzielna</strong></td><td>czucie z głowy (z jąder czuciowych n. V)</td><td>VPM wzgórza</td></tr>
+        <tr><td><strong>Boczna</strong></td><td><span class="czuc">słuch</span> (z jąder ślimakowych)</td><td>wzgórki dolne i ciało kolankowate przyśrodkowe</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section id="S23">
+    <div class="section-header">
+      <div class="section-num">23</div>
+      <div class="section-header-text">
+        <h2>Układ autonomiczny (wegetatywny)</h2>
+        <span class="src-tag">współczulny i przywspółczulny · zwoje · ośrodki</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>🔴 Część współczulna (sympatyczna)</h3>
+      <ul class="alist">
+        <li><strong>Ośrodek:</strong> <strong>jądro pośrednio-boczne</strong> rogu bocznego rdzenia (Th1–L2/3) — leżą tu neurony <strong>przedzwojowe</strong>.</li>
+        <li><strong>Pień współczulny</strong> <span class="lat">(truncus sympathicus)</span> — łańcuch zwojów (przykręgowych) po obu stronach kręgosłupa, połączonych gałęziami; tu lub w zwojach przedkręgowych przełącza się na neuron <strong>zazwojowy</strong>.</li>
+        <li>Zwoje <strong>przedkręgowe</strong> (w jamie brzusznej, przy odejściach tętnic):
+          <br>• <strong>zwój trzewny</strong> <span class="lat">(ganglion coeliacum)</span> — żołądek, wątroba, trzustka, śledziona;
+          <br>• <strong>zwój krezkowy górny</strong> — jelito cienkie i prawa część okrężnicy;
+          <br>• <strong>zwój krezkowy dolny</strong> — lewa część okrężnicy, narządy miednicy.</li>
+        <li><strong>Ośrodek naczynioruchowy</strong> (opuszka, twór siatkowaty) — napięcie naczyń i ciśnienie krwi; <strong>ośrodek potowydzielniczy</strong> — sterowanie wydzielaniem potu (włókna współczulne do gruczołów potowych).</li>
+      </ul>
+      <p><em>Po co (współczulny):</em> mobilizacja organizmu — „walka lub ucieczka" (przyspieszenie serca, rozszerzenie źrenic i oskrzeli, hamowanie trawienia).</p>
+    </div>
+    <div class="lcard">
+      <h3>🔵 Część przywspółczulna (parasympatyczna)</h3>
+      <ul class="alist">
+        <li><strong>Część czaszkowa</strong> — jądra przywspółczulne nerwów czaszkowych:
+          <br>• <strong>jądro dodatkowe n. III</strong> (Westphala-Edingera) — źrenica, akomodacja;
+          <br>• <strong>jądro ślinowe górne</strong> (VII) — łzy, ślinianki podżuchwowa/podjęzykowa;
+          <br>• <strong>jądro ślinowe dolne</strong> (IX) — ślinianka przyuszna;
+          <br>• <strong>jądro grzbietowe n. X</strong> — narządy klatki piersiowej i jamy brzusznej.</li>
+        <li><strong>Część krzyżowa</strong> — <strong>jądro przywspółczulne krzyżowe</strong> (S2–S4) → narządy miednicy (pęcherz, końcowy odcinek jelita, narządy płciowe).</li>
+        <li>Neuron zazwojowy leży tu w zwojach <strong>blisko narządu</strong> (lub w jego ścianie).</li>
+      </ul>
+      <p><em>Po co (przywspółczulny):</em> „odpoczynek i trawienie" — zwężenie źrenicy, zwolnienie serca, pobudzenie wydzielania i perystaltyki.</p>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Jądro autonomiczne</strong> dzieli się na współczulne (sympatyczne) i przywspółczulne (parasympatyczne). Pamiętaj odpowiedniość: <strong>jądro pośrednio-boczne = współczulne</strong>, <strong>jądro przywspółczulne krzyżowe + jądra III/VII/IX/X = przywspółczulne</strong>.</div></div>
+    </div>
+  </section>
+
+  <div class="group-divider">
+    <span class="group-divider-label gdl-lit">✍️ Dodatek</span>
+    <span class="group-divider-line"></span>
+  </div>
+
+  <section id="wlasne">
+    <div class="section-header">
+      <div class="section-num">✍️</div>
+      <div class="section-header-text">
+        <h2>Pojęcia opisane przeze mnie (uzupełnienie)</h2>
+        <span class="src-tag">poza bezpośrednim zakresem źródeł — oznaczone osobno</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="callout warn"><span class="ci">⚠️</span><div>Ta sekcja zawiera pojęcia, których <strong>nie udało się jednoznacznie potwierdzić w udostępnionych podręcznikach</strong> (Gołąb, Bochenek — skany), więc opisuję je <strong>z wiedzy własnej</strong>. Cała pozostała część notatki opiera się na tych źródłach i schemacie POMOCNIKA.</div></div>
+      <h3>Pojęcia ogólne (cybernetyka / fizjologia)</h3>
+      <ul class="alist">
+        <li><strong>Sterowanie</strong> — w ujęciu cybernetycznym: kierowanie czynnością układu tak, by osiągnąć cel; w organizmie realizowane przez układ nerwowy i hormonalny z wykorzystaniem sprzężeń zwrotnych. (Opisane z wiedzy własnej — pojęcie ogólne, nie czysto anatomiczne.)</li>
+        <li><strong>Bodziec / impuls</strong> — opisane w sekcji 2 wg standardowej fizjologii; gdyby definicje wykładowcy różniły się w szczegółach, należy je zweryfikować z notatkami z wykładu.</li>
+      </ul>
+      <div class="callout tip"><span class="ci">✅</span><div>Praktycznie <strong>wszystkie pojęcia anatomiczne z części I i II POMOCNIKA</strong> są standardowymi strukturami OUN opisanymi w podręcznikach Gołąba i Bochenka — dlatego ta sekcja jest celowo krótka. Jeśli wykładowca używa innej, autorskiej definicji jakiegoś terminu, najlepiej skonfrontować ją z notatką z wykładu.</div></div>
+    </div>
+  </section>
+</main>
+</div>
+
+<footer>StudyZone &mdash; materiały pomocnicze do nauki · Neuroanatomia</footer>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = links.map(function(a){ var el=document.querySelector(a.getAttribute('href')); return {a:a, el:el}; }).filter(function(x){return x.el;});
+  function onScroll(){
+    var y = window.scrollY + 90, cur=null;
+    map.forEach(function(x){ if(x.el.offsetTop <= y) cur=x; });
+    links.forEach(function(a){ a.classList.remove('active'); });
+    if(cur) cur.a.classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>

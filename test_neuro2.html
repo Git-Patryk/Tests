@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 2 — Pień mózgu i nerwy czaszkowe – Neuroanatomia</title>
+<style>
+  :root {
+    --am:   #f59e0b;
+    --am2:  #d97706;
+    --am3:  #fcd34d;
+    --am4:  #fef3c7;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #fffaf0;
+    --border: #e7e0d2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #fffdf7; color: #212529; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #92400e 0%, var(--am2) 100%); color: #fff; padding: 2rem 1.5rem 1.5rem; text-align: center; }
+  header .back-link { display: inline-block; color: rgba(255,255,255,.75); text-decoration: none; font-size: .82rem; font-family: sans-serif; margin-bottom: .8rem; transition: color .2s; }
+  header .back-link:hover { color: #fff; }
+  header h1 { font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; font-family: sans-serif; }
+  #start-screen, #quiz-screen, #result-screen { max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .start-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.12); }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--am2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics { text-align: left; background: #fef6e3; border-radius: 10px; padding: 1.2rem 1.4rem; margin: 1.2rem 0; border: 1px solid #fae3b0; }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--am2); }
+  .level-badge { display: inline-block; background: var(--am2); color: #fff; font-family: sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .08em; padding: .3rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+  .btn { display: inline-block; background: var(--am2); color: #fff; border: none; border-radius: 10px; padding: .85rem 2.2rem; font-size: 1.05rem; font-weight: 700; cursor: pointer; margin-top: 1.2rem; transition: background .2s, transform .1s; font-family: sans-serif; }
+  .btn:hover { background: #b45309; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--am2), var(--am3)); border-radius: 4px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--gray); margin-bottom: .35rem; font-family: sans-serif; }
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1rem; }
+  .q-num { font-size: .78rem; color: var(--am2); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .5rem; font-family: sans-serif; }
+  .q-text { font-size: 1.05rem; line-height: 1.65; margin-bottom: 1.4rem; color: #1a1a1a; }
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn { display: flex; align-items: flex-start; gap: .9rem; background: var(--light); border: 2px solid var(--border); border-radius: 10px; padding: .85rem 1.1rem; cursor: pointer; text-align: left; transition: border-color .15s, background .15s; font-family: sans-serif; font-size: .95rem; line-height: 1.5; color: #212529; }
+  .option-btn:hover:not(:disabled) { border-color: var(--am3); background: #fef6e3; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--am2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--am4); border-color: var(--am2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #b45309; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback-box { margin-top: 1rem; padding: .9rem 1.1rem; border-radius: 10px; font-size: .9rem; line-height: 1.6; display: none; font-family: sans-serif; }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--am4); border-left: 4px solid var(--am2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1.5rem; }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--am2); }
+  .score-circle { width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, #92400e, var(--am2)); color: #fff; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 0 30px rgba(217,119,6,.4); }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #b45309; }
+  .stat-wrong strong { color: var(--red); }
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; font-family: sans-serif; }
+  .review-item.ok   { background: var(--am4); border-left: 3px solid var(--am2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+  @media (max-width: 480px) { .result-stats { grid-template-columns: repeat(2, 1fr); } .question-card { padding: 1.3rem; } .q-text { font-size: .97rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="neuro-testy.html">← Wróć do listy testów</a>
+  <h1>Neuroanatomia</h1>
+  <p>Część 2 · Pień mózgu, jądra i nerwy czaszkowe I–XII · 53 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">CZĘŚĆ 2</div>
+    <h2>Test 2 — pień mózgu i nerwy czaszkowe</h2>
+    <p>Test obejmuje <strong>rdzeń przedłużony, most i śródmózgowie</strong>, twór siatkowaty, <strong>jądra nerwów czaszkowych</strong> oraz <strong>nerwy czaszkowe I–XII</strong> (rodzaj włókien, jądra i funkcja).</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Piramidy i skrzyżowanie piramid · oliwka · jądra smukłe i klinowate, skrzyżowanie wstęg · dół równoległoboczny · most i konary móżdżku · pokrywa, blaszka czworacza, wzgórki · istota czarna, jądro czerwienne, wodociąg · twór siatkowaty · jądra nerwów czaszkowych (ruchowe, przywspółczulne, czuciowe) · nerwy I–XII · nerwy główne splotów</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>53 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 53</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progBar" style="width:0%"></div></div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row"><button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button></div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle"><span class="score-num" id="resFinal">0</span><span class="score-denom" id="resDenom">/53</span></div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "q": "Co przewodzą piramidy rdzenia przedłużonego?",
+    "opts": [
+      {
+        "t": "Włókna drogi piramidowej (korowo-rdzeniowej) — ruch dowolny",
+        "c": true
+      },
+      {
+        "t": "Czucie bólu i temperatury",
+        "c": false
+      },
+      {
+        "t": "Włókna węchowe",
+        "c": false
+      },
+      {
+        "t": "Płyn mózgowo-rdzeniowy",
+        "c": false
+      }
+    ],
+    "exp": "W piramidach biegną włókna drogi korowo-rdzeniowej (piramidowej) — odpowiadają za ruch dowolny."
+  },
+  {
+    "q": "Co dzieje się w skrzyżowaniu piramid?",
+    "opts": [
+      {
+        "t": "Większość włókien korowo-rdzeniowych przechodzi na stronę przeciwną",
+        "c": true
+      },
+      {
+        "t": "Krzyżują się drogi węchowe",
+        "c": false
+      },
+      {
+        "t": "Łączą się korzenie nerwów rdzeniowych",
+        "c": false
+      },
+      {
+        "t": "Powstaje wstęga boczna",
+        "c": false
+      }
+    ],
+    "exp": "W skrzyżowaniu piramid ~80–90% włókien korowo-rdzeniowych przechodzi na stronę przeciwną (→ droga korowo-rdzeniowa boczna), dlatego półkula steruje przeciwległą połową ciała."
+  },
+  {
+    "q": "Co zawiera oliwka rdzenia przedłużonego?",
+    "opts": [
+      {
+        "t": "Jądro oliwki — związane z móżdżkiem i koordynacją ruchu",
+        "c": true
+      },
+      {
+        "t": "Jądra czuciowe nerwu trójdzielnego",
+        "c": false
+      },
+      {
+        "t": "Ośrodek wzrokowy",
+        "c": false
+      },
+      {
+        "t": "Jądra przedsionkowe",
+        "c": false
+      }
+    ],
+    "exp": "Oliwka (oliva) to wyniesienie zawierające jądro oliwki — pozapiramidowe, związane z móżdżkiem (droga oliwkowo-rdzeniowa, koordynacja)."
+  },
+  {
+    "q": "Gdzie kończą się pęczki smukły i klinowaty?",
+    "opts": [
+      {
+        "t": "W jądrach smukłym i klinowatym rdzenia przedłużonego",
+        "c": true
+      },
+      {
+        "t": "We wzgórzu",
+        "c": false
+      },
+      {
+        "t": "W korze czuciowej",
+        "c": false
+      },
+      {
+        "t": "W jądrach przedsionkowych",
+        "c": false
+      }
+    ],
+    "exp": "Pęczki smukły i klinowaty kończą się w jądrach smukłym i klinowatym opuszki (II neuron czucia epikrytycznego/głębokiego)."
+  },
+  {
+    "q": "Co powstaje w skrzyżowaniu wstęg?",
+    "opts": [
+      {
+        "t": "Wstęga przyśrodkowa (po przejściu włókien z jąder smukłego i klinowatego na stronę przeciwną)",
+        "c": true
+      },
+      {
+        "t": "Droga piramidowa boczna",
+        "c": false
+      },
+      {
+        "t": "Wstęga boczna",
+        "c": false
+      },
+      {
+        "t": "Pasmo wzrokowe",
+        "c": false
+      }
+    ],
+    "exp": "Aksony z jąder smukłego i klinowatego krzyżują się (skrzyżowanie wstęg) i tworzą wstęgę przyśrodkową biegnącą do wzgórza."
+  },
+  {
+    "q": "Czym jest dół równoległoboczny?",
+    "opts": [
+      {
+        "t": "Dnem komory czwartej",
+        "c": true
+      },
+      {
+        "t": "Jamą śródmózgowia",
+        "c": false
+      },
+      {
+        "t": "Zbiornikiem płynu w przestrzeni podpajęczynówkowej",
+        "c": false
+      },
+      {
+        "t": "Bruzdą na powierzchni móżdżku",
+        "c": false
+      }
+    ],
+    "exp": "Dół równoległoboczny (fossa rhomboidea) to dno komory IV; jego dolna połowa należy do opuszki, górna do mostu — rzutują się na nim jądra nerwów czaszkowych."
+  },
+  {
+    "q": "Gdzie znajduje się ośrodek naczynioruchowy?",
+    "opts": [
+      {
+        "t": "W tworze siatkowatym rdzenia przedłużonego",
+        "c": true
+      },
+      {
+        "t": "W korze ruchowej",
+        "c": false
+      },
+      {
+        "t": "W móżdżku",
+        "c": false
+      },
+      {
+        "t": "W przysadce",
+        "c": false
+      }
+    ],
+    "exp": "Ośrodek naczynioruchowy leży w tworze siatkowatym opuszki (obok ośrodków oddechowego i sercowego) i reguluje napięcie naczyń oraz ciśnienie krwi."
+  },
+  {
+    "q": "Z którego pęcherzyka rozwija się most i z czym jest połączony konarami?",
+    "opts": [
+      {
+        "t": "Z tyłomózgowia wtórnego; połączony z móżdżkiem konarami móżdżku",
+        "c": true
+      },
+      {
+        "t": "Z rdzeniomózgowia; połączony z rdzeniem",
+        "c": false
+      },
+      {
+        "t": "Ze śródmózgowia; połączony ze wzgórzem",
+        "c": false
+      },
+      {
+        "t": "Z kresomózgowia; połączony z korą",
+        "c": false
+      }
+    ],
+    "exp": "Most pochodzi z tyłomózgowia wtórnego (razem z móżdżkiem) i łączy się z móżdżkiem konarami; przekazuje informacje z kory do móżdżku."
+  },
+  {
+    "q": "Który konar móżdżku jest największy i doprowadzający (z mostu)?",
+    "opts": [
+      {
+        "t": "Konar środkowy",
+        "c": true
+      },
+      {
+        "t": "Konar górny",
+        "c": false
+      },
+      {
+        "t": "Konar dolny",
+        "c": false
+      },
+      {
+        "t": "Konar boczny",
+        "c": false
+      }
+    ],
+    "exp": "Konar środkowy (z mostu) jest największy i doprowadzający; górny biegnie do śródmózgowia (odprowadzający), dolny z opuszki."
+  },
+  {
+    "q": "Czym jest pokrywa śródmózgowia?",
+    "opts": [
+      {
+        "t": "Grzbietową częścią śródmózgowia (do tyłu od wodociągu)",
+        "c": true
+      },
+      {
+        "t": "Przednią częścią z drogami zstępującymi",
+        "c": false
+      },
+      {
+        "t": "Jamą śródmózgowia",
+        "c": false
+      },
+      {
+        "t": "Jądrem ruchowym nerwu III",
+        "c": false
+      }
+    ],
+    "exp": "Pokrywa (tectum) to grzbietowa część śródmózgowia leżąca do tyłu od wodociągu; zawiera blaszkę czworaczą."
+  },
+  {
+    "q": "Co znajduje się na blaszce czworaczej (pokrywy)?",
+    "opts": [
+      {
+        "t": "Cztery wzgórki: górne (wzrokowe) i dolne (słuchowe)",
+        "c": true
+      },
+      {
+        "t": "Jądra przedsionkowe i ślimakowe",
+        "c": false
+      },
+      {
+        "t": "Istota czarna i jądro czerwienne",
+        "c": false
+      },
+      {
+        "t": "Ciała kolankowate",
+        "c": false
+      }
+    ],
+    "exp": "Blaszka czworacza (lamina tecti) ma 4 wzgórki: górne — ośrodek wzrokowy podkorowy, dolne — słuchowy podkorowy."
+  },
+  {
+    "q": "Jaką funkcję pełnią wzgórki górne pokrywy?",
+    "opts": [
+      {
+        "t": "Są podkorowym ośrodkiem wzrokowym (odruchy wzrokowe)",
+        "c": true
+      },
+      {
+        "t": "Są ośrodkiem słuchowym",
+        "c": false
+      },
+      {
+        "t": "Wytwarzają płyn mózgowo-rdzeniowy",
+        "c": false
+      },
+      {
+        "t": "Sterują źrenicą bezpośrednio",
+        "c": false
+      }
+    ],
+    "exp": "Wzgórki górne pokrywy to podkorowy ośrodek wzrokowy (odruchowe ruchy gałek i głowy za bodźcem); związane z ciałem kolankowatym bocznym."
+  },
+  {
+    "q": "Jaką funkcję pełnią wzgórki dolne pokrywy?",
+    "opts": [
+      {
+        "t": "Są podkorowym ośrodkiem słuchowym (odruchy słuchowe)",
+        "c": true
+      },
+      {
+        "t": "Są ośrodkiem wzrokowym",
+        "c": false
+      },
+      {
+        "t": "Sterują równowagą",
+        "c": false
+      },
+      {
+        "t": "Produkują dopaminę",
+        "c": false
+      }
+    ],
+    "exp": "Wzgórki dolne pokrywy to podkorowy ośrodek słuchowy; związane z ciałem kolankowatym przyśrodkowym i wstęgą boczną."
+  },
+  {
+    "q": "Z czego składa się konar śródmózgowia?",
+    "opts": [
+      {
+        "t": "Z odnogi (konaru) mózgu i nakrywki, rozdzielonych istotą czarną",
+        "c": true
+      },
+      {
+        "t": "Wyłącznie z istoty białej",
+        "c": false
+      },
+      {
+        "t": "Z pokrywy i wodociągu",
+        "c": false
+      },
+      {
+        "t": "Z mostu i móżdżku",
+        "c": false
+      }
+    ],
+    "exp": "Konar śródmózgowia = odnoga mózgu (drogi zstępujące na powierzchni przedniej) + nakrywka (jądra i drogi wstępujące); granicę stanowi istota czarna."
+  },
+  {
+    "q": "Co zawiera odnoga (konar) mózgu?",
+    "opts": [
+      {
+        "t": "Drogi zstępujące: korowo-rdzeniowe, korowo-jądrowe i korowo-mostowe",
+        "c": true
+      },
+      {
+        "t": "Jądra czuciowe nerwu V",
+        "c": false
+      },
+      {
+        "t": "Wstęgę przyśrodkową",
+        "c": false
+      },
+      {
+        "t": "Splot naczyniówkowy",
+        "c": false
+      }
+    ],
+    "exp": "Odnoga mózgu (crus cerebri) to pęczek dróg zstępujących na przedniej powierzchni śródmózgowia."
+  },
+  {
+    "q": "Jaką substancję produkuje istota czarna i do jakiego układu należy?",
+    "opts": [
+      {
+        "t": "Dopaminę; należy do układu pozapiramidowego",
+        "c": true
+      },
+      {
+        "t": "Acetylocholinę; do układu piramidowego",
+        "c": false
+      },
+      {
+        "t": "Serotoninę; do układu limbicznego",
+        "c": false
+      },
+      {
+        "t": "Adrenalinę; do układu autonomicznego",
+        "c": false
+      }
+    ],
+    "exp": "Istota czarna (substantia nigra) produkuje dopaminę i jest ośrodkiem pozapiramidowym; jej uszkodzenie prowadzi do choroby Parkinsona."
+  },
+  {
+    "q": "Co rozpoczyna się w jądrze czerwiennym?",
+    "opts": [
+      {
+        "t": "Droga czerwienno-rdzeniowa (układ pozapiramidowy)",
+        "c": true
+      },
+      {
+        "t": "Droga piramidowa",
+        "c": false
+      },
+      {
+        "t": "Wstęga boczna",
+        "c": false
+      },
+      {
+        "t": "Droga węchowa",
+        "c": false
+      }
+    ],
+    "exp": "Jądro czerwienne (nucleus ruber) w nakrywce daje początek drodze czerwienno-rdzeniowej; współpracuje z móżdżkiem (droga zębato-czerwienna)."
+  },
+  {
+    "q": "Co łączy wodociąg mózgu (Sylwiusza)?",
+    "opts": [
+      {
+        "t": "Komorę trzecią z komorą czwartą",
+        "c": true
+      },
+      {
+        "t": "Komory boczne z komorą trzecią",
+        "c": false
+      },
+      {
+        "t": "Komorę czwartą z przestrzenią podpajęczynówkową",
+        "c": false
+      },
+      {
+        "t": "Komorę boczną z kanałem rdzenia",
+        "c": false
+      }
+    ],
+    "exp": "Wodociąg mózgu to wąski kanał śródmózgowia łączący komorę III z IV; jego zamknięcie powoduje wodogłowie."
+  },
+  {
+    "q": "Czym jest twór siatkowaty?",
+    "opts": [
+      {
+        "t": "Siecią rozproszonych neuronów i włókien w nakrywce pnia mózgu",
+        "c": true
+      },
+      {
+        "t": "Zwartym jądrem śródmózgowia",
+        "c": false
+      },
+      {
+        "t": "Pasmem istoty białej między półkulami",
+        "c": false
+      },
+      {
+        "t": "Splotem naczyniowym komory IV",
+        "c": false
+      }
+    ],
+    "exp": "Twór siatkowaty (formatio reticularis) to sieć rozproszonych neuronów w nakrywce całego pnia — nie tworzy zwartych jąder ani dróg."
+  },
+  {
+    "q": "Za co odpowiada twór siatkowaty (ARAS)?",
+    "opts": [
+      {
+        "t": "Za czuwanie, sen i świadomość oraz ośrodki życiowe",
+        "c": true
+      },
+      {
+        "t": "Za czucie epikrytyczne z kończyn",
+        "c": false
+      },
+      {
+        "t": "Za ostrość wzroku",
+        "c": false
+      },
+      {
+        "t": "Za wydzielanie hormonów przysadki",
+        "c": false
+      }
+    ],
+    "exp": "Twór siatkowaty zawiera wstępujący układ aktywujący (ARAS — czuwanie, świadomość) oraz ośrodki życiowe (oddechowy, naczynioruchowy, sercowy)."
+  },
+  {
+    "q": "Gdzie leży jądro ruchowe nerwu III (okoruchowego)?",
+    "opts": [
+      {
+        "t": "W śródmózgowiu",
+        "c": true
+      },
+      {
+        "t": "W moście",
+        "c": false
+      },
+      {
+        "t": "W rdzeniu przedłużonym",
+        "c": false
+      },
+      {
+        "t": "W rdzeniu szyjnym",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ruchowe n. III leży w śródmózgowiu (na wysokości wzgórków górnych)."
+  },
+  {
+    "q": "Gdzie leży jądro ruchowe nerwu IV (bloczkowego)?",
+    "opts": [
+      {
+        "t": "W śródmózgowiu (na wysokości wzgórków dolnych)",
+        "c": true
+      },
+      {
+        "t": "W moście",
+        "c": false
+      },
+      {
+        "t": "W opuszce",
+        "c": false
+      },
+      {
+        "t": "W rdzeniu szyjnym",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ruchowe n. IV leży w śródmózgowiu na wysokości wzgórków dolnych."
+  },
+  {
+    "q": "Gdzie leży jądro ruchowe nerwu VI (odwodzącego)?",
+    "opts": [
+      {
+        "t": "W moście",
+        "c": true
+      },
+      {
+        "t": "W śródmózgowiu",
+        "c": false
+      },
+      {
+        "t": "W opuszce",
+        "c": false
+      },
+      {
+        "t": "W rdzeniu szyjnym",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ruchowe n. VI leży w moście (pod wzgórkiem twarzowym dna komory IV)."
+  },
+  {
+    "q": "Gdzie leży jądro ruchowe nerwu XII (podjęzykowego)?",
+    "opts": [
+      {
+        "t": "W rdzeniu przedłużonym (opuszce)",
+        "c": true
+      },
+      {
+        "t": "W moście",
+        "c": false
+      },
+      {
+        "t": "W śródmózgowiu",
+        "c": false
+      },
+      {
+        "t": "W rdzeniu krzyżowym",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ruchowe n. XII leży w opuszce (trójkąt nerwu podjęzykowego na dnie komory IV)."
+  },
+  {
+    "q": "Mięśnie których struktur zaopatruje jądro dwuznaczne?",
+    "opts": [
+      {
+        "t": "Mięśnie gardła i krtani (nerwy IX, X, część opuszkowa XI)",
+        "c": true
+      },
+      {
+        "t": "Mięśnie żucia",
+        "c": false
+      },
+      {
+        "t": "Mięśnie mimiczne",
+        "c": false
+      },
+      {
+        "t": "Mięśnie języka",
+        "c": false
+      }
+    ],
+    "exp": "Jądro dwuznaczne (nucleus ambiguus) w opuszce unerwia ruchowo mięśnie gardła i krtani przez nerwy IX, X i część opuszkową XI."
+  },
+  {
+    "q": "Które jądro ruchowe zaopatruje mięśnie żucia?",
+    "opts": [
+      {
+        "t": "Jądro ruchowe nerwu V (trójdzielnego)",
+        "c": true
+      },
+      {
+        "t": "Jądro ruchowe nerwu VII",
+        "c": false
+      },
+      {
+        "t": "Jądro dwuznaczne",
+        "c": false
+      },
+      {
+        "t": "Jądro ruchowe nerwu XII",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ruchowe n. V (w moście) unerwia mięśnie żucia (włókna biegną w gałęzi żuchwowej V3)."
+  },
+  {
+    "q": "Które jądro ruchowe zaopatruje mięśnie mimiczne?",
+    "opts": [
+      {
+        "t": "Jądro ruchowe nerwu VII (twarzowego)",
+        "c": true
+      },
+      {
+        "t": "Jądro ruchowe nerwu V",
+        "c": false
+      },
+      {
+        "t": "Jądro dwuznaczne",
+        "c": false
+      },
+      {
+        "t": "Jądro ruchowe nerwu VI",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ruchowe n. VII (w moście) unerwia mięśnie mimiczne twarzy."
+  },
+  {
+    "q": "Gdzie leży jądro ruchowe nerwu XI (dodatkowego)?",
+    "opts": [
+      {
+        "t": "W rdzeniu szyjnym (C1–C5/6), róg przedni",
+        "c": true
+      },
+      {
+        "t": "W śródmózgowiu",
+        "c": false
+      },
+      {
+        "t": "W moście",
+        "c": false
+      },
+      {
+        "t": "We wzgórzu",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ruchowe n. XI (część rdzeniowa) leży w rogu przednim rdzenia szyjnego C1–C5/6; unerwia m. MOS i czworoboczny."
+  },
+  {
+    "q": "Jaką funkcję pełni jądro dodatkowe n. III (Westphala-Edingera)?",
+    "opts": [
+      {
+        "t": "Przywspółczulną — zwężenie źrenicy i akomodację",
+        "c": true
+      },
+      {
+        "t": "Ruch gałki ocznej w bok",
+        "c": false
+      },
+      {
+        "t": "Czucie z rogówki",
+        "c": false
+      },
+      {
+        "t": "Wydzielanie śliny",
+        "c": false
+      }
+    ],
+    "exp": "Jądro dodatkowe n. III (Westphala-Edingera) jest przywspółczulne — odpowiada za zwężenie źrenicy i akomodację."
+  },
+  {
+    "q": "Które ślinianki zaopatruje jądro ślinowe górne (nerw VII)?",
+    "opts": [
+      {
+        "t": "Ślinianki podżuchwową i podjęzykową oraz gruczoły łzowe",
+        "c": true
+      },
+      {
+        "t": "Tylko śliniankę przyuszną",
+        "c": false
+      },
+      {
+        "t": "Gruczoły żołądka",
+        "c": false
+      },
+      {
+        "t": "Gruczoły potowe skóry",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ślinowe górne (VII) zaopatruje przywspółczulnie ślinianki podżuchwową i podjęzykową oraz gruczoł łzowy."
+  },
+  {
+    "q": "Którą śliniankę zaopatruje jądro ślinowe dolne (nerw IX)?",
+    "opts": [
+      {
+        "t": "Śliniankę przyuszną",
+        "c": true
+      },
+      {
+        "t": "Śliniankę podżuchwową",
+        "c": false
+      },
+      {
+        "t": "Śliniankę podjęzykową",
+        "c": false
+      },
+      {
+        "t": "Gruczoł łzowy",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ślinowe dolne (IX) zaopatruje przywspółczulnie śliniankę przyuszną."
+  },
+  {
+    "q": "Jaką funkcję pełni jądro samotne?",
+    "opts": [
+      {
+        "t": "Czuciową — odbiera smak i czucie trzewne (nerwy VII, IX, X)",
+        "c": true
+      },
+      {
+        "t": "Ruchową — mięśnie krtani",
+        "c": false
+      },
+      {
+        "t": "Przywspółczulną — źrenica",
+        "c": false
+      },
+      {
+        "t": "Czucie dotyku z twarzy",
+        "c": false
+      }
+    ],
+    "exp": "Jądro samotne (nucleus solitarius) to jądro czuciowe smaku i czucia trzewnego dla nerwów VII, IX i X."
+  },
+  {
+    "q": "Które jądro nerwu V odbiera czucie dotyku z twarzy?",
+    "opts": [
+      {
+        "t": "Jądro główne nerwu V",
+        "c": true
+      },
+      {
+        "t": "Jądro pasma rdzeniowego nerwu V",
+        "c": false
+      },
+      {
+        "t": "Jądro pasma śródmózgowiowego nerwu V",
+        "c": false
+      },
+      {
+        "t": "Jądro samotne",
+        "c": false
+      }
+    ],
+    "exp": "Jądro główne (czuciowe) n. V odbiera czucie dotyku (epikrytyczne) z twarzy."
+  },
+  {
+    "q": "Które jądro nerwu V odbiera ból i temperaturę z twarzy?",
+    "opts": [
+      {
+        "t": "Jądro pasma rdzeniowego nerwu V",
+        "c": true
+      },
+      {
+        "t": "Jądro główne nerwu V",
+        "c": false
+      },
+      {
+        "t": "Jądro pasma śródmózgowiowego nerwu V",
+        "c": false
+      },
+      {
+        "t": "Jądra ślimakowe",
+        "c": false
+      }
+    ],
+    "exp": "Jądro pasma rdzeniowego n. V odbiera czucie bólu i temperatury (protopatyczne) z twarzy."
+  },
+  {
+    "q": "Co odbiera jądro pasma śródmózgowiowego nerwu V (wyjątkowe jądro)?",
+    "opts": [
+      {
+        "t": "Czucie proprioceptywne z mięśni żucia — jego komórki to I neuron leżący w OUN",
+        "c": true
+      },
+      {
+        "t": "Smak z przedniej części języka",
+        "c": false
+      },
+      {
+        "t": "Czucie bólu z twarzy",
+        "c": false
+      },
+      {
+        "t": "Słuch",
+        "c": false
+      }
+    ],
+    "exp": "Jądro pasma śródmózgowiowego n. V odbiera propriocepcję z mięśni żucia; wyjątkowo ciała I neuronu czuciowego leżą w OUN, nie w zwoju."
+  },
+  {
+    "q": "Co odbierają jądra przedsionkowe (nerw VIII)?",
+    "opts": [
+      {
+        "t": "Informacje o równowadze z błędnika",
+        "c": true
+      },
+      {
+        "t": "Bodźce słuchowe ze ślimaka",
+        "c": false
+      },
+      {
+        "t": "Smak z języka",
+        "c": false
+      },
+      {
+        "t": "Czucie z rogówki",
+        "c": false
+      }
+    ],
+    "exp": "Jądra przedsionkowe odbierają informacje o równowadze (część przedsionkowa VIII) i dają początek drodze przedsionkowo-rdzeniowej."
+  },
+  {
+    "q": "Co odbierają jądra ślimakowe (nerw VIII)?",
+    "opts": [
+      {
+        "t": "Bodźce słuchowe ze ślimaka",
+        "c": true
+      },
+      {
+        "t": "Informacje o równowadze",
+        "c": false
+      },
+      {
+        "t": "Smak",
+        "c": false
+      },
+      {
+        "t": "Czucie głębokie",
+        "c": false
+      }
+    ],
+    "exp": "Jądra ślimakowe odbierają słuch (część ślimakowa VIII) i dają początek drodze słuchowej → wstęga boczna."
+  },
+  {
+    "q": "Jaki jest charakter i funkcja nerwu węchowego (I)?",
+    "opts": [
+      {
+        "t": "Czuciowy specjalny — przewodzi węch z błony śluzowej nosa do opuszki węchowej",
+        "c": true
+      },
+      {
+        "t": "Ruchowy — mięśnie nosa",
+        "c": false
+      },
+      {
+        "t": "Mieszany — smak i czucie",
+        "c": false
+      },
+      {
+        "t": "Przywspółczulny — gruczoły nosa",
+        "c": false
+      }
+    ],
+    "exp": "Nerw I (węchowy) jest czuciowy specjalny — nici węchowe biegną do opuszki węchowej, dalej pasmem węchowym do kory."
+  },
+  {
+    "q": "Co przewodzi nerw wzrokowy (II) i dokąd dochodzi?",
+    "opts": [
+      {
+        "t": "Wzrok z siatkówki — przez skrzyżowanie i pasmo wzrokowe do ciała kolankowatego bocznego",
+        "c": true
+      },
+      {
+        "t": "Czucie z gałki ocznej do wzgórza",
+        "c": false
+      },
+      {
+        "t": "Ruch gałki ocznej",
+        "c": false
+      },
+      {
+        "t": "Węch do kory skroniowej",
+        "c": false
+      }
+    ],
+    "exp": "Nerw II (wzrokowy) przewodzi wzrok z komórek zwojowych siatkówki przez skrzyżowanie wzrokowe i pasmo wzrokowe do ciała kolankowatego bocznego."
+  },
+  {
+    "q": "Jaki charakter ma nerw okoruchowy (III)?",
+    "opts": [
+      {
+        "t": "Ruchowy i przywspółczulny — większość mięśni gałki, dźwigacz powieki, źrenica, akomodacja",
+        "c": true
+      },
+      {
+        "t": "Wyłącznie czuciowy",
+        "c": false
+      },
+      {
+        "t": "Wyłącznie przywspółczulny",
+        "c": false
+      },
+      {
+        "t": "Mieszany czuciowo-ruchowy bez włókien autonomicznych",
+        "c": false
+      }
+    ],
+    "exp": "Nerw III (okoruchowy) jest ruchowy + przywspółczulny: 4 z 6 mięśni gałki i dźwigacz powieki, a przez jądro Westphala — zwężenie źrenicy i akomodacja."
+  },
+  {
+    "q": "Czym wyróżnia się nerw bloczkowy (IV)?",
+    "opts": [
+      {
+        "t": "Jest jedynym nerwem wychodzącym z tylnej powierzchni pnia; unerwia m. skośny górny",
+        "c": true
+      },
+      {
+        "t": "Jest najgrubszym nerwem czaszkowym",
+        "c": false
+      },
+      {
+        "t": "Unerwia mięśnie żucia",
+        "c": false
+      },
+      {
+        "t": "Jest wyłącznie czuciowy",
+        "c": false
+      }
+    ],
+    "exp": "Nerw IV (bloczkowy) jako jedyny wychodzi z tylnej powierzchni pnia i unerwia mięsień skośny górny gałki ocznej."
+  },
+  {
+    "q": "Jaki jest główny zakres czuciowy nerwu trójdzielnego (V)?",
+    "opts": [
+      {
+        "t": "Czucie z twarzy (3 gałęzie: oczna, szczękowa, żuchwowa) + ruch mięśni żucia",
+        "c": true
+      },
+      {
+        "t": "Czucie ze skóry tułowia",
+        "c": false
+      },
+      {
+        "t": "Słuch i równowaga",
+        "c": false
+      },
+      {
+        "t": "Czucie trzewne z brzucha",
+        "c": false
+      }
+    ],
+    "exp": "Nerw V (trójdzielny) jest głównym nerwem czuciowym twarzy (V1, V2, V3) i ruchowo unerwia mięśnie żucia (V3); I neuron w zwoju trójdzielnym."
+  },
+  {
+    "q": "Co unerwia nerw odwodzący (VI)?",
+    "opts": [
+      {
+        "t": "Mięsień prosty boczny gałki ocznej (odwodzi oko)",
+        "c": true
+      },
+      {
+        "t": "Mięsień skośny górny",
+        "c": false
+      },
+      {
+        "t": "Mięśnie mimiczne",
+        "c": false
+      },
+      {
+        "t": "Mięśnie języka",
+        "c": false
+      }
+    ],
+    "exp": "Nerw VI (odwodzący) unerwia mięsień prosty boczny gałki ocznej, odwodzący oko."
+  },
+  {
+    "q": "Jaki charakter ma nerw twarzowy (VII)?",
+    "opts": [
+      {
+        "t": "Mieszany — ruch mięśni mimicznych, łzy/ślinianki, smak z 2/3 przednich języka",
+        "c": true
+      },
+      {
+        "t": "Wyłącznie ruchowy do mięśni żucia",
+        "c": false
+      },
+      {
+        "t": "Wyłącznie czuciowy z twarzy",
+        "c": false
+      },
+      {
+        "t": "Przywspółczulny do narządów brzucha",
+        "c": false
+      }
+    ],
+    "exp": "Nerw VII (twarzowy) jest mieszany: ruch mimiczny, przywspółczulnie łzy i ślinianki podżuchwowa/podjęzykowa, smak z 2/3 przednich języka."
+  },
+  {
+    "q": "Co przewodzi nerw przedsionkowo-ślimakowy (VIII)?",
+    "opts": [
+      {
+        "t": "Równowagę (część przedsionkowa) i słuch (część ślimakowa)",
+        "c": true
+      },
+      {
+        "t": "Smak i czucie z gardła",
+        "c": false
+      },
+      {
+        "t": "Ruch gałki ocznej",
+        "c": false
+      },
+      {
+        "t": "Czucie z twarzy",
+        "c": false
+      }
+    ],
+    "exp": "Nerw VIII (przedsionkowo-ślimakowy = statyczno-słuchowy) ma część przedsionkową (równowaga) i ślimakową (słuch)."
+  },
+  {
+    "q": "Jakie funkcje pełni nerw językowo-gardłowy (IX)?",
+    "opts": [
+      {
+        "t": "Ruch m. rylcowo-gardłowego, ślinianka przyuszna, smak i czucie z 1/3 tylnej języka i gardła",
+        "c": true
+      },
+      {
+        "t": "Ruch mięśni mimicznych",
+        "c": false
+      },
+      {
+        "t": "Unerwienie przepony",
+        "c": false
+      },
+      {
+        "t": "Wyłącznie smak z przodu języka",
+        "c": false
+      }
+    ],
+    "exp": "Nerw IX (językowo-gardłowy) jest mieszany: ruch m. rylcowo-gardłowego, przywspółczulnie ślinianka przyuszna, smak i czucie z 1/3 tylnej języka, gardła, zatoki i kłębka szyjnego."
+  },
+  {
+    "q": "Czym jest nerw błędny (X) pod względem funkcji autonomicznej?",
+    "opts": [
+      {
+        "t": "Głównym nerwem przywspółczulnym narządów klatki piersiowej i jamy brzusznej",
+        "c": true
+      },
+      {
+        "t": "Głównym nerwem współczulnym tułowia",
+        "c": false
+      },
+      {
+        "t": "Nerwem wyłącznie ruchowym języka",
+        "c": false
+      },
+      {
+        "t": "Nerwem czuciowym kończyn",
+        "c": false
+      }
+    ],
+    "exp": "Nerw X (błędny) jest najdłuższym nerwem czaszkowym i głównym nerwem przywspółczulnym narządów klatki piersiowej i jamy brzusznej (jądro grzbietowe n. X)."
+  },
+  {
+    "q": "Co unerwia rdzeniowa część nerwu dodatkowego (XI)?",
+    "opts": [
+      {
+        "t": "Mięsień mostkowo-obojczykowo-sutkowy i czworoboczny",
+        "c": true
+      },
+      {
+        "t": "Mięśnie języka",
+        "c": false
+      },
+      {
+        "t": "Mięśnie żucia",
+        "c": false
+      },
+      {
+        "t": "Mięśnie mimiczne",
+        "c": false
+      }
+    ],
+    "exp": "Nerw XI (dodatkowy), część rdzeniowa (C1–C5), unerwia mięsień MOS i czworoboczny."
+  },
+  {
+    "q": "Co unerwia nerw podjęzykowy (XII)?",
+    "opts": [
+      {
+        "t": "Mięśnie języka",
+        "c": true
+      },
+      {
+        "t": "Mięśnie gardła",
+        "c": false
+      },
+      {
+        "t": "Mięśnie mimiczne",
+        "c": false
+      },
+      {
+        "t": "Mięsień prosty boczny oka",
+        "c": false
+      }
+    ],
+    "exp": "Nerw XII (podjęzykowy) jest ruchowy — unerwia mięśnie języka; wychodzi z opuszki."
+  },
+  {
+    "q": "Który nerw jest głównym nerwem splotu szyjnego unerwiającym przeponę?",
+    "opts": [
+      {
+        "t": "Nerw przeponowy",
+        "c": true
+      },
+      {
+        "t": "Nerw pośrodkowy",
+        "c": false
+      },
+      {
+        "t": "Nerw udowy",
+        "c": false
+      },
+      {
+        "t": "Nerw kulszowy",
+        "c": false
+      }
+    ],
+    "exp": "Z splotu szyjnego pochodzi nerw przeponowy, unerwiający przeponę."
+  },
+  {
+    "q": "Który nerw jest najgrubszym nerwem ciała i pochodzi ze splotu krzyżowego?",
+    "opts": [
+      {
+        "t": "Nerw kulszowy",
+        "c": true
+      },
+      {
+        "t": "Nerw udowy",
+        "c": false
+      },
+      {
+        "t": "Nerw promieniowy",
+        "c": false
+      },
+      {
+        "t": "Nerw pośrodkowy",
+        "c": false
+      }
+    ],
+    "exp": "Nerw kulszowy (ze splotu krzyżowego) jest najgrubszym nerwem ciała; dzieli się na piszczelowy i strzałkowy wspólny."
+  },
+  {
+    "q": "Które nerwy są głównymi nerwami splotu ramiennego?",
+    "opts": [
+      {
+        "t": "Pośrodkowy, łokciowy, promieniowy, pachowy i mięśniowo-skórny",
+        "c": true
+      },
+      {
+        "t": "Udowy i zasłonowy",
+        "c": false
+      },
+      {
+        "t": "Przeponowy i błędny",
+        "c": false
+      },
+      {
+        "t": "Kulszowy i piszczelowy",
+        "c": false
+      }
+    ],
+    "exp": "Główne nerwy splotu ramiennego to: pośrodkowy, łokciowy, promieniowy, pachowy i mięśniowo-skórny (kończyna górna)."
+  },
+  {
+    "q": "Które nerwy są głównymi nerwami splotu lędźwiowego?",
+    "opts": [
+      {
+        "t": "Nerw udowy i zasłonowy",
+        "c": true
+      },
+      {
+        "t": "Kulszowy i sromowy",
+        "c": false
+      },
+      {
+        "t": "Pośrodkowy i łokciowy",
+        "c": false
+      },
+      {
+        "t": "Przeponowy i pachowy",
+        "c": false
+      }
+    ],
+    "exp": "Ze splotu lędźwiowego pochodzą nerw udowy i zasłonowy (kończyna dolna, przyśrodkowa i przednia część uda)."
+  }
+];
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let questions=[],current=0,score=0,answered=[];
+function init(){questions=shuffle(ALL_QUESTIONS);current=0;score=0;answered=[];document.getElementById('start-screen').style.display='none';document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';renderQuestion();}
+function renderQuestion(){const q=questions[current];const total=questions.length;document.getElementById('progText').textContent='Pytanie '+(current+1)+' z '+total;document.getElementById('scoreText').textContent='Wynik: '+score;document.getElementById('progBar').style.width=((current/total)*100)+'%';document.getElementById('qNum').textContent='Pytanie '+(current+1);document.getElementById('qText').textContent=q.q;const shuffledOpts=shuffle(q.opts.map((o,i)=>({...o,origIdx:i})));const letters=['A','B','C','D'];const wrap=document.getElementById('optionsWrap');wrap.innerHTML='';shuffledOpts.forEach((opt,idx)=>{const btn=document.createElement('button');btn.className='option-btn';btn.innerHTML='<span class="opt-letter">'+letters[idx]+'</span><span>'+opt.t+'</span>';btn.addEventListener('click',function(){selectAnswer(opt.c,q.exp,btn,wrap,q.q,shuffledOpts,letters,idx);});wrap.appendChild(btn);});const fb=document.getElementById('feedbackBox');fb.className='feedback-box';fb.innerHTML='';document.getElementById('nextBtn').style.display='none';}
+function selectAnswer(isCorrect,explanation,clickedBtn,wrap,qText,opts,letters,selectedIdx){const buttons=wrap.querySelectorAll('.option-btn');buttons.forEach(b=>b.disabled=true);let correctIdx=-1;opts.forEach((o,i)=>{if(o.c)correctIdx=i;});buttons[selectedIdx].classList.add(isCorrect?'correct':'wrong');if(!isCorrect&&correctIdx!==-1){buttons[correctIdx].classList.add('correct');}const fb=document.getElementById('feedbackBox');if(isCorrect){score++;fb.className='feedback-box ok show';fb.innerHTML='<strong>Poprawna odpowiedź!</strong>'+explanation;}else{fb.className='feedback-box fail show';fb.innerHTML='<strong>Niepoprawna odpowiedź.</strong>'+explanation;}answered.push({qText:qText,correct:isCorrect,chosen:opts[selectedIdx].t,correctAns:opts.find(o=>o.c).t});document.getElementById('scoreText').textContent='Wynik: '+score;const nextBtn=document.getElementById('nextBtn');nextBtn.style.display='inline-block';nextBtn.textContent=current+1<questions.length?'Następne pytanie →':'Pokaż wyniki';}
+document.getElementById('nextBtn').addEventListener('click',function(){current++;if(current<questions.length){renderQuestion();}else{showResults();}});
+function showResults(){document.getElementById('quiz-screen').style.display='none';document.getElementById('result-screen').style.display='block';const total=questions.length;const wrong=total-score;const pct=Math.round((score/total)*100);document.getElementById('resFinal').textContent=score;document.getElementById('resDenom').textContent='/'+total;document.getElementById('resCorrect').textContent=score;document.getElementById('resWrong').textContent=wrong;document.getElementById('resPct').textContent=pct+'%';let grade,col;if(pct>=90){grade='Doskonale!';col='#b45309';}else if(pct>=75){grade='Bardzo dobrze!';col='#d97706';}else if(pct>=60){grade='Dobrze';col='#f59e0b';}else if(pct>=51){grade='Zaliczone';col='#e9c46a';}else{grade='Wymaga powtórki';col='#c1121f';}const gl=document.getElementById('gradeLabel');gl.textContent=grade;gl.style.color=col;const rl=document.getElementById('reviewList');rl.innerHTML='';answered.forEach((a,i)=>{const div=document.createElement('div');div.className='review-item '+(a.correct?'ok':'fail');div.innerHTML='<div class="ri-meta">Pytanie '+(i+1)+(a.correct?' — Poprawnie':' — Błędnie')+'</div>'+'<strong>'+a.qText+'</strong>'+(a.correct?'':'<div style="margin-top:.3rem">Twój wybór: <em>'+a.chosen+'</em><br>Poprawna: <em>'+a.correctAns+'</em></div>');rl.appendChild(div);});}
+document.getElementById('startBtn').addEventListener('click',init);
+document.getElementById('retryBtn').addEventListener('click',init);
+</script>
+</body>
+</html>

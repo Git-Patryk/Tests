@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 3 — Móżdżek, międzymózgowie, komory i opony – Neuroanatomia</title>
+<style>
+  :root {
+    --am:   #f59e0b;
+    --am2:  #d97706;
+    --am3:  #fcd34d;
+    --am4:  #fef3c7;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #fffaf0;
+    --border: #e7e0d2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #fffdf7; color: #212529; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #92400e 0%, var(--am2) 100%); color: #fff; padding: 2rem 1.5rem 1.5rem; text-align: center; }
+  header .back-link { display: inline-block; color: rgba(255,255,255,.75); text-decoration: none; font-size: .82rem; font-family: sans-serif; margin-bottom: .8rem; transition: color .2s; }
+  header .back-link:hover { color: #fff; }
+  header h1 { font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; font-family: sans-serif; }
+  #start-screen, #quiz-screen, #result-screen { max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .start-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.12); }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--am2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics { text-align: left; background: #fef6e3; border-radius: 10px; padding: 1.2rem 1.4rem; margin: 1.2rem 0; border: 1px solid #fae3b0; }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--am2); }
+  .level-badge { display: inline-block; background: var(--am2); color: #fff; font-family: sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .08em; padding: .3rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+  .btn { display: inline-block; background: var(--am2); color: #fff; border: none; border-radius: 10px; padding: .85rem 2.2rem; font-size: 1.05rem; font-weight: 700; cursor: pointer; margin-top: 1.2rem; transition: background .2s, transform .1s; font-family: sans-serif; }
+  .btn:hover { background: #b45309; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--am2), var(--am3)); border-radius: 4px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--gray); margin-bottom: .35rem; font-family: sans-serif; }
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1rem; }
+  .q-num { font-size: .78rem; color: var(--am2); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .5rem; font-family: sans-serif; }
+  .q-text { font-size: 1.05rem; line-height: 1.65; margin-bottom: 1.4rem; color: #1a1a1a; }
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn { display: flex; align-items: flex-start; gap: .9rem; background: var(--light); border: 2px solid var(--border); border-radius: 10px; padding: .85rem 1.1rem; cursor: pointer; text-align: left; transition: border-color .15s, background .15s; font-family: sans-serif; font-size: .95rem; line-height: 1.5; color: #212529; }
+  .option-btn:hover:not(:disabled) { border-color: var(--am3); background: #fef6e3; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--am2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--am4); border-color: var(--am2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #b45309; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback-box { margin-top: 1rem; padding: .9rem 1.1rem; border-radius: 10px; font-size: .9rem; line-height: 1.6; display: none; font-family: sans-serif; }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--am4); border-left: 4px solid var(--am2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1.5rem; }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--am2); }
+  .score-circle { width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, #92400e, var(--am2)); color: #fff; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 0 30px rgba(217,119,6,.4); }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #b45309; }
+  .stat-wrong strong { color: var(--red); }
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; font-family: sans-serif; }
+  .review-item.ok   { background: var(--am4); border-left: 3px solid var(--am2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+  @media (max-width: 480px) { .result-stats { grid-template-columns: repeat(2, 1fr); } .question-card { padding: 1.3rem; } .q-text { font-size: .97rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="neuro-testy.html">← Wróć do listy testów</a>
+  <h1>Neuroanatomia</h1>
+  <p>Część 3 · Móżdżek, międzymózgowie, układ komorowy i opony · 33 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">CZĘŚĆ 3</div>
+    <h2>Test 3 — móżdżek, międzymózgowie, komory i opony</h2>
+    <p>Test obejmuje <strong>móżdżek</strong> (konary, jądra, robak), <strong>międzymózgowie</strong> (wzgórze, podwzgórze, ciała kolankowate i suteczkowate), <strong>układ komorowy i płyn mózgowo-rdzeniowy</strong> oraz <strong>opony</strong> i ich wypustki.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Móżdżek: robak, kora, konary · jądra móżdżku (wierzchu, kulkowate, czopowate, zębate) · wzgórze i jądra (VPL, VPM, zatylno-boczne) · ciała kolankowate boczne i przyśrodkowe · podwzgórze, ciała suteczkowate, guz popielaty · komory boczne, III i IV · splot naczyniówkowy i krążenie płynu · opony: twarda, pajęcza, miękka · sierp mózgu, namiot móżdżku, sierp móżdżku, przepona siodła · przestrzeń podpajęczynówkowa</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>33 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 33</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progBar" style="width:0%"></div></div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row"><button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button></div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle"><span class="score-num" id="resFinal">0</span><span class="score-denom" id="resDenom">/33</span></div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "q": "Gdzie leży móżdżek i czym jest okryty od góry?",
+    "opts": [
+      {
+        "t": "W tylnym dole czaszki, nad opuszką i mostem; okryty namiotem móżdżku",
+        "c": true
+      },
+      {
+        "t": "W przednim dole czaszki, pod płatem czołowym",
+        "c": false
+      },
+      {
+        "t": "W kanale kręgowym",
+        "c": false
+      },
+      {
+        "t": "W siodle tureckim",
+        "c": false
+      }
+    ],
+    "exp": "Móżdżek leży w tylnym dole czaszki, nad opuszką i mostem, pod namiotem móżdżku (wypustką opony twardej)."
+  },
+  {
+    "q": "Z jakich części zbudowany jest móżdżek?",
+    "opts": [
+      {
+        "t": "Z dwóch półkul i nieparzystego robaka, z korą i jądrami wewnętrznymi",
+        "c": true
+      },
+      {
+        "t": "Z jednej półkuli i dwóch robaków",
+        "c": false
+      },
+      {
+        "t": "Wyłącznie z istoty białej",
+        "c": false
+      },
+      {
+        "t": "Z czterech wzgórków",
+        "c": false
+      }
+    ],
+    "exp": "Móżdżek tworzą 2 półkule i nieparzysty robak; powierzchowna kora (istota szara) i wewnętrzne jądra w istocie białej ('drzewo życia')."
+  },
+  {
+    "q": "Jaka jest główna funkcja móżdżku?",
+    "opts": [
+      {
+        "t": "Koordynacja ruchów, napięcie mięśni i równowaga",
+        "c": true
+      },
+      {
+        "t": "Tworzenie ruchów dowolnych (ich inicjacja)",
+        "c": false
+      },
+      {
+        "t": "Odbiór bodźców wzrokowych",
+        "c": false
+      },
+      {
+        "t": "Wydzielanie hormonów",
+        "c": false
+      }
+    ],
+    "exp": "Móżdżek koordynuje ruchy, reguluje napięcie mięśni i równowagę; jego uszkodzenie daje niezborność (ataksję). Działa ipsilateralnie."
+  },
+  {
+    "q": "Za co odpowiada robak móżdżku?",
+    "opts": [
+      {
+        "t": "Za oś ciała, postawę i napięcie mięśni",
+        "c": true
+      },
+      {
+        "t": "Za ruchy precyzyjne palców",
+        "c": false
+      },
+      {
+        "t": "Za czucie z twarzy",
+        "c": false
+      },
+      {
+        "t": "Za słuch",
+        "c": false
+      }
+    ],
+    "exp": "Robak (vermis) — część środkowa łącząca półkule — związany jest z osią ciała, postawą i napięciem mięśni."
+  },
+  {
+    "q": "Które jądro móżdżku leży najbardziej przyśrodkowo i wiąże się z równowagą?",
+    "opts": [
+      {
+        "t": "Jądro wierzchu (fastigii)",
+        "c": true
+      },
+      {
+        "t": "Jądro zębate",
+        "c": false
+      },
+      {
+        "t": "Jądro czopowate",
+        "c": false
+      },
+      {
+        "t": "Jądro kulkowate",
+        "c": false
+      }
+    ],
+    "exp": "Jądro wierzchu (nucleus fastigii) jest najbardziej przyśrodkowe i związane z układem przedsionkowym (równowaga)."
+  },
+  {
+    "q": "Które jądro móżdżku jest największe i należy do nowego móżdżku?",
+    "opts": [
+      {
+        "t": "Jądro zębate (dentatus)",
+        "c": true
+      },
+      {
+        "t": "Jądro wierzchu",
+        "c": false
+      },
+      {
+        "t": "Jądro kulkowate",
+        "c": false
+      },
+      {
+        "t": "Jądro czopowate",
+        "c": false
+      }
+    ],
+    "exp": "Jądro zębate (nucleus dentatus) jest największe i boczne; należy do nowego móżdżku — koordynacja ruchów dowolnych (droga zębato-czerwienna i zębato-wzgórzowa)."
+  },
+  {
+    "q": "Które jądra móżdżku określa się łącznie jako 'jądro wtrącone'?",
+    "opts": [
+      {
+        "t": "Jądro kulkowate i czopowate",
+        "c": true
+      },
+      {
+        "t": "Jądro wierzchu i zębate",
+        "c": false
+      },
+      {
+        "t": "Jądro zębate i czopowate",
+        "c": false
+      },
+      {
+        "t": "Jądro wierzchu i kulkowate",
+        "c": false
+      }
+    ],
+    "exp": "Jądra kulkowate (globosus) i czopowate (emboliformis) tworzą tzw. jądro wtrącone; należą do starego móżdżku (napięcie mięśni)."
+  },
+  {
+    "q": "Czym jest wzgórze i jaką pełni główną funkcję?",
+    "opts": [
+      {
+        "t": "Skupiskiem istoty szarej w ścianach komory III; główną stacją przekaźnikową czucia do kory",
+        "c": true
+      },
+      {
+        "t": "Ośrodkiem ruchowym inicjującym ruch dowolny",
+        "c": false
+      },
+      {
+        "t": "Gruczołem wydzielania wewnętrznego",
+        "c": false
+      },
+      {
+        "t": "Jądrem nerwu trójdzielnego",
+        "c": false
+      }
+    ],
+    "exp": "Wzgórze (thalamus) tworzy ściany boczne komory III i jest główną stacją przekaźnikową niemal wszystkich dróg czuciowych (poza węchem) do kory."
+  },
+  {
+    "q": "Co odbiera jądro brzuszne tylno-boczne wzgórza (VPL)?",
+    "opts": [
+      {
+        "t": "Czucie z tułowia i kończyn (wstęga przyśrodkowa i drogi rdzeniowo-wzgórzowe)",
+        "c": true
+      },
+      {
+        "t": "Czucie z głowy i smak",
+        "c": false
+      },
+      {
+        "t": "Bodźce wzrokowe",
+        "c": false
+      },
+      {
+        "t": "Bodźce słuchowe",
+        "c": false
+      }
+    ],
+    "exp": "Jądro VPL odbiera czucie z tułowia i kończyn (wstęga przyśrodkowa, drogi rdzeniowo-wzgórzowe) i przekazuje je do kory czuciowej."
+  },
+  {
+    "q": "Co odbiera jądro brzuszne tylno-przyśrodkowe wzgórza (VPM)?",
+    "opts": [
+      {
+        "t": "Czucie z głowy (wstęga trójdzielna) i smak",
+        "c": true
+      },
+      {
+        "t": "Czucie z kończyn dolnych",
+        "c": false
+      },
+      {
+        "t": "Słuch",
+        "c": false
+      },
+      {
+        "t": "Równowagę",
+        "c": false
+      }
+    ],
+    "exp": "Jądro VPM odbiera czucie z głowy (wstęga trójdzielna) oraz smak, przekazując je do kory czuciowej."
+  },
+  {
+    "q": "Jaki charakter ma jądro zatylno-boczne wzgórza?",
+    "opts": [
+      {
+        "t": "Jest jądrem kojarzeniowym integrującym czucie (łączność z korą ciemieniową)",
+        "c": true
+      },
+      {
+        "t": "Jest jądrem ruchowym pnia mózgu",
+        "c": false
+      },
+      {
+        "t": "Jest ośrodkiem węchowym",
+        "c": false
+      },
+      {
+        "t": "Jest jądrem przywspółczulnym",
+        "c": false
+      }
+    ],
+    "exp": "Jądro zatylno-boczne to kojarzeniowe (tylno-boczne) jądro wzgórza, uczestniczące w integracji czuciowej i powiązane z korą ciemieniową."
+  },
+  {
+    "q": "Jaką funkcję pełni ciało kolankowate boczne?",
+    "opts": [
+      {
+        "t": "Jest podkorowym ośrodkiem wzroku",
+        "c": true
+      },
+      {
+        "t": "Jest podkorowym ośrodkiem słuchu",
+        "c": false
+      },
+      {
+        "t": "Odbiera czucie z twarzy",
+        "c": false
+      },
+      {
+        "t": "Reguluje równowagę",
+        "c": false
+      }
+    ],
+    "exp": "Ciało kolankowate boczne (część zawzgórza) to podkorowy ośrodek wzroku — odbiera pasmo wzrokowe i przekazuje do kory wzrokowej."
+  },
+  {
+    "q": "Jaką funkcję pełni ciało kolankowate przyśrodkowe?",
+    "opts": [
+      {
+        "t": "Jest podkorowym ośrodkiem słuchu",
+        "c": true
+      },
+      {
+        "t": "Jest podkorowym ośrodkiem wzroku",
+        "c": false
+      },
+      {
+        "t": "Odbiera smak",
+        "c": false
+      },
+      {
+        "t": "Reguluje napięcie mięśni",
+        "c": false
+      }
+    ],
+    "exp": "Ciało kolankowate przyśrodkowe to podkorowy ośrodek słuchu — odbiera wstęgę boczną i przekazuje do kory słuchowej."
+  },
+  {
+    "q": "Co jest nadrzędnym ośrodkiem autonomicznym i hormonalnym mózgowia?",
+    "opts": [
+      {
+        "t": "Podwzgórze",
+        "c": true
+      },
+      {
+        "t": "Wzgórze",
+        "c": false
+      },
+      {
+        "t": "Móżdżek",
+        "c": false
+      },
+      {
+        "t": "Most",
+        "c": false
+      }
+    ],
+    "exp": "Podwzgórze (hypothalamus) — dolna część międzymózgowia — jest nadrzędnym ośrodkiem autonomicznym i hormonalnym (termoregulacja, głód, sen, neurosekrecja → przysadka)."
+  },
+  {
+    "q": "Do jakiego układu należą ciała suteczkowate?",
+    "opts": [
+      {
+        "t": "Do układu limbicznego (krąg Papeza, pamięć)",
+        "c": true
+      },
+      {
+        "t": "Do układu piramidowego",
+        "c": false
+      },
+      {
+        "t": "Do układu wzrokowego",
+        "c": false
+      },
+      {
+        "t": "Do układu słuchowego",
+        "c": false
+      }
+    ],
+    "exp": "Ciała suteczkowate (corpora mamillaria) na powierzchni dolnej podwzgórza należą do układu limbicznego (krąg Papeza); odbierają sklepienie."
+  },
+  {
+    "q": "Czym jest guz popielaty i z czym się łączy?",
+    "opts": [
+      {
+        "t": "Wyniosłością istoty szarej podwzgórza przechodzącą w lejek → przysadka",
+        "c": true
+      },
+      {
+        "t": "Jądrem ruchowym śródmózgowia",
+        "c": false
+      },
+      {
+        "t": "Częścią móżdżku",
+        "c": false
+      },
+      {
+        "t": "Wypustką opony twardej",
+        "c": false
+      }
+    ],
+    "exp": "Guz popielaty (tuber cinereum) to wyniosłość podwzgórza ku przodowi od ciał suteczkowatych; przechodzi w lejek prowadzący do przysadki."
+  },
+  {
+    "q": "Gdzie leżą komory boczne?",
+    "opts": [
+      {
+        "t": "W półkulach kresomózgowia",
+        "c": true
+      },
+      {
+        "t": "W międzymózgowiu",
+        "c": false
+      },
+      {
+        "t": "W tyłomózgowiu",
+        "c": false
+      },
+      {
+        "t": "W rdzeniu kręgowym",
+        "c": false
+      }
+    ],
+    "exp": "Komory boczne leżą w półkulach kresomózgowia; łączą się z komorą III otworami międzykomorowymi (Monroego)."
+  },
+  {
+    "q": "Czego jamą jest komora trzecia?",
+    "opts": [
+      {
+        "t": "Międzymózgowia (leży między wzgórzami)",
+        "c": true
+      },
+      {
+        "t": "Kresomózgowia",
+        "c": false
+      },
+      {
+        "t": "Śródmózgowia",
+        "c": false
+      },
+      {
+        "t": "Tyłomózgowia",
+        "c": false
+      }
+    ],
+    "exp": "Komora trzecia to szczelinowata jama międzymózgowia między wzgórzami; łączy się z IV przez wodociąg mózgu."
+  },
+  {
+    "q": "Czego jamą jest komora czwarta i co stanowi jej dno?",
+    "opts": [
+      {
+        "t": "Tyłomózgowia; dnem jest dół równoległoboczny",
+        "c": true
+      },
+      {
+        "t": "Śródmózgowia; dnem jest blaszka czworacza",
+        "c": false
+      },
+      {
+        "t": "Kresomózgowia; dnem jest ciało modzelowate",
+        "c": false
+      },
+      {
+        "t": "Międzymózgowia; dnem jest wzgórze",
+        "c": false
+      }
+    ],
+    "exp": "Komora IV to jama tyłomózgowia (między mostem/opuszką a móżdżkiem); jej dnem jest dół równoległoboczny."
+  },
+  {
+    "q": "Co wytwarza splot naczyniówkowy?",
+    "opts": [
+      {
+        "t": "Płyn mózgowo-rdzeniowy",
+        "c": true
+      },
+      {
+        "t": "Neurotransmitery",
+        "c": false
+      },
+      {
+        "t": "Hormony",
+        "c": false
+      },
+      {
+        "t": "Mielinę",
+        "c": false
+      }
+    ],
+    "exp": "Splot naczyniówkowy (plexus choroideus) to silnie unaczyniona tkanka w komorach, wytwarzająca płyn mózgowo-rdzeniowy."
+  },
+  {
+    "q": "Gdzie głównie powstaje płyn mózgowo-rdzeniowy?",
+    "opts": [
+      {
+        "t": "W splotach naczyniówkowych komór (głównie bocznych)",
+        "c": true
+      },
+      {
+        "t": "W przestrzeni podpajęczynówkowej",
+        "c": false
+      },
+      {
+        "t": "W zatokach żylnych opony twardej",
+        "c": false
+      },
+      {
+        "t": "W komorze IV przez ependymę móżdżku",
+        "c": false
+      }
+    ],
+    "exp": "Płyn m-r powstaje głównie w splotach naczyniówkowych komór bocznych (oraz III i IV)."
+  },
+  {
+    "q": "Przez jakie otwory płyn z komory IV przedostaje się do przestrzeni podpajęczynówkowej?",
+    "opts": [
+      {
+        "t": "Przez otwory Magendiego i Luschki",
+        "c": true
+      },
+      {
+        "t": "Przez otwory międzykomorowe Monroego",
+        "c": false
+      },
+      {
+        "t": "Przez wodociąg Sylwiusza",
+        "c": false
+      },
+      {
+        "t": "Przez ziarnistości Pacchiona",
+        "c": false
+      }
+    ],
+    "exp": "Z komory IV płyn wypływa otworami Magendiego (pośrodkowym) i Luschki (bocznymi) do przestrzeni podpajęczynówkowej."
+  },
+  {
+    "q": "Gdzie wchłaniany jest płyn mózgowo-rdzeniowy do krwi?",
+    "opts": [
+      {
+        "t": "W ziarnistościach pajęczynówki (Pacchiona) → zatoki żylne opony twardej",
+        "c": true
+      },
+      {
+        "t": "W splocie naczyniówkowym",
+        "c": false
+      },
+      {
+        "t": "W komorach bocznych",
+        "c": false
+      },
+      {
+        "t": "W kanale środkowym rdzenia",
+        "c": false
+      }
+    ],
+    "exp": "Płyn m-r wchłania się w ziarnistościach pajęczynówki (Pacchiona) do zatok żylnych opony twardej."
+  },
+  {
+    "q": "Jaka jest kolejność krążenia płynu mózgowo-rdzeniowego?",
+    "opts": [
+      {
+        "t": "Komory boczne → otwory międzykomorowe → komora III → wodociąg → komora IV → przestrzeń podpajęczynówkowa",
+        "c": true
+      },
+      {
+        "t": "Komora IV → wodociąg → komora III → komory boczne",
+        "c": false
+      },
+      {
+        "t": "Przestrzeń podpajęczynówkowa → komory boczne → komora III",
+        "c": false
+      },
+      {
+        "t": "Komora III → komory boczne → komora IV",
+        "c": false
+      }
+    ],
+    "exp": "Płyn płynie: komory boczne → otwory Monroego → komora III → wodociąg → komora IV → otwory Magendiego/Luschki → przestrzeń podpajęczynówkowa → wchłanianie."
+  },
+  {
+    "q": "Co powoduje zablokowanie odpływu płynu mózgowo-rdzeniowego?",
+    "opts": [
+      {
+        "t": "Wodogłowie",
+        "c": true
+      },
+      {
+        "t": "Krwotok podpajęczynówkowy",
+        "c": false
+      },
+      {
+        "t": "Stwardnienie rozsiane",
+        "c": false
+      },
+      {
+        "t": "Parkinsonizm",
+        "c": false
+      }
+    ],
+    "exp": "Blok odpływu płynu (np. zarośnięcie wodociągu) prowadzi do gromadzenia płynu i wodogłowia."
+  },
+  {
+    "q": "Czym jest opona i jaka jest jej rola?",
+    "opts": [
+      {
+        "t": "Błoną okrywającą mózgowie i rdzeń, chroniącą i podtrzymującą OUN",
+        "c": true
+      },
+      {
+        "t": "Pasmem włókien łączącym półkule",
+        "c": false
+      },
+      {
+        "t": "Skupiskiem perikarionów",
+        "c": false
+      },
+      {
+        "t": "Splotem naczyń wytwarzającym płyn",
+        "c": false
+      }
+    ],
+    "exp": "Opona (meninx) to błona okrywająca OUN; trzy opony chronią i podtrzymują mózgowie i rdzeń."
+  },
+  {
+    "q": "Która opona jest najbardziej zewnętrzna i najgrubsza?",
+    "opts": [
+      {
+        "t": "Opona twarda (dura mater)",
+        "c": true
+      },
+      {
+        "t": "Opona pajęcza",
+        "c": false
+      },
+      {
+        "t": "Opona miękka",
+        "c": false
+      },
+      {
+        "t": "Splot naczyniówkowy",
+        "c": false
+      }
+    ],
+    "exp": "Opona twarda (dura mater) jest najbardziej zewnętrzna, gruba i włóknista; tworzy wypustki i zatoki żylne."
+  },
+  {
+    "q": "Która opona przylega ściśle do powierzchni mózgu i jest bogato unaczyniona?",
+    "opts": [
+      {
+        "t": "Opona miękka (pia mater)",
+        "c": true
+      },
+      {
+        "t": "Opona twarda",
+        "c": false
+      },
+      {
+        "t": "Opona pajęcza",
+        "c": false
+      },
+      {
+        "t": "Pajęczynówka",
+        "c": false
+      }
+    ],
+    "exp": "Opona miękka (pia mater) ściśle przylega do powierzchni mózgu i rdzenia i jest bogato unaczyniona."
+  },
+  {
+    "q": "Gdzie znajduje się przestrzeń podpajęczynówkowa i czym jest wypełniona?",
+    "opts": [
+      {
+        "t": "Między oponą pajęczą a miękką; wypełniona płynem mózgowo-rdzeniowym",
+        "c": true
+      },
+      {
+        "t": "Między oponą twardą a kością; wypełniona krwią",
+        "c": false
+      },
+      {
+        "t": "Wewnątrz komór; wypełniona płynem",
+        "c": false
+      },
+      {
+        "t": "Między korą a istotą białą",
+        "c": false
+      }
+    ],
+    "exp": "Przestrzeń podpajęczynówkowa leży między pajęczą a miękką i jest wypełniona płynem m-r (miejscami tworzy zbiorniki)."
+  },
+  {
+    "q": "Czym jest sierp mózgu?",
+    "opts": [
+      {
+        "t": "Pionową wypustką opony twardej w szczelinie podłużnej między półkulami",
+        "c": true
+      },
+      {
+        "t": "Poziomą wypustką między móżdżkiem a płatami potylicznymi",
+        "c": false
+      },
+      {
+        "t": "Blaszką nad siodłem tureckim",
+        "c": false
+      },
+      {
+        "t": "Wypustką między półkulami móżdżku",
+        "c": false
+      }
+    ],
+    "exp": "Sierp mózgu (falx cerebri) to pionowa wypustka opony twardej wchodząca w szczelinę podłużną między półkulami."
+  },
+  {
+    "q": "Co oddziela namiot móżdżku?",
+    "opts": [
+      {
+        "t": "Móżdżek od płatów potylicznych mózgu",
+        "c": true
+      },
+      {
+        "t": "Obie półkule mózgu",
+        "c": false
+      },
+      {
+        "t": "Obie półkule móżdżku",
+        "c": false
+      },
+      {
+        "t": "Przysadkę od podwzgórza",
+        "c": false
+      }
+    ],
+    "exp": "Namiot móżdżku (tentorium cerebelli) to pozioma wypustka opony twardej oddzielająca móżdżek od płatów potylicznych."
+  },
+  {
+    "q": "Co przykrywa przepona siodła tureckiego?",
+    "opts": [
+      {
+        "t": "Przysadkę (przepuszczając lejek)",
+        "c": true
+      },
+      {
+        "t": "Móżdżek",
+        "c": false
+      },
+      {
+        "t": "Wzgórze",
+        "c": false
+      },
+      {
+        "t": "Opuszkę węchową",
+        "c": false
+      }
+    ],
+    "exp": "Przepona siodła tureckiego (diaphragma sellae) to blaszka opony twardej nad siodłem, przykrywająca przysadkę i przepuszczająca lejek."
+  },
+  {
+    "q": "Czym jest sierp móżdżku?",
+    "opts": [
+      {
+        "t": "Małą wypustką opony twardej między półkulami móżdżku",
+        "c": true
+      },
+      {
+        "t": "Wypustką między płatami czołowymi",
+        "c": false
+      },
+      {
+        "t": "Blaszką nad przysadką",
+        "c": false
+      },
+      {
+        "t": "Namiotem nad móżdżkiem",
+        "c": false
+      }
+    ],
+    "exp": "Sierp móżdżku (falx cerebelli) to mała wypustka opony twardej leżąca między półkulami móżdżku."
+  }
+];
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let questions=[],current=0,score=0,answered=[];
+function init(){questions=shuffle(ALL_QUESTIONS);current=0;score=0;answered=[];document.getElementById('start-screen').style.display='none';document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';renderQuestion();}
+function renderQuestion(){const q=questions[current];const total=questions.length;document.getElementById('progText').textContent='Pytanie '+(current+1)+' z '+total;document.getElementById('scoreText').textContent='Wynik: '+score;document.getElementById('progBar').style.width=((current/total)*100)+'%';document.getElementById('qNum').textContent='Pytanie '+(current+1);document.getElementById('qText').textContent=q.q;const shuffledOpts=shuffle(q.opts.map((o,i)=>({...o,origIdx:i})));const letters=['A','B','C','D'];const wrap=document.getElementById('optionsWrap');wrap.innerHTML='';shuffledOpts.forEach((opt,idx)=>{const btn=document.createElement('button');btn.className='option-btn';btn.innerHTML='<span class="opt-letter">'+letters[idx]+'</span><span>'+opt.t+'</span>';btn.addEventListener('click',function(){selectAnswer(opt.c,q.exp,btn,wrap,q.q,shuffledOpts,letters,idx);});wrap.appendChild(btn);});const fb=document.getElementById('feedbackBox');fb.className='feedback-box';fb.innerHTML='';document.getElementById('nextBtn').style.display='none';}
+function selectAnswer(isCorrect,explanation,clickedBtn,wrap,qText,opts,letters,selectedIdx){const buttons=wrap.querySelectorAll('.option-btn');buttons.forEach(b=>b.disabled=true);let correctIdx=-1;opts.forEach((o,i)=>{if(o.c)correctIdx=i;});buttons[selectedIdx].classList.add(isCorrect?'correct':'wrong');if(!isCorrect&&correctIdx!==-1){buttons[correctIdx].classList.add('correct');}const fb=document.getElementById('feedbackBox');if(isCorrect){score++;fb.className='feedback-box ok show';fb.innerHTML='<strong>Poprawna odpowiedź!</strong>'+explanation;}else{fb.className='feedback-box fail show';fb.innerHTML='<strong>Niepoprawna odpowiedź.</strong>'+explanation;}answered.push({qText:qText,correct:isCorrect,chosen:opts[selectedIdx].t,correctAns:opts.find(o=>o.c).t});document.getElementById('scoreText').textContent='Wynik: '+score;const nextBtn=document.getElementById('nextBtn');nextBtn.style.display='inline-block';nextBtn.textContent=current+1<questions.length?'Następne pytanie →':'Pokaż wyniki';}
+document.getElementById('nextBtn').addEventListener('click',function(){current++;if(current<questions.length){renderQuestion();}else{showResults();}});
+function showResults(){document.getElementById('quiz-screen').style.display='none';document.getElementById('result-screen').style.display='block';const total=questions.length;const wrong=total-score;const pct=Math.round((score/total)*100);document.getElementById('resFinal').textContent=score;document.getElementById('resDenom').textContent='/'+total;document.getElementById('resCorrect').textContent=score;document.getElementById('resWrong').textContent=wrong;document.getElementById('resPct').textContent=pct+'%';let grade,col;if(pct>=90){grade='Doskonale!';col='#b45309';}else if(pct>=75){grade='Bardzo dobrze!';col='#d97706';}else if(pct>=60){grade='Dobrze';col='#f59e0b';}else if(pct>=51){grade='Zaliczone';col='#e9c46a';}else{grade='Wymaga powtórki';col='#c1121f';}const gl=document.getElementById('gradeLabel');gl.textContent=grade;gl.style.color=col;const rl=document.getElementById('reviewList');rl.innerHTML='';answered.forEach((a,i)=>{const div=document.createElement('div');div.className='review-item '+(a.correct?'ok':'fail');div.innerHTML='<div class="ri-meta">Pytanie '+(i+1)+(a.correct?' — Poprawnie':' — Błędnie')+'</div>'+'<strong>'+a.qText+'</strong>'+(a.correct?'':'<div style="margin-top:.3rem">Twój wybór: <em>'+a.chosen+'</em><br>Poprawna: <em>'+a.correctAns+'</em></div>');rl.appendChild(div);});}
+document.getElementById('startBtn').addEventListener('click',init);
+document.getElementById('retryBtn').addEventListener('click',init);
+</script>
+</body>
+</html>

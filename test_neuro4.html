@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 4 — Kresomózgowie i układ limbiczny – Neuroanatomia</title>
+<style>
+  :root {
+    --am:   #f59e0b;
+    --am2:  #d97706;
+    --am3:  #fcd34d;
+    --am4:  #fef3c7;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #fffaf0;
+    --border: #e7e0d2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #fffdf7; color: #212529; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #92400e 0%, var(--am2) 100%); color: #fff; padding: 2rem 1.5rem 1.5rem; text-align: center; }
+  header .back-link { display: inline-block; color: rgba(255,255,255,.75); text-decoration: none; font-size: .82rem; font-family: sans-serif; margin-bottom: .8rem; transition: color .2s; }
+  header .back-link:hover { color: #fff; }
+  header h1 { font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; font-family: sans-serif; }
+  #start-screen, #quiz-screen, #result-screen { max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .start-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.12); }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--am2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics { text-align: left; background: #fef6e3; border-radius: 10px; padding: 1.2rem 1.4rem; margin: 1.2rem 0; border: 1px solid #fae3b0; }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--am2); }
+  .level-badge { display: inline-block; background: var(--am2); color: #fff; font-family: sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .08em; padding: .3rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+  .btn { display: inline-block; background: var(--am2); color: #fff; border: none; border-radius: 10px; padding: .85rem 2.2rem; font-size: 1.05rem; font-weight: 700; cursor: pointer; margin-top: 1.2rem; transition: background .2s, transform .1s; font-family: sans-serif; }
+  .btn:hover { background: #b45309; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--am2), var(--am3)); border-radius: 4px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--gray); margin-bottom: .35rem; font-family: sans-serif; }
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1rem; }
+  .q-num { font-size: .78rem; color: var(--am2); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .5rem; font-family: sans-serif; }
+  .q-text { font-size: 1.05rem; line-height: 1.65; margin-bottom: 1.4rem; color: #1a1a1a; }
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn { display: flex; align-items: flex-start; gap: .9rem; background: var(--light); border: 2px solid var(--border); border-radius: 10px; padding: .85rem 1.1rem; cursor: pointer; text-align: left; transition: border-color .15s, background .15s; font-family: sans-serif; font-size: .95rem; line-height: 1.5; color: #212529; }
+  .option-btn:hover:not(:disabled) { border-color: var(--am3); background: #fef6e3; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--am2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--am4); border-color: var(--am2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #b45309; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback-box { margin-top: 1rem; padding: .9rem 1.1rem; border-radius: 10px; font-size: .9rem; line-height: 1.6; display: none; font-family: sans-serif; }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--am4); border-left: 4px solid var(--am2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1.5rem; }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--am2); }
+  .score-circle { width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, #92400e, var(--am2)); color: #fff; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 0 30px rgba(217,119,6,.4); }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #b45309; }
+  .stat-wrong strong { color: var(--red); }
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; font-family: sans-serif; }
+  .review-item.ok   { background: var(--am4); border-left: 3px solid var(--am2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+  @media (max-width: 480px) { .result-stats { grid-template-columns: repeat(2, 1fr); } .question-card { padding: 1.3rem; } .q-text { font-size: .97rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="neuro-testy.html">← Wróć do listy testów</a>
+  <h1>Neuroanatomia</h1>
+  <p>Część 4 · Płaszcz, kora, jądra podstawne i układ limbiczny · 34 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">CZĘŚĆ 4</div>
+    <h2>Test 4 — kresomózgowie i układ limbiczny</h2>
+    <p>Test obejmuje <strong>płaszcz i pola kory</strong>, zakręty i bruzdy, <strong>jądra podstawne</strong> (prążkowie), istotę białą półkul (ciało modzelowate, sklepienie, torebkę wewnętrzną) oraz <strong>układ limbiczny i węchomózgowie</strong>.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Płaszcz i kora · kora ruchowa/somatomotoryczna i czuciowa/somatosensoryczna · kora wzrokowa, słuchowa, smakowa · zakręty: przedśrodkowy, zaśrodkowy, skroniowe, oczodołowe, hipokampa · płacik okołośrodkowy · bruzda ostrogowa · wyspa · prążkowie, jądro ogoniaste, soczewkowate, skorupa, gałka blada · przedmurze, ciało migdałowate · ciało modzelowate, sklepienie, torebka wewnętrzna, wieniec promienisty · układ limbiczny, hipokamp · węchomózgowie, opuszka i pasmo węchowe</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>34 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 34</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progBar" style="width:0%"></div></div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row"><button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button></div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle"><span class="score-num" id="resFinal">0</span><span class="score-denom" id="resDenom">/34</span></div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "q": "Czym jest płaszcz (pallium)?",
+    "opts": [
+      {
+        "t": "Warstwą istoty szarej (korą) pokrywającą półkule wraz z leżącą pod nią istotą białą",
+        "c": true
+      },
+      {
+        "t": "Wypustką opony twardej",
+        "c": false
+      },
+      {
+        "t": "Jądrem podstawnym",
+        "c": false
+      },
+      {
+        "t": "Pasmem spoidłowym",
+        "c": false
+      }
+    ],
+    "exp": "Płaszcz (pallium) to warstwa kory (istoty szarej) pokrywająca półkule wraz z podkorową istotą białą; ewolucyjnie 'nowa' część kresomózgowia."
+  },
+  {
+    "q": "Jak nazywają się fałdy i rowki kory mózgu?",
+    "opts": [
+      {
+        "t": "Fałdy to zakręty (gyri), rowki to bruzdy (sulci)",
+        "c": true
+      },
+      {
+        "t": "Fałdy to bruzdy, rowki to zakręty",
+        "c": false
+      },
+      {
+        "t": "Oba to sznury",
+        "c": false
+      },
+      {
+        "t": "Oba to wieńce",
+        "c": false
+      }
+    ],
+    "exp": "Pofałdowana kora tworzy zakręty (gyri) rozdzielone bruzdami (sulci); kora dzieli się na 4 płaty."
+  },
+  {
+    "q": "Gdzie leży wyspa (insula)?",
+    "opts": [
+      {
+        "t": "W głębi bruzdy bocznej (Sylwiusza), przykryta wieczkami",
+        "c": true
+      },
+      {
+        "t": "Na powierzchni przyśrodkowej płata potylicznego",
+        "c": false
+      },
+      {
+        "t": "Na dolnej powierzchni móżdżku",
+        "c": false
+      },
+      {
+        "t": "W ścianie komory III",
+        "c": false
+      }
+    ],
+    "exp": "Wyspa (insula) to kora ukryta w głębi bruzdy bocznej, przykryta wieczkami; związana ze smakiem, czuciem trzewnym i emocjami."
+  },
+  {
+    "q": "Gdzie znajduje się kora ruchowa (somatomotoryczna)?",
+    "opts": [
+      {
+        "t": "W zakręcie przedśrodkowym płata czołowego",
+        "c": true
+      },
+      {
+        "t": "W zakręcie zaśrodkowym płata ciemieniowego",
+        "c": false
+      },
+      {
+        "t": "Wokół bruzdy ostrogowej",
+        "c": false
+      },
+      {
+        "t": "W zakrętach skroniowych",
+        "c": false
+      }
+    ],
+    "exp": "Kora ruchowa (somatomotoryczna) leży w zakręcie przedśrodkowym (przed bruzdą środkową) — początek drogi piramidowej."
+  },
+  {
+    "q": "Gdzie znajduje się kora czuciowa (somatosensoryczna)?",
+    "opts": [
+      {
+        "t": "W zakręcie zaśrodkowym płata ciemieniowego",
+        "c": true
+      },
+      {
+        "t": "W zakręcie przedśrodkowym płata czołowego",
+        "c": false
+      },
+      {
+        "t": "W płacie potylicznym",
+        "c": false
+      },
+      {
+        "t": "Na wyspie",
+        "c": false
+      }
+    ],
+    "exp": "Kora czuciowa (somatosensoryczna) leży w zakręcie zaśrodkowym (za bruzdą środkową) — odbiera czucie ze skóry i ciała."
+  },
+  {
+    "q": "Gdzie leży kora wzrokowa?",
+    "opts": [
+      {
+        "t": "Wokół bruzdy ostrogowej w płacie potylicznym",
+        "c": true
+      },
+      {
+        "t": "W zakrętach skroniowych",
+        "c": false
+      },
+      {
+        "t": "W zakręcie przedśrodkowym",
+        "c": false
+      },
+      {
+        "t": "Na powierzchni oczodołowej płata czołowego",
+        "c": false
+      }
+    ],
+    "exp": "Kora wzrokowa leży wokół bruzdy ostrogowej (sulcus calcarinus) na przyśrodkowej powierzchni płata potylicznego."
+  },
+  {
+    "q": "Gdzie leży kora słuchowa?",
+    "opts": [
+      {
+        "t": "W zakrętach skroniowych poprzecznych (Heschla)",
+        "c": true
+      },
+      {
+        "t": "Wokół bruzdy ostrogowej",
+        "c": false
+      },
+      {
+        "t": "W zakręcie zaśrodkowym",
+        "c": false
+      },
+      {
+        "t": "W płacie czołowym",
+        "c": false
+      }
+    ],
+    "exp": "Kora słuchowa znajduje się w zakrętach skroniowych poprzecznych (Heschla) w płacie skroniowym."
+  },
+  {
+    "q": "Co oznaczają terminy 'kora somatomotoryczna' i 'kora somatosensoryczna'?",
+    "opts": [
+      {
+        "t": "Korę ruchową (zakręt przedśrodkowy) i czuciową (zakręt zaśrodkowy) ciała",
+        "c": true
+      },
+      {
+        "t": "Korę wzrokową i słuchową",
+        "c": false
+      },
+      {
+        "t": "Dwie części wyspy",
+        "c": false
+      },
+      {
+        "t": "Korę węchową i smakową",
+        "c": false
+      }
+    ],
+    "exp": "Somatomotoryczna = kora ruchowa (zakręt przedśrodkowy), somatosensoryczna = kora czuciowa (zakręt zaśrodkowy)."
+  },
+  {
+    "q": "Co znajduje się w zakręcie przedśrodkowym?",
+    "opts": [
+      {
+        "t": "Kora ruchowa",
+        "c": true
+      },
+      {
+        "t": "Kora czuciowa",
+        "c": false
+      },
+      {
+        "t": "Kora wzrokowa",
+        "c": false
+      },
+      {
+        "t": "Kora słuchowa",
+        "c": false
+      }
+    ],
+    "exp": "Zakręt przedśrodkowy (przed bruzdą środkową) zawiera korę ruchową."
+  },
+  {
+    "q": "Co znajduje się w zakręcie zaśrodkowym?",
+    "opts": [
+      {
+        "t": "Kora czuciowa",
+        "c": true
+      },
+      {
+        "t": "Kora ruchowa",
+        "c": false
+      },
+      {
+        "t": "Kora wzrokowa",
+        "c": false
+      },
+      {
+        "t": "Ośrodek węchu",
+        "c": false
+      }
+    ],
+    "exp": "Zakręt zaśrodkowy (za bruzdą środkową) zawiera korę czuciową."
+  },
+  {
+    "q": "Czym jest płacik okołośrodkowy i jak się dzieli czynnościowo?",
+    "opts": [
+      {
+        "t": "Przedłużeniem zakrętów środkowych na powierzchni przyśrodkowej; część przednia ruchowa, tylna czuciowa",
+        "c": true
+      },
+      {
+        "t": "Częścią móżdżku z jądrem zębatym",
+        "c": false
+      },
+      {
+        "t": "Jądrem podstawnym",
+        "c": false
+      },
+      {
+        "t": "Wypustką opony twardej",
+        "c": false
+      }
+    ],
+    "exp": "Płacik okołośrodkowy (na powierzchni przyśrodkowej) to przedłużenie obu zakrętów środkowych: część przednia = ruchowa, tylna = czuciowa (kończyna dolna i krocze, kontrola zwieraczy)."
+  },
+  {
+    "q": "Z którym zmysłem związane są zakręty skroniowe?",
+    "opts": [
+      {
+        "t": "Ze słuchem i rozumieniem mowy",
+        "c": true
+      },
+      {
+        "t": "Ze wzrokiem",
+        "c": false
+      },
+      {
+        "t": "Z węchem",
+        "c": false
+      },
+      {
+        "t": "Z czuciem głębokim",
+        "c": false
+      }
+    ],
+    "exp": "Zakręty skroniowe (górny, środkowy, dolny) związane są ze słuchem; w górnym leży ośrodek Wernickego (rozumienie mowy)."
+  },
+  {
+    "q": "Z czym związane są zakręty oczodołowe płata czołowego?",
+    "opts": [
+      {
+        "t": "Z układem limbicznym, węchem i regulacją zachowania",
+        "c": true
+      },
+      {
+        "t": "Z korą ruchową kończyn",
+        "c": false
+      },
+      {
+        "t": "Ze słuchem",
+        "c": false
+      },
+      {
+        "t": "Z równowagą",
+        "c": false
+      }
+    ],
+    "exp": "Zakręty oczodołowe (na dolnej powierzchni płata czołowego) związane są z układem limbicznym, węchem i kontrolą zachowania."
+  },
+  {
+    "q": "Do jakiego układu należy zakręt hipokampa?",
+    "opts": [
+      {
+        "t": "Do układu limbicznego (pamięć, węch)",
+        "c": true
+      },
+      {
+        "t": "Do układu piramidowego",
+        "c": false
+      },
+      {
+        "t": "Do układu wzrokowego",
+        "c": false
+      },
+      {
+        "t": "Do układu przedsionkowego",
+        "c": false
+      }
+    ],
+    "exp": "Zakręt hipokampa (gyrus parahippocampalis) na przyśrodkowej powierzchni płata skroniowego należy do układu limbicznego."
+  },
+  {
+    "q": "Co leży wokół bruzdy ostrogowej?",
+    "opts": [
+      {
+        "t": "Kora wzrokowa",
+        "c": true
+      },
+      {
+        "t": "Kora słuchowa",
+        "c": false
+      },
+      {
+        "t": "Kora ruchowa",
+        "c": false
+      },
+      {
+        "t": "Ośrodek smaku",
+        "c": false
+      }
+    ],
+    "exp": "Wokół bruzdy ostrogowej (płat potyliczny) leży kora wzrokowa."
+  },
+  {
+    "q": "Co tworzy ciało prążkowane (prążkowie)?",
+    "opts": [
+      {
+        "t": "Jądro ogoniaste i jądro soczewkowate",
+        "c": true
+      },
+      {
+        "t": "Skorupę i przedmurze",
+        "c": false
+      },
+      {
+        "t": "Wzgórze i podwzgórze",
+        "c": false
+      },
+      {
+        "t": "Ciało migdałowate i hipokamp",
+        "c": false
+      }
+    ],
+    "exp": "Ciało prążkowane (corpus striatum) to wspólna nazwa jądra ogoniastego i jądra soczewkowatego; należy do układu pozapiramidowego."
+  },
+  {
+    "q": "Co tworzy prążkowie nowe (neostriatum)?",
+    "opts": [
+      {
+        "t": "Jądro ogoniaste i skorupę",
+        "c": true
+      },
+      {
+        "t": "Gałkę bladą i skorupę",
+        "c": false
+      },
+      {
+        "t": "Jądro ogoniaste i gałkę bladą",
+        "c": false
+      },
+      {
+        "t": "Skorupę i przedmurze",
+        "c": false
+      }
+    ],
+    "exp": "Neostriatum (prążkowie nowe) = jądro ogoniaste + skorupa; paleostriatum (stare) = gałka blada."
+  },
+  {
+    "q": "Z czego składa się jądro soczewkowate?",
+    "opts": [
+      {
+        "t": "Ze skorupy (bocznie) i gałki bladej (przyśrodkowo)",
+        "c": true
+      },
+      {
+        "t": "Z jądra ogoniastego i przedmurza",
+        "c": false
+      },
+      {
+        "t": "Z gałki bladej i ciała migdałowatego",
+        "c": false
+      },
+      {
+        "t": "Ze skorupy i jądra ogoniastego",
+        "c": false
+      }
+    ],
+    "exp": "Jądro soczewkowate (nucleus lentiformis) składa się ze skorupy (putamen, boczna) i gałki bladej (globus pallidus, przyśrodkowa)."
+  },
+  {
+    "q": "Czym jest gałka blada w prążkowiu?",
+    "opts": [
+      {
+        "t": "Przyśrodkową, jaśniejszą częścią jądra soczewkowatego — główne jądro wyjściowe prążkowia",
+        "c": true
+      },
+      {
+        "t": "Boczną częścią jądra soczewkowatego",
+        "c": false
+      },
+      {
+        "t": "Częścią wzgórza",
+        "c": false
+      },
+      {
+        "t": "Jądrem nerwu czaszkowego",
+        "c": false
+      }
+    ],
+    "exp": "Gałka blada (globus pallidus) to przyśrodkowa, jaśniejsza część jądra soczewkowatego (paleostriatum) — główne jądro wyjściowe prążkowia."
+  },
+  {
+    "q": "Czym jest jądro ogoniaste?",
+    "opts": [
+      {
+        "t": "Wygiętym jądrem podstawnym towarzyszącym komorze bocznej (głowa, trzon, ogon)",
+        "c": true
+      },
+      {
+        "t": "Jądrem leżącym w pniu mózgu",
+        "c": false
+      },
+      {
+        "t": "Jądrem czuciowym wzgórza",
+        "c": false
+      },
+      {
+        "t": "Ośrodkiem wzrokowym",
+        "c": false
+      }
+    ],
+    "exp": "Jądro ogoniaste (nucleus caudatus) to wygięte jądro podstawne biegnące wzdłuż komory bocznej (głowa, trzon, ogon)."
+  },
+  {
+    "q": "Czym jest przedmurze (claustrum)?",
+    "opts": [
+      {
+        "t": "Cienką blaszką istoty szarej między skorupą a korą wyspy",
+        "c": true
+      },
+      {
+        "t": "Spoidłem łączącym półkule",
+        "c": false
+      },
+      {
+        "t": "Jądrem ruchowym śródmózgowia",
+        "c": false
+      },
+      {
+        "t": "Częścią móżdżku",
+        "c": false
+      }
+    ],
+    "exp": "Przedmurze (claustrum) to cienka blaszka istoty szarej leżąca między skorupą a korą wyspy."
+  },
+  {
+    "q": "Do jakiego układu należy ciało migdałowate i za co odpowiada?",
+    "opts": [
+      {
+        "t": "Do układu limbicznego — odpowiada za emocje (lęk, agresję)",
+        "c": true
+      },
+      {
+        "t": "Do układu piramidowego — ruch dowolny",
+        "c": false
+      },
+      {
+        "t": "Do układu wzrokowego — widzenie",
+        "c": false
+      },
+      {
+        "t": "Do móżdżku — równowaga",
+        "c": false
+      }
+    ],
+    "exp": "Ciało migdałowate (corpus amygdaloideum) w biegunie skroniowym należy do układu limbicznego — ośrodek emocji (lęku, agresji) i reakcji wegetatywnych."
+  },
+  {
+    "q": "Czym jest ciało modzelowate?",
+    "opts": [
+      {
+        "t": "Największym spoidłem mózgu — łączy korę obu półkul",
+        "c": true
+      },
+      {
+        "t": "Drogą rzutową z kory do rdzenia",
+        "c": false
+      },
+      {
+        "t": "Jądrem podstawnym",
+        "c": false
+      },
+      {
+        "t": "Wypustką opony twardej",
+        "c": false
+      }
+    ],
+    "exp": "Ciało modzelowate (spoidło wielkie mózgu) to największe spoidło — łączy korę obu półkul włóknami spoidłowymi."
+  },
+  {
+    "q": "Jaką funkcję pełni sklepienie (fornix)?",
+    "opts": [
+      {
+        "t": "Jest główną drogą odprowadzającą z hipokampa do ciał suteczkowatych",
+        "c": true
+      },
+      {
+        "t": "Łączy korę obu półkul",
+        "c": false
+      },
+      {
+        "t": "Przewodzi ruch dowolny do rdzenia",
+        "c": false
+      },
+      {
+        "t": "Odbiera czucie z twarzy",
+        "c": false
+      }
+    ],
+    "exp": "Sklepienie (fornix) to łukowate pasmo istoty białej — główna droga z hipokampa do ciał suteczkowatych (układ limbiczny, krąg Papeza)."
+  },
+  {
+    "q": "Co przebiega przez torebkę wewnętrzną?",
+    "opts": [
+      {
+        "t": "Główne drogi rzutowe (m.in. korowo-rdzeniowa i czuciowe wzgórzowo-korowe)",
+        "c": true
+      },
+      {
+        "t": "Włókna spoidłowe łączące półkule",
+        "c": false
+      },
+      {
+        "t": "Płyn mózgowo-rdzeniowy",
+        "c": false
+      },
+      {
+        "t": "Drogi węchowe",
+        "c": false
+      }
+    ],
+    "exp": "Torebka wewnętrzna (capsula interna) leży między jądrem soczewkowatym a wzgórzem/ogoniastym; biegną przez nią drogi rzutowe (korowo-rdzeniowa, korowo-jądrowa, wzgórzowo-korowe, promienistości)."
+  },
+  {
+    "q": "Która część torebki wewnętrznej zawiera drogę korowo-jądrową?",
+    "opts": [
+      {
+        "t": "Kolanko",
+        "c": true
+      },
+      {
+        "t": "Odnoga przednia",
+        "c": false
+      },
+      {
+        "t": "Odnoga tylna",
+        "c": false
+      },
+      {
+        "t": "Wieniec promienisty",
+        "c": false
+      }
+    ],
+    "exp": "W kolanku torebki wewnętrznej biegnie droga korowo-jądrowa (do jąder ruchowych nerwów czaszkowych)."
+  },
+  {
+    "q": "Co przebiega w odnodze tylnej torebki wewnętrznej?",
+    "opts": [
+      {
+        "t": "Droga korowo-rdzeniowa, drogi czuciowe wzgórzowo-korowe oraz promienistości wzrokowa i słuchowa",
+        "c": true
+      },
+      {
+        "t": "Wyłącznie droga węchowa",
+        "c": false
+      },
+      {
+        "t": "Wyłącznie spoidło wielkie",
+        "c": false
+      },
+      {
+        "t": "Wyłącznie droga korowo-jądrowa",
+        "c": false
+      }
+    ],
+    "exp": "Odnoga tylna torebki wewnętrznej zawiera drogę korowo-rdzeniową, czuciowe drogi wzgórzowo-korowe oraz promienistość wzrokową i słuchową — to 'wąskie gardło' dróg."
+  },
+  {
+    "q": "Czym jest wieniec promienisty?",
+    "opts": [
+      {
+        "t": "Wachlarzem włókien rzutowych łączącym torebkę wewnętrzną z korą",
+        "c": true
+      },
+      {
+        "t": "Spoidłem łączącym półkule",
+        "c": false
+      },
+      {
+        "t": "Jądrem podstawnym",
+        "c": false
+      },
+      {
+        "t": "Splotem naczyniowym komory",
+        "c": false
+      }
+    ],
+    "exp": "Wieniec promienisty (corona radiata) to wachlarz włókien rzutowych między torebką wewnętrzną a korą (powyżej torebki)."
+  },
+  {
+    "q": "Jak inaczej nazywa się układ limbiczny?",
+    "opts": [
+      {
+        "t": "Układ brzeżny (rąbkowy)",
+        "c": true
+      },
+      {
+        "t": "Układ piramidowy",
+        "c": false
+      },
+      {
+        "t": "Układ przedsionkowy",
+        "c": false
+      },
+      {
+        "t": "Układ siatkowaty",
+        "c": false
+      }
+    ],
+    "exp": "Układ limbiczny = układ brzeżny = układ rąbkowy (systema limbicum) — odpowiada za emocje, popędy, pamięć i zachowania."
+  },
+  {
+    "q": "Jaka jest kluczowa funkcja hipokampa?",
+    "opts": [
+      {
+        "t": "Pamięć (konsolidacja śladów pamięciowych)",
+        "c": true
+      },
+      {
+        "t": "Ruch dowolny",
+        "c": false
+      },
+      {
+        "t": "Widzenie barw",
+        "c": false
+      },
+      {
+        "t": "Regulacja oddechu",
+        "c": false
+      }
+    ],
+    "exp": "Hipokamp (hippocampus) na dnie rogu dolnego komory bocznej jest kluczowy dla pamięci; odprowadza włókna przez sklepienie."
+  },
+  {
+    "q": "Które struktury wchodzą w skład kręgu Papeza?",
+    "opts": [
+      {
+        "t": "Hipokamp → sklepienie → ciała suteczkowate → wzgórze → zakręt obręczy → hipokamp",
+        "c": true
+      },
+      {
+        "t": "Kora ruchowa → torebka wewnętrzna → rdzeń",
+        "c": false
+      },
+      {
+        "t": "Siatkówka → ciało kolankowate → kora wzrokowa",
+        "c": false
+      },
+      {
+        "t": "Ślimak → jądra ślimakowe → wstęga boczna",
+        "c": false
+      }
+    ],
+    "exp": "Krąg Papeza (pamięć i emocje): hipokamp → sklepienie → ciała suteczkowate → wzgórze → zakręt obręczy → z powrotem do hipokampa."
+  },
+  {
+    "q": "Z czym związane jest węchomózgowie (rhinencephalon)?",
+    "opts": [
+      {
+        "t": "Z węchem (i powiązane z układem limbicznym)",
+        "c": true
+      },
+      {
+        "t": "Ze słuchem",
+        "c": false
+      },
+      {
+        "t": "Z równowagą",
+        "c": false
+      },
+      {
+        "t": "Z czuciem głębokim",
+        "c": false
+      }
+    ],
+    "exp": "Węchomózgowie (rhinencephalon) to najstarsza filogenetycznie część kresomózgowia związana z węchem i powiązana z układem limbicznym."
+  },
+  {
+    "q": "Co kończy się w opuszce węchowej, a co się z niej zaczyna?",
+    "opts": [
+      {
+        "t": "Kończą się nici węchowe (nerw I), a zaczyna pasmo węchowe",
+        "c": true
+      },
+      {
+        "t": "Kończy się pasmo wzrokowe, zaczyna nerw wzrokowy",
+        "c": false
+      },
+      {
+        "t": "Kończy się wstęga boczna, zaczyna droga słuchowa",
+        "c": false
+      },
+      {
+        "t": "Kończy się sklepienie, zaczyna torebka wewnętrzna",
+        "c": false
+      }
+    ],
+    "exp": "W opuszce węchowej kończą się nici węchowe (nerw I) i leży tu II neuron, którego aksony tworzą pasmo węchowe biegnące do kory węchowej."
+  },
+  {
+    "q": "Dokąd prowadzi pasmo węchowe i co je wyróżnia?",
+    "opts": [
+      {
+        "t": "Do kory węchowej, z pominięciem wzgórza",
+        "c": true
+      },
+      {
+        "t": "Do kory wzrokowej przez wzgórze",
+        "c": false
+      },
+      {
+        "t": "Do móżdżku",
+        "c": false
+      },
+      {
+        "t": "Do rdzenia kręgowego",
+        "c": false
+      }
+    ],
+    "exp": "Pasmo węchowe (tractus olfactorius) prowadzi impulsy z opuszki do kory węchowej z pominięciem wzgórza — to wyjątek wśród dróg czuciowych."
+  }
+];
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let questions=[],current=0,score=0,answered=[];
+function init(){questions=shuffle(ALL_QUESTIONS);current=0;score=0;answered=[];document.getElementById('start-screen').style.display='none';document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';renderQuestion();}
+function renderQuestion(){const q=questions[current];const total=questions.length;document.getElementById('progText').textContent='Pytanie '+(current+1)+' z '+total;document.getElementById('scoreText').textContent='Wynik: '+score;document.getElementById('progBar').style.width=((current/total)*100)+'%';document.getElementById('qNum').textContent='Pytanie '+(current+1);document.getElementById('qText').textContent=q.q;const shuffledOpts=shuffle(q.opts.map((o,i)=>({...o,origIdx:i})));const letters=['A','B','C','D'];const wrap=document.getElementById('optionsWrap');wrap.innerHTML='';shuffledOpts.forEach((opt,idx)=>{const btn=document.createElement('button');btn.className='option-btn';btn.innerHTML='<span class="opt-letter">'+letters[idx]+'</span><span>'+opt.t+'</span>';btn.addEventListener('click',function(){selectAnswer(opt.c,q.exp,btn,wrap,q.q,shuffledOpts,letters,idx);});wrap.appendChild(btn);});const fb=document.getElementById('feedbackBox');fb.className='feedback-box';fb.innerHTML='';document.getElementById('nextBtn').style.display='none';}
+function selectAnswer(isCorrect,explanation,clickedBtn,wrap,qText,opts,letters,selectedIdx){const buttons=wrap.querySelectorAll('.option-btn');buttons.forEach(b=>b.disabled=true);let correctIdx=-1;opts.forEach((o,i)=>{if(o.c)correctIdx=i;});buttons[selectedIdx].classList.add(isCorrect?'correct':'wrong');if(!isCorrect&&correctIdx!==-1){buttons[correctIdx].classList.add('correct');}const fb=document.getElementById('feedbackBox');if(isCorrect){score++;fb.className='feedback-box ok show';fb.innerHTML='<strong>Poprawna odpowiedź!</strong>'+explanation;}else{fb.className='feedback-box fail show';fb.innerHTML='<strong>Niepoprawna odpowiedź.</strong>'+explanation;}answered.push({qText:qText,correct:isCorrect,chosen:opts[selectedIdx].t,correctAns:opts.find(o=>o.c).t});document.getElementById('scoreText').textContent='Wynik: '+score;const nextBtn=document.getElementById('nextBtn');nextBtn.style.display='inline-block';nextBtn.textContent=current+1<questions.length?'Następne pytanie →':'Pokaż wyniki';}
+document.getElementById('nextBtn').addEventListener('click',function(){current++;if(current<questions.length){renderQuestion();}else{showResults();}});
+function showResults(){document.getElementById('quiz-screen').style.display='none';document.getElementById('result-screen').style.display='block';const total=questions.length;const wrong=total-score;const pct=Math.round((score/total)*100);document.getElementById('resFinal').textContent=score;document.getElementById('resDenom').textContent='/'+total;document.getElementById('resCorrect').textContent=score;document.getElementById('resWrong').textContent=wrong;document.getElementById('resPct').textContent=pct+'%';let grade,col;if(pct>=90){grade='Doskonale!';col='#b45309';}else if(pct>=75){grade='Bardzo dobrze!';col='#d97706';}else if(pct>=60){grade='Dobrze';col='#f59e0b';}else if(pct>=51){grade='Zaliczone';col='#e9c46a';}else{grade='Wymaga powtórki';col='#c1121f';}const gl=document.getElementById('gradeLabel');gl.textContent=grade;gl.style.color=col;const rl=document.getElementById('reviewList');rl.innerHTML='';answered.forEach((a,i)=>{const div=document.createElement('div');div.className='review-item '+(a.correct?'ok':'fail');div.innerHTML='<div class="ri-meta">Pytanie '+(i+1)+(a.correct?' — Poprawnie':' — Błędnie')+'</div>'+'<strong>'+a.qText+'</strong>'+(a.correct?'':'<div style="margin-top:.3rem">Twój wybór: <em>'+a.chosen+'</em><br>Poprawna: <em>'+a.correctAns+'</em></div>');rl.appendChild(div);});}
+document.getElementById('startBtn').addEventListener('click',init);
+document.getElementById('retryBtn').addEventListener('click',init);
+</script>
+</body>
+</html>

@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 1 — Podstawy i rdzeń kręgowy – Neuroanatomia</title>
+<style>
+  :root {
+    --am:   #f59e0b;
+    --am2:  #d97706;
+    --am3:  #fcd34d;
+    --am4:  #fef3c7;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #fffaf0;
+    --border: #e7e0d2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #fffdf7; color: #212529; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #92400e 0%, var(--am2) 100%); color: #fff; padding: 2rem 1.5rem 1.5rem; text-align: center; }
+  header .back-link { display: inline-block; color: rgba(255,255,255,.75); text-decoration: none; font-size: .82rem; font-family: sans-serif; margin-bottom: .8rem; transition: color .2s; }
+  header .back-link:hover { color: #fff; }
+  header h1 { font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; font-family: sans-serif; }
+  #start-screen, #quiz-screen, #result-screen { max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .start-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.12); }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--am2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics { text-align: left; background: #fef6e3; border-radius: 10px; padding: 1.2rem 1.4rem; margin: 1.2rem 0; border: 1px solid #fae3b0; }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--am2); }
+  .level-badge { display: inline-block; background: var(--am2); color: #fff; font-family: sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .08em; padding: .3rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+  .btn { display: inline-block; background: var(--am2); color: #fff; border: none; border-radius: 10px; padding: .85rem 2.2rem; font-size: 1.05rem; font-weight: 700; cursor: pointer; margin-top: 1.2rem; transition: background .2s, transform .1s; font-family: sans-serif; }
+  .btn:hover { background: #b45309; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--am2), var(--am3)); border-radius: 4px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--gray); margin-bottom: .35rem; font-family: sans-serif; }
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1rem; }
+  .q-num { font-size: .78rem; color: var(--am2); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .5rem; font-family: sans-serif; }
+  .q-text { font-size: 1.05rem; line-height: 1.65; margin-bottom: 1.4rem; color: #1a1a1a; }
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn { display: flex; align-items: flex-start; gap: .9rem; background: var(--light); border: 2px solid var(--border); border-radius: 10px; padding: .85rem 1.1rem; cursor: pointer; text-align: left; transition: border-color .15s, background .15s; font-family: sans-serif; font-size: .95rem; line-height: 1.5; color: #212529; }
+  .option-btn:hover:not(:disabled) { border-color: var(--am3); background: #fef6e3; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--am2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--am4); border-color: var(--am2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #b45309; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback-box { margin-top: 1rem; padding: .9rem 1.1rem; border-radius: 10px; font-size: .9rem; line-height: 1.6; display: none; font-family: sans-serif; }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--am4); border-left: 4px solid var(--am2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1.5rem; }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--am2); }
+  .score-circle { width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, #92400e, var(--am2)); color: #fff; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 0 30px rgba(217,119,6,.4); }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #b45309; }
+  .stat-wrong strong { color: var(--red); }
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; font-family: sans-serif; }
+  .review-item.ok   { background: var(--am4); border-left: 3px solid var(--am2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+  @media (max-width: 480px) { .result-stats { grid-template-columns: repeat(2, 1fr); } .question-card { padding: 1.3rem; } .q-text { font-size: .97rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="neuro-testy.html">← Wróć do listy testów</a>
+  <h1>Neuroanatomia</h1>
+  <p>Część 1 · Pojęcia podstawowe i rdzeń kręgowy · 59 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">CZĘŚĆ 1</div>
+    <h2>Test 1 — podstawy i rdzeń kręgowy</h2>
+    <p>Test obejmuje <strong>pojęcia podstawowe</strong> neuroanatomii (komórka nerwowa, synapsa, czucie, drogi, odruch, opona, neuromer) oraz budowę i <strong>jądra rdzenia kręgowego</strong>, korzenie, zwój i nerw rdzeniowy.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Neuron i jego części · synapsa, glej, neurosekrecja · istota biała i szara · bodziec, impuls, odruch, łuk odruchowy · czucie i jego rodzaje · jądro, ośrodek, zwój · rodzaje dróg · neuromer i dermatom · pęcherzyki mózgowe · rdzeń kręgowy: rogi, sznury, zgrubienia, stożek, ogon koński · jądra rdzenia · korzenie, zwój i nerw rdzeniowy</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>59 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 59</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progBar" style="width:0%"></div></div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row"><button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button></div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle"><span class="score-num" id="resFinal">0</span><span class="score-denom" id="resDenom">/59</span></div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "q": "Co to jest neuron?",
+    "opts": [
+      {
+        "t": "Podstawowa, pobudliwa komórka układu nerwowego, przewodząca impulsy",
+        "c": true
+      },
+      {
+        "t": "Komórka podporowa odżywiająca tkankę nerwową",
+        "c": false
+      },
+      {
+        "t": "Skupisko ciał komórkowych w OUN",
+        "c": false
+      },
+      {
+        "t": "Pasmo włókien o wspólnej czynności",
+        "c": false
+      }
+    ],
+    "exp": "Neuron to podstawowa komórka układu nerwowego — pobudliwa, przewodząca impulsy; zbudowana z ciała (perikarionu) i wypustek (dendrytów i neurytu)."
+  },
+  {
+    "q": "Czym jest perikarion (neurocyt)?",
+    "opts": [
+      {
+        "t": "Ciałem komórki nerwowej, z jądrem i organellami",
+        "c": true
+      },
+      {
+        "t": "Długą wypustką przewodzącą impuls od komórki",
+        "c": false
+      },
+      {
+        "t": "Osłonką lipidową aksonu",
+        "c": false
+      },
+      {
+        "t": "Miejscem kontaktu dwóch neuronów",
+        "c": false
+      }
+    ],
+    "exp": "Perikarion (neurocyt) to ciało komórki nerwowej — centrum metaboliczne neuronu; skupiska perikarionów tworzą istotę szarą i jądra."
+  },
+  {
+    "q": "Jaką funkcję pełni dendryt?",
+    "opts": [
+      {
+        "t": "Odbiera impulsy i przewodzi je do perikarionu (dośrodkowo)",
+        "c": true
+      },
+      {
+        "t": "Przewodzi impuls od perikarionu do innych komórek",
+        "c": false
+      },
+      {
+        "t": "Wytwarza osłonkę mielinową",
+        "c": false
+      },
+      {
+        "t": "Wydziela płyn mózgowo-rdzeniowy",
+        "c": false
+      }
+    ],
+    "exp": "Dendryt to zwykle krótka, rozgałęziona wypustka odbierająca impulsy i przewodząca je DO ciała komórki (dośrodkowo)."
+  },
+  {
+    "q": "Czym jest neuryt (akson)?",
+    "opts": [
+      {
+        "t": "Pojedynczą, długą wypustką przewodzącą impuls od perikarionu",
+        "c": true
+      },
+      {
+        "t": "Krótką wypustką odbierającą bodźce",
+        "c": false
+      },
+      {
+        "t": "Ciałem komórki nerwowej",
+        "c": false
+      },
+      {
+        "t": "Komórką glejową",
+        "c": false
+      }
+    ],
+    "exp": "Neuryt (akson) to pojedyncza, długa wypustka przewodząca impuls OD ciała komórki (odśrodkowo); tworzy włókna nerwowe."
+  },
+  {
+    "q": "Czym są neurofibryle?",
+    "opts": [
+      {
+        "t": "Włókienkami cytoszkieletu w cytoplazmie neuronu",
+        "c": true
+      },
+      {
+        "t": "Zakończeniami synaptycznymi",
+        "c": false
+      },
+      {
+        "t": "Pęcherzykami z neurotransmiterem",
+        "c": false
+      },
+      {
+        "t": "Osłonkami aksonu",
+        "c": false
+      }
+    ],
+    "exp": "Neurofibryle to elementy cytoszkieletu neuronu (neurofilamenty i mikrotubule) o roli podporowej i transportowej."
+  },
+  {
+    "q": "Jaka jest główna funkcja osłonki mielinowej (rdzennej)?",
+    "opts": [
+      {
+        "t": "Izolacja aksonu i przyspieszenie (skokowe) przewodzenia impulsu",
+        "c": true
+      },
+      {
+        "t": "Odżywianie ciała komórki",
+        "c": false
+      },
+      {
+        "t": "Produkcja neurotransmitera",
+        "c": false
+      },
+      {
+        "t": "Odbiór bodźców czuciowych",
+        "c": false
+      }
+    ],
+    "exp": "Osłonka mielinowa izoluje akson i umożliwia szybsze, skokowe przewodzenie; tworzą ją oligodendrocyty (OUN) lub komórki Schwanna (obwód)."
+  },
+  {
+    "q": "Co cechuje neuron pozornie jednobiegunowy?",
+    "opts": [
+      {
+        "t": "Ma jedną wypustkę dzielącą się w kształt litery T na gałąź obwodową i ośrodkową",
+        "c": true
+      },
+      {
+        "t": "Ma wyłącznie jeden dendryt i żadnego aksonu",
+        "c": false
+      },
+      {
+        "t": "Nie posiada ciała komórki",
+        "c": false
+      },
+      {
+        "t": "Ma dwa równorzędne aksony",
+        "c": false
+      }
+    ],
+    "exp": "Neuron pozornie jednobiegunowy (czuciowy, zwoju rdzeniowego) ma jedną wypustkę dzielącą się na gałąź obwodową i ośrodkową — stąd 'pozornie'."
+  },
+  {
+    "q": "Czym jest synapsa?",
+    "opts": [
+      {
+        "t": "Miejscem kontaktu, w którym impuls przekazywany jest między neuronami (zwykle chemicznie)",
+        "c": true
+      },
+      {
+        "t": "Skupiskiem ciał komórek w OUN",
+        "c": false
+      },
+      {
+        "t": "Osłonką włókna nerwowego",
+        "c": false
+      },
+      {
+        "t": "Pasmem istoty białej łączącym półkule",
+        "c": false
+      }
+    ],
+    "exp": "Synapsa to miejsce kontaktu neuronów (lub neuronu z efektorem); ma błonę presynaptyczną, szczelinę i błonę postsynaptyczną."
+  },
+  {
+    "q": "Czym jest neurotransmiter?",
+    "opts": [
+      {
+        "t": "Substancją chemiczną przenoszącą sygnał w synapsie",
+        "c": true
+      },
+      {
+        "t": "Hormonem wydzielanym przez przysadkę",
+        "c": false
+      },
+      {
+        "t": "Włóknem cytoszkieletu",
+        "c": false
+      },
+      {
+        "t": "Komórką glejową",
+        "c": false
+      }
+    ],
+    "exp": "Neurotransmiter (neuroprzekaźnik) to substancja uwalniana w synapsie, przenosząca sygnał (np. acetylocholina, noradrenalina, GABA)."
+  },
+  {
+    "q": "Na czym polega neurosekrecja?",
+    "opts": [
+      {
+        "t": "Na wydzielaniu hormonów przez wyspecjalizowane neurony",
+        "c": true
+      },
+      {
+        "t": "Na przewodzeniu impulsu wzdłuż aksonu",
+        "c": false
+      },
+      {
+        "t": "Na fagocytozie przez mikroglej",
+        "c": false
+      },
+      {
+        "t": "Na tworzeniu mieliny",
+        "c": false
+      }
+    ],
+    "exp": "Neurosekrecja to wydzielanie hormonów przez neurony (np. jądra podwzgórza → wazopresyna, oksytocyna); łączy układ nerwowy z hormonalnym."
+  },
+  {
+    "q": "Czym jest glej (neuroglej)?",
+    "opts": [
+      {
+        "t": "Komórkami podporowymi układu nerwowego (odżywianie, izolacja, obrona, mielina)",
+        "c": true
+      },
+      {
+        "t": "Pobudliwymi komórkami przewodzącymi impulsy",
+        "c": false
+      },
+      {
+        "t": "Włóknami tworzącymi drogi",
+        "c": false
+      },
+      {
+        "t": "Płynem wypełniającym komory",
+        "c": false
+      }
+    ],
+    "exp": "Glej to komórki podporowe (astrocyty, oligodendrocyty, mikroglej, ependyma) — odżywiają, izolują, bronią, tworzą mielinę i barierę krew–mózg."
+  },
+  {
+    "q": "Co tworzy istotę szarą?",
+    "opts": [
+      {
+        "t": "Skupiska perikarionów (ciał komórek nerwowych)",
+        "c": true
+      },
+      {
+        "t": "Skupiska włókien nerwowych z mieliną",
+        "c": false
+      },
+      {
+        "t": "Komórki glejowe i naczynia",
+        "c": false
+      },
+      {
+        "t": "Płyn mózgowo-rdzeniowy",
+        "c": false
+      }
+    ],
+    "exp": "Istota szara to skupiska ciał komórek (perikarionów) — kora i jądra mózgu, rogi rdzenia."
+  },
+  {
+    "q": "Co tworzy istotę białą?",
+    "opts": [
+      {
+        "t": "Skupiska włókien nerwowych (aksonów z mieliną)",
+        "c": true
+      },
+      {
+        "t": "Skupiska ciał komórek nerwowych",
+        "c": false
+      },
+      {
+        "t": "Komórki ependymy",
+        "c": false
+      },
+      {
+        "t": "Naczynia splotu naczyniówkowego",
+        "c": false
+      }
+    ],
+    "exp": "Istota biała to skupiska włókien nerwowych (aksonów z mieliną) tworzące drogi; w rdzeniu leży na zewnątrz (sznury)."
+  },
+  {
+    "q": "Czym jest bodziec?",
+    "opts": [
+      {
+        "t": "Zmianą w środowisku zdolną wywołać pobudzenie receptora",
+        "c": true
+      },
+      {
+        "t": "Falą pobudzenia biegnącą wzdłuż włókna",
+        "c": false
+      },
+      {
+        "t": "Narządem wykonawczym odpowiedzi",
+        "c": false
+      },
+      {
+        "t": "Substancją w synapsie",
+        "c": false
+      }
+    ],
+    "exp": "Bodziec to zmiana zdolna pobudzić receptor (mechaniczny, termiczny, chemiczny, świetlny)."
+  },
+  {
+    "q": "Czym jest impuls nerwowy?",
+    "opts": [
+      {
+        "t": "Falą pobudzenia (potencjałem czynnościowym) biegnącą wzdłuż włókna",
+        "c": true
+      },
+      {
+        "t": "Zmianą środowiska działającą na receptor",
+        "c": false
+      },
+      {
+        "t": "Skupiskiem perikarionów",
+        "c": false
+      },
+      {
+        "t": "Połączeniem korzeni nerwowych",
+        "c": false
+      }
+    ],
+    "exp": "Impuls nerwowy to fala pobudzenia (potencjał czynnościowy) — 'sygnał' przewodzony przez włókna."
+  },
+  {
+    "q": "Czym jest receptor?",
+    "opts": [
+      {
+        "t": "Strukturą odbierającą bodziec i zamieniającą go na impuls",
+        "c": true
+      },
+      {
+        "t": "Narządem wykonawczym (mięsień lub gruczoł)",
+        "c": false
+      },
+      {
+        "t": "Jądrem ruchowym rdzenia",
+        "c": false
+      },
+      {
+        "t": "Pasmem włókien spoidłowych",
+        "c": false
+      }
+    ],
+    "exp": "Receptor odbiera bodziec i zamienia go na impuls — stanowi początek drogi czuciowej."
+  },
+  {
+    "q": "Czym jest efektor?",
+    "opts": [
+      {
+        "t": "Narządem wykonawczym odpowiadającym na impuls (mięsień lub gruczoł)",
+        "c": true
+      },
+      {
+        "t": "Strukturą odbierającą bodziec",
+        "c": false
+      },
+      {
+        "t": "Komórką glejową",
+        "c": false
+      },
+      {
+        "t": "Zwojem czuciowym",
+        "c": false
+      }
+    ],
+    "exp": "Efektor to narząd wykonawczy (mięsień lub gruczoł) — koniec drogi ruchowej."
+  },
+  {
+    "q": "Czym jest odruch?",
+    "opts": [
+      {
+        "t": "Automatyczną odpowiedzią efektora na bodziec, bez udziału woli",
+        "c": true
+      },
+      {
+        "t": "Świadomą, planowaną reakcją ruchową",
+        "c": false
+      },
+      {
+        "t": "Wydzielaniem hormonu przez neuron",
+        "c": false
+      },
+      {
+        "t": "Przewodzeniem impulsu przez synapsę",
+        "c": false
+      }
+    ],
+    "exp": "Odruch to automatyczna, mimowolna odpowiedź efektora na bodziec."
+  },
+  {
+    "q": "Z jakich elementów składa się łuk odruchowy?",
+    "opts": [
+      {
+        "t": "Receptor → neuron czuciowy → ośrodek → neuron ruchowy → efektor",
+        "c": true
+      },
+      {
+        "t": "Tylko z receptora i efektora",
+        "c": false
+      },
+      {
+        "t": "Z dwóch synaps i jednego dendrytu",
+        "c": false
+      },
+      {
+        "t": "Z kory ruchowej i kory czuciowej",
+        "c": false
+      }
+    ],
+    "exp": "Łuk odruchowy: receptor → neuron dośrodkowy → ośrodek → neuron odśrodkowy → efektor; najprostszy jest dwuneuronowy (np. odruch kolanowy)."
+  },
+  {
+    "q": "Które czucie określamy jako protopatyczne?",
+    "opts": [
+      {
+        "t": "Czucie 'grube': ból, temperatura, dotyk gruby",
+        "c": true
+      },
+      {
+        "t": "Precyzyjne czucie różnicujące dotyk",
+        "c": false
+      },
+      {
+        "t": "Czucie położenia i ruchu ciała",
+        "c": false
+      },
+      {
+        "t": "Czucie z narządów wewnętrznych",
+        "c": false
+      }
+    ],
+    "exp": "Czucie protopatyczne to czucie 'grube' (ból, temperatura, dotyk gruby), przewodzone drogą rdzeniowo-wzgórzową."
+  },
+  {
+    "q": "Które czucie określamy jako epikrytyczne?",
+    "opts": [
+      {
+        "t": "Precyzyjne czucie różnicujące (lokalizacja, czucie dyskryminacyjne)",
+        "c": true
+      },
+      {
+        "t": "Ból i temperaturę",
+        "c": false
+      },
+      {
+        "t": "Czucie z narządów wewnętrznych",
+        "c": false
+      },
+      {
+        "t": "Czucie równowagi",
+        "c": false
+      }
+    ],
+    "exp": "Czucie epikrytyczne to dokładny, różnicujący dotyk; biegnie sznurami tylnymi → wstęga przyśrodkowa."
+  },
+  {
+    "q": "Czego dotyczy czucie proprioceptywne (głębokie)?",
+    "opts": [
+      {
+        "t": "Czucia z mięśni, ścięgien i stawów — położenia i ruchu ciała",
+        "c": true
+      },
+      {
+        "t": "Bólu i temperatury skóry",
+        "c": false
+      },
+      {
+        "t": "Czucia trzewnego",
+        "c": false
+      },
+      {
+        "t": "Smaku i węchu",
+        "c": false
+      }
+    ],
+    "exp": "Czucie proprioceptywne (głębokie) pochodzi z mięśni, ścięgien i stawów — informuje o położeniu i ruchu ciała; bywa świadome i nieświadome."
+  },
+  {
+    "q": "Czego dotyczy czucie wisceralne (trzewne)?",
+    "opts": [
+      {
+        "t": "Czucia z narządów wewnętrznych (rozciąganie, ból trzewny)",
+        "c": true
+      },
+      {
+        "t": "Czucia dotyku różnicującego skóry",
+        "c": false
+      },
+      {
+        "t": "Czucia położenia kończyn",
+        "c": false
+      },
+      {
+        "t": "Słuchu",
+        "c": false
+      }
+    ],
+    "exp": "Czucie wisceralne to czucie z narządów wewnętrznych, przewodzone włóknami autonomicznymi."
+  },
+  {
+    "q": "Czym jest jądro nerwowe?",
+    "opts": [
+      {
+        "t": "Skupiskiem perikarionów o wspólnej czynności w obrębie OUN",
+        "c": true
+      },
+      {
+        "t": "Skupiskiem ciał komórek poza OUN",
+        "c": false
+      },
+      {
+        "t": "Pasmem włókien w istocie białej",
+        "c": false
+      },
+      {
+        "t": "Osłonką aksonu",
+        "c": false
+      }
+    ],
+    "exp": "Jądro nerwowe (nucleus) to skupisko ciał komórek o wspólnej czynności w OUN; jego odpowiednikiem na obwodzie jest zwój."
+  },
+  {
+    "q": "Czym różni się jądro początkowe od końcowego drogi?",
+    "opts": [
+      {
+        "t": "Początkowe to miejsce, gdzie droga się zaczyna; końcowe — gdzie się kończy",
+        "c": true
+      },
+      {
+        "t": "Początkowe leży na obwodzie, końcowe w korze",
+        "c": false
+      },
+      {
+        "t": "Oba znaczą to samo",
+        "c": false
+      },
+      {
+        "t": "Początkowe jest czuciowe, końcowe zawsze ruchowe",
+        "c": false
+      }
+    ],
+    "exp": "Jądro początkowe — perikariony, których aksony tworzą drogę/nerw; jądro końcowe — komórki, do których włókna dochodzą."
+  },
+  {
+    "q": "Co to jest ośrodek nerwowy?",
+    "opts": [
+      {
+        "t": "Czynnościowe skupisko neuronów odpowiadające za daną funkcję",
+        "c": true
+      },
+      {
+        "t": "Pojedyncze włókno nerwowe",
+        "c": false
+      },
+      {
+        "t": "Osłonka mielinowa",
+        "c": false
+      },
+      {
+        "t": "Przestrzeń między oponami",
+        "c": false
+      }
+    ],
+    "exp": "Ośrodek nerwowy to czynnościowe skupisko neuronów (np. ośrodek oddechowy, naczynioruchowy); może obejmować kilka jąder."
+  },
+  {
+    "q": "Czym jest zwój nerwowy?",
+    "opts": [
+      {
+        "t": "Skupiskiem perikarionów położonym poza ośrodkowym układem nerwowym",
+        "c": true
+      },
+      {
+        "t": "Skupiskiem perikarionów w OUN",
+        "c": false
+      },
+      {
+        "t": "Pasmem istoty białej",
+        "c": false
+      },
+      {
+        "t": "Splotem naczyń w komorze",
+        "c": false
+      }
+    ],
+    "exp": "Zwój (ganglion) to skupisko ciał komórek poza OUN — czuciowy (np. rdzeniowy) lub autonomiczny (np. zwoje pnia współczulnego)."
+  },
+  {
+    "q": "Czym jest droga aferentna?",
+    "opts": [
+      {
+        "t": "Drogą dośrodkową (czuciową), niosącą informację z receptorów do ośrodków",
+        "c": true
+      },
+      {
+        "t": "Drogą odśrodkową do efektorów",
+        "c": false
+      },
+      {
+        "t": "Drogą łączącą obie półkule",
+        "c": false
+      },
+      {
+        "t": "Drogą łączącą okolice tej samej półkuli",
+        "c": false
+      }
+    ],
+    "exp": "Droga aferentna (dośrodkowa, czuciowa) niesie informację z receptorów ku ośrodkom."
+  },
+  {
+    "q": "Czym jest droga eferentna?",
+    "opts": [
+      {
+        "t": "Drogą odśrodkową prowadzącą od ośrodków do efektorów",
+        "c": true
+      },
+      {
+        "t": "Drogą czuciową z receptorów",
+        "c": false
+      },
+      {
+        "t": "Drogą spoidłową między półkulami",
+        "c": false
+      },
+      {
+        "t": "Drogą kojarzeniową",
+        "c": false
+      }
+    ],
+    "exp": "Droga eferentna (odśrodkowa, ruchowa) prowadzi impulsy od ośrodków do efektorów."
+  },
+  {
+    "q": "Co łączy droga kojarzeniowa (asocjacyjna)?",
+    "opts": [
+      {
+        "t": "Okolice kory tej samej półkuli",
+        "c": true
+      },
+      {
+        "t": "Okolice obu półkul",
+        "c": false
+      },
+      {
+        "t": "Korę z rdzeniem kręgowym",
+        "c": false
+      },
+      {
+        "t": "Receptor z efektorem",
+        "c": false
+      }
+    ],
+    "exp": "Droga kojarzeniowa (asocjacyjna) łączy różne okolice kory w obrębie tej samej półkuli."
+  },
+  {
+    "q": "Co łączy droga spoidłowa (komisuralna)?",
+    "opts": [
+      {
+        "t": "Okolice obu półkul mózgu",
+        "c": true
+      },
+      {
+        "t": "Okolice tej samej półkuli",
+        "c": false
+      },
+      {
+        "t": "Korę z jądrami pnia",
+        "c": false
+      },
+      {
+        "t": "Wzgórze z rdzeniem",
+        "c": false
+      }
+    ],
+    "exp": "Droga spoidłowa (komisuralna) łączy symetryczne okolice obu półkul (przez spoidła, np. ciało modzelowate)."
+  },
+  {
+    "q": "Czym jest droga rzutowa (projekcyjna)?",
+    "opts": [
+      {
+        "t": "Drogą łączącą korę z niższymi piętrami układu nerwowego (w górę lub w dół)",
+        "c": true
+      },
+      {
+        "t": "Drogą łączącą okolice tej samej półkuli",
+        "c": false
+      },
+      {
+        "t": "Wyłącznie drogą czuciową twarzy",
+        "c": false
+      },
+      {
+        "t": "Pasmem spoidłowym",
+        "c": false
+      }
+    ],
+    "exp": "Droga rzutowa (projekcyjna) łączy korę z niższymi piętrami — np. korowo-rdzeniowa (w dół) czy wzgórzowo-korowa (w górę)."
+  },
+  {
+    "q": "Czym jest spoidło?",
+    "opts": [
+      {
+        "t": "Pasmem włókien łączącym symetryczne części obu połów mózgu",
+        "c": true
+      },
+      {
+        "t": "Skupiskiem perikarionów w korze",
+        "c": false
+      },
+      {
+        "t": "Osłonką mielinową",
+        "c": false
+      },
+      {
+        "t": "Zwojem autonomicznym",
+        "c": false
+      }
+    ],
+    "exp": "Spoidło (commissura) to pasmo włókien łączące obie połowy mózgu; największe to ciało modzelowate."
+  },
+  {
+    "q": "Czym jest splot nerwowy?",
+    "opts": [
+      {
+        "t": "Siecią łączących się gałęzi nerwów wymieniających włókna",
+        "c": true
+      },
+      {
+        "t": "Skupiskiem ciał komórek w OUN",
+        "c": false
+      },
+      {
+        "t": "Osłonką nerwu",
+        "c": false
+      },
+      {
+        "t": "Drogą spoidłową",
+        "c": false
+      }
+    ],
+    "exp": "Splot nerwowy (plexus) to sieć łączących się gałęzi nerwów (np. szyjny, ramienny, lędźwiowy, krzyżowy)."
+  },
+  {
+    "q": "Czym jest neuromer?",
+    "opts": [
+      {
+        "t": "Segmentem rdzenia kręgowego odpowiadającym jednej parze nerwów rdzeniowych",
+        "c": true
+      },
+      {
+        "t": "Pasem skóry unerwionym przez jeden nerw",
+        "c": false
+      },
+      {
+        "t": "Jądrem ruchowym rogu przedniego",
+        "c": false
+      },
+      {
+        "t": "Pęczkiem włókien w sznurze tylnym",
+        "c": false
+      }
+    ],
+    "exp": "Neuromer to segment (odcinek) rdzenia odpowiadający jednej parze nerwów rdzeniowych — łącznie 31."
+  },
+  {
+    "q": "Czym jest dermatom?",
+    "opts": [
+      {
+        "t": "Pasem skóry unerwionym czuciowo przez jeden neuromer (nerw rdzeniowy)",
+        "c": true
+      },
+      {
+        "t": "Segmentem rdzenia kręgowego",
+        "c": false
+      },
+      {
+        "t": "Jądrem czuciowym pnia mózgu",
+        "c": false
+      },
+      {
+        "t": "Mięśniem unerwionym przez jeden nerw",
+        "c": false
+      }
+    ],
+    "exp": "Dermatom to pas skóry unerwiony czuciowo przez jeden neuromer; sąsiednie dermatomy zachodzą na siebie."
+  },
+  {
+    "q": "Ile powstaje wtórnych pęcherzyków mózgowych i co dają?",
+    "opts": [
+      {
+        "t": "Pięć — kreso-, między-, śród-, tyłomózgowie wtórne i rdzeniomózgowie",
+        "c": true
+      },
+      {
+        "t": "Trzy — przodo-, śród- i tyłomózgowie",
+        "c": false
+      },
+      {
+        "t": "Dwa — mózgowie i rdzeniomózgowie",
+        "c": false
+      },
+      {
+        "t": "Cztery — po jednym na każdy płat",
+        "c": false
+      }
+    ],
+    "exp": "Z 3 pęcherzyków pierwotnych powstaje 5 wtórnych: kresomózgowie, międzymózgowie, śródmózgowie, tyłomózgowie wtórne (most+móżdżek) i rdzeniomózgowie (opuszka)."
+  },
+  {
+    "q": "Która część mózgowia powstaje z rdzeniomózgowia?",
+    "opts": [
+      {
+        "t": "Rdzeń przedłużony (opuszka)",
+        "c": true
+      },
+      {
+        "t": "Most i móżdżek",
+        "c": false
+      },
+      {
+        "t": "Wzgórze i podwzgórze",
+        "c": false
+      },
+      {
+        "t": "Półkule mózgu",
+        "c": false
+      }
+    ],
+    "exp": "Rdzeniomózgowie (myelencephalon) daje rdzeń przedłużony (opuszkę)."
+  },
+  {
+    "q": "Co powstaje z tyłomózgowia wtórnego (metencephalon)?",
+    "opts": [
+      {
+        "t": "Most i móżdżek",
+        "c": true
+      },
+      {
+        "t": "Tylko rdzeń przedłużony",
+        "c": false
+      },
+      {
+        "t": "Śródmózgowie",
+        "c": false
+      },
+      {
+        "t": "Kresomózgowie",
+        "c": false
+      }
+    ],
+    "exp": "Tyłomózgowie wtórne (metencephalon) daje most i móżdżek."
+  },
+  {
+    "q": "Co tworzy pień mózgu?",
+    "opts": [
+      {
+        "t": "Rdzeń przedłużony, most i śródmózgowie",
+        "c": true
+      },
+      {
+        "t": "Móżdżek, most i wzgórze",
+        "c": false
+      },
+      {
+        "t": "Półkule i jądra podstawne",
+        "c": false
+      },
+      {
+        "t": "Wzgórze, podwzgórze i przysadkę",
+        "c": false
+      }
+    ],
+    "exp": "Pień mózgu (truncus encephali) tworzą rdzeń przedłużony, most i śródmózgowie; zawiera jądra nerwów czaszkowych, twór siatkowaty i drogi."
+  },
+  {
+    "q": "Z którym układem związany jest pramóżdżek (archicerebellum)?",
+    "opts": [
+      {
+        "t": "Z układem przedsionkowym (równowaga)",
+        "c": true
+      },
+      {
+        "t": "Z korą ruchową (ruchy precyzyjne)",
+        "c": false
+      },
+      {
+        "t": "Z układem limbicznym",
+        "c": false
+      },
+      {
+        "t": "Z układem wzrokowym",
+        "c": false
+      }
+    ],
+    "exp": "Pramóżdżek (płat grudkowo-kłaczkowy) jest związany z układem przedsionkowym i równowagą."
+  },
+  {
+    "q": "Za co odpowiada nowy móżdżek (neocerebellum)?",
+    "opts": [
+      {
+        "t": "Za koordynację ruchów dowolnych (precyzja)",
+        "c": true
+      },
+      {
+        "t": "Za równowagę i ruchy gałek ocznych",
+        "c": false
+      },
+      {
+        "t": "Za napięcie mięśni postawnych",
+        "c": false
+      },
+      {
+        "t": "Za czucie trzewne",
+        "c": false
+      }
+    ],
+    "exp": "Nowy móżdżek (boczne części półkul) odpowiada za koordynację i precyzję ruchów dowolnych."
+  },
+  {
+    "q": "Na jakiej wysokości kończy się rdzeń kręgowy u dorosłego?",
+    "opts": [
+      {
+        "t": "Na wysokości L1–L2 (stożek rdzeniowy)",
+        "c": true
+      },
+      {
+        "t": "Na wysokości kości guzicznej",
+        "c": false
+      },
+      {
+        "t": "Na granicy szyjno-piersiowej",
+        "c": false
+      },
+      {
+        "t": "Na wysokości L5–S1",
+        "c": false
+      }
+    ],
+    "exp": "Rdzeń kręgowy kończy się stożkiem rdzeniowym na wysokości L1–L2; niżej biegnie ogon koński."
+  },
+  {
+    "q": "Co zaopatruje zgrubienie szyjne rdzenia?",
+    "opts": [
+      {
+        "t": "Kończynę górną (splot ramienny)",
+        "c": true
+      },
+      {
+        "t": "Kończynę dolną",
+        "c": false
+      },
+      {
+        "t": "Narządy miednicy",
+        "c": false
+      },
+      {
+        "t": "Mięśnie twarzy",
+        "c": false
+      }
+    ],
+    "exp": "Zgrubienie szyjne (C4–Th1) zawiera więcej neuronów ruchowych — zaopatruje kończynę górną przez splot ramienny."
+  },
+  {
+    "q": "Czym jest ogon koński (cauda equina)?",
+    "opts": [
+      {
+        "t": "Pęczkiem korzeni nerwów lędźwiowych, krzyżowych i guzicznego poniżej stożka",
+        "c": true
+      },
+      {
+        "t": "Końcowym odcinkiem rdzenia zawierającym istotę szarą",
+        "c": false
+      },
+      {
+        "t": "Pasmem opony mocującym rdzeń",
+        "c": false
+      },
+      {
+        "t": "Splotem żylnym kanału kręgowego",
+        "c": false
+      }
+    ],
+    "exp": "Ogon koński to pęczek korzeni nerwów (L, S, Co) biegnących w dół poniżej stożka, bo rdzeń jest krótszy niż kanał kręgowy."
+  },
+  {
+    "q": "Czym jest nić końcowa (filum terminale)?",
+    "opts": [
+      {
+        "t": "Cienkim pasmem (gł. opony miękkiej) mocującym rdzeń do kości guzicznej",
+        "c": true
+      },
+      {
+        "t": "Korzeniem ruchowym ostatniego nerwu",
+        "c": false
+      },
+      {
+        "t": "Drogą czuciową rdzenia",
+        "c": false
+      },
+      {
+        "t": "Końcowym odcinkiem istoty szarej",
+        "c": false
+      }
+    ],
+    "exp": "Nić końcowa to cienkie pasmo biegnące od stożka w dół, mocujące rdzeń do kości guzicznej."
+  },
+  {
+    "q": "Na czym polega pozorne wstępowanie rdzenia kręgowego?",
+    "opts": [
+      {
+        "t": "Kręgosłup rośnie szybciej niż rdzeń, więc rdzeń kończy się coraz wyżej względem kręgów",
+        "c": true
+      },
+      {
+        "t": "Rdzeń fizycznie przesuwa się ku górze w kanale",
+        "c": false
+      },
+      {
+        "t": "Korzenie skracają się w rozwoju",
+        "c": false
+      },
+      {
+        "t": "Rdzeń wydłuża się bardziej niż kręgosłup",
+        "c": false
+      }
+    ],
+    "exp": "Pozorne wstępowanie: kościec rośnie szybciej niż rdzeń, więc rdzeń leży coraz wyżej względem kręgów, a korzenie biegną skośnie w dół (ogon koński)."
+  },
+  {
+    "q": "Który róg rdzenia jest czuciowy, a który ruchowy?",
+    "opts": [
+      {
+        "t": "Róg tylny — czuciowy; róg przedni — ruchowy",
+        "c": true
+      },
+      {
+        "t": "Róg tylny — ruchowy; róg przedni — czuciowy",
+        "c": false
+      },
+      {
+        "t": "Oba rogi są czuciowe",
+        "c": false
+      },
+      {
+        "t": "Oba rogi są ruchowe",
+        "c": false
+      }
+    ],
+    "exp": "Róg tylny odbiera włókna czuciowe (korzeń tylny), róg przedni zawiera motoneurony (korzeń przedni); róg boczny jest autonomiczny."
+  },
+  {
+    "q": "Na ile sznurów dzieli się istota biała rdzenia?",
+    "opts": [
+      {
+        "t": "Na trzy: przedni, boczny i tylny",
+        "c": true
+      },
+      {
+        "t": "Na dwa: przedni i tylny",
+        "c": false
+      },
+      {
+        "t": "Na cztery symetryczne",
+        "c": false
+      },
+      {
+        "t": "Na pięć",
+        "c": false
+      }
+    ],
+    "exp": "Sznury rdzenia: przedni, boczny i tylny — zawierają drogi (w tylnym czucie epikrytyczne i głębokie)."
+  },
+  {
+    "q": "Czym jest korzeń tylny nerwu rdzeniowego?",
+    "opts": [
+      {
+        "t": "Korzeniem czuciowym, na którym leży zwój rdzeniowy",
+        "c": true
+      },
+      {
+        "t": "Korzeniem ruchowym z aksonami motoneuronów",
+        "c": false
+      },
+      {
+        "t": "Pasmem spoidłowym",
+        "c": false
+      },
+      {
+        "t": "Gałęzią splotu nerwowego",
+        "c": false
+      }
+    ],
+    "exp": "Korzeń tylny jest czuciowy — tworzą go włókna neuronów zwoju rdzeniowego; na nim leży zwój rdzeniowy."
+  },
+  {
+    "q": "Co zawiera zwój rdzeniowy?",
+    "opts": [
+      {
+        "t": "Ciała neuronów pozornie jednobiegunowych (czuciowych) — pierwszy neuron drogi czuciowej",
+        "c": true
+      },
+      {
+        "t": "Motoneurony rogu przedniego",
+        "c": false
+      },
+      {
+        "t": "Neurony przywspółczulne",
+        "c": false
+      },
+      {
+        "t": "Komórki glejowe i naczynia",
+        "c": false
+      }
+    ],
+    "exp": "Zwój rdzeniowy zawiera ciała neuronów czuciowych (pozornie jednobiegunowych) — to pierwszy neuron każdej drogi czuciowej."
+  },
+  {
+    "q": "Ile jest par nerwów rdzeniowych i jaki to nerw?",
+    "opts": [
+      {
+        "t": "31 par; nerw mieszany (czuciowo-ruchowo-autonomiczny)",
+        "c": true
+      },
+      {
+        "t": "12 par; nerw wyłącznie ruchowy",
+        "c": false
+      },
+      {
+        "t": "31 par; nerw wyłącznie czuciowy",
+        "c": false
+      },
+      {
+        "t": "24 pary; nerw wyłącznie autonomiczny",
+        "c": false
+      }
+    ],
+    "exp": "Jest 31 par nerwów rdzeniowych (8C, 12Th, 5L, 5S, 1Co); każdy jest mieszany — powstaje z połączenia korzenia przedniego i tylnego."
+  },
+  {
+    "q": "Jaką funkcję pełni istota galaretowata (Rolanda) rogu tylnego?",
+    "opts": [
+      {
+        "t": "Modulację czucia bólu i temperatury ('bramka bólowa')",
+        "c": true
+      },
+      {
+        "t": "Początek drogi piramidowej",
+        "c": false
+      },
+      {
+        "t": "Czucie głębokie nieświadome",
+        "c": false
+      },
+      {
+        "t": "Sterowanie naczyniami",
+        "c": false
+      }
+    ],
+    "exp": "Istota galaretowata leży na szczycie rogu tylnego i moduluje czucie bólu i temperatury (teoria bramki bólowej)."
+  },
+  {
+    "q": "Co rozpoczyna się w jądrze piersiowym (Clarke'a)?",
+    "opts": [
+      {
+        "t": "Droga rdzeniowo-móżdżkowa tylna (czucie głębokie nieświadome)",
+        "c": true
+      },
+      {
+        "t": "Droga rdzeniowo-wzgórzowa boczna",
+        "c": false
+      },
+      {
+        "t": "Droga korowo-rdzeniowa",
+        "c": false
+      },
+      {
+        "t": "Wstęga przyśrodkowa",
+        "c": false
+      }
+    ],
+    "exp": "Jądro piersiowe (Clarke'a), C8–L2/3, daje początek drodze rdzeniowo-móżdżkowej tylnej (Flechsiga)."
+  },
+  {
+    "q": "Które jądro rogu bocznego jest ośrodkiem współczulnym?",
+    "opts": [
+      {
+        "t": "Jądro pośrednio-boczne (Th1–L2/3)",
+        "c": true
+      },
+      {
+        "t": "Jądro przywspółczulne krzyżowe",
+        "c": false
+      },
+      {
+        "t": "Jądro własne rogu tylnego",
+        "c": false
+      },
+      {
+        "t": "Jądro piersiowe Clarke'a",
+        "c": false
+      }
+    ],
+    "exp": "Jądro pośrednio-boczne (Th1–L2/3) zawiera przedzwojowe neurony układu współczulnego."
+  },
+  {
+    "q": "Gdzie leży jądro przywspółczulne krzyżowe i co zaopatruje?",
+    "opts": [
+      {
+        "t": "W rogu bocznym S2–S4; narządy miednicy",
+        "c": true
+      },
+      {
+        "t": "W rogu przednim szyjnym; mięśnie kończyn",
+        "c": false
+      },
+      {
+        "t": "W moście; ślinianki",
+        "c": false
+      },
+      {
+        "t": "W śródmózgowiu; źrenicę",
+        "c": false
+      }
+    ],
+    "exp": "Jądro przywspółczulne krzyżowe (S2–S4) zaopatruje narządy miednicy (pęcherz, jelito, narządy płciowe)."
+  },
+  {
+    "q": "Czucie z której części ciała przewodzi pęczek smukły (Golla)?",
+    "opts": [
+      {
+        "t": "Z dolnej połowy ciała (kończyna dolna, tułów)",
+        "c": true
+      },
+      {
+        "t": "Z górnej połowy ciała (kończyna górna, szyja)",
+        "c": false
+      },
+      {
+        "t": "Z twarzy",
+        "c": false
+      },
+      {
+        "t": "Z narządów wewnętrznych",
+        "c": false
+      }
+    ],
+    "exp": "Pęczek smukły (przyśrodkowy) przewodzi czucie z dolnej połowy ciała i kończy się w jądrze smukłym opuszki."
+  },
+  {
+    "q": "Czucie z której części ciała przewodzi pęczek klinowaty (Burdacha)?",
+    "opts": [
+      {
+        "t": "Z górnej połowy ciała (kończyna górna, szyja)",
+        "c": true
+      },
+      {
+        "t": "Z dolnej połowy ciała",
+        "c": false
+      },
+      {
+        "t": "Z mięśni żucia",
+        "c": false
+      },
+      {
+        "t": "Z trzewi",
+        "c": false
+      }
+    ],
+    "exp": "Pęczek klinowaty (boczny, od Th6 w górę) przewodzi czucie z górnej połowy ciała i kończy się w jądrze klinowatym."
+  },
+  {
+    "q": "Czym są pęczki własne rdzenia kręgowego?",
+    "opts": [
+      {
+        "t": "Warstwą włókien wokół istoty szarej łączących różne segmenty rdzenia",
+        "c": true
+      },
+      {
+        "t": "Drogami biegnącymi z kory do mięśni",
+        "c": false
+      },
+      {
+        "t": "Korzeniami nerwów rdzeniowych",
+        "c": false
+      },
+      {
+        "t": "Pasmami spoidła wielkiego",
+        "c": false
+      }
+    ],
+    "exp": "Pęczki własne (fasciculi proprii) otaczają istotę szarą i łączą różne segmenty rdzenia (drogi śródrdzeniowe, odruchy wielosegmentowe)."
+  }
+];
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let questions=[],current=0,score=0,answered=[];
+function init(){questions=shuffle(ALL_QUESTIONS);current=0;score=0;answered=[];document.getElementById('start-screen').style.display='none';document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';renderQuestion();}
+function renderQuestion(){const q=questions[current];const total=questions.length;document.getElementById('progText').textContent='Pytanie '+(current+1)+' z '+total;document.getElementById('scoreText').textContent='Wynik: '+score;document.getElementById('progBar').style.width=((current/total)*100)+'%';document.getElementById('qNum').textContent='Pytanie '+(current+1);document.getElementById('qText').textContent=q.q;const shuffledOpts=shuffle(q.opts.map((o,i)=>({...o,origIdx:i})));const letters=['A','B','C','D'];const wrap=document.getElementById('optionsWrap');wrap.innerHTML='';shuffledOpts.forEach((opt,idx)=>{const btn=document.createElement('button');btn.className='option-btn';btn.innerHTML='<span class="opt-letter">'+letters[idx]+'</span><span>'+opt.t+'</span>';btn.addEventListener('click',function(){selectAnswer(opt.c,q.exp,btn,wrap,q.q,shuffledOpts,letters,idx);});wrap.appendChild(btn);});const fb=document.getElementById('feedbackBox');fb.className='feedback-box';fb.innerHTML='';document.getElementById('nextBtn').style.display='none';}
+function selectAnswer(isCorrect,explanation,clickedBtn,wrap,qText,opts,letters,selectedIdx){const buttons=wrap.querySelectorAll('.option-btn');buttons.forEach(b=>b.disabled=true);let correctIdx=-1;opts.forEach((o,i)=>{if(o.c)correctIdx=i;});buttons[selectedIdx].classList.add(isCorrect?'correct':'wrong');if(!isCorrect&&correctIdx!==-1){buttons[correctIdx].classList.add('correct');}const fb=document.getElementById('feedbackBox');if(isCorrect){score++;fb.className='feedback-box ok show';fb.innerHTML='<strong>Poprawna odpowiedź!</strong>'+explanation;}else{fb.className='feedback-box fail show';fb.innerHTML='<strong>Niepoprawna odpowiedź.</strong>'+explanation;}answered.push({qText:qText,correct:isCorrect,chosen:opts[selectedIdx].t,correctAns:opts.find(o=>o.c).t});document.getElementById('scoreText').textContent='Wynik: '+score;const nextBtn=document.getElementById('nextBtn');nextBtn.style.display='inline-block';nextBtn.textContent=current+1<questions.length?'Następne pytanie →':'Pokaż wyniki';}
+document.getElementById('nextBtn').addEventListener('click',function(){current++;if(current<questions.length){renderQuestion();}else{showResults();}});
+function showResults(){document.getElementById('quiz-screen').style.display='none';document.getElementById('result-screen').style.display='block';const total=questions.length;const wrong=total-score;const pct=Math.round((score/total)*100);document.getElementById('resFinal').textContent=score;document.getElementById('resDenom').textContent='/'+total;document.getElementById('resCorrect').textContent=score;document.getElementById('resWrong').textContent=wrong;document.getElementById('resPct').textContent=pct+'%';let grade,col;if(pct>=90){grade='Doskonale!';col='#b45309';}else if(pct>=75){grade='Bardzo dobrze!';col='#d97706';}else if(pct>=60){grade='Dobrze';col='#f59e0b';}else if(pct>=51){grade='Zaliczone';col='#e9c46a';}else{grade='Wymaga powtórki';col='#c1121f';}const gl=document.getElementById('gradeLabel');gl.textContent=grade;gl.style.color=col;const rl=document.getElementById('reviewList');rl.innerHTML='';answered.forEach((a,i)=>{const div=document.createElement('div');div.className='review-item '+(a.correct?'ok':'fail');div.innerHTML='<div class="ri-meta">Pytanie '+(i+1)+(a.correct?' — Poprawnie':' — Błędnie')+'</div>'+'<strong>'+a.qText+'</strong>'+(a.correct?'':'<div style="margin-top:.3rem">Twój wybór: <em>'+a.chosen+'</em><br>Poprawna: <em>'+a.correctAns+'</em></div>');rl.appendChild(div);});}
+document.getElementById('startBtn').addEventListener('click',init);
+document.getElementById('retryBtn').addEventListener('click',init);
+</script>
+</body>
+</html>

@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 5 — Drogi, wstęgi i układ autonomiczny – Neuroanatomia</title>
+<style>
+  :root {
+    --am:   #f59e0b;
+    --am2:  #d97706;
+    --am3:  #fcd34d;
+    --am4:  #fef3c7;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #fffaf0;
+    --border: #e7e0d2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #fffdf7; color: #212529; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #92400e 0%, var(--am2) 100%); color: #fff; padding: 2rem 1.5rem 1.5rem; text-align: center; }
+  header .back-link { display: inline-block; color: rgba(255,255,255,.75); text-decoration: none; font-size: .82rem; font-family: sans-serif; margin-bottom: .8rem; transition: color .2s; }
+  header .back-link:hover { color: #fff; }
+  header h1 { font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; font-family: sans-serif; }
+  #start-screen, #quiz-screen, #result-screen { max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem; }
+  .start-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.12); }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--am2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics { text-align: left; background: #fef6e3; border-radius: 10px; padding: 1.2rem 1.4rem; margin: 1.2rem 0; border: 1px solid #fae3b0; }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--am2); }
+  .level-badge { display: inline-block; background: var(--am2); color: #fff; font-family: sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .08em; padding: .3rem .9rem; border-radius: 20px; margin-bottom: 1rem; }
+  .btn { display: inline-block; background: var(--am2); color: #fff; border: none; border-radius: 10px; padding: .85rem 2.2rem; font-size: 1.05rem; font-weight: 700; cursor: pointer; margin-top: 1.2rem; transition: background .2s, transform .1s; font-family: sans-serif; }
+  .btn:hover { background: #b45309; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--am2), var(--am3)); border-radius: 4px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--gray); margin-bottom: .35rem; font-family: sans-serif; }
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1rem; }
+  .q-num { font-size: .78rem; color: var(--am2); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .5rem; font-family: sans-serif; }
+  .q-text { font-size: 1.05rem; line-height: 1.65; margin-bottom: 1.4rem; color: #1a1a1a; }
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn { display: flex; align-items: flex-start; gap: .9rem; background: var(--light); border: 2px solid var(--border); border-radius: 10px; padding: .85rem 1.1rem; cursor: pointer; text-align: left; transition: border-color .15s, background .15s; font-family: sans-serif; font-size: .95rem; line-height: 1.5; color: #212529; }
+  .option-btn:hover:not(:disabled) { border-color: var(--am3); background: #fef6e3; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--am2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--am4); border-color: var(--am2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #b45309; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .feedback-box { margin-top: 1rem; padding: .9rem 1.1rem; border-radius: 10px; font-size: .9rem; line-height: 1.6; display: none; font-family: sans-serif; }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--am4); border-left: 4px solid var(--am2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 4px 24px rgba(217,119,6,.1); margin-bottom: 1.5rem; }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--am2); }
+  .score-circle { width: 130px; height: 130px; border-radius: 50%; background: linear-gradient(135deg, #92400e, var(--am2)); color: #fff; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 0 30px rgba(217,119,6,.4); }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #b45309; }
+  .stat-wrong strong { color: var(--red); }
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; font-family: sans-serif; }
+  .review-item.ok   { background: var(--am4); border-left: 3px solid var(--am2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+  @media (max-width: 480px) { .result-stats { grid-template-columns: repeat(2, 1fr); } .question-card { padding: 1.3rem; } .q-text { font-size: .97rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="neuro-testy.html">← Wróć do listy testów</a>
+  <h1>Neuroanatomia</h1>
+  <p>Część 5 · Drogi czuciowe i ruchowe, wstęgi, układ autonomiczny · 40 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">CZĘŚĆ 5</div>
+    <h2>Test 5 — drogi, wstęgi i układ autonomiczny</h2>
+    <p>Test obejmuje <strong>drogi czuciowe</strong> (3 neurony), <strong>piramidowe</strong>, <strong>pozapiramidowe</strong> i <strong>móżdżkowe</strong>, <strong>wstęgi</strong> oraz <strong>układ autonomiczny</strong> (współczulny i przywspółczulny).</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Zasada 3 neuronów · rdzeniowo-wzgórzowa boczna i przednia · sznury tylne i droga rdzeniowo-opuszkowa · drogi rdzeniowo-móżdżkowe (przednia, tylna) · czucie z głowy (trójdzielny) · droga piramidowa: korowo-rdzeniowa boczna i przednia, korowo-jądrowa · neuron ośrodkowy i obwodowy · ośrodki i drogi pozapiramidowe (czerwienno-, przedsionkowo-, siatkowo-, pokrywowo-, oliwkowo-rdzeniowa) · wstęgi (przyśrodkowa, rdzeniowa, trójdzielna, boczna) · układ współczulny (pień współczulny, zwoje) i przywspółczulny · ośrodki naczynioruchowy i potowydzielniczy</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>40 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 40</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progBar" style="width:0%"></div></div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row"><button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button></div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle"><span class="score-num" id="resFinal">0</span><span class="score-denom" id="resDenom">/40</span></div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "q": "Z ilu neuronów składa się świadoma droga czuciowa i gdzie leży trzeci neuron?",
+    "opts": [
+      {
+        "t": "Z trzech; trzeci neuron leży we wzgórzu",
+        "c": true
+      },
+      {
+        "t": "Z dwóch; drugi w korze",
+        "c": false
+      },
+      {
+        "t": "Z czterech; czwarty w móżdżku",
+        "c": false
+      },
+      {
+        "t": "Z jednego; w zwoju rdzeniowym",
+        "c": false
+      }
+    ],
+    "exp": "Świadoma droga czuciowa ma 3 neurony: I w zwoju, II w rdzeniu/pniu (krzyżuje się), III we wzgórzu → kora czuciowa."
+  },
+  {
+    "q": "Gdzie leży pierwszy neuron drogi czuciowej z tułowia i kończyn?",
+    "opts": [
+      {
+        "t": "W zwoju rdzeniowym",
+        "c": true
+      },
+      {
+        "t": "W rogu tylnym rdzenia",
+        "c": false
+      },
+      {
+        "t": "We wzgórzu",
+        "c": false
+      },
+      {
+        "t": "W korze czuciowej",
+        "c": false
+      }
+    ],
+    "exp": "Pierwszy neuron każdej drogi czuciowej (z tułowia i kończyn) leży w zwoju rdzeniowym (neuron pozornie jednobiegunowy)."
+  },
+  {
+    "q": "Co przewodzi droga rdzeniowo-wzgórzowa boczna?",
+    "opts": [
+      {
+        "t": "Czucie bólu i temperatury (protopatyczne)",
+        "c": true
+      },
+      {
+        "t": "Czucie epikrytyczne i głębokie",
+        "c": false
+      },
+      {
+        "t": "Ruch dowolny",
+        "c": false
+      },
+      {
+        "t": "Czucie z głowy",
+        "c": false
+      }
+    ],
+    "exp": "Droga rdzeniowo-wzgórzowa boczna przewodzi ból i temperaturę; II neuron (jądro własne rogu tylnego) krzyżuje się w rdzeniu, biegnie w sznurze bocznym do VPL."
+  },
+  {
+    "q": "Co przewodzi droga rdzeniowo-wzgórzowa przednia?",
+    "opts": [
+      {
+        "t": "Czucie dotyku grubego i ucisku (protopatyczne)",
+        "c": true
+      },
+      {
+        "t": "Ból i temperaturę",
+        "c": false
+      },
+      {
+        "t": "Czucie głębokie świadome",
+        "c": false
+      },
+      {
+        "t": "Słuch",
+        "c": false
+      }
+    ],
+    "exp": "Droga rdzeniowo-wzgórzowa przednia przewodzi dotyk gruby i ucisk; biegnie w sznurze przednim do VPL."
+  },
+  {
+    "q": "Gdzie krzyżuje się droga czucia bólu i temperatury?",
+    "opts": [
+      {
+        "t": "W rdzeniu kręgowym (od razu, przez spoidło)",
+        "c": true
+      },
+      {
+        "t": "W rdzeniu przedłużonym (skrzyżowanie wstęg)",
+        "c": false
+      },
+      {
+        "t": "We wzgórzu",
+        "c": false
+      },
+      {
+        "t": "W torebce wewnętrznej",
+        "c": false
+      }
+    ],
+    "exp": "Czucie bólu i temperatury (droga rdzeniowo-wzgórzowa) krzyżuje się od razu w rdzeniu — to różni je od czucia epikrytycznego."
+  },
+  {
+    "q": "Gdzie krzyżuje się czucie epikrytyczne i głębokie świadome?",
+    "opts": [
+      {
+        "t": "W rdzeniu przedłużonym (skrzyżowanie wstęg)",
+        "c": true
+      },
+      {
+        "t": "W rdzeniu kręgowym",
+        "c": false
+      },
+      {
+        "t": "We wzgórzu",
+        "c": false
+      },
+      {
+        "t": "W korze",
+        "c": false
+      }
+    ],
+    "exp": "Czucie epikrytyczne i głębokie (sznury tylne) krzyżuje się dopiero w opuszce (skrzyżowanie wstęg → wstęga przyśrodkowa)."
+  },
+  {
+    "q": "Jaką drogą biegnie czucie epikrytyczne i głębokie świadome do wzgórza?",
+    "opts": [
+      {
+        "t": "Sznurami tylnymi → jądra smukłe/klinowate → wstęga przyśrodkowa → VPL",
+        "c": true
+      },
+      {
+        "t": "Sznurem bocznym → wstęga rdzeniowa → VPM",
+        "c": false
+      },
+      {
+        "t": "Konarem dolnym do móżdżku",
+        "c": false
+      },
+      {
+        "t": "Pasmem węchowym do kory",
+        "c": false
+      }
+    ],
+    "exp": "Czucie epikrytyczne/głębokie: zwój → pęczek smukły/klinowaty → jądra smukłe/klinowate → skrzyżowanie wstęg → wstęga przyśrodkowa → VPL → kora."
+  },
+  {
+    "q": "Skąd zaczyna się droga rdzeniowo-móżdżkowa tylna (Flechsiga)?",
+    "opts": [
+      {
+        "t": "Z jądra piersiowego (Clarke'a)",
+        "c": true
+      },
+      {
+        "t": "Z jądra własnego rogu tylnego",
+        "c": false
+      },
+      {
+        "t": "Z jądra czerwiennego",
+        "c": false
+      },
+      {
+        "t": "Ze wzgórza",
+        "c": false
+      }
+    ],
+    "exp": "Droga rdzeniowo-móżdżkowa tylna zaczyna się w jądrze piersiowym Clarke'a i biegnie konarem dolnym do móżdżku (czucie głębokie nieświadome)."
+  },
+  {
+    "q": "Którym konarem droga rdzeniowo-móżdżkowa przednia (Gowersa) wchodzi do móżdżku?",
+    "opts": [
+      {
+        "t": "Konarem górnym",
+        "c": true
+      },
+      {
+        "t": "Konarem środkowym",
+        "c": false
+      },
+      {
+        "t": "Konarem dolnym",
+        "c": false
+      },
+      {
+        "t": "Przez wodociąg",
+        "c": false
+      }
+    ],
+    "exp": "Droga rdzeniowo-móżdżkowa przednia (Gowersa) jest podwójnie skrzyżowana i wchodzi do móżdżku konarem górnym."
+  },
+  {
+    "q": "Po co móżdżkowi drogi rdzeniowo-móżdżkowe?",
+    "opts": [
+      {
+        "t": "Do bieżącej, nieświadomej kontroli ruchu i napięcia mięśni",
+        "c": true
+      },
+      {
+        "t": "Do świadomego odczuwania dotyku",
+        "c": false
+      },
+      {
+        "t": "Do inicjacji ruchów dowolnych",
+        "c": false
+      },
+      {
+        "t": "Do widzenia",
+        "c": false
+      }
+    ],
+    "exp": "Drogi rdzeniowo-móżdżkowe niosą czucie głębokie nieświadome, dzięki któremu móżdżek na bieżąco koordynuje ruch i napięcie mięśni."
+  },
+  {
+    "q": "Gdzie leży pierwszy neuron czucia z twarzy (poza propriocepcją)?",
+    "opts": [
+      {
+        "t": "W zwoju trójdzielnym",
+        "c": true
+      },
+      {
+        "t": "W jądrze pasma śródmózgowiowego n. V",
+        "c": false
+      },
+      {
+        "t": "W zwoju rdzeniowym C2",
+        "c": false
+      },
+      {
+        "t": "We wzgórzu",
+        "c": false
+      }
+    ],
+    "exp": "I neuron czucia z twarzy leży w zwoju trójdzielnym; wyjątkiem jest propriocepcja, której I neuron leży w jądrze pasma śródmózgowiowego n. V (w OUN)."
+  },
+  {
+    "q": "Do którego jądra wzgórza dociera czucie z głowy?",
+    "opts": [
+      {
+        "t": "Do jądra brzusznego tylno-przyśrodkowego (VPM)",
+        "c": true
+      },
+      {
+        "t": "Do VPL",
+        "c": false
+      },
+      {
+        "t": "Do ciała kolankowatego bocznego",
+        "c": false
+      },
+      {
+        "t": "Do jądra wierzchu",
+        "c": false
+      }
+    ],
+    "exp": "Czucie z głowy biegnie wstęgą trójdzielną do jądra VPM wzgórza, a stamtąd do kory czuciowej."
+  },
+  {
+    "q": "Ile neuronów głównych ma droga piramidowa i gdzie leży neuron ośrodkowy?",
+    "opts": [
+      {
+        "t": "Dwa; neuron ośrodkowy (górny) leży w korze ruchowej (zakręt przedśrodkowy)",
+        "c": true
+      },
+      {
+        "t": "Trzy; ośrodkowy we wzgórzu",
+        "c": false
+      },
+      {
+        "t": "Jeden; w rogu przednim",
+        "c": false
+      },
+      {
+        "t": "Dwa; ośrodkowy w móżdżku",
+        "c": false
+      }
+    ],
+    "exp": "Droga piramidowa ma 2 neurony główne: ośrodkowy (górny) w korze ruchowej i obwodowy (dolny) w rogu przednim rdzenia lub jądrze ruchowym nerwu czaszkowego."
+  },
+  {
+    "q": "Gdzie leży neuron obwodowy (dolny) drogi piramidowej?",
+    "opts": [
+      {
+        "t": "W rogu przednim rdzenia (lub jądrze ruchowym nerwu czaszkowego)",
+        "c": true
+      },
+      {
+        "t": "W korze ruchowej",
+        "c": false
+      },
+      {
+        "t": "W jądrze czerwiennym",
+        "c": false
+      },
+      {
+        "t": "W zwoju rdzeniowym",
+        "c": false
+      }
+    ],
+    "exp": "Neuron obwodowy (dolny) to motoneuron rogu przedniego (lub jądra ruchowego nerwu czaszkowego), którego akson biegnie nerwem do mięśnia."
+  },
+  {
+    "q": "Co cechuje drogę korowo-rdzeniową boczną?",
+    "opts": [
+      {
+        "t": "Powstaje z włókien skrzyżowanych w piramidach; biegnie w sznurze bocznym do mięśni kończyn",
+        "c": true
+      },
+      {
+        "t": "Biegnie nieskrzyżowana w sznurze przednim",
+        "c": false
+      },
+      {
+        "t": "Kończy się w jądrach nerwów czaszkowych",
+        "c": false
+      },
+      {
+        "t": "Przewodzi czucie głębokie",
+        "c": false
+      }
+    ],
+    "exp": "Droga korowo-rdzeniowa boczna powstaje z ~80–90% włókien krzyżujących się w piramidach; biegnie w sznurze bocznym i steruje mięśniami kończyn (ruchy precyzyjne)."
+  },
+  {
+    "q": "Co cechuje drogę korowo-rdzeniową przednią?",
+    "opts": [
+      {
+        "t": "Tworzą ją włókna nieskrzyżowane w piramidach; krzyżują się na poziomie swojego segmentu",
+        "c": true
+      },
+      {
+        "t": "Tworzą ją wyłącznie włókna skrzyżowane w piramidach",
+        "c": false
+      },
+      {
+        "t": "Biegnie w sznurze tylnym",
+        "c": false
+      },
+      {
+        "t": "Przewodzi czucie",
+        "c": false
+      }
+    ],
+    "exp": "Droga korowo-rdzeniowa przednia (sznur przedni) zawiera włókna nieskrzyżowane w piramidach, krzyżujące się dopiero na poziomie swojego segmentu; steruje mięśniami tułowia."
+  },
+  {
+    "q": "Dokąd biegnie droga korowo-jądrowa i przez którą część torebki wewnętrznej?",
+    "opts": [
+      {
+        "t": "Do jąder ruchowych nerwów czaszkowych, przez kolanko torebki wewnętrznej",
+        "c": true
+      },
+      {
+        "t": "Do rogu przedniego rdzenia, przez odnogę tylną",
+        "c": false
+      },
+      {
+        "t": "Do móżdżku, przez konar środkowy",
+        "c": false
+      },
+      {
+        "t": "Do wzgórza, przez odnogę przednią",
+        "c": false
+      }
+    ],
+    "exp": "Droga korowo-jądrowa biegnie przez kolanko torebki wewnętrznej do jąder ruchowych nerwów czaszkowych (głównie obustronnie); steruje mięśniami głowy i szyi."
+  },
+  {
+    "q": "Jak objawia się uszkodzenie neuronu ośrodkowego (górnego) drogi piramidowej?",
+    "opts": [
+      {
+        "t": "Porażeniem spastycznym (wzmożone napięcie, odruchy, objaw Babińskiego)",
+        "c": true
+      },
+      {
+        "t": "Porażeniem wiotkim z zanikiem mięśni",
+        "c": false
+      },
+      {
+        "t": "Utratą czucia bólu",
+        "c": false
+      },
+      {
+        "t": "Drżeniem spoczynkowym",
+        "c": false
+      }
+    ],
+    "exp": "Uszkodzenie neuronu ośrodkowego (górnego) daje porażenie spastyczne — wzmożone napięcie, żywe odruchy, dodatni objaw Babińskiego."
+  },
+  {
+    "q": "Jak objawia się uszkodzenie neuronu obwodowego (dolnego)?",
+    "opts": [
+      {
+        "t": "Porażeniem wiotkim z zanikiem mięśni",
+        "c": true
+      },
+      {
+        "t": "Porażeniem spastycznym",
+        "c": false
+      },
+      {
+        "t": "Ślepotą",
+        "c": false
+      },
+      {
+        "t": "Głuchotą",
+        "c": false
+      }
+    ],
+    "exp": "Uszkodzenie neuronu obwodowego (dolnego) daje porażenie wiotkie ze zniesieniem odruchów i zanikiem mięśni."
+  },
+  {
+    "q": "Za co odpowiada układ pozapiramidowy?",
+    "opts": [
+      {
+        "t": "Za napięcie mięśni, postawę i ruchy automatyczne/mimowolne",
+        "c": true
+      },
+      {
+        "t": "Za inicjację precyzyjnych ruchów dowolnych palców",
+        "c": false
+      },
+      {
+        "t": "Za czucie epikrytyczne",
+        "c": false
+      },
+      {
+        "t": "Za wydzielanie hormonów",
+        "c": false
+      }
+    ],
+    "exp": "Układ pozapiramidowy reguluje napięcie mięśni, postawę oraz ruchy automatyczne i towarzyszące; jego ośrodki to m.in. prążkowie, gałka blada, istota czarna, jądro czerwienne, twór siatkowaty."
+  },
+  {
+    "q": "Skąd zaczyna się droga czerwienno-rdzeniowa?",
+    "opts": [
+      {
+        "t": "Z jądra czerwiennego (po czym się krzyżuje)",
+        "c": true
+      },
+      {
+        "t": "Z jądra oliwki",
+        "c": false
+      },
+      {
+        "t": "Z wzgórków pokrywy",
+        "c": false
+      },
+      {
+        "t": "Z jąder przedsionkowych",
+        "c": false
+      }
+    ],
+    "exp": "Droga czerwienno-rdzeniowa zaczyna się w jądrze czerwiennym, krzyżuje się i biegnie w sznurze bocznym; wpływa na napięcie zginaczy."
+  },
+  {
+    "q": "Skąd zaczyna się droga przedsionkowo-rdzeniowa i co reguluje?",
+    "opts": [
+      {
+        "t": "Z jąder przedsionkowych; reguluje postawę, równowagę i napięcie prostowników",
+        "c": true
+      },
+      {
+        "t": "Z jądra czerwiennego; reguluje zginacze",
+        "c": false
+      },
+      {
+        "t": "Z kory ruchowej; ruch dowolny",
+        "c": false
+      },
+      {
+        "t": "Z oliwki; smak",
+        "c": false
+      }
+    ],
+    "exp": "Droga przedsionkowo-rdzeniowa zaczyna się w jądrach przedsionkowych i odpowiada za postawę, równowagę oraz napięcie mięśni prostowników (antygrawitacyjnych)."
+  },
+  {
+    "q": "Skąd zaczyna się droga siatkowo-rdzeniowa?",
+    "opts": [
+      {
+        "t": "Z tworu siatkowatego mostu i opuszki",
+        "c": true
+      },
+      {
+        "t": "Z istoty czarnej",
+        "c": false
+      },
+      {
+        "t": "Z ciała modzelowatego",
+        "c": false
+      },
+      {
+        "t": "Ze wzgórza",
+        "c": false
+      }
+    ],
+    "exp": "Droga siatkowo-rdzeniowa zaczyna się w tworze siatkowatym (most, opuszka) i wpływa na napięcie mięśni, ruchy automatyczne i modulację odruchów."
+  },
+  {
+    "q": "Skąd zaczyna się droga pokrywowo-rdzeniowa (czworaczo-rdzeniowa) i czemu służy?",
+    "opts": [
+      {
+        "t": "Z wzgórków pokrywy; odruchowym ruchom głowy/tułowia na bodźce wzrokowe i słuchowe",
+        "c": true
+      },
+      {
+        "t": "Z jądra czerwiennego; napięciu zginaczy",
+        "c": false
+      },
+      {
+        "t": "Z kory ruchowej; ruchom dowolnym",
+        "c": false
+      },
+      {
+        "t": "Z oliwki; równowadze",
+        "c": false
+      }
+    ],
+    "exp": "Droga pokrywowo-rdzeniowa (czworaczo-rdzeniowa) zaczyna się we wzgórkach pokrywy i pośredniczy w odruchowych ruchach głowy i tułowia na bodźce wzrokowe i słuchowe."
+  },
+  {
+    "q": "Skąd zaczyna się droga oliwkowo-rdzeniowa?",
+    "opts": [
+      {
+        "t": "Z jądra oliwki",
+        "c": true
+      },
+      {
+        "t": "Z jąder przedsionkowych",
+        "c": false
+      },
+      {
+        "t": "Z wzgórków pokrywy",
+        "c": false
+      },
+      {
+        "t": "Z jądra czerwiennego",
+        "c": false
+      }
+    ],
+    "exp": "Droga oliwkowo-rdzeniowa zaczyna się w jądrze oliwki i uczestniczy w koordynacji ruchowej oraz modulacji napięcia mięśni."
+  },
+  {
+    "q": "Co przewodzi wstęga przyśrodkowa?",
+    "opts": [
+      {
+        "t": "Czucie epikrytyczne i głębokie (z jąder smukłego i klinowatego) do VPL",
+        "c": true
+      },
+      {
+        "t": "Ból i temperaturę z głowy",
+        "c": false
+      },
+      {
+        "t": "Słuch",
+        "c": false
+      },
+      {
+        "t": "Ruch dowolny",
+        "c": false
+      }
+    ],
+    "exp": "Wstęga przyśrodkowa (lemniscus medialis) przewodzi czucie epikrytyczne i głębokie (II neuron z jąder smukłego/klinowatego) do jądra VPL wzgórza."
+  },
+  {
+    "q": "Co przewodzi wstęga rdzeniowa?",
+    "opts": [
+      {
+        "t": "Czucie protopatyczne (drogi rdzeniowo-wzgórzowe na poziomie pnia) do VPL",
+        "c": true
+      },
+      {
+        "t": "Czucie z twarzy do VPM",
+        "c": false
+      },
+      {
+        "t": "Słuch do wzgórków dolnych",
+        "c": false
+      },
+      {
+        "t": "Czucie głębokie nieświadome do móżdżku",
+        "c": false
+      }
+    ],
+    "exp": "Wstęga rdzeniowa to drogi rdzeniowo-wzgórzowe (czucie protopatyczne) w obrębie pnia mózgu, biegnące do VPL."
+  },
+  {
+    "q": "Co przewodzi wstęga trójdzielna?",
+    "opts": [
+      {
+        "t": "Czucie z głowy (z jąder czuciowych n. V) do VPM",
+        "c": true
+      },
+      {
+        "t": "Czucie z kończyn do VPL",
+        "c": false
+      },
+      {
+        "t": "Słuch",
+        "c": false
+      },
+      {
+        "t": "Ruch mięśni żucia",
+        "c": false
+      }
+    ],
+    "exp": "Wstęga trójdzielna przewodzi czucie z głowy (II neuron z jąder czuciowych n. V) do jądra VPM wzgórza."
+  },
+  {
+    "q": "Co przewodzi wstęga boczna i dokąd dochodzi?",
+    "opts": [
+      {
+        "t": "Słuch — do wzgórków dolnych i ciała kolankowatego przyśrodkowego",
+        "c": true
+      },
+      {
+        "t": "Wzrok — do ciała kolankowatego bocznego",
+        "c": false
+      },
+      {
+        "t": "Czucie głębokie — do VPL",
+        "c": false
+      },
+      {
+        "t": "Smak — do VPM",
+        "c": false
+      }
+    ],
+    "exp": "Wstęga boczna (lemniscus lateralis) przewodzi słuch (z jąder ślimakowych) do wzgórków dolnych i ciała kolankowatego przyśrodkowego."
+  },
+  {
+    "q": "Gdzie leżą przedzwojowe neurony układu współczulnego?",
+    "opts": [
+      {
+        "t": "W jądrze pośrednio-bocznym rogu bocznego rdzenia (Th1–L2/3)",
+        "c": true
+      },
+      {
+        "t": "W zwoju rdzeniowym",
+        "c": false
+      },
+      {
+        "t": "W jądrze przywspółczulnym krzyżowym",
+        "c": false
+      },
+      {
+        "t": "W korze ruchowej",
+        "c": false
+      }
+    ],
+    "exp": "Neurony przedzwojowe układu współczulnego leżą w jądrze pośrednio-bocznym rogu bocznego (Th1–L2/3)."
+  },
+  {
+    "q": "Czym jest pień współczulny?",
+    "opts": [
+      {
+        "t": "Łańcuchem zwojów przykręgowych po obu stronach kręgosłupa",
+        "c": true
+      },
+      {
+        "t": "Pojedynczym zwojem w jamie brzusznej",
+        "c": false
+      },
+      {
+        "t": "Jądrem w pniu mózgu",
+        "c": false
+      },
+      {
+        "t": "Splotem nerwów kończyny",
+        "c": false
+      }
+    ],
+    "exp": "Pień współczulny (truncus sympathicus) to łańcuch zwojów przykręgowych po obu stronach kręgosłupa, połączonych gałęziami."
+  },
+  {
+    "q": "Co zaopatruje współczulnie zwój trzewny?",
+    "opts": [
+      {
+        "t": "Żołądek, wątrobę, trzustkę i śledzionę",
+        "c": true
+      },
+      {
+        "t": "Lewą część okrężnicy i narządy miednicy",
+        "c": false
+      },
+      {
+        "t": "Kończynę górną",
+        "c": false
+      },
+      {
+        "t": "Ślinianki",
+        "c": false
+      }
+    ],
+    "exp": "Zwój trzewny (ganglion coeliacum) to zwój przedkręgowy zaopatrujący żołądek, wątrobę, trzustkę i śledzionę."
+  },
+  {
+    "q": "Co zaopatruje zwój krezkowy dolny?",
+    "opts": [
+      {
+        "t": "Lewą część okrężnicy i narządy miednicy",
+        "c": true
+      },
+      {
+        "t": "Żołądek i wątrobę",
+        "c": false
+      },
+      {
+        "t": "Jelito cienkie",
+        "c": false
+      },
+      {
+        "t": "Mięśnie kończyny dolnej",
+        "c": false
+      }
+    ],
+    "exp": "Zwój krezkowy dolny zaopatruje współczulnie lewą część okrężnicy i narządy miednicy; zwój krezkowy górny — jelito cienkie i prawą część okrężnicy."
+  },
+  {
+    "q": "Co reguluje ośrodek naczynioruchowy?",
+    "opts": [
+      {
+        "t": "Napięcie naczyń krwionośnych i ciśnienie krwi",
+        "c": true
+      },
+      {
+        "t": "Wydzielanie potu",
+        "c": false
+      },
+      {
+        "t": "Akomodację oka",
+        "c": false
+      },
+      {
+        "t": "Perystaltykę jelit",
+        "c": false
+      }
+    ],
+    "exp": "Ośrodek naczynioruchowy (opuszka, twór siatkowaty) reguluje napięcie naczyń i ciśnienie krwi (układ współczulny)."
+  },
+  {
+    "q": "Czego dotyczy ośrodek potowydzielniczy?",
+    "opts": [
+      {
+        "t": "Sterowania wydzielaniem potu (włókna współczulne do gruczołów potowych)",
+        "c": true
+      },
+      {
+        "t": "Wydzielania śliny",
+        "c": false
+      },
+      {
+        "t": "Zwężania źrenicy",
+        "c": false
+      },
+      {
+        "t": "Ruchu gałek ocznych",
+        "c": false
+      }
+    ],
+    "exp": "Ośrodek potowydzielniczy steruje wydzielaniem potu przez włókna współczulne docierające do gruczołów potowych skóry."
+  },
+  {
+    "q": "Które jądra tworzą czaszkową część układu przywspółczulnego?",
+    "opts": [
+      {
+        "t": "Jądra przywspółczulne nerwów III, VII, IX i X",
+        "c": true
+      },
+      {
+        "t": "Jądro pośrednio-boczne Th1–L2",
+        "c": false
+      },
+      {
+        "t": "Jądra przedsionkowe i ślimakowe",
+        "c": false
+      },
+      {
+        "t": "Jądra smukłe i klinowate",
+        "c": false
+      }
+    ],
+    "exp": "Czaszkową część układu przywspółczulnego tworzą jądra nerwów III (Westphala), VII (ślinowe górne), IX (ślinowe dolne) i X (grzbietowe)."
+  },
+  {
+    "q": "Gdzie leży krzyżowa część układu przywspółczulnego i co zaopatruje?",
+    "opts": [
+      {
+        "t": "W jądrze przywspółczulnym krzyżowym (S2–S4); narządy miednicy",
+        "c": true
+      },
+      {
+        "t": "W jądrze pośrednio-bocznym; serce",
+        "c": false
+      },
+      {
+        "t": "W moście; ślinianki",
+        "c": false
+      },
+      {
+        "t": "W śródmózgowiu; źrenicę",
+        "c": false
+      }
+    ],
+    "exp": "Krzyżowa część układu przywspółczulnego to jądro przywspółczulne krzyżowe (S2–S4), zaopatrujące narządy miednicy."
+  },
+  {
+    "q": "Jak dzieli się jądro autonomiczne?",
+    "opts": [
+      {
+        "t": "Na współczulne (sympatyczne) i przywspółczulne (parasympatyczne)",
+        "c": true
+      },
+      {
+        "t": "Na ruchowe i czuciowe",
+        "c": false
+      },
+      {
+        "t": "Na początkowe i końcowe",
+        "c": false
+      },
+      {
+        "t": "Na smukłe i klinowate",
+        "c": false
+      }
+    ],
+    "exp": "Jądro autonomiczne dzieli się na współczulne (sympatyczne) i przywspółczulne (parasympatyczne)."
+  },
+  {
+    "q": "Czym jest neuron przedzwojowy w układzie autonomicznym?",
+    "opts": [
+      {
+        "t": "Neuronem o ciele w OUN, którego akson dochodzi do zwoju",
+        "c": true
+      },
+      {
+        "t": "Neuronem zwoju, którego akson idzie do narządu",
+        "c": false
+      },
+      {
+        "t": "Neuronem czuciowym skóry",
+        "c": false
+      },
+      {
+        "t": "Motoneuronem mięśni szkieletowych",
+        "c": false
+      }
+    ],
+    "exp": "Neuron przedzwojowy ma ciało w OUN (jądrze autonomicznym), a akson biegnie do zwoju; neuron zazwojowy ma ciało w zwoju, a akson dochodzi do narządu."
+  },
+  {
+    "q": "Jaką ogólną funkcję pełni część współczulna układu autonomicznego?",
+    "opts": [
+      {
+        "t": "Mobilizuje organizm ('walka lub ucieczka')",
+        "c": true
+      },
+      {
+        "t": "Sprzyja odpoczynkowi i trawieniu",
+        "c": false
+      },
+      {
+        "t": "Odbiera czucie z twarzy",
+        "c": false
+      },
+      {
+        "t": "Koordynuje ruchy precyzyjne",
+        "c": false
+      }
+    ],
+    "exp": "Część współczulna mobilizuje organizm ('walka lub ucieczka'): przyspiesza serce, rozszerza źrenice i oskrzela, hamuje trawienie."
+  }
+];
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let questions=[],current=0,score=0,answered=[];
+function init(){questions=shuffle(ALL_QUESTIONS);current=0;score=0;answered=[];document.getElementById('start-screen').style.display='none';document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';renderQuestion();}
+function renderQuestion(){const q=questions[current];const total=questions.length;document.getElementById('progText').textContent='Pytanie '+(current+1)+' z '+total;document.getElementById('scoreText').textContent='Wynik: '+score;document.getElementById('progBar').style.width=((current/total)*100)+'%';document.getElementById('qNum').textContent='Pytanie '+(current+1);document.getElementById('qText').textContent=q.q;const shuffledOpts=shuffle(q.opts.map((o,i)=>({...o,origIdx:i})));const letters=['A','B','C','D'];const wrap=document.getElementById('optionsWrap');wrap.innerHTML='';shuffledOpts.forEach((opt,idx)=>{const btn=document.createElement('button');btn.className='option-btn';btn.innerHTML='<span class="opt-letter">'+letters[idx]+'</span><span>'+opt.t+'</span>';btn.addEventListener('click',function(){selectAnswer(opt.c,q.exp,btn,wrap,q.q,shuffledOpts,letters,idx);});wrap.appendChild(btn);});const fb=document.getElementById('feedbackBox');fb.className='feedback-box';fb.innerHTML='';document.getElementById('nextBtn').style.display='none';}
+function selectAnswer(isCorrect,explanation,clickedBtn,wrap,qText,opts,letters,selectedIdx){const buttons=wrap.querySelectorAll('.option-btn');buttons.forEach(b=>b.disabled=true);let correctIdx=-1;opts.forEach((o,i)=>{if(o.c)correctIdx=i;});buttons[selectedIdx].classList.add(isCorrect?'correct':'wrong');if(!isCorrect&&correctIdx!==-1){buttons[correctIdx].classList.add('correct');}const fb=document.getElementById('feedbackBox');if(isCorrect){score++;fb.className='feedback-box ok show';fb.innerHTML='<strong>Poprawna odpowiedź!</strong>'+explanation;}else{fb.className='feedback-box fail show';fb.innerHTML='<strong>Niepoprawna odpowiedź.</strong>'+explanation;}answered.push({qText:qText,correct:isCorrect,chosen:opts[selectedIdx].t,correctAns:opts.find(o=>o.c).t});document.getElementById('scoreText').textContent='Wynik: '+score;const nextBtn=document.getElementById('nextBtn');nextBtn.style.display='inline-block';nextBtn.textContent=current+1<questions.length?'Następne pytanie →':'Pokaż wyniki';}
+document.getElementById('nextBtn').addEventListener('click',function(){current++;if(current<questions.length){renderQuestion();}else{showResults();}});
+function showResults(){document.getElementById('quiz-screen').style.display='none';document.getElementById('result-screen').style.display='block';const total=questions.length;const wrong=total-score;const pct=Math.round((score/total)*100);document.getElementById('resFinal').textContent=score;document.getElementById('resDenom').textContent='/'+total;document.getElementById('resCorrect').textContent=score;document.getElementById('resWrong').textContent=wrong;document.getElementById('resPct').textContent=pct+'%';let grade,col;if(pct>=90){grade='Doskonale!';col='#b45309';}else if(pct>=75){grade='Bardzo dobrze!';col='#d97706';}else if(pct>=60){grade='Dobrze';col='#f59e0b';}else if(pct>=51){grade='Zaliczone';col='#e9c46a';}else{grade='Wymaga powtórki';col='#c1121f';}const gl=document.getElementById('gradeLabel');gl.textContent=grade;gl.style.color=col;const rl=document.getElementById('reviewList');rl.innerHTML='';answered.forEach((a,i)=>{const div=document.createElement('div');div.className='review-item '+(a.correct?'ok':'fail');div.innerHTML='<div class="ri-meta">Pytanie '+(i+1)+(a.correct?' — Poprawnie':' — Błędnie')+'</div>'+'<strong>'+a.qText+'</strong>'+(a.correct?'':'<div style="margin-top:.3rem">Twój wybór: <em>'+a.chosen+'</em><br>Poprawna: <em>'+a.correctAns+'</em></div>');rl.appendChild(div);});}
+document.getElementById('startBtn').addEventListener('click',init);
+document.getElementById('retryBtn').addEventListener('click',init);
+</script>
+</body>
+</html>
