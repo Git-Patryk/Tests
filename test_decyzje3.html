@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 3 – Decyzje i ryzyko</title>
+<style>
+  :root {
+    --teal:   #14b8a6;
+    --teal2:  #0d9488;
+    --teal3:  #5eead4;
+    --teal4:  #ccfbf1;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f4faf9;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #effdfa;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #115e59 0%, var(--teal2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--teal2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #ecfdf8;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #c7f0e6;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--teal2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #115e59; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal2), var(--teal3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--teal2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal3); background: #ecfdf8; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--teal2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--teal4); border-color: var(--teal2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #115e59; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--teal4); border-left: 4px solid var(--teal2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--teal2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #115e59, var(--teal2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(13,148,136,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #115e59; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--teal4); border-left: 3px solid var(--teal2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="decyzje-testy.html">← Wróć do listy testów</a>
+  <h1>Decyzje i ryzyko</h1>
+  <p>Test 3 · Poziom 3 · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POZIOM 3</div>
+    <h2>Witaj w Teście 3!</h2>
+    <p>Poziom <strong>najtrudniejszy (egzamin próbny)</strong> — wymaga precyzyjnej znajomości nazwisk, dat, liczb i niuansów z całego zakresu materiału: konkretnych badań, współczynników, eksperymentów terenowych i pułapek w komunikacji danych.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Teoria perspektywy (1979, Nobel 2002) · współczynnik awersji do strat · MacCrimmon &amp; Wehrung, Warneryd · korelacja CRT–numeracy · pigułki UK 1995 · framing 84%/50% · efekt Peltzmana i von Restorff · dawcy organów 99%/12% · Save More Tomorrow · BIT (listy podatkowe, pianino) · Pennycook, Van der Linden, Gollwitzer · klasa referencyjna</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // === SYSTEMY / POMIAR ===
+  {
+    q: "W jakim przedziale mieści się korelacja między CRT a zdolnościami numerycznymi (Berliński Test Numeryczny)?",
+    opts: [
+      { t: "r ≈ 0,34–0,59 (umiarkowana) — wg części autorów mierzą tę samą zmienną latentną", c: true },
+      { t: "r ≈ 0,90–0,99 (niemal pełna)", c: false },
+      { t: "r ≈ 0,00–0,10 (brak związku)", c: false },
+      { t: "r ≈ -0,40 (ujemna)", c: false }
+    ],
+    exp: "CRT i zdolności numeryczne korelują umiarkowanie (r ≈ 0,34–0,59). Według części badaczy mierzą tę samą zmienną latentną, choć koncepcyjnie CRT to hamowanie intuicji, a numeracy to kompetencja statystyczna."
+  },
+  {
+    q: "Na ile (według szacunków z wykładu) niskie umiejętności numeryczne kosztują Wielką Brytanię rocznie?",
+    opts: [
+      { t: "2,4–20 mld funtów rocznie", c: true },
+      { t: "Około 100 mln funtów rocznie", c: false },
+      { t: "Ponad 500 mld funtów rocznie", c: false },
+      { t: "Koszty są niemierzalne i nieoszacowane", c: false }
+    ],
+    exp: "Szacowany koszt niskich kompetencji numerycznych dla Wielkiej Brytanii to 2,4–20 mld funtów rocznie — co podkreśla, że irracjonalność może wynikać nie tylko z braku hamowania intuicji, lecz także z braku wiedzy."
+  },
+
+  // === TEORIA PERSPEKTYWY ===
+  {
+    q: "W którym roku opublikowano teorię perspektywy i kiedy przyznano za nią Nagrodę Nobla?",
+    opts: [
+      { t: "Publikacja 1979, Nagroda Nobla z ekonomii w 2002 (dla Kahnemana — Tversky już nie żył)", c: true },
+      { t: "Publikacja 1974, Nobel w 1990", c: false },
+      { t: "Publikacja 1990, Nobel w 2011", c: false },
+      { t: "Publikacja 1979, Nobel wspólnie dla Kahnemana i Tversky'ego w 2002", c: false }
+    ],
+    exp: "Teorię perspektywy Kahneman i Tversky opublikowali w 1979 r. (w czasopiśmie ekonomicznym — stąd jej wpływ). Nobla z ekonomii przyznano w 2002 r. samemu Kahnemanowi, bo Tversky już nie żył (Nobla nie przyznaje się pośmiertnie)."
+  },
+  {
+    q: "Jaką wartość przyjmuje typowo współczynnik awersji do strat?",
+    opts: [
+      { t: "Około 1,5–2,5 — zysk musi być mniej więcej dwukrotnie większy od straty, by ją zrównoważyć", c: true },
+      { t: "Około 0,5 — strata waży o połowę mniej niż zysk", c: false },
+      { t: "Dokładnie 1,0 — zysk i strata ważą tak samo", c: false },
+      { t: "Około 5–10 — zysk musi być wielokrotnie większy", c: false }
+    ],
+    exp: "Współczynnik awersji do strat wynosi typowo 1,5–2,5: by zrównoważyć ryzyko straty 100 zł, oczekiwany zysk musi wynosić ~200 zł. Strata waży około dwa razy mocniej niż równoważny zysk."
+  },
+  {
+    q: "Richard Thaler ukuł ironiczne określenie na racjonalnych, samolubnych uczestników rynku z klasycznej ekonomii. Jak ich nazwał?",
+    opts: [
+      { t: "„Ekonami” (Econs) — w odróżnieniu od realnych „ludzi” (Humans)", c: true },
+      { t: "„Maksymalizatorami”", c: false },
+      { t: "„Agentami racjonalnymi”", c: false },
+      { t: "„Satysfakcjonerami”", c: false }
+    ],
+    exp: "Thaler nazwał homo economicus „ekonami” (Econs) — w przeciwieństwie do realnych ludzi (Humans). Kahneman i Tversky zmodyfikowali model oczekiwanej użyteczności, by tłumaczył ludzkie zachowania (awersję do ryzyka, niespójność)."
+  },
+
+  // === RYZYKO ===
+  {
+    q: "Co wykazało badanie MacCrimmona i Wehrunga (1990) na grupie 509 dyrektorów banków?",
+    opts: [
+      { t: "Stosunek do ryzyka tej samej osoby był różny w zależności od zastosowanej miary", c: true },
+      { t: "Wszystkie miary ryzyka dawały identyczne, spójne wyniki", c: false },
+      { t: "Dyrektorzy banków nie wykazywali żadnej skłonności do ryzyka", c: false },
+      { t: "Skłonność do ryzyka zależała wyłącznie od wieku dyrektora", c: false }
+    ],
+    exp: "MacCrimmon & Wehrung (1990) przebadali 509 dyrektorów banków: stosunek do ryzyka tej samej osoby różnił się w zależności od miary — to argument przeciwko istnieniu jednej, ogólnej skłonności do ryzyka."
+  },
+  {
+    q: "Co pokazało badanie Warneryda (1996) dotyczące postaw wobec ryzyka?",
+    opts: [
+      { t: "Deklarowane postawy nie miały związku z realnym portfelem — ~60% „ostrożnych” Holendrów grało w gry loteryjne", c: true },
+      { t: "Deklaracje idealnie pokrywały się z realnymi zachowaniami inwestycyjnymi", c: false },
+      { t: "Tylko osoby ryzykowne deklaratywnie grały w loterie", c: false },
+      { t: "Holendrzy w ogóle nie inwestowali na giełdzie", c: false }
+    ],
+    exp: "Warneryd (1996): deklarowane postawy wobec ryzyka nie miały związku z realnym portfelem inwestycyjnym — około 60% osób deklarujących ostrożność grało w gry loteryjne. Ilustruje to rozjazd miar deklaratywnych i behawioralnych."
+  },
+  {
+    q: "Z kasynem Monte Carlo w 1913 r. wiąże się sztandarowy przykład złudzenia gracza. Co się wtedy wydarzyło?",
+    opts: [
+      { t: "Kulka 26 razy z rzędu padła na czarne — grający tracili fortuny, obstawiając coraz więcej na czerwone", c: true },
+      { t: "Krupier 26 razy oszukał graczy, fałszując wynik", c: false },
+      { t: "Kasyno zbankrutowało po serii wygranych graczy", c: false },
+      { t: "Ujawniono, że ruletka miała pamięć poprzednich wyników", c: false }
+    ],
+    exp: "W Monte Carlo (1913) czarne wypadło 26 razy z rzędu. Gracze, przekonani, że czerwone „musi” w końcu paść, obstawiali je coraz większymi kwotami i tracili fortuny — klasyczna ilustracja złudzenia gracza (ignorowania niezależności zdarzeń)."
+  },
+  {
+    q: "Jak badania Parkera, Bruine de Bruin i Fischhoffa (2007) uściśliły obraz maksymalizatorów?",
+    opts: [
+      { t: "Maksymalizatorzy mają lepsze „twarde” wskaźniki (np. wyższą pensję, lepsze warunki umowy), ale niekoniecznie wyższą satysfakcję czy szczęście", c: true },
+      { t: "Maksymalizatorzy osiągają zarówno lepsze wskaźniki, jak i wyraźnie wyższe szczęście", c: false },
+      { t: "Maksymalizatorzy mają gorsze wskaźniki obiektywne i niższą satysfakcję", c: false },
+      { t: "Nie wykryto żadnych różnic między maksymalizatorami a satysfakcjonerami", c: false }
+    ],
+    exp: "Parker, Bruine de Bruin i Fischhoff (2007) skomplikowali prosty obraz Schwartza: maksymalizatorzy uzyskują lepsze „twarde” rezultaty (wyższa pensja, lepsze warunki umowy), ale niekoniecznie przekłada się to na wyższą satysfakcję czy poczucie szczęścia."
+  },
+  {
+    q: "Według Tyszki i Domurata, jak narodowość różnicowała domeny podejmowanego ryzyka?",
+    opts: [
+      { t: "Grecy podejmowali więcej ryzyka antycypacyjnego (A) i społecznego (S), Polacy — zdrowotno-konsumenckiego (Z)", c: true },
+      { t: "Polacy więcej ryzyka finansowego, Grecy — zdrowotnego", c: false },
+      { t: "Narodowość nie miała żadnego wpływu na żadną domenę", c: false },
+      { t: "Grecy unikali ryzyka we wszystkich domenach", c: false }
+    ],
+    exp: "Grecy podejmowali więcej ryzyka antycypacyjnego (A — niezabezpieczanie się) i społecznego (S), Polacy — zdrowotno-konsumenckiego (Z). Płeć była jedyną zmienną wpływającą na ryzyko we wszystkich domenach (mężczyźni > kobiety)."
+  },
+
+  // === KOMUNIKACJA RYZYKA ===
+  {
+    q: "Jak w liczbach bezwzględnych wyglądała słynna „panika pigułkowa” w Wielkiej Brytanii (1995)?",
+    opts: [
+      { t: "Ryzyko zakrzepicy wzrosło z 1 na 7000 do 2 na 7000 kobiet — „podwojenie” brzmiało groźnie, choć skala była minimalna", c: true },
+      { t: "Ryzyko wzrosło z 1 na 100 do 50 na 100 kobiet", c: false },
+      { t: "Ryzyko spadło o połowę, co zignorowano", c: false },
+      { t: "Ryzyko wzrosło z 10% do 80%", c: false }
+    ],
+    exp: "Komunikat „pigułki podwajają ryzyko zakrzepicy” opisywał wzrost z 1 na 7000 do 2 na 7000 kobiet (0,014% → 0,028%). Po panice liczba niechcianych ciąż wzrosła o ~15 000. To sztandarowy przykład mylącego ryzyka względnego bez bezwzględnego."
+  },
+  {
+    q: "Gigerenzer i Galesic (2012) podają przykład „Prozac — 30–50% szans na problemy seksualne”. Na czym polega problem tego komunikatu?",
+    opts: [
+      { t: "Na braku klasy referencyjnej — nie wiadomo, czy chodzi o 30–50% pacjentów, czy o 30–50% kontaktów seksualnych", c: true },
+      { t: "Na zbyt dużej precyzji liczbowej", c: false },
+      { t: "Na podaniu wyłącznie ryzyka bezwzględnego", c: false },
+      { t: "Na pomyleniu Prozacu z placebo", c: false }
+    ],
+    exp: "Problemem jest dwuznaczność klasy referencyjnej: „30–50% szans na problemy seksualne” może oznaczać 30–50% pacjentów albo 30–50% kontaktów. Bez klasy referencyjnej komunikat jest mylący."
+  },
+  {
+    q: "Cytat Gigerenzera porównuje ryzyko względne bez bezwzględnego do:",
+    opts: [
+      { t: "Kuponu „-50%” bez wiedzy, czy dotyczy diamentów, czy gumy do żucia", c: true },
+      { t: "Mapy bez podziałki", c: false },
+      { t: "Termometru bez skali", c: false },
+      { t: "Zegarka bez wskazówek", c: false }
+    ],
+    exp: "Gigerenzer: ryzyko względne bez bezwzględnego jest jak kupon „-50%” bez wiedzy, czy dotyczy diamentów, czy gumy do żucia — sama proporcja nic nie mówi o realnej skali zjawiska."
+  },
+
+  // === INTERWENCJE: EAST I PRZYKŁADY ===
+  {
+    q: "Jak różni się odsetek dawców organów w krajach z systemem opt-out vs opt-in (przykład z modelu EAST)?",
+    opts: [
+      { t: "Ok. 99% przy opcji domyślnej zgody (opt-out, np. Polska) vs ok. 12% przy opt-in (np. Niemcy)", c: true },
+      { t: "Ok. 50% w obu systemach — opcja domyślna nie ma znaczenia", c: false },
+      { t: "Ok. 12% przy opt-out vs 99% przy opt-in", c: false },
+      { t: "Ok. 30% przy opt-out vs 25% przy opt-in", c: false }
+    ],
+    exp: "To sztandarowy przykład zasady Easy: przy zgodzie domyślnej (opt-out) dawcami jest ~99% (Polska), a przy konieczności aktywnego zapisania się (opt-in) ~12% (Niemcy). Opcja domyślna potężnie steruje zachowaniem."
+  },
+  {
+    q: "Wprowadzenie nakrętek zabezpieczających na lekach w Ontario (1974) przyniosło:",
+    opts: [
+      { t: "Spadek zatruć dzieci o około 91%", c: true },
+      { t: "Wzrost zatruć dzieci o 20%", c: false },
+      { t: "Brak jakiejkolwiek zmiany", c: false },
+      { t: "Spadek zatruć o około 10%", c: false }
+    ],
+    exp: "Nakrętki zabezpieczające na lekach (Ontario 1974) to przykład zasady Easy — celowego utrudnienia: liczba zatruć dzieci spadła o ok. 91%."
+  },
+  {
+    q: "Eksperyment z „pianinem na schodach” (Sztokholm, VW 2009) ilustruje zasadę Attractive. Jaki dał efekt?",
+    opts: [
+      { t: "Wzrost wyboru schodów zamiast schodów ruchomych o ok. 66%", c: true },
+      { t: "Spadek korzystania ze schodów o 30%", c: false },
+      { t: "Brak wpływu na zachowanie przechodniów", c: false },
+      { t: "Wzrost o ok. 5%", c: false }
+    ],
+    exp: "Pianino na schodach (Sztokholm, VW 2009, akcja „The Fun Theory”) zwiększyło wybór schodów o ok. 66% — to zasada Attractive (efekt von Restorff: co się wyróżnia, przyciąga uwagę)."
+  },
+  {
+    q: "Eksperyment BIT z listami podatkowymi (Hallsworth i in., 2017) opierał się na normie społecznej. Jaki przyniósł skutek?",
+    opts: [
+      { t: "Informacja „sąsiedzi płacą podatki na czas” podniosła odsetek wpłat o ok. 5%", c: true },
+      { t: "Groźba kary podniosła wpłaty o 50%", c: false },
+      { t: "Listy nie miały żadnego wpływu na wpłaty", c: false },
+      { t: "Wpłaty spadły o 5%", c: false }
+    ],
+    exp: "To zasada Social: użycie normy opisowej („większość sąsiadów płaci podatki na czas”) w listach podatkowych BIT podniosło odsetek terminowych wpłat o ok. 5% (Hallsworth i in., 2017)."
+  },
+  {
+    q: "Na czym polega efekt Peltzmana?",
+    opts: [
+      { t: "Gdy wzrasta postrzegane bezpieczeństwo, ludzie podejmują bardziej ryzykowne zachowania (pasy → szybsza jazda)", c: true },
+      { t: "Im więcej korzyści obiecujemy, tym słabszy efekt interwencji", c: false },
+      { t: "Norma społeczna działa odwrotnie przy niskim odsetku", c: false },
+      { t: "Skrajne wyniki wracają do średniej", c: false }
+    ],
+    exp: "Efekt Peltzmana: wraz ze wzrostem postrzeganego bezpieczeństwa rośnie skłonność do ryzyka (pasy bezpieczeństwa → szybsza jazda). To istotny moderator skuteczności interwencji behawioralnych."
+  },
+  {
+    q: "Na czym polega „pułapka normy społecznej” w projektowaniu komunikatów?",
+    opts: [
+      { t: "Podawanie niskiego odsetka osób robiących coś źle może działać odwrotnie — lepiej podkreślać normę większości", c: true },
+      { t: "Norma społeczna zawsze działa, niezależnie od sformułowania", c: false },
+      { t: "Należy zawsze podawać dokładny odsetek osób łamiących normę", c: false },
+      { t: "Norma nakazowa jest zawsze skuteczniejsza od opisowej", c: false }
+    ],
+    exp: "Pułapka normy społecznej: komunikat „tylko 11% rzuca niedopałki” może zachęcić odbiorcę do dołączenia do mniejszości. Skuteczniej działa podkreślenie normy większości („89% nie rzuca petów”)."
+  },
+
+  // === SAVE MORE TOMORROW ===
+  {
+    q: "Kto i w którym roku opracował program Save More Tomorrow, i jaki był jego efekt?",
+    opts: [
+      { t: "Thaler i Benartzi (2004); ok. 70% uczestników zaczęło oszczędzać w pierwszym roku", c: true },
+      { t: "Kahneman i Tversky (1979); ok. 30% zaczęło oszczędzać", c: false },
+      { t: "Gigerenzer i Hertwig (2016); ok. 50% zaczęło oszczędzać", c: false },
+      { t: "Thaler i Sunstein (2008); ok. 12% zaczęło oszczędzać", c: false }
+    ],
+    exp: "Save More Tomorrow opracowali Thaler i Benartzi (2004). Dzięki opcjom domyślnym i odroczeniu startu ok. 70% uczestników zaczęło oszczędzać w pierwszym roku, a wielu kontynuowało."
+  },
+
+  // === INNE INTERWENCJE ===
+  {
+    q: "Nudge przeciw fake newsom (Pennycook i in., 2020) polegał na prośbie o ocenę rzetelności źródła. Jaki dał efekt?",
+    opts: [
+      { t: "Około trzykrotnie zwiększył rozpoznawanie prawdziwych informacji przy udostępnianiu", c: true },
+      { t: "Całkowicie wyeliminował udostępnianie fałszywych treści", c: false },
+      { t: "Zmniejszył rozpoznawanie prawdziwych informacji", c: false },
+      { t: "Nie miał mierzalnego wpływu", c: false }
+    ],
+    exp: "Pennycook i in. (2020): prośba o ocenę rzetelności źródła przy udostępnianiu około trzykrotnie zwiększyła rozpoznawanie prawdziwych informacji — to subtelny nudge skłaniający do refleksji."
+  },
+  {
+    q: "Gra getbadnews (Van der Linden & Roozenbeek, 2019), w której gracz buduje „trollowe imperium”, jest przykładem:",
+    opts: [
+      { t: "Boostu / „szczepienia” (inoculation) — wzmacniania kompetencji rozpoznawania fake newsów", c: true },
+      { t: "Klasycznego nudge'u opartego na opcji domyślnej", c: false },
+      { t: "Efektu Peltzmana", c: false },
+      { t: "Manipulacji typu cherry picking", c: false }
+    ],
+    exp: "Getbadnews to boost / „szczepienie” (inoculation): grając rolę twórcy dezinformacji, gracz uczy się rozpoznawać techniki manipulacji, co trwale wzmacnia odporność na fake newsy (Van der Linden & Roozenbeek, 2019)."
+  },
+  {
+    q: "Technika „implementacji intencji” (Gollwitzer, 1999) opiera się na gotowym schemacie:",
+    opts: [
+      { t: "„Jeśli/Gdy wystąpi X, to wówczas zrobię Y”", c: true },
+      { t: "„Im więcej Y, tym mniej X”", c: false },
+      { t: "„Najpierw X, potem nagroda Z”", c: false },
+      { t: "„X jest zakazane, Y obowiązkowe”", c: false }
+    ],
+    exp: "Implementacja intencji (Gollwitzer, 1999) to plan typu „Jeśli/Gdy X, to wówczas Y” — wiąże konkretną sytuację z konkretnym działaniem (np. ograniczanie dotykania twarzy), ułatwiając realizację zamiaru."
+  },
+  {
+    q: "Czym jest „wiązanie pokusy” (temptation bundling; Kirgios i in., 2020)?",
+    opts: [
+      { t: "Łączeniem obowiązku z przyjemnością (np. seriale tylko na siłowni) — efekt rzędu 10–12% częstszego kontynuowania", c: true },
+      { t: "Całkowitym zakazem ulegania pokusom", c: false },
+      { t: "Nagradzaniem finansowym za wykonanie obowiązku", c: false },
+      { t: "Odraczaniem przyjemności na czas nieokreślony", c: false }
+    ],
+    exp: "Temptation bundling (Kirgios i in., 2020) łączy obowiązek z przyjemnością dostępną tylko przy jego wykonywaniu (np. ulubiony serial wyłącznie na siłowni) — zwiększa częstość kontynuowania ćwiczeń o ok. 10–12%."
+  },
+  {
+    q: "Jaki ostatni, kluczowy etap zamyka schemat budowania interwencji behawioralnej (BIT & RIMU, 2020)?",
+    opts: [
+      { t: "„Testuj, ucz się, adaptuj” — m.in. badania RCT, metaanalizy, uwzględnienie moderatorów", c: true },
+      { t: "Natychmiastowe wdrożenie interwencji na całą populację bez testów", c: false },
+      { t: "Rezygnacja z pomiaru skuteczności", c: false },
+      { t: "Wprowadzenie kar za niepożądane zachowania", c: false }
+    ],
+    exp: "Schemat kończy etap „Testuj, ucz się, adaptuj”: interwencje sprawdza się w badaniach RCT (randomizowane badania kontrolne) i metaanalizach, z uwzględnieniem kwestii etycznych i moderatorów (np. efektu Peltzmana)."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#0f766e'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#0d9488'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#14b8a6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
