@@ -1177,5 +1177,72 @@
   onScroll();
 })();
 </script>
+<!-- ── TRYB POWTÓRKI: zasłoń i sprawdź ── -->
+<style>
+  .recall-fab { position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+    display: flex; flex-direction: column; align-items: flex-end; gap: .5rem;
+    font-family: 'Segoe UI', system-ui, sans-serif; }
+  .recall-fab button { border: none; cursor: pointer; border-radius: 22px;
+    padding: .6rem 1.1rem; font-size: .85rem; font-weight: 700; color: #fff;
+    background: linear-gradient(135deg, var(--c-head), var(--c-head2));
+    box-shadow: 0 4px 16px var(--nc-glow); transition: transform .12s, box-shadow .2s; }
+  .recall-fab button:hover { transform: translateY(-1px); box-shadow: 0 6px 22px var(--nc-glow); }
+  .recall-fab .recall-sub { display: none; gap: .4rem; }
+  body.recall-on .recall-fab .recall-sub { display: flex; }
+  .recall-fab .recall-sub button { font-size: .75rem; padding: .42rem .8rem;
+    background: #fff; color: var(--c-head); border: 1.5px solid var(--nc-border); box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+  .recall-fab .recall-sub button:hover { background: var(--nc-dim); }
+
+  body.recall-on .recall-hide { filter: blur(6px); background: var(--nc-dim);
+    border-radius: 4px; cursor: pointer; transition: filter .12s, background .12s;
+    -webkit-user-select: none; user-select: none; }
+  body.recall-on .recall-hide:hover { filter: blur(3px); }
+  body.recall-on .recall-hide.revealed { filter: none; background: transparent;
+    cursor: default; -webkit-user-select: auto; user-select: auto; }
+
+  @media print { .recall-fab { display: none; } body.recall-on .recall-hide { filter: none; background: transparent; } }
+</style>
+
+<div class="recall-fab" id="recallFab">
+  <div class="recall-sub">
+    <button type="button" data-recall="reveal">Odsłoń wszystko</button>
+    <button type="button" data-recall="hide">Zasłoń ponownie</button>
+  </div>
+  <button type="button" data-recall="toggle" id="recallToggle">🙈 Tryb powtórki</button>
+</div>
+
+<script>
+(function () {
+  var SEL = '.content .term, .content .ltable td:not(:first-child), .content .alist li > strong, .content .nlist li > strong, .content .alist li > em, .content .value, .content .exam-badge, .content .pill';
+  var body = document.body, on = false, prepared = false;
+  function prepare() {
+    if (prepared) return;
+    document.querySelectorAll(SEL).forEach(function (el) {
+      if (!el.closest('.recall-hide')) el.classList.add('recall-hide');
+    });
+    prepared = true;
+  }
+  function setOn(v) {
+    on = v;
+    if (on) prepare();
+    body.classList.toggle('recall-on', on);
+    document.getElementById('recallToggle').textContent = on ? '\u{1F441}️ Wyłącz powt\xf3rkę' : '\u{1F648} Tryb powt\xf3rki';
+  }
+  document.getElementById('recallFab').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var a = b.getAttribute('data-recall');
+    if (a === 'toggle') setOn(!on);
+    else if (a === 'reveal') document.querySelectorAll('.recall-hide').forEach(function (el){ el.classList.add('revealed'); });
+    else if (a === 'hide') document.querySelectorAll('.recall-hide').forEach(function (el){ el.classList.remove('revealed'); });
+  });
+  var content = document.querySelector('.content');
+  if (content) content.addEventListener('click', function (e) {
+    if (!on) return;
+    var t = e.target.closest('.recall-hide'); if (!t) return;
+    t.classList.toggle('revealed');
+  });
+})();
+</script>
+
 </body>
 </html>
