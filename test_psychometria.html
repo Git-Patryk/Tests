@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 1 – Zaawansowana psychometria</title>
+<style>
+  :root {
+    --teal:   #f97316;
+    --teal2:  #ea580c;
+    --teal3:  #fdba74;
+    --teal4:  #ffedd5;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f4faf9;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #fff7ed;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #9a3412 0%, var(--teal2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(234,88,12,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--teal2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #fff7ed;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #fed7aa;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--teal2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #9a3412; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal2), var(--teal3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(234,88,12,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--teal2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal3); background: #fff7ed; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--teal2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--teal4); border-color: var(--teal2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #9a3412; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--teal4); border-left: 4px solid var(--teal2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(234,88,12,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--teal2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9a3412, var(--teal2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(234,88,12,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #9a3412; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--teal4); border-left: 3px solid var(--teal2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="psychometria-testy.html">← Wróć do listy testów</a>
+  <h1>Zaawansowana psychometria</h1>
+  <p>Test 1 · Poziom 1 · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POZIOM 1</div>
+    <h2>Witaj w Teście 1!</h2>
+    <p>Test sprawdza <strong>podstawowe</strong> pojęcia psychometrii — czym jest test psychologiczny, standaryzacja i etyka, rzetelność i trafność, normy, modele KTT i IRT oraz własności pozycji testowych.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Test a psychozabawa · cecha latentna · standaryzacja · rzetelność i trafność (3 rodzaje) · normy (steny, IQ) · Alfa Cronbacha · SEM · trudność i moc pozycji · DIF · operacjonalizacja · walidacja krzyżowa</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Czym zajmuje się psychometria?", "opts": [{"t": "Teorią testów psychologicznych, ich opracowywaniem i praktycznym wykorzystaniem", "c": true}, {"t": "Wyłącznie leczeniem zaburzeń psychicznych", "c": false}, {"t": "Tworzeniem psychozabaw do mediów społecznościowych", "c": false}, {"t": "Pomiarem wyłącznie cech fizycznych człowieka", "c": false}], "exp": "Psychometria to dyscyplina psychologii zajmująca się teorią testów, ich konstruowaniem i stosowaniem."},
+  {"q": "Jaki charakter ma diagnoza za pomocą testów psychologicznych?", "opts": [{"t": "Nomotetyczny — określenie nasilenia cechy uniwersalnej dla populacji", "c": true}, {"t": "Idiograficzny — opis niepowtarzalnych cech jednej osoby", "c": false}, {"t": "Wyłącznie jakościowy, bez porównań", "c": false}, {"t": "Projekcyjny i swobodny", "c": false}], "exp": "Diagnoza testowa jest nomotetyczna: ilościowa, standaryzowana, porównuje osobę z grupą odniesienia."},
+  {"q": "Czym jest cecha psychologiczna?", "opts": [{"t": "Zmienną latentną (utajoną) — nie istnieje realnie, wnioskujemy o niej pośrednio", "c": true}, {"t": "Bezpośrednio obserwowalną właściwością fizyczną", "c": false}, {"t": "Cechą, która jest stała u wszystkich ludzi", "c": false}, {"t": "Wynikiem surowym uzyskanym w teście", "c": false}], "exp": "Cechy to zmienne latentne (utajone) o międzyosobniczej zmienności i wewnątrzosobniczej stałości; nie istnieją realnie."},
+  {"q": "Co odróżnia test psychologiczny od psychozabawy?", "opts": [{"t": "Standaryzacja, podstawy teoretyczne, normy i badania empiryczne", "c": true}, {"t": "Atrakcyjna grafika i możliwość udostępnienia wyniku", "c": false}, {"t": "Większa liczba pytań", "c": false}, {"t": "Brak określonego celu badania", "c": false}], "exp": "Psychozabawa nie ma kontrolowanych warunków, teorii, grup odniesienia ani badań empirycznych — test ma to wszystko."},
+  {"q": "Czemu służy standaryzacja procedury badania?", "opts": [{"t": "Ujednoliceniu warunków i minimalizowaniu wpływu czynników zakłócających pomiar", "c": true}, {"t": "Skróceniu czasu badania", "c": false}, {"t": "Zwiększeniu atrakcyjności testu", "c": false}, {"t": "Umożliwieniu dowolnej zmiany instrukcji", "c": false}], "exp": "Standaryzacja to ujednolicony sposób posługiwania się testem, aby wszystkie osoby badane miały takie same warunki."},
+  {"q": "Co dzieje się, gdy zmienimy standardową procedurę badania?", "opts": [{"t": "Nie wolno korzystać z norm ani z własności psychometrycznych podanych w podręczniku", "c": true}, {"t": "Wyniki stają się dokładniejsze", "c": false}, {"t": "Test zyskuje wyższą rzetelność", "c": false}, {"t": "Nie ma to żadnego znaczenia dla interpretacji", "c": false}], "exp": "Normy oraz rzetelność i trafność oszacowano przy standardowej procedurze — jej zmiana uniemożliwia ich stosowanie."},
+  {"q": "Czym jest rzetelność testu?", "opts": [{"t": "Powtarzalnością i precyzją (dokładnością) pomiaru danym narzędziem", "c": true}, {"t": "Zgodnością treści testu z mierzonym konstruktem", "c": false}, {"t": "Reprezentatywnością próby normalizacyjnej", "c": false}, {"t": "Atrakcyjnością pozycji testowych", "c": false}], "exp": "Rzetelność oznacza powtarzalność pomiaru oraz precyzję, z jaką mierzymy — jedno z podstawowych kryteriów jakości testu."},
+  {"q": "Na jakie pytanie odpowiada trafność testu?", "opts": [{"t": "Czy test mierzy to, co rzeczywiście miał mierzyć", "c": true}, {"t": "Czy pomiar jest powtarzalny i precyzyjny", "c": false}, {"t": "Czy wynik można odnieść do grupy odniesienia", "c": false}, {"t": "Czy procedura badania jest ujednolicona", "c": false}], "exp": "Trafność to zakres, w jakim wynik testu odzwierciedla cechę, która ma być mierzona."},
+  {"q": "Jakie trzy rodzaje trafności tradycyjnie wyróżnia się w psychometrii?", "opts": [{"t": "Treściową, kryterialną i teoretyczną", "c": true}, {"t": "Bezwzględną, względną i mieszaną", "c": false}, {"t": "Wewnętrzną, zewnętrzną i ekologiczną", "c": false}, {"t": "Dodatnią, ujemną i zerową", "c": false}], "exp": "Tradycyjnie: trafność treściowa, kryterialna i teoretyczna — dziś traktowane jako trzy aspekty tej samej trafności."},
+  {"q": "Do czego służą normy w teście?", "opts": [{"t": "Do odniesienia wyniku osoby badanej do grupy odniesienia", "c": true}, {"t": "Do skrócenia procedury badania", "c": false}, {"t": "Do oceny trafności treściowej", "c": false}, {"t": "Do losowania kolejności pozycji", "c": false}], "exp": "Test nie dostarcza wyników bezwzględnych — wynik interpretujemy zawsze względem norm (grupy odniesienia)."},
+  {"q": "Czego miarą jest współczynnik Alfa Cronbacha?", "opts": [{"t": "Zgodności wewnętrznej (rzetelności)", "c": true}, {"t": "Trafności kryterialnej", "c": false}, {"t": "Trudności pozycji testowych", "c": false}, {"t": "Reprezentatywności próby", "c": false}], "exp": "Alfa Cronbacha to najpopularniejszy współczynnik zgodności wewnętrznej; opisuje, na ile pozycje mierzą tę samą cechę."},
+  {"q": "Jakie wartości przyjmuje współczynnik Alfa Cronbacha?", "opts": [{"t": "Od 0 do 1", "c": true}, {"t": "Od -1 do 1", "c": false}, {"t": "Od 0 do 100", "c": false}, {"t": "Od 1 do 10", "c": false}], "exp": "Współczynniki zgodności wewnętrznej przyjmują wartości z przedziału od 0 do 1 (im bliżej 1, tym wyższa rzetelność)."},
+  {"q": "O czym informuje standardowy błąd pomiaru (SEM)?", "opts": [{"t": "O odchyleniu standardowym rozkładu błędów pomiaru wokół wyniku prawdziwego", "c": true}, {"t": "O sile związku testu z kryterium zewnętrznym", "c": false}, {"t": "O liczbie pozycji w teście", "c": false}, {"t": "O reprezentatywności próby normalizacyjnej", "c": false}], "exp": "SEM to odchylenie standardowe rozkładu błędów pomiaru wokół wyniku prawdziwego — im większe, tym mniej precyzyjny pomiar."},
+  {"q": "Z czego składa się wynik otrzymany w Klasycznej Teorii Testów (KTT)?", "opts": [{"t": "Z wyniku prawdziwego i błędu pomiaru", "c": true}, {"t": "Wyłącznie z wyniku prawdziwego", "c": false}, {"t": "Z normy i wyniku surowego", "c": false}, {"t": "Z trafności i rzetelności", "c": false}], "exp": "Równanie KTT: wynik otrzymany = wynik prawdziwy + błąd pomiaru (Xx = Xt + Xe)."},
+  {"q": "Jaką średnią i odchylenie standardowe ma skala stenowa?", "opts": [{"t": "M = 5,5; SD = 2 (zakres 1-10)", "c": true}, {"t": "M = 100; SD = 15", "c": false}, {"t": "M = 50; SD = 10", "c": false}, {"t": "M = 5; SD = 2 (zakres 1-9)", "c": false}], "exp": "Steny: zakres 1-10, średnia 5,5 i odchylenie standardowe 2. (Staniny: 1-9, M=5, SD=2.)"},
+  {"q": "Jaką średnią i odchylenie standardowe ma skala IQ?", "opts": [{"t": "M = 100; SD = 15", "c": true}, {"t": "M = 50; SD = 10", "c": false}, {"t": "M = 5,5; SD = 2", "c": false}, {"t": "M = 0; SD = 1", "c": false}], "exp": "Skala IQ: średnia 100, odchylenie standardowe 15, zakres nieograniczony. Wyniki powyżej 115 (M+SD) to wyniki wysokie."},
+  {"q": "Czym jest trudność pozycji testowej (w KTT)?", "opts": [{"t": "Odsetkiem osób, które odpowiadają na pozycję poprawnie", "c": true}, {"t": "Siłą związku pozycji z wynikiem ogólnym", "c": false}, {"t": "Liczbą wariantów odpowiedzi", "c": false}, {"t": "Czasem potrzebnym na rozwiązanie pozycji", "c": false}], "exp": "Trudność (w KTT) to odsetek osób z poprawną odpowiedzią; im wyższa wartość, tym łatwiejsza pozycja."},
+  {"q": "Czym jest moc dyskryminacyjna pozycji testowej?", "opts": [{"t": "Tym, jak dobrze pozycja różnicuje osoby o niskim i wysokim nasileniu mierzonej cechy", "c": true}, {"t": "Tym, jak trudna jest pozycja", "c": false}, {"t": "Tym, ile czasu zajmuje odpowiedź", "c": false}, {"t": "Tym, jak atrakcyjna jest treść pozycji", "c": false}], "exp": "Moc dyskryminacyjna mówi, jak dobrze pozycja różnicuje osoby o niskim i wysokim nasileniu cechy."},
+  {"q": "Czego dotyczy zjawisko DIF (zróżnicowane funkcjonowanie pozycji)?", "opts": [{"t": "Stronniczości pojedynczej pozycji testowej wobec określonej grupy", "c": true}, {"t": "Rzetelności całego testu", "c": false}, {"t": "Reprezentatywności próby normalizacyjnej", "c": false}, {"t": "Czasu wykonania testu", "c": false}], "exp": "DIF to stronniczość pozycji: osoby z różnych grup o tym samym nasileniu cechy udzielają różnych odpowiedzi."},
+  {"q": "Czym jest operacjonalizacja mierzonej właściwości?", "opts": [{"t": "Określeniem zachowania identyfikowanego z mierzonym konstruktem", "c": true}, {"t": "Wyborem wydawcy testu", "c": false}, {"t": "Obliczeniem współczynnika rzetelności", "c": false}, {"t": "Doborem próby normalizacyjnej", "c": false}], "exp": "Operacjonalizacja sprowadza konstrukt do konkretnych, obserwowalnych zachowań identyfikowanych z tą cechą."},
+  {"q": "Jakie są dwa podstawowe modele wyniku testowego?", "opts": [{"t": "Klasyczna Teoria Testów (KTT) i Teoria odpowiadania na pozycje (IRT)", "c": true}, {"t": "Teoria trafności i teoria rzetelności", "c": false}, {"t": "Model stenowy i model centylowy", "c": false}, {"t": "Model jakościowy i ilościowy", "c": false}], "exp": "Dwa modele wyniku testowego to KTT (teoria wyniku prawdziwego) oraz IRT (teoria probabilistyczna)."},
+  {"q": "Na czym polega walidacja krzyżowa testu?", "opts": [{"t": "Na ponownym zbadaniu inną grupą i ocenie parametrów testu w tej nowej grupie", "c": true}, {"t": "Na badaniu obrazowym kręgosłupa osoby badanej", "c": false}, {"t": "Na obliczeniu Alfa Cronbacha", "c": false}, {"t": "Na tłumaczeniu testu na inny język", "c": false}], "exp": "Walidacja krzyżowa to ponowne badanie inną grupą i sprawdzenie, czy parametry (własności) testu się utrzymują."},
+  {"q": "Jak należy traktować wynik surowy w teście psychologicznym?", "opts": [{"t": "Nie podlega bezpośredniej interpretacji — trzeba go zamienić na wynik przeliczony wg norm", "c": true}, {"t": "Można go interpretować wprost jako poziom cechy", "c": false}, {"t": "Zawsze oznacza wynik przeciętny", "c": false}, {"t": "Jest tożsamy z wynikiem prawdziwym", "c": false}], "exp": "Wynik surowy sam w sobie nic nie znaczy — interpretujemy dopiero wynik przeliczony (np. sten) względem norm."},
+  {"q": "W jaki sposób ocenia się trafność treściową testu?", "opts": [{"t": "Przez sędziów kompetentnych, na etapie doboru pozycji", "c": true}, {"t": "Przez korelację z innym testem", "c": false}, {"t": "Przez badanie test-retest", "c": false}, {"t": "Przez obliczenie SEM", "c": false}], "exp": "Trafność treściową ocenia się zwykle przez sędziów kompetentnych — czy pozycje pokrywają całe spektrum cechy."},
+  {"q": "Dlaczego mówi się, że test psychologiczny nie dostarcza wyników bezwzględnych?", "opts": [{"t": "Bo wynik zawsze interpretuje się względem adekwatnej grupy odniesienia (norm)", "c": true}, {"t": "Bo pomiar zawsze jest obarczony błędem systematycznym", "c": false}, {"t": "Bo testy nie mają jednostek pomiaru", "c": false}, {"t": "Bo wynik zmienia się przy każdym badaniu", "c": false}], "exp": "Ten sam wynik może znaczyć co innego u dziecka i dorosłego — dlatego zawsze odnosimy go do właściwych norm."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#9a3412'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#ea580c'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#f97316'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
