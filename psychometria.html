@@ -295,10 +295,19 @@
   .qitem:last-child { border-bottom: none; }
   .qitem .q { font-size: .88rem; font-weight: 700; color: var(--c-head); margin-bottom: .4rem; }
   .qitem .q b { color: var(--nc); margin-right: .35rem; }
-  .qitem .a { font-size: .85rem; color: var(--c-text); padding-left: 1.4rem; position: relative; line-height: 1.6; }
-  .qitem .a::before { content: '✓'; position: absolute; left: 0; color: #15803d; font-weight: 900; }
-  .qitem .a strong { color: #15803d; }
-  .qitem .note { font-size: .8rem; color: var(--c-muted); font-style: italic; padding-left: 1.4rem; margin-top: .2rem; }
+  .qopts { list-style: none; padding: 0; margin: .4rem 0 0; }
+  .qopts li {
+    font-size: .84rem; line-height: 1.5; color: var(--c-text);
+    padding: .32rem .55rem .32rem 1.7rem; position: relative;
+    border-radius: 6px; margin-bottom: .22rem; border: 1px solid transparent;
+  }
+  .qopts li::before { content: '○'; position: absolute; left: .5rem; top: .34rem; color: var(--c-muted); font-size: .7rem; }
+  .qopts li.ok {
+    background: rgba(74,222,128,.14); color: #15803d; font-weight: 700;
+    border-color: rgba(74,222,128,.4);
+  }
+  .qopts li.ok::before { content: '✓'; color: #15803d; font-weight: 900; font-size: .78rem; left: .45rem; }
+  .qitem .note { font-size: .8rem; color: var(--c-muted); font-style: italic; padding-left: 1.7rem; margin-top: .35rem; }
 
   footer { position: relative; z-index: 1; text-align: center; padding: 2rem; color: var(--muted); font-size: .72rem; border-top: 1px solid var(--border); }
 
@@ -409,8 +418,8 @@
       <div class="value">Test jednokrotnego wyboru · 50 pkt</div>
     </div>
     <div class="exam-badge">
-      <div class="label">Wykładowca</div>
-      <div class="value">dr Radosław Wujcik</div>
+      <div class="label">Punkty ECTS</div>
+      <div class="value">6 · wykład + ćwiczenia + projekt</div>
     </div>
     <div class="exam-badge">
       <div class="label">Zaliczenie</div>
@@ -423,7 +432,7 @@
   </div>
 
   <div class="callout info">
-    <span class="ci">ℹ️</span><div>Notatka powstała na podstawie <strong>prezentacji wykładowych</strong> (dr R. Wujcik), <strong>sylabusu</strong> oraz <strong>prezentacji „Analiza statystyczna"</strong> (dr A. Skruczaj-Olejnik) — w części statystycznej skupiamy się na <strong>pojęciach i decyzji „co kiedy stosować"</strong>, nie na obsłudze SPSS. Sekcja 16 zawiera <strong>realne pytania z egzaminu (II termin 2024)</strong> z poprawnymi odpowiedziami.</div>
+    <span class="ci">ℹ️</span><div>Notatka powstała na podstawie <strong>prezentacji wykładowych</strong>, <strong>sylabusu</strong> oraz <strong>prezentacji „Analiza statystyczna"</strong> — w części statystycznej skupiamy się na <strong>pojęciach i decyzji „co kiedy stosować"</strong>, nie na obsłudze SPSS. Sekcja 16 zawiera <strong>realne pytania z egzaminu (II termin 2024)</strong> z poprawnymi odpowiedziami.</div>
   </div>
 
   <!-- ══════════ BLOK PODSTAWY ══════════ -->
@@ -1022,7 +1031,7 @@
   </div>
 
   <div class="callout tip">
-    <span class="ci">📐</span><div>Ten blok to <strong>pojęciowa</strong> powtórka z metodologii/statystyki (prezentacje dr Skruczaj-Olejnik) — pokrewnego przedmiotu o SPSS. Skupiamy się na <strong>tym, czego używać i kiedy</strong>, bez instrukcji klikania w programie.</div>
+    <span class="ci">📐</span><div>Ten blok to <strong>pojęciowa</strong> powtórka z metodologii/statystyki — pokrewnego przedmiotu o SPSS. Skupiamy się na <strong>tym, czego używać i kiedy</strong>, bez instrukcji klikania w programie.</div>
   </div>
 
   <!-- S13 -->
@@ -1175,31 +1184,240 @@
     </div>
 
     <div class="lcard">
-      <div class="qitem"><div class="q"><b>1.</b> Jak zmniejszyć szerokość przedziału ufności, jeśli nie możemy zmienić własności psychometrycznych testu?</div><div class="a"><strong>Zmniejszyć poziom ufności</strong> (np. z 95% do 85%)</div></div>
-      <div class="qitem"><div class="q"><b>2.</b> Na rzetelność testu wpływa:</div><div class="a"><strong>Wszystkie odpowiedzi są poprawne</strong> (jakość pytań, długość testu, jednorodność mierzonej zmiennej)</div></div>
-      <div class="qitem"><div class="q"><b>3.</b> Współczynnik Alfa Cronbacha:</div><div class="a"><strong>Pozwala ocenić, na ile odpowiedzi na pozycje testowe są determinowane nasileniem jednej cechy</strong></div></div>
-      <div class="qitem"><div class="q"><b>4.</b> Standardowy błąd pomiaru:</div><div class="a"><strong>Jest odchyleniem standardowym rozkładu błędów pomiaru wokół wyniku prawdziwego</strong></div></div>
-      <div class="qitem"><div class="q"><b>5.</b> Wskaż <em>fałszywe</em> założenie dotyczące adaptacji kulturowej testu:</div><div class="a"><strong>„Ta sama cecha ma zawsze takie same przejawy w każdej kulturze"</strong> (to zdanie fałszywe)</div></div>
-      <div class="qitem"><div class="q"><b>6.</b> Operacjonalizacja mierzonej właściwości jest związana z:</div><div class="a"><strong>Określeniem zachowania identyfikowanego z mierzonym konstruktem</strong></div></div>
-      <div class="qitem"><div class="q"><b>7.</b> IRT umożliwia konstruowanie testów adaptatywnych, ponieważ zakłada, że:</div><div class="a"><strong>Właściwości pozycji testowych są niezależne od wyników w próbie, na której opracowano test</strong></div></div>
-      <div class="qitem"><div class="q"><b>8.</b> Zadania testu inteligencji mają współczynnik trudności IRT. Na które pytanie poprawnie odpowiada najwięcej osób?</div><div class="a"><strong>−0,88</strong> (im niższy/bardziej ujemny parametr trudności, tym łatwiejsze zadanie)</div></div>
-      <div class="qitem"><div class="q"><b>9.</b> Co <em>nie</em> jest założeniem Klasycznej Teorii Testów (KTT)?</div><div class="a"><strong>Niezależność norm od wyników w próbie normalizacyjnej</strong> (to założenie IRT)</div></div>
-      <div class="qitem"><div class="q"><b>10.</b> W teście o normalnym rozkładzie wyników surowych prawdopodobnie dominują:</div><div class="a"><strong>Pytania o umiarkowanej trudności</strong></div></div>
-      <div class="qitem"><div class="q"><b>11.</b> Jakie parametry pozycji szacowane są w dwuparametrycznym modelu IRT?</div><div class="a"><strong>Trudność i moc dyskryminacyjna</strong></div></div>
-      <div class="qitem"><div class="q"><b>12.</b> Badacz konstruuje test inteligencji dla populacji ogólnej. Analizując trudność pozycji powinien:</div><div class="a"><strong>Uwzględnić pozycje o zróżnicowanej trudności</strong> (łatwe, przeciętnie trudne i trudne)</div></div>
-      <div class="qitem"><div class="q"><b>13.</b> Walidacja krzyżowa polega na:</div><div class="a"><strong>Ocenie parametrów testu w nowej grupie</strong> <span class="note">(w arkuszu zaznaczono żartobliwy dystraktor „badanie obrazowe kręgosłupa" — merytorycznie poprawna jest ocena parametrów w nowej grupie)</span></div></div>
-      <div class="qitem"><div class="q"><b>14.</b> Zewnętrzny układ odniesienia dla wyników, wyznaczony przez reprezentatywną dla populacji próbę, to:</div><div class="a"><strong>Normy</strong></div></div>
-      <div class="qitem"><div class="q"><b>15.</b> Analiza czynnikowa wykazała istnienie 5 czynników. Oznacza to, że:</div><div class="a"><strong>Pięć zmiennych nieobserwowalnych najlepiej wyjaśnia odpowiedzi na zadania w teście</strong></div></div>
-      <div class="qitem"><div class="q"><b>16.</b> Które pozycje w teście zwykle mają najwyższą moc dyskryminacyjną?</div><div class="a"><strong>Pozycje o umiarkowanej trudności</strong></div></div>
-      <div class="qitem"><div class="q"><b>17.</b> Metoda połówkowa badania rzetelności wymaga:</div><div class="a"><strong>Podziału testu na dwie połowy nie różniące się trudnością</strong></div></div>
-      <div class="qitem"><div class="q"><b>18.</b> Jeśli test jest zbyt trudny dla badanej grupy, rozkład wyników będzie:</div><div class="a"><strong>Prawoskośny</strong></div></div>
-      <div class="qitem"><div class="q"><b>19.</b> Skonstruowałeś nowy kwestionariusz do diagnozy inteligencji — by oszacować trafność, przede wszystkim:</div><div class="a"><strong>Oblicz korelacje jego wyników z wynikami innych uznanych testów inteligencji</strong></div></div>
-      <div class="qitem"><div class="q"><b>20.</b> Argumentem za trafnością kryterialną testu do diagnozy ADHD jest:</div><div class="a"><strong>Uzyskiwanie wyższych wyników przez osoby słabo radzące sobie z zadaniami wymagającymi wysokiej sprawności uwagi</strong></div></div>
-      <div class="qitem"><div class="q"><b>21.</b> Ze zjawiskiem zróżnicowanego funkcjonowania pozycji (DIF) mamy do czynienia, gdy:</div><div class="a"><strong>Osoby różniące się pochodzeniem etnicznym, przy takim samym nasileniu mierzonej cechy, udzielają różnych odpowiedzi</strong></div></div>
-      <div class="qitem"><div class="q"><b>22.</b> Porównując wyniki 24-letniego mężczyzny z normami bez podziału na płeć dla osób 18–79 lat:</div><div class="a"><strong>Możemy określić, jak wypada na tle populacji wszystkich osób dorosłych</strong></div></div>
-      <div class="qitem"><div class="q"><b>23.</b> Osoba uzyskała wynik 9 stenów, a półprzedział ufności wynosi 2 — wynik prawdziwy zawiera się:</div><div class="a"><strong>W przedziale od 7 do 11 stena</strong>, z prawdopodobieństwem równym przyjętemu poziomowi ufności (9±2)</div></div>
-      <div class="qitem"><div class="q"><b>24.</b> Co jest prawdą o błędzie pomiaru w teście?</div><div class="a"><strong>Jest tym większy, im niższa jest rzetelność testu</strong></div></div>
-      <div class="qitem"><div class="q"><b>25.</b> Wyniki której skali obarczone są najmniejszym błędem pomiaru? (Asertywność α=0,90; Kontrola emocji α=0,84; Rozumienie relacji α=0,94)</div><div class="a"><strong>Rozumienie relacji — α=0,94</strong> (najwyższa α = najmniejszy błąd pomiaru)</div></div>
+      <div class="qitem">
+        <div class="q"><b>1.</b> Jak można zmniejszyć szerokość przedziału ufności, jeżeli nie możemy zmienić własności psychometrycznych testu?</div>
+        <ul class="qopts">
+          <li>zwiększyć poziom ufności (np. z 85% do 95%)</li>
+          <li class="ok">zmniejszyć poziom ufności (np. z 95% do 85%)</li>
+          <li>interpretować jedynie wynik surowy</li>
+          <li>korzystać jedynie z norm z podziałem na płeć, jeżeli takie są dostępne dla testu</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>2.</b> Na rzetelność testu wpływa:</div>
+        <ul class="qopts">
+          <li>jakość pytań</li>
+          <li>długość testu</li>
+          <li>jednorodność mierzonej zmiennej</li>
+          <li class="ok">wszystkie odpowiedzi są poprawne</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>3.</b> Współczynnik Alfa Cronbacha:</div>
+        <ul class="qopts">
+          <li>można obliczać za pomocą metody test-retest</li>
+          <li>wskazuje na rozkład wyników w próbie normalizacyjnej</li>
+          <li>wskazuje na trudność poszczególnych pozycji testowych</li>
+          <li class="ok">pozwala ocenić, na ile odpowiedzi na pozycje testowe są determinowane nasileniem jednej cechy</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>4.</b> Standardowy błąd pomiaru:</div>
+        <ul class="qopts">
+          <li>to inaczej standardowy błąd estymacji (SEE)</li>
+          <li>to inaczej współczynnik korelacji Pearsona</li>
+          <li class="ok">jest odchyleniem standardowym rozkładu błędów pomiaru wokół wyniku prawdziwego</li>
+          <li>jest szacowany na podstawie estymowanego wyniku prawdziwego</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>5.</b> Wskaż <em>fałszywe</em> założenie dotyczące adaptacji kulturowej testu:</div>
+        <ul class="qopts">
+          <li class="ok">Ta sama cecha ma zawsze takie same przejawy w każdej kulturze.</li>
+          <li>Te same zachowania mogą być przejawem różnych cech w różnych kulturach.</li>
+          <li>Takie same preferencje mogą być przejawem różnych cech w różnych kulturach.</li>
+          <li>Ta sama cecha może mieć w różnych kulturach różne przejawy.</li>
+        </ul>
+        <div class="note">Pytanie prosi o zdanie FAŁSZYWE — i takie właśnie zaznaczamy: cecha NIE zawsze ma identyczne przejawy w każdej kulturze.</div>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>6.</b> Operacjonalizacja mierzonej właściwości jest związana z:</div>
+        <ul class="qopts">
+          <li>wskazaniem przedmiotu pomiaru</li>
+          <li>wyborem modelu teoretycznego</li>
+          <li>określeniem obszaru zastosowania testu</li>
+          <li class="ok">określeniem zachowania identyfikowanego z mierzonym konstruktem</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>7.</b> Teoria odpowiadania na pozycje testowe (IRT) umożliwia konstruowanie testów adaptatywnych, ponieważ zakłada, że:</div>
+        <ul class="qopts">
+          <li class="ok">właściwości pozycji testowych są niezależne od wyników w próbie, na której opracowano test</li>
+          <li>wszystkie odpowiedzi są prawidłowe</li>
+          <li>właściwości pozycji testowych są ściśle związane z wynikami w próbie, na której opracowano test</li>
+          <li>próba normalizacyjna jest zawsze reprezentatywna dla populacji</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>8.</b> Zadania testu inteligencji mają podany współczynnik trudności IRT. Na które pytanie poprawnie odpowiada najwięcej osób?</div>
+        <ul class="qopts">
+          <li>0,52</li>
+          <li>0,88</li>
+          <li>−0,52</li>
+          <li class="ok">−0,88</li>
+        </ul>
+        <div class="note">W IRT im niższy (bardziej ujemny) parametr trudności, tym łatwiejsze zadanie → −0,88 to zadanie najłatwiejsze.</div>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>9.</b> Co <em>nie</em> jest założeniem Klasycznej Teorii Testów (KTT)?</div>
+        <ul class="qopts">
+          <li>homogeniczność skali</li>
+          <li>reprezentatywność próby normalizacyjnej</li>
+          <li class="ok">niezależność norm od wyników w próbie normalizacyjnej</li>
+          <li>lokalna niezależność pozycji</li>
+        </ul>
+        <div class="note">Niezależność od próby to założenie IRT, więc NIE jest założeniem KTT.</div>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>10.</b> W teście o normalnym rozkładzie wyników surowych prawdopodobnie dominują:</div>
+        <ul class="qopts">
+          <li>pytania bardzo łatwe</li>
+          <li class="ok">pytania o umiarkowanej trudności</li>
+          <li>pytania bardzo trudne</li>
+          <li>pytania o niskiej mocy dyskryminacyjnej</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>11.</b> Jakie parametry pozycji szacowane są w dwuparametrycznym modelu IRT?</div>
+        <ul class="qopts">
+          <li>trudność, moc dyskryminacyjna i zgadywanie</li>
+          <li class="ok">trudność i moc dyskryminacyjna</li>
+          <li>zgadywanie i moc dyskryminacyjna</li>
+          <li>zgadywanie i trudność</li>
+        </ul>
+        <div class="note">Zgadywanie dochodzi dopiero w modelu 3-parametrycznym.</div>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>12.</b> Badacz konstruuje test na inteligencję dla populacji ogólnej. Analizując trudność pozycji testowych powinien:</div>
+        <ul class="qopts">
+          <li>odrzucić pozycje o najniższej trudności</li>
+          <li class="ok">uwzględnić pozycje o zróżnicowanej trudności (łatwe, przeciętnie trudne i trudne)</li>
+          <li>postarać się, aby wszystkie pozycje miały zbliżoną trudność</li>
+          <li>odrzucić pozycje o najwyższej trudności</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>13.</b> Walidacja krzyżowa polega na:</div>
+        <ul class="qopts">
+          <li>analizie stabilności względnej testu</li>
+          <li class="ok">ocenie parametrów testu w nowej grupie</li>
+          <li>analizie stabilności bezwzględnej testu</li>
+          <li>badaniu obrazowym dolnego odcinka kręgosłupa</li>
+        </ul>
+        <div class="note">⚠️ Na zdjęciu arkusza zaznaczono na zielono żartobliwy dystraktor („badanie obrazowe kręgosłupa"). Merytorycznie poprawna — i tak zaznaczona tutaj — jest „ocena parametrów testu w nowej grupie".</div>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>14.</b> Zewnętrzny układ odniesienia dla wyników w teście, wyznaczony przez reprezentatywną dla populacji próbę, to:</div>
+        <ul class="qopts">
+          <li>walidacja</li>
+          <li>trafność</li>
+          <li>rzetelność</li>
+          <li class="ok">normy</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>15.</b> Analiza czynnikowa wykazała istnienie 5 czynników. Oznacza to, że:</div>
+        <ul class="qopts">
+          <li>kwestionariusz jest nierzetelny</li>
+          <li>kwestionariusz składa się z 5 zadań</li>
+          <li>z kwestionariusza należy usunąć co najmniej 5 zadań</li>
+          <li class="ok">pięć zmiennych nieobserwowalnych najlepiej wyjaśnia odpowiedzi na zadania w teście</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>16.</b> Które pozycje w teście zwykle mają najwyższą moc dyskryminacyjną?</div>
+        <ul class="qopts">
+          <li>tylko pozycje skrajnie trudne</li>
+          <li>tylko pozycje skrajnie łatwe</li>
+          <li>pozycje skrajnie trudne i pozycje skrajnie łatwe</li>
+          <li class="ok">pozycje o umiarkowanej trudności</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>17.</b> Metoda połówkowa badania rzetelności wymaga:</div>
+        <ul class="qopts">
+          <li>podziału testu na dwie połowy różniące się trudnością</li>
+          <li class="ok">podziału testu na dwie połowy nie różniące się trudnością</li>
+          <li>obliczenia współczynnika alfa Cronbacha</li>
+          <li>obliczenia współczynnika stabilności bezwzględnej</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>18.</b> Jeśli test jest zbyt trudny dla badanej grupy, to rozkład wyników w tym teście będzie:</div>
+        <ul class="qopts">
+          <li>normalny</li>
+          <li>prostokątny</li>
+          <li class="ok">prawoskośny</li>
+          <li>lewoskośny</li>
+        </ul>
+        <div class="note">Test zbyt trudny → dużo niskich wyników, „ogon" rozkładu ciągnie się w prawo (rozkład dodatnio/prawoskośny).</div>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>19.</b> Jeżeli skonstruowałeś nowy kwestionariusz do diagnozy inteligencji, to w celu oszacowania jego trafności powinieneś przede wszystkim:</div>
+        <ul class="qopts">
+          <li>obliczyć wartość współczynnika alfa Cronbacha</li>
+          <li class="ok">obliczyć korelacje jego wyników z wynikami innych uznanych testów inteligencji</li>
+          <li>obliczyć wartość współczynnika omega McDonalda</li>
+          <li>obliczyć korelacje jego wyników z wynikami testu do badania stylów przywiązania</li>
+        </ul>
+        <div class="note">α i omega to miary rzetelności, nie trafności. Korelacja z testem przywiązania nie pasuje do konstruktu inteligencji.</div>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>20.</b> Argumentem za trafnością kryterialną testu do diagnozy ADHD jest:</div>
+        <ul class="qopts">
+          <li class="ok">uzyskiwanie wyższych wyników przez osoby słabo radzące sobie z zadaniami wymagającymi wysokiej sprawności uwagi</li>
+          <li>zgodny z oczekiwaniami wynik analizy czynnikowej</li>
+          <li>stabilność bezwzględna wyników testu</li>
+          <li>wysoka wartość współczynnika stabilności</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>21.</b> Ze zjawiskiem zróżnicowanego funkcjonowania pozycji testowej (DIF) mamy do czynienia, gdy:</div>
+        <ul class="qopts">
+          <li>osoby różniące się nasileniem mierzonej cechy udzielają różnych odpowiedzi</li>
+          <li class="ok">osoby różniące się pochodzeniem etnicznym, przy takim samym nasileniu mierzonej cechy, udzielają różnych odpowiedzi</li>
+          <li>osoby różniące się pochodzeniem etnicznym, przy zróżnicowanym nasileniu mierzonej cechy, udzielają różnych odpowiedzi</li>
+          <li>osoby nie różniące się nasileniem mierzonej cechy udzielają takich samych odpowiedzi</li>
+        </ul>
+        <div class="note">Klucz DIF: te same nasilenie cechy, a mimo to różne odpowiedzi między grupami.</div>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>22.</b> Jeżeli porównamy wyniki badania 24-letniego mężczyzny z normami bez podziału na płeć dla osób w wieku od 18 do 79 lat, to:</div>
+        <ul class="qopts">
+          <li>możemy określić, jak wypada on na tle populacji osób 24-letnich</li>
+          <li>możemy określić, jak wypada on na tle populacji dorosłych mężczyzn</li>
+          <li class="ok">możemy określić, jak wypada on na tle populacji wszystkich osób dorosłych</li>
+          <li>możemy określić, jak wypada on na tle populacji 24-letnich mężczyzn</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>23.</b> Jeżeli osoba badana uzyskała wynik na poziomie 9 stena, a wartość półprzedziału ufności wynosi 2, to wynik prawdziwy osoby badanej będzie się zawierał:</div>
+        <ul class="qopts">
+          <li class="ok">w przedziale od 7 do 11 stena z prawdopodobieństwem równym przyjętemu poziomowi ufności</li>
+          <li>w przedziale od 7 do 10 stena z prawdopodobieństwem równym przyjętemu poziomowi ufności</li>
+          <li>ze 100% pewnością w przedziale od 5 do 7 stena</li>
+          <li>ze 100% pewnością w przedziale od 4 do 8 stena</li>
+        </ul>
+        <div class="note">9 ± 2 = (7; 11). Przedział ufności nigdy nie daje 100% pewności.</div>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>24.</b> Co jest prawdą o błędzie pomiaru w teście?</div>
+        <ul class="qopts">
+          <li class="ok">jest tym większy, im niższa jest rzetelność testu</li>
+          <li>jego wielkość nie ma związku z szerokością przedziału ufności</li>
+          <li>jego wielkość nie jest związana z rzetelnością testu</li>
+          <li>jest tym mniejszy, im niższa jest rzetelność testu</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>25.</b> Wyniki której z wymienionych skal kwestionariusza kompetencji społecznych obarczone są najmniejszym błędem pomiaru?</div>
+        <ul class="qopts">
+          <li>Asertywność — alfa Cronbacha = 0,90</li>
+          <li>Kontrola emocji — alfa Cronbacha = 0,84</li>
+          <li class="ok">Rozumienie relacji — alfa Cronbacha = 0,94</li>
+        </ul>
+        <div class="note">Najwyższa α (najwyższa rzetelność) = najmniejszy błąd pomiaru.</div>
+      </div>
     </div>
 
     <div class="summary-box">
