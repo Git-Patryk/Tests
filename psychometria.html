@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaawansowana psychometria – Notatki</title>
+<style>
+  :root {
+    --bg:       #0c0805;
+    --card:     #16110b;
+    --border:   #2a2114;
+    --text:     #f0e9e0;
+    --muted:    #8a7560;
+
+    /* orange accent */
+    --nc:       #f97316;
+    --nc-dim:   rgba(249,115,22,.13);
+    --nc-glow:  rgba(249,115,22,.30);
+    --nc-border:rgba(249,115,22,.32);
+
+    /* light content area */
+    --c-bg:     #fffaf4;
+    --c-text:   #3a2410;
+    --c-muted:  #7a6048;
+    --c-border: #fae0c8;
+    --c-head:   #c2410e;
+    --c-head2:  #ea580c;
+    --c-row:    #fff2e6;
+
+    /* status colors */
+    --green:  #4ade80;
+    --blue:   #60a5fa;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(249,115,22,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(249,115,22,.018) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    padding: .9rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(12,8,5,.94);
+    backdrop-filter: blur(14px);
+    display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+  nav a:hover { color: var(--nc); }
+  nav .sep { color: var(--border); font-size: .82rem; }
+  nav .current { color: var(--text); font-weight: 600; font-size: .82rem; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2.8rem;
+    align-items: start;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    position: sticky; top: 60px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 1.4rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .toc::-webkit-scrollbar { width: 3px; }
+  .toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .toc-title {
+    font-size: .63rem; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted);
+    padding-bottom: .7rem; border-bottom: 1px solid var(--border); margin-bottom: .9rem;
+  }
+  .toc-group { margin-bottom: 1.1rem; }
+  .toc-group-label {
+    font-size: .6rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--nc); opacity: .75; margin-bottom: .3rem;
+  }
+  .toc a {
+    display: block; padding: .28rem .55rem; border-radius: 5px;
+    font-size: .78rem; color: var(--muted); text-decoration: none; line-height: 1.4;
+    transition: color .15s, background .15s;
+  }
+  .toc a:hover { color: var(--text); background: var(--nc-dim); }
+  .toc a.active { color: var(--nc); background: var(--nc-dim); font-weight: 600; }
+
+  /* ── MAIN ── */
+  .content { min-width: 0; padding: 2.2rem 0; }
+
+  /* Page header */
+  .page-header { margin-bottom: 2.4rem; }
+  .subject-icon { font-size: 2.6rem; margin-bottom: .7rem; filter: drop-shadow(0 0 14px var(--nc)); }
+  .subject-tag {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    border-radius: 20px; padding: .22rem .8rem;
+    font-size: .7rem; font-weight: 700; color: var(--nc);
+    text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem;
+  }
+  .page-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 800; line-height: 1.2; margin-bottom: .5rem;
+    background: linear-gradient(90deg, #fff 45%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .page-header .subtitle { color: var(--muted); font-size: .88rem; max-width: 620px; line-height: 1.6; }
+  .accent-line { width: 44px; height: 2px; background: var(--nc); box-shadow: 0 0 8px var(--nc); border-radius: 2px; margin: 1rem 0; }
+
+  /* Exam strip */
+  .exam-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: .7rem; margin-bottom: 2.2rem; }
+  .exam-badge { background: var(--card); border: 1px solid var(--border); border-radius: 11px; padding: .9rem 1.1rem; }
+  .exam-badge .label { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .25rem; }
+  .exam-badge .value { font-size: .92rem; font-weight: 700; color: var(--text); }
+  .exam-badge.hi { border-color: var(--nc-border); background: var(--nc-dim); }
+  .exam-badge.hi .value { color: var(--nc); }
+
+  /* Group divider */
+  .group-divider { display: flex; align-items: center; gap: 1rem; margin: 2.8rem 0 1.8rem; }
+  .group-divider-label {
+    font-size: .66rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; white-space: nowrap;
+    padding: .28rem .85rem; border-radius: 20px;
+  }
+  .gdl-fund     { background: rgba(96,165,250,.12); color: var(--blue);   border: 1px solid rgba(96,165,250,.25); }
+  .gdl-core     { background: var(--nc-dim);          color: var(--nc);    border: 1px solid var(--nc-border); }
+  .gdl-stat     { background: rgba(74,222,128,.1);     color: var(--green); border: 1px solid rgba(74,222,128,.22); }
+  .gdl-exam     { background: rgba(251,146,60,.14);   color: var(--orange);border: 1px solid rgba(251,146,60,.3); }
+  .gdl-lit      { background: rgba(138,117,96,.14);    color: var(--muted); border: 1px solid rgba(138,117,96,.3); }
+  .group-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── SECTION ── */
+  section { margin-bottom: 3rem; scroll-margin-top: 72px; }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: .9rem;
+    margin-bottom: 1.2rem; padding-bottom: .9rem; border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 900; color: var(--nc);
+  }
+  .section-header-text h2 { font-size: 1.1rem; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: .18rem; }
+  .section-header-text .src-tag { font-size: .7rem; color: var(--muted); font-style: italic; }
+  .section-header-text .src-tag span { color: var(--nc); opacity: .85; font-style: normal; }
+
+  /* ── LIGHT CONTENT CARD ── */
+  .lcard {
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 13px;
+    padding: 1.5rem 1.7rem;
+    margin-bottom: .9rem;
+    color: var(--c-text);
+  }
+
+  .lcard h3 {
+    font-size: .97rem; font-weight: 800;
+    color: var(--c-head); margin-bottom: .85rem;
+    padding-bottom: .5rem; border-bottom: 2px solid #fbe2cd;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .lcard h4 {
+    font-size: .88rem; font-weight: 700;
+    color: var(--c-head2); margin: 1rem 0 .5rem;
+  }
+  .lcard > p { font-size: .875rem; line-height: 1.68; color: var(--c-text); margin-bottom: .6rem; }
+
+  /* Arrow list */
+  .alist { list-style: none; padding: 0; }
+  .alist li {
+    position: relative; padding: .38rem .4rem .38rem 1.5rem;
+    font-size: .875rem; line-height: 1.68; color: var(--c-text);
+    border-bottom: 1px solid rgba(249,115,22,.1);
+  }
+  .alist li:last-child { border-bottom: none; }
+  .alist li::before { content: '→'; position: absolute; left: 0; top: .38rem; color: var(--nc); font-weight: 700; }
+  .alist li strong { color: var(--c-head); }
+  .alist li em { color: var(--c-muted); font-style: italic; }
+
+  /* Numbered list */
+  .nlist { padding-left: 1.3rem; }
+  .nlist li {
+    font-size: .875rem; line-height: 1.7; color: var(--c-text);
+    padding: .25rem 0; border-bottom: 1px solid rgba(249,115,22,.07);
+  }
+  .nlist li:last-child { border-bottom: none; }
+  .nlist li strong { color: var(--c-head); }
+
+  /* Table */
+  .ltable { width: 100%; border-collapse: collapse; font-size: .835rem; margin: .6rem 0; border-radius: 10px; overflow: hidden; }
+  .ltable th {
+    text-align: left; padding: .55rem .85rem;
+    background: var(--nc); color: #fff;
+    font-size: .73rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .ltable td { padding: .5rem .85rem; color: var(--c-text); border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; }
+  .ltable tr:last-child td { border-bottom: none; }
+  .ltable tr:nth-child(even) td { background: rgba(249,115,22,.05); }
+  .ltable tr:hover td { background: rgba(249,115,22,.09); }
+  .ltable td strong { color: var(--c-head); }
+
+  /* Two-col grid */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-bottom: .8rem; }
+
+  /* Pill */
+  .pill { display: inline-block; padding: .12rem .5rem; border-radius: 5px; font-size: .73rem; font-weight: 700; }
+  .pill-v { background: var(--nc-dim); color: var(--nc); border: 1px solid var(--nc-border); }
+  .pill-g { background: rgba(74,222,128,.1); color: #15803d; border: 1px solid rgba(74,222,128,.2); }
+  .pill-b { background: rgba(96,165,250,.1); color: #1d4ed8; border: 1px solid rgba(96,165,250,.2); }
+  .pill-y { background: rgba(251,191,36,.1); color: #b8860b; border: 1px solid rgba(251,191,36,.2); }
+  .pill-r { background: rgba(220,38,38,.1); color: #dc2626; border: 1px solid rgba(220,38,38,.25); }
+
+  /* Callout */
+  .callout {
+    border-radius: 9px; padding: .85rem 1.1rem;
+    margin: .7rem 0; font-size: .855rem; line-height: 1.72;
+    display: flex; gap: .75rem; align-items: flex-start;
+    color: var(--text);
+  }
+  .callout .ci { font-size: .95rem; flex-shrink: 0; margin-top: .05rem; }
+  .callout.exam  { background: rgba(249,115,22,.16); border-left: 3px solid var(--nc); }
+  .callout.tip   { background: rgba(74,222,128,.13);  border-left: 3px solid var(--green); }
+  .callout.warn  { background: rgba(251,191,36,.14);  border-left: 3px solid var(--yellow); }
+  .callout.info  { background: rgba(96,165,250,.13);  border-left: 3px solid var(--blue); }
+  .callout strong { color: #fff; }
+
+  /* Callout wewnątrz jasnych kart — ciemny tekst */
+  .lcard .callout { color: var(--c-text); }
+  .lcard .callout strong { color: var(--c-head); }
+  .lcard .callout.exam { background: rgba(249,115,22,.12); }
+  .lcard .callout.tip  { background: rgba(74,222,128,.12); }
+  .lcard .callout.warn { background: rgba(251,191,36,.16); }
+  .lcard .callout.info { background: rgba(96,165,250,.12); }
+
+  /* Formula box */
+  .formula {
+    background: #2a2114; border: 1px solid var(--nc-border); border-radius: 9px;
+    padding: .8rem 1.1rem; margin: .7rem 0; text-align: center;
+    font-size: 1.05rem; font-weight: 700; color: var(--nc); letter-spacing: .02em;
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+  }
+  .lcard .formula {
+    background: #fff4ea; color: var(--c-head); border-color: var(--c-border);
+  }
+  .formula small { display: block; font-size: .72rem; font-weight: 500; color: var(--c-muted); margin-top: .35rem; letter-spacing: 0; font-family: 'Segoe UI', sans-serif; }
+
+  /* Section summary box */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(249,115,22,.12), rgba(234,88,12,.06));
+    border: 1px solid var(--nc-border); border-radius: 13px;
+    padding: 1.3rem 1.5rem; margin-top: 1rem;
+  }
+  .summary-box h4 { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--nc); margin-bottom: .8rem; }
+  .summary-box ul { list-style: none; padding: 0; }
+  .summary-box li { font-size: .855rem; line-height: 1.6; color: var(--text); padding: .25rem 0 .25rem 1.4rem; position: relative; }
+  .summary-box li::before { content: '◆'; position: absolute; left: 0; color: var(--nc); font-size: .7rem; top: .45rem; }
+  .summary-box li strong { color: #fff; }
+
+  /* Summary-box wewnątrz jasnych kart — ciemny tekst na jasnym tle */
+  .lcard .summary-box {
+    background: linear-gradient(135deg, rgba(249,115,22,.10), rgba(234,88,12,.04));
+    border: 1px solid var(--c-border);
+  }
+  .lcard .summary-box h4 { color: var(--c-head); }
+  .lcard .summary-box li { color: var(--c-text); }
+  .lcard .summary-box li strong { color: var(--c-head); }
+
+  /* Exam Q&A item */
+  .qitem { border-bottom: 1px solid var(--c-border); padding: .85rem 0; }
+  .qitem:last-child { border-bottom: none; }
+  .qitem .q { font-size: .88rem; font-weight: 700; color: var(--c-head); margin-bottom: .4rem; }
+  .qitem .q b { color: var(--nc); margin-right: .35rem; }
+  .qitem .a { font-size: .85rem; color: var(--c-text); padding-left: 1.4rem; position: relative; line-height: 1.6; }
+  .qitem .a::before { content: '✓'; position: absolute; left: 0; color: #15803d; font-weight: 900; }
+  .qitem .a strong { color: #15803d; }
+  .qitem .note { font-size: .8rem; color: var(--c-muted); font-style: italic; padding-left: 1.4rem; margin-top: .2rem; }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 2rem; color: var(--muted); font-size: .72rem; border-top: 1px solid var(--border); }
+
+  /* Mobile */
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 0 1rem 4rem; }
+    .toc { position: static; max-height: none; overflow: visible; border: 1px solid var(--border); border-radius: 12px; background: var(--card); padding: 1rem 1.2rem; margin: 1rem 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .exam-strip { grid-template-columns: 1fr 1fr; }
+    .ltable { font-size: .78rem; }
+    .ltable th, .ltable td { padding: .4rem .6rem; }
+  }
+  @media (max-width: 480px) {
+    .exam-strip { grid-template-columns: 1fr; }
+  }
+  /* ── SEMANTIC COLOR HELPERS ── */
+  .zysk   { color: #15803d; font-weight: 700; }   /* zysk / pozytyw */
+  .strata { color: #dc2626; font-weight: 700; }   /* strata / błąd */
+  .term   { color: #c2410e; font-weight: 700; }   /* termin kluczowy */
+  .uwaga  { color: #d97706; font-weight: 700; }   /* uwaga / wyjątek */
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <a href="swps.html">SWPS</a>
+  <span class="sep">/</span>
+  <a href="swps-psychometria.html">Zaawansowana psychometria</a>
+  <span class="sep">/</span>
+  <span class="current">Notatki</span>
+</nav>
+
+<div class="layout">
+
+<!-- ── TOC ── -->
+<aside class="toc">
+  <div class="toc-title">Spis treści</div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">⚡ O przedmiocie</div>
+    <a href="#info">Zakres i egzamin</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🧱 Podstawy</div>
+    <a href="#S1">1 · Test psychologiczny i pomiar</a>
+    <a href="#S2">2 · Rodzaje testów · standaryzacja · etyka</a>
+    <a href="#S3">3 · Konstruowanie testu</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🎯 Rzetelność</div>
+    <a href="#S4">4 · Rzetelność i wynik prawdziwy (KTT)</a>
+    <a href="#S5">5 · Metody szacowania rzetelności</a>
+    <a href="#S6">6 · SEM i przedziały ufności</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🔍 Trafność</div>
+    <a href="#S7">7 · Rodzaje trafności</a>
+    <a href="#S8">8 · Metody badania trafności</a>
+    <a href="#S9">9 · Stronniczość, DIF, zniekształcenia</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📊 Normy i modele</div>
+    <a href="#S10">10 · Normalizacja i normy</a>
+    <a href="#S11">11 · KTT vs IRT · trudność i moc</a>
+    <a href="#S12">12 · Adaptacja kulturowa</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📐 Statystyka — co kiedy</div>
+    <a href="#S13">13 · Zmienne i skale pomiarowe</a>
+    <a href="#S14">14 · Statystyki opisowe</a>
+    <a href="#S15">15 · Który test wybrać</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📝 Egzamin</div>
+    <a href="#S16">16 · Klucz: realne pytania</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📚 Literatura</div>
+    <a href="#lit">Zestawienie</a>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="content">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="subject-icon">📏</div>
+    <div class="subject-tag">SWPS · Rok 4 · Semestr letni</div>
+    <h1>Zaawansowana psychometria</h1>
+    <div class="accent-line"></div>
+    <p class="subtitle">Konstruowanie narzędzi diagnostycznych: czym jest test psychologiczny, rzetelność (KTT, α Cronbacha, SEM, przedziały ufności), trafność i jej rodzaje, stronniczość i DIF, normalizacja (steny, staniny, IQ), modele KTT vs IRT — plus pojęciowa powtórka statystyki (wariancja, korelacje, testy t-Studenta) i klucz realnych pytań egzaminacyjnych.</p>
+  </div>
+
+  <!-- INFO -->
+  <div class="exam-strip" id="info">
+    <div class="exam-badge hi">
+      <div class="label">Egzamin</div>
+      <div class="value">Test jednokrotnego wyboru · 50 pkt</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Wykładowca</div>
+      <div class="value">dr Radosław Wujcik</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Zaliczenie</div>
+      <div class="value">≥ 51% (każda forma ≥ 50%)</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Podręcznik</div>
+      <div class="value">Hornowska (2018)</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ci">ℹ️</span><div>Notatka powstała na podstawie <strong>prezentacji wykładowych</strong> (dr R. Wujcik), <strong>sylabusu</strong> oraz <strong>prezentacji „Analiza statystyczna"</strong> (dr A. Skruczaj-Olejnik) — w części statystycznej skupiamy się na <strong>pojęciach i decyzji „co kiedy stosować"</strong>, nie na obsłudze SPSS. Sekcja 16 zawiera <strong>realne pytania z egzaminu (II termin 2024)</strong> z poprawnymi odpowiedziami.</div>
+  </div>
+
+  <!-- ══════════ BLOK PODSTAWY ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-fund">🧱 Podstawy — czym jest pomiar psychologiczny</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S1 -->
+  <section id="S1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-header-text">
+        <h2>Test psychologiczny i pomiar</h2>
+        <div class="src-tag">Źródło: <span>Wykład 1a/1b</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Psychometria i podejście do diagnozy</h3>
+      <p><strong>Psychometria</strong> to dyscyplina psychologii zajmująca się <span class="term">teorią testów</span>, ich <span class="term">opracowywaniem</span> i <span class="term">praktycznym wykorzystaniem</span>.</p>
+      <table class="ltable">
+        <tr><th>Podejście</th><th>Idiograficzne</th><th>Nomotetyczne</th></tr>
+        <tr><td><strong>Pytanie</strong></td><td>co specyficzne dla danej osoby</td><td>nasilenie cechy uniwersalnej dla populacji</td></tr>
+        <tr><td><strong>Charakter</strong></td><td>jakościowy, techniki swobodne</td><td>ilościowy, techniki standaryzowane</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>Diagnoza za pomocą <strong>testów psychologicznych ma charakter nomotetyczny</strong> (porównujemy osobę z grupą odniesienia).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Czym jest cecha?</h3>
+      <p><strong>Cecha</strong> = właściwość zachowania, która wykazuje <span class="term">międzyosobniczą zmienność</span> oraz <span class="term">wewnątrzosobniczą stałość</span> (międzysytuacyjną i czasową).</p>
+      <ul class="alist">
+        <li>Cechy mają status <strong>opisowy</strong> — to efekt względnej stałości zachowania w różnych sytuacjach</li>
+        <li>Cechy są pojęciami psychologicznymi — <strong>nie istnieją realnie</strong>, są to zmienne <span class="term">latentne (utajone)</span></li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Definicja testu psychologicznego</h3>
+      <p>Test to <strong>zbiór zadań/pytań</strong>, których wykonanie pozwala wnioskować o jakiejś właściwości psychologicznej. Test:</p>
+      <ul class="alist">
+        <li>ma jasno określoną <strong>procedurę badania</strong> — wykonywany w <span class="term">standardowych warunkach</span> (standaryzacja)</li>
+        <li>ma jasne reguły <strong>obliczania i interpretacji</strong> wyniku</li>
+        <li>dostarcza wyników <span class="term">trafnych</span> (wiemy co znaczą) i <span class="term">rzetelnych</span> (dokładnych) → <em>własności psychometryczne</em></li>
+        <li>posiada <strong>normy</strong> — wynik odnosimy do grupy odniesienia (test nie daje wyników bezwzględnych)</li>
+        <li>odwołuje się do <strong>teorii psychologicznej</strong> i jest wykonywany w ściśle określonym celu</li>
+      </ul>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>Test ≠ psychozabawa.</strong> Psychozabawa ma: niekontrolowane warunki, brak teorii, brak grup odniesienia, brak badań empirycznych, zwykle nieznanego autora.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Skąd wiemy, co mierzy test?</h3>
+      <ul class="alist">
+        <li><strong>Nazwa testu</strong> — tylko wstępna sugestia przedmiotu pomiaru, <span class="strata">niewystarczająca</span></li>
+        <li>Wyczerpująca informacja jest w <strong>podręczniku testowym</strong> (rozdział „Podstawy teoretyczne")</li>
+        <li>Zakres tego co mierzy test zależy od <strong>treści jego pozycji</strong> — nie kieruj się własnymi przekonaniami</li>
+        <li>Uważaj na <span class="strata">potoczne rozumienie</span> zmiennych i na <span class="strata">nadinterpretację</span> (wnioskowanie poza dane)</li>
+      </ul>
+      <div class="callout info"><span class="ci">💡</span><div>Przykład KKS: ta sama nazwa „kompetencje społeczne" może oznaczać różne definicje (autor testu vs Wikipedia). Zawsze sprawdź, jak twórca definiuje przedmiot pomiaru.</div></div>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section id="S2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-header-text">
+        <h2>Rodzaje testów · standaryzacja · etyka</h2>
+        <div class="src-tag">Źródło: <span>Wykład 1b, 2a, 2b</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Kryteria podziału testów</h3>
+      <table class="ltable">
+        <tr><th>Kryterium</th><th>Przykłady kategorii</th></tr>
+        <tr><td><strong>Osoby badane</strong></td><td>wiek (dzieci/młodzież/dorośli); cel (pacjenci, kandydaci, populacja ogólna)</td></tr>
+        <tr><td><strong>Przedmiot pomiaru</strong></td><td>inteligencja, funkcje poznawcze, osobowość, temperament, stres, zaburzenia, postawy, kompetencje</td></tr>
+        <tr><td><strong>Stopień obiektywizacji</strong></td><td>wykonaniowe, sytuacyjne, skale przymiotnikowe, kwestionariusze (obiektywne/subiektywne), projekcyjne</td></tr>
+        <tr><td><strong>Perspektywa</strong></td><td>samoopis, ocena przez rodzinę, ocena przez inną osobę (np. nauczyciel)</td></tr>
+        <tr><td><strong>Forma fizyczna</strong></td><td>papier-ołówek, elektroniczny, wykonaniowy z pomocami, komputerowy</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Standaryzacja</h3>
+      <p><strong>Standaryzacja</strong> = ujednolicony sposób posługiwania się testem. Cel: <span class="term">minimalizowanie wpływu czynników zakłócających</span> pomiar. Procedura badania jest nieodłącznym elementem testu.</p>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Zmiana procedury</strong> → nie wolno korzystać z norm ani odwoływać się do rzetelności/trafności z podręcznika (były szacowane przy standardowej procedurze).</div></div>
+      <h4>Ważne elementy standardowej procedury</h4>
+      <ul class="alist">
+        <li>warunki i czas badania (ograniczony/nieograniczony, przerwy)</li>
+        <li>możliwość powrotu do wcześniejszych pozycji; kolejność podtestów</li>
+        <li>materiały i pomoce; instrukcja dla osoby badanej; zakres dozwolonej pomocy</li>
+      </ul>
+      <p><strong>Obiektywność</strong> — obiektywne kryteria oceny odpowiedzi, by różni badający uzyskali <span class="term">identyczną ocenę</span> tych samych wyników.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Etyka stosowania testów</h3>
+      <p>Źródła: <em>Kodeks etyczno-zawodowy psychologa</em> (PTP, 2018) i <em>Wytyczne ITC</em> (2000).</p>
+      <table class="ltable">
+        <tr><th>Etap</th><th>Obowiązki badającego</th></tr>
+        <tr><td><strong>Przed</strong></td><td>dobór narzędzi; poinformowanie o celu/procedurze/wykorzystaniu/poufności; <span class="term">uzyskanie zgody</span>; zapewnienie warunków</td></tr>
+        <tr><td><strong>W trakcie</strong></td><td>przestrzeganie procedury; ochrona materiału przed kopiowaniem; minimalizowanie oszukiwania</td></tr>
+        <tr><td><strong>Po</strong></td><td>poprawne obliczenie i interpretacja; informacja zwrotna; właściwe przechowywanie materiału</td></tr>
+      </table>
+      <p><strong>Prawa osoby badanej:</strong> zadawania pytań, rezygnacji w dowolnym momencie, otrzymania informacji o wynikach.</p>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section id="S3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-header-text">
+        <h2>Konstruowanie testu</h2>
+        <div class="src-tag">Źródło: <span>Wykład 8</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Proces tworzenia testu — etapy</h3>
+      <ol class="nlist">
+        <li><strong>Zdefiniowanie i operacjonalizacja</strong> mierzonej właściwości</li>
+        <li>Określenie <strong>formatu bodźca i odpowiedzi</strong></li>
+        <li><strong>Generowanie pozycji</strong> (pula matka — optymalnie 200% normy)</li>
+        <li>Analiza <strong>treściowa i językowa</strong> pozycji</li>
+        <li>Ustalenie <strong>klucza odpowiedzi</strong></li>
+        <li><strong>Badania pilotażowe</strong> (5–10 osób na pozycję)</li>
+        <li>Analiza <strong>własności pozycji</strong> (itemmetria)</li>
+        <li>Zbudowanie ostatecznej wersji</li>
+        <li>Ocena <strong>własności psychometrycznych</strong> (rzetelność, trafność)</li>
+        <li>Opracowanie <strong>norm</strong></li>
+      </ol>
+    </div>
+
+    <div class="lcard">
+      <h3>Operacjonalizacja — kluczowe pojęcie egzaminacyjne</h3>
+      <p><strong>Zdefiniowanie właściwości i operacjonalizacja</strong> obejmuje:</p>
+      <ul class="alist">
+        <li>określenie <strong>przedmiotu pomiaru</strong> (jaką cechę)</li>
+        <li>opracowanie <strong>modelu teoretycznego</strong> (wybór teorii)</li>
+        <li>określenie <strong>obszaru zastosowania</strong></li>
+        <li>określenie <strong>grup docelowych</strong></li>
+        <li><span class="term">określenie zachowania identyfikowanego z mierzonym konstruktem</span> ← to jest istota operacjonalizacji</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div>„Operacjonalizacja mierzonej właściwości jest związana z…" → <strong>określeniem zachowania identyfikowanego z mierzonym konstruktem</strong>.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Itemmetria — własności pojedynczej pozycji</h3>
+      <p>Z badań pilotażowych oceniamy każdą pozycję pod kątem:</p>
+      <ul class="alist">
+        <li><strong>Trudność</strong> — jaki odsetek osób odpowiada poprawnie</li>
+        <li><strong>Moc dyskryminacyjna</strong> — jak dobrze pozycja różnicuje osoby o niskim i wysokim nasileniu cechy</li>
+        <li><strong>Trafność</strong> — związek pozycji z mierzonym konstruktem</li>
+        <li><strong>Stronniczość (DIF)</strong> — czy nie faworyzuje grup</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK RZETELNOŚĆ ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">🎯 Rzetelność</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S4 -->
+  <section id="S4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-header-text">
+        <h2>Rzetelność i wynik prawdziwy (KTT)</h2>
+        <div class="src-tag">Źródło: <span>Wykład 3</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Definicja rzetelności</h3>
+      <p><strong>Rzetelność</strong> = cecha testu oznaczająca <span class="term">powtarzalność pomiaru</span> oraz <span class="term">precyzję (dokładność)</span>, z jaką mierzymy danym narzędziem. Jedno z podstawowych kryteriów jakości testu.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Klasyczna teoria testu (Gulliksen 1951) — teoria wyniku prawdziwego</h3>
+      <div class="formula">X<sub>x</sub> = X<sub>t</sub> + X<sub>e</sub><small>wynik otrzymany = wynik prawdziwy + błąd pomiaru</small></div>
+      <p>Wynik otrzymany to <strong>niedoskonała realizacja</strong> wyniku prawdziwego. Założenia o losowym charakterze błędu:</p>
+      <ol class="nlist">
+        <li>wartość oczekiwana (średnia) błędu pomiaru = <strong>0</strong></li>
+        <li>wynik prawdziwy jest <strong>nieskorelowany</strong> z błędem pomiaru</li>
+        <li>błędy pomiarów są <strong>nieskorelowane</strong> między sobą</li>
+      </ol>
+      <h4>Konsekwencje dla parametrów</h4>
+      <ul class="alist">
+        <li><strong>Średnia:</strong> M = M<sub>t</sub> (średnia wyników otrzymanych = średnia wyników prawdziwych)</li>
+        <li><strong>Wariancja:</strong> S<sub>x</sub> = S<sub>t</sub> + S<sub>e</sub> — wariancja wyników otrzymanych jest <span class="term">zawsze większa</span> od wariancji prawdziwych (powiększona o błąd). To wariancja jest parametrem obciążonym przez błąd.</li>
+      </ul>
+      <div class="callout info"><span class="ci">🔗</span><div><strong>Korelacja jako miara rzetelności:</strong> im wariancja wyników otrzymanych mniej bazuje na błędzie, tym silniejsza korelacja wyniku otrzymanego z prawdziwym → siła tej korelacji jest oszacowaniem rzetelności.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Powtórka: korelacja</h3>
+      <ul class="alist">
+        <li>wskazuje na <strong>związek dwóch cech ilościowych</strong> — kierunek i siłę</li>
+        <li>współczynnik <strong>r</strong> (lub rho) przyjmuje wartości od <strong>−1 do +1</strong></li>
+        <li>dodatnia: wysokim wartościom A towarzyszą wysokie B; ujemna: wysokim A — niskie B</li>
+      </ul>
+      <table class="ltable">
+        <tr><th>|r|</th><th>Siła zależności</th></tr>
+        <tr><td>0 – 0,2</td><td>brak zależności</td></tr>
+        <tr><td>0,2 – 0,4</td><td>słaba</td></tr>
+        <tr><td>0,4 – 0,6</td><td>umiarkowana</td></tr>
+        <tr><td>0,6 – 0,9</td><td>silna</td></tr>
+        <tr><td>0,9 – 1</td><td>bardzo silna</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section id="S5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-header-text">
+        <h2>Metody szacowania rzetelności</h2>
+        <div class="src-tag">Źródło: <span>Wykład 3</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Cztery metody (KTT)</h3>
+      <table class="ltable">
+        <tr><th>Metoda</th><th>Na czym polega</th><th>Wada / ograniczenie</th></tr>
+        <tr><td><strong>Stabilność bezwzględna</strong><br>(test–retest)</td><td>DWUKROTNE badanie JEDNEJ grupy tym samym testem w odstępie czasu; wskaźnik = korelacja obu badań</td><td>wpływ uczenia się; realne zmiany cechy; tylko dla cech względnie stałych</td></tr>
+        <tr><td><strong>Testy równoległe</strong></td><td>porównanie dwóch równoległych wersji w tej samej grupie, w jednej sesji</td><td>nigdy nie ma pewności pełnej równoległości; większość testów ma 1 wersję</td></tr>
+        <tr><td><strong>Metoda połówkowa</strong></td><td>podział na 2 równoważne połowy (np. pozycje parzyste/nieparzyste); korelacja połówek</td><td>nie ma pewności, czy podział był właściwy</td></tr>
+        <tr><td><strong>Zgodność wewnętrzna</strong></td><td>ocena bez dzielenia testu — <span class="term">α Cronbacha</span></td><td>wymaga homogeniczności skali</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Metoda połówkowa wymaga</strong> podziału testu na dwie połowy <strong>NIE różniące się trudnością</strong> (równoważne).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Współczynnik α (alfa) Cronbacha (1951)</h3>
+      <ul class="alist">
+        <li>najpopularniejszy współczynnik <strong>zgodności wewnętrznej</strong></li>
+        <li>można traktować jako <strong>średnią ze wszystkich możliwych korelacji połówkowych</strong></li>
+        <li>opisuje <span class="term">stopień, w jakim wszystkie pozycje mierzą tę samą cechę</span></li>
+        <li>przyjmuje wartości od <strong>0 do 1</strong></li>
+      </ul>
+      <table class="ltable">
+        <tr><th>α</th><th>Interpretacja</th></tr>
+        <tr><td>0 – 0,7</td><td>niska rzetelność — test bezużyteczny do diagnozy indywidualnej</td></tr>
+        <tr><td>0,7 – 0,9</td><td>umiarkowanie wysoka — użyteczny w diagnozie indywidualnej</td></tr>
+        <tr><td>0,9 – 1</td><td>bardzo wysoka — precyzyjne wyniki diagnostyczne</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>α Cronbacha „<strong>pozwala ocenić, na ile odpowiedzi na pozycje testowe są determinowane nasileniem jednej cechy</strong>". <span class="strata">NIE</span> oblicza się jej metodą test-retest. Im wyższa α → tym <strong>mniejszy błąd pomiaru</strong> (np. skala α=0,94 ma mniejszy błąd niż α=0,84).</div></div>
+      <p><strong>Współczynnik determinacji</strong> (rzetelność jako kwadrat korelacji wynik otrzymany–prawdziwy): α=0,9 → 81%; α=0,8 → 64%; α=0,7 → 49%.</p>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Alternatywy: <strong>omega McDonalda</strong>, współczynnik Sijtsmy i Molenaara (dobry dla zadań mocno różniących się trudnością). W IRT odpowiednikiem jest <strong>funkcja informacyjna</strong>.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Co wpływa na rzetelność</h3>
+      <ul class="alist">
+        <li><strong>jakość pytań</strong></li>
+        <li><strong>długość testu</strong> (dłuższy = zwykle rzetelniejszy)</li>
+        <li><strong>jednorodność (homogeniczność) mierzonej zmiennej</strong></li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div>„Na rzetelność testu wpływa…" → <strong>wszystkie odpowiedzi są poprawne</strong> (jakość pytań + długość + jednorodność).</div></div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section id="S6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-header-text">
+        <h2>SEM i przedziały ufności</h2>
+        <div class="src-tag">Źródło: <span>Wykład 3 (cz. 2)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Standardowy błąd pomiaru (SEM)</h3>
+      <p><strong>SEM</strong> (standard error of measurement) = <span class="term">odchylenie standardowe rozkładu błędów pomiaru wokół wyniku prawdziwego</span>. To górna granica błędu, jaki stosunkowo często (68%) popełniamy testem o danej rzetelności i wariancji.</p>
+      <div class="callout exam"><span class="ci">🎯</span><div>SEM = <strong>odchylenie standardowe rozkładu błędów pomiaru wokół wyniku prawdziwego</strong>. To NIE jest korelacja Pearsona ani SEE.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Przedział ufności (PU) i półprzedział</h3>
+      <p>SEM odpowiada <strong>68%</strong> pewności. Aby zwiększyć poziom ufności, poszerzamy przedział za pomocą <strong>półprzedziału ufności</strong>.</p>
+      <div class="formula">PU = WynikOtrzymany ± półprzedział<small>np. wynik 117, półprzedział(85%)=7 → PU = (110; 124)</small></div>
+      <table class="ltable">
+        <tr><th>Poziom ufności</th><th>Półprzedział</th><th>Szerokość PU</th></tr>
+        <tr><td>85%</td><td>7</td><td>najwęższy</td></tr>
+        <tr><td>90%</td><td>8</td><td>średni</td></tr>
+        <tr><td>95%</td><td>9</td><td>najszerszy</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Im wyższy poziom ufności → tym szerszy przedział.</strong> Aby <strong>zmniejszyć szerokość przedziału</strong> (gdy nie możemy zmienić własności testu) → <strong>zmniejszyć poziom ufności</strong> (np. z 95% do 85%).</div></div>
+      <div class="callout exam"><span class="ci">🎯</span><div>Przykład: wynik <strong>9 stenów</strong>, półprzedział = 2 → wynik prawdziwy zawiera się <strong>w przedziale od 7 do 11 stena</strong> (9±2) z prawdopodobieństwem równym przyjętemu poziomowi ufności.</div></div>
+      <div class="callout info"><span class="ci">ℹ️</span><div>PU odnosi się do kontroli błędów <strong>w perspektywie długoterminowej</strong>, a nie do pojedynczego badania. Wartości półprzedziałów zaokrąglamy w górę do liczby całkowitej.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>SEE i estymowany wynik prawdziwy</h3>
+      <p><strong>SEE</strong> (standard error of estimate, Lord i Novick) — inne rozumienie błędu, którego wielkość <span class="term">zależy od wyniku prawdziwego</span>. Buduje przedział wokół <strong>estymowanego wyniku prawdziwego</strong>; jest symetryczny wokół wyniku prawdziwego, a skośny dla wyników skrajnych.</p>
+      <div class="formula">EWP = WynikOtrzymany × R<sub>tt</sub> + Średnia × (1 − R<sub>tt</sub>)<small>np. 80×0,8 + 100×0,2 = 84 (wynik „ściągany" w stronę średniej)</small></div>
+      <p>SEE lepiej oddaje rzeczywisty wynik, ale korzyści są małe — w praktyce stosuje się prostszy <strong>SEM</strong>.</p>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK TRAFNOŚĆ ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">🔍 Trafność</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S7 -->
+  <section id="S7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-header-text">
+        <h2>Rodzaje trafności</h2>
+        <div class="src-tag">Źródło: <span>Wykład 5/6</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Czym jest trafność?</h3>
+      <p><strong>Trafność</strong> = <span class="term">czy test mierzy to, co miał mierzyć?</span> Zakres, w jakim wynik rzeczywiście odzwierciedla cechę, którą ma mierzyć.</p>
+      <p>Trafność <strong>nie jest pojęciem jednorodnym</strong>. Tradycyjnie wyróżnia się 3 rodzaje, ale współcześnie traktuje się je jako <strong>trzy aspekty tej samej trafności</strong> (nie analizujemy ich niezależnie).</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Trzy rodzaje trafności</h3>
+      <table class="ltable">
+        <tr><th>Rodzaj</th><th>Pytanie / istota</th><th>Jak badamy</th></tr>
+        <tr><td><strong>Treściowa</strong></td><td>czy treść testu to reprezentatywna próbka mierzonej dziedziny („odpowiedniość i kompletność treści")</td><td>sędziowie kompetentni, na etapie doboru pozycji</td></tr>
+        <tr><td><strong>Kryterialna</strong></td><td>związek wyników z zewnętrzną zmienną (kryterium) ważną w praktyce</td><td>korelacja z kryterium; <strong>diagnostyczna</strong> (stan obecny) lub <strong>prognostyczna</strong> (przyszłość)</td></tr>
+        <tr><td><strong>Teoretyczna</strong></td><td>stopień, w jakim test reprezentuje konstrukt, do pomiaru którego powstał</td><td>analiza czynnikowa, korelacja z innymi testami, różnice międzygrupowe</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div><strong>Trafność kryterialna</strong> mówi o adekwatności <em>sposobu wykorzystania</em> testu; <strong>teoretyczna</strong> — o adekwatności wobec <em>mierzonego zjawiska</em>.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Przykłady kryterium</h3>
+      <ul class="alist">
+        <li>diagnoza choroby u pacjenta (test → przewidywanie obecności choroby)</li>
+        <li>średnia ocen szkolnych (kryterium dla testów inteligencji u dzieci)</li>
+        <li><strong>ADHD:</strong> osoby słabo radzące sobie z zadaniami wymagającymi wysokiej sprawności uwagi uzyskują wyższe wyniki w teście ADHD → argument za trafnością kryterialną</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section id="S8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-header-text">
+        <h2>Metody badania trafności</h2>
+        <div class="src-tag">Źródło: <span>Wykład 5/6</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Pięć głównych metod</h3>
+      <ol class="nlist">
+        <li>ocena, czy pozycje odzwierciedlają <strong>całe spektrum cechy</strong> (sędziowie kompetentni)</li>
+        <li>analiza związku z <strong>innymi testami</strong> → trafność zbieżna i różnicowa</li>
+        <li>analiza związku z <strong>zewnętrznym kryterium</strong> → trafność diagnostyczna i prognostyczna</li>
+        <li>analiza <strong>różnic międzygrupowych</strong> w zakresie cechy</li>
+        <li><strong>analiza czynnikowa</strong> — czy pytania o tej samej cesze tworzą wspólne wymiary</li>
+      </ol>
+    </div>
+
+    <div class="lcard">
+      <h3>Trafność zbieżna vs różnicowa</h3>
+      <div class="two-col">
+        <div>
+          <span class="pill pill-g">ZBIEŻNA</span>
+          <p style="margin-top:.5rem;font-size:.85rem;">oczekujemy <strong>związku</strong> wyników z innymi testami mierzącymi <strong>tę samą cechę</strong></p>
+        </div>
+        <div>
+          <span class="pill pill-b">RÓŻNICOWA</span>
+          <p style="margin-top:.5rem;font-size:.85rem;">oczekujemy <strong>braku związku</strong> z testami mierzącymi <strong>inne cechy</strong></p>
+        </div>
+      </div>
+      <div class="callout exam"><span class="ci">🎯</span><div>Nowy kwestionariusz inteligencji — aby oszacować trafność, przede wszystkim <strong>obliczyć korelacje jego wyników z wynikami innych uznanych testów inteligencji</strong> (a nie liczyć α — to rzetelność!).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Analiza czynnikowa — interpretacja</h3>
+      <p>Analiza czynnikowa szuka <strong>zmiennych nieobserwowalnych (latentnych)</strong>, które wyjaśniają odpowiedzi na zadania.</p>
+      <div class="callout exam"><span class="ci">🎯</span><div>„Analiza czynnikowa wykazała 5 czynników" → oznacza, że <strong>pięć zmiennych nieobserwowalnych najlepiej wyjaśnia odpowiedzi na zadania w teście</strong> (NIE: kwestionariusz ma 5 zadań / jest nierzetelny).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Istotność statystyczna — przypomnienie</h3>
+      <ul class="alist">
+        <li><strong>p &lt; 0,05</strong> → wynik istotny statystycznie → w populacji zachodzi związek</li>
+        <li><strong>p &gt; 0,05</strong> → wynik nieistotny → brak podstaw do stwierdzenia związku</li>
+        <li>oznaczenia: * p&lt;0,05; ** p&lt;0,01; *** p&lt;0,001; „n.i." = nieistotne</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section id="S9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-header-text">
+        <h2>Stronniczość, DIF, zniekształcenia</h2>
+        <div class="src-tag">Źródło: <span>Wykład 5/6, 8</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Stronniczość (tendencyjność) testu</h3>
+      <p><strong>Stronniczość w psychometrii</strong> = <span class="term">błąd systematyczny</span> związany z wynikami osób z konkretnej podgrupy (rasy, klasy, narodowości, płci, wieku).</p>
+      <div class="callout warn"><span class="ci">⚠️</span><div>To NIE ma nic wspólnego z uczciwością/uprzedzeniami w sensie potocznym. Stronniczość obniża <strong>trafność</strong> (gł. teoretyczną); zupełnie <strong>nie wiąże się z błędami losowymi</strong>.</div></div>
+      <h4>Źródła stronniczości</h4>
+      <ul class="alist">
+        <li>niewłaściwa <strong>treść</strong> (język, wiedza, wartości obce grupie)</li>
+        <li>pomiar <strong>różnych charakterystyk</strong> w różnych grupach</li>
+        <li><strong>język</strong> testu (badanie w obcym języku → niższe wyniki)</li>
+        <li>niewłaściwa <strong>próba standaryzacyjna</strong> (brak reprezentacji grup)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>DIF — zróżnicowane funkcjonowanie pozycji</h3>
+      <p><strong>DIF</strong> (differential item functioning) = stronniczość pojedynczej pozycji wobec grupy. Występuje, gdy <span class="term">osoby z różnych grup, ale o tym samym poziomie cechy mierzonej, udzielają różnych odpowiedzi</span> na daną pozycję.</p>
+      <div class="callout exam"><span class="ci">🎯</span><div>DIF mamy gdy: <strong>osoby różniące się pochodzeniem etnicznym, przy TAKIM SAMYM nasileniu mierzonej cechy, udzielają różnych odpowiedzi.</strong> (Gdy różnią się też nasileniem cechy — to NIE DIF, tylko zwykła różnica międzygrupowa.)</div></div>
+      <ul class="alist">
+        <li><strong>DIF jednorodny</strong> — pozycja ma w grupach różną <em>trudność</em></li>
+        <li><strong>DIF niejednorodny</strong> — różni się dodatkowo <em>mocą dyskryminacyjną</em> (efekt interakcyjny)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Zniekształcenia wyników testowych</h3>
+      <ul class="alist">
+        <li><strong>Zgadywanie</strong> — kontrola przez instrukcję lub korekta statystyczna</li>
+        <li><strong>Style odpowiadania</strong> — zgadzanie się/zaprzeczanie, odpowiedzi skrajne/centralne, impulsywne</li>
+        <li><strong>Tendencyjne odpowiadanie</strong> — aprobata społeczna, symulowanie / dysymulowanie</li>
+      </ul>
+      <div class="formula">PK = P − B/(m−1)<small>korekta na zgadywanie: P=poprawne, B=błędne, m=liczba wariantów; np. 40 − 20/(6−1) = 36</small></div>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK NORMY I MODELE ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">📊 Normy i modele wyniku</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S10 -->
+  <section id="S10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-header-text">
+        <h2>Normalizacja i normy</h2>
+        <div class="src-tag">Źródło: <span>Wykład 7</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Powtórka: średnia, odchylenie, rozkład normalny</h3>
+      <ul class="alist">
+        <li><strong>Średnia (M)</strong> — wynik, jaki przeciętnie uzyskiwały osoby z grupy</li>
+        <li><strong>Odchylenie standardowe (SD)</strong> — jak bardzo wyniki odbiegają od średniej (gdy wszystkie równe → SD=0)</li>
+        <li><strong>Rozkład normalny</strong> — symetryczny, kształt dzwonu; wyników przeciętnych najwięcej, skrajnych najmniej; M = Me = Mo</li>
+        <li>reguła <strong>68 – 95 – 99,7</strong>: ±1 SD ≈ 68%, ±2 SD ≈ 95%, ±3 SD ≈ 99,7%</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Normy = grupy odniesienia (skale wyniku standardowego)</h3>
+      <p>Wynik surowy <span class="strata">sam w sobie nic nie znaczy</span> — zamieniamy go na wynik przeliczony wg tabeli norm.</p>
+      <table class="ltable">
+        <tr><th>Skala</th><th>Zakres</th><th>M</th><th>SD</th></tr>
+        <tr><td><strong>Steny</strong></td><td>1–10</td><td>5,5</td><td>2</td></tr>
+        <tr><td><strong>Staniny</strong></td><td>1–9</td><td>5</td><td>2</td></tr>
+        <tr><td><strong>Teny (tetrony)</strong></td><td>1–100</td><td>50</td><td>10</td></tr>
+        <tr><td><strong>IQ</strong></td><td>∞ (nieograniczona)</td><td>100</td><td>15</td></tr>
+      </table>
+      <p>Wyniki <strong>przeciętne</strong> = przedział (M − 1SD; M + 1SD). Np. staniny: 3–7; IQ wysokie: powyżej 115 (100+15).</p>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Normy</strong> = zewnętrzny układ odniesienia dla wyników, wyznaczony przez reprezentatywną dla populacji próbę.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Skala centylowa</h3>
+      <p><strong>Centyl</strong> mówi, jaki % osób uzyskał wynik niższy lub równy. Np. <strong>50 centyl</strong> = 50% osób uzyskało wynik niższy/równy; <strong>10 centyl</strong> = tylko 10% niżej, 90% wyżej.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Badania normalizacyjne</h3>
+      <p>Zwracaj uwagę, dla jakich grup stworzono normy: <strong>kraj, wiek, płeć, wykształcenie, miejsce zamieszkania, rok norm</strong>.</p>
+      <div class="callout exam"><span class="ci">🎯</span><div>24-latek porównany z normami <strong>bez podziału na płeć</strong> dla osób <strong>18–79 lat</strong> → możemy określić, jak wypada na tle <strong>populacji wszystkich osób dorosłych</strong> (nie tylko 24-latków, nie tylko mężczyzn).</div></div>
+      <p><strong>Normalizacja ciągła</strong> — zalety: eliminacja błędów próby i większa precyzja norm (więcej węższych grup wieku zamiast kilku szerokich).</p>
+    </div>
+  </section>
+
+  <!-- S11 -->
+  <section id="S11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div class="section-header-text">
+        <h2>KTT vs IRT · trudność i moc dyskryminacyjna</h2>
+        <div class="src-tag">Źródło: <span>Wykład 8</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Dwa modele wyniku testowego</h3>
+      <table class="ltable">
+        <tr><th></th><th>KTT (klasyczna)</th><th>IRT (odpowiadania na pozycje)</th></tr>
+        <tr><td><strong>Inaczej</strong></td><td>teoria wyniku prawdziwego / losowego doboru próby</td><td>teoria probabilistyczna (ewolucja KTT)</td></tr>
+        <tr><td><strong>Wynik = </strong></td><td>nasilenie cechy + błąd pomiaru</td><td>prawdopodobieństwo odpowiedzi zależne od nasilenia cechy</td></tr>
+        <tr><td><strong>Parametry</strong></td><td>zależą od próby normalizacyjnej</td><td><span class="term">niezależne</span> od próby normalizacyjnej</td></tr>
+        <tr><td><strong>Błąd pomiaru</strong></td><td>stały, niezależny od poziomu cechy</td><td>zależny od nasilenia cechy (funkcja informacyjna)</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Założenia modeli</h3>
+      <p><strong>KTT:</strong> jednorodność (homogeniczność) konstruktu i skali · lokalna niezależność pozycji · monotoniczna funkcja odpowiedzi · <span class="term">równoważność pozycji</span> (założenie dla α Cronbacha).</p>
+      <p><strong>IRT</strong> dodatkowo zakłada niezależność od próby — dlatego umożliwia <strong>testy adaptatywne</strong>:</p>
+      <ul class="alist">
+        <li>niezależność norm od wyników w próbie normalizacyjnej</li>
+        <li><strong>niezależność właściwości pozycji od wyników w próbie</strong>, na której opracowano test</li>
+        <li>niezależność właściwości testu od zestawu pozycji</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>IRT umożliwia testy adaptatywne, bo zakłada, że właściwości pozycji są NIEZALEŻNE od wyników w próbie, na której opracowano test.</strong><br>Uwaga: „niezależność norm od wyników w próbie normalizacyjnej" to założenie IRT — więc <strong>NIE jest założeniem KTT</strong>.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Trudność i moc dyskryminacyjna pozycji</h3>
+      <table class="ltable">
+        <tr><th></th><th>W KTT</th><th>W IRT</th></tr>
+        <tr><td><strong>Trudność</strong></td><td>odsetek osób z poprawną odpowiedzią (0–1); <span class="uwaga">im wyższa liczba, tym ŁATWIEJSZE zadanie</span></td><td>parametr na skali nasilenia cechy; <span class="uwaga">im niższy/bardziej ujemny, tym ŁATWIEJSZE</span></td></tr>
+        <tr><td><strong>Moc dyskryminacyjna</strong></td><td colspan="2">jak dobrze pozycja różnicuje osoby o niskim/wysokim nasileniu cechy</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>Współczynnik trudności <strong>IRT</strong>: na pytanie o wartości <strong>−0,88</strong> poprawnie odpowiada <strong>najwięcej osób</strong> (im niższy/bardziej ujemny parametr, tym łatwiejsze zadanie).</div></div>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Model 2-parametryczny IRT</strong> szacuje: <strong>trudność i moc dyskryminacyjną</strong>. (Model 3-parametryczny dodaje zgadywanie.)</div></div>
+      <div class="callout exam"><span class="ci">🎯</span><div>Najwyższą moc dyskryminacyjną mają zwykle <strong>pozycje o umiarkowanej trudności</strong>. W teście o normalnym rozkładzie wyników surowych dominują <strong>pytania o umiarkowanej trudności</strong>. Konstruując test inteligencji dla populacji ogólnej, należy <strong>uwzględnić pozycje o zróżnicowanej trudności</strong> (łatwe, przeciętne i trudne).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Rozkład wyników a trudność testu</h3>
+      <table class="ltable">
+        <tr><th>Sytuacja</th><th>Rozkład</th></tr>
+        <tr><td>test <strong>zbyt trudny</strong> dla grupy (dużo niskich wyników)</td><td><span class="term">prawoskośny</span> (dodatnio skośny, ogon w prawo)</td></tr>
+        <tr><td>test <strong>zbyt łatwy</strong> (dużo wysokich wyników)</td><td>lewoskośny (ujemnie skośny)</td></tr>
+        <tr><td>test dobrze dobrany</td><td>normalny (dzwon)</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>Test <strong>zbyt trudny</strong> dla grupy → rozkład wyników <strong>prawoskośny</strong>.</div></div>
+    </div>
+  </section>
+
+  <!-- S12 -->
+  <section id="S12">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div class="section-header-text">
+        <h2>Adaptacja kulturowa · walidacja krzyżowa</h2>
+        <div class="src-tag">Źródło: <span>Wykład 8</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Adaptacja kulturowa testu — etapy</h3>
+      <ol class="nlist">
+        <li>umowa z wydawcą wersji oryginalnej</li>
+        <li>tłumaczenie lub opracowanie odpowiedników</li>
+        <li><strong>tłumaczenie zwrotne</strong> i zatwierdzenie treści</li>
+        <li>badania pilotażowe → analiza pozycji → ostateczna wersja → ocena własności → normy</li>
+      </ol>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>FAŁSZYWE</strong> założenie adaptacji kulturowej: „Ta sama cecha ma <em>zawsze</em> takie same przejawy w każdej kulturze". <br>PRAWDA: <strong>ta sama cecha może mieć w różnych kulturach różne przejawy</strong> — te same zachowania/preferencje mogą być przejawem różnych cech.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Walidacja krzyżowa</h3>
+      <p><strong>Walidacja krzyżowa</strong> = ponowne badanie testem <span class="term">innej grupy osób</span> i <span class="term">ocena parametrów testu w nowej grupie</span> (sprawdzenie, czy własności się utrzymują).</p>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Na egzaminie w pytaniu o walidację krzyżową pojawił się <strong>żartobliwy dystraktor</strong> „badanie obrazowe dolnego odcinka kręgosłupa" (zaznaczony jako klucz dla żartu). Merytorycznie poprawna odpowiedź to <strong>„ocena parametrów testu w nowej grupie"</strong> — zapamiętaj tę definicję.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>EXAT — przykład testu opartego na IRT</h3>
+      <p><strong>EXAT</strong> — komputerowy, <strong>adaptatywny</strong> test do diagnozy ADHD (dzieci/młodzież 7–18 lat). Każda pozycja opisana parametrami IRT; test dobiera zadania na bieżąco. Mierzy m.in. uwagę, hamowanie reakcji, pamięć operacyjną, kontrolę poznawczą. Ilustruje praktyczne zastosowanie IRT i testów adaptatywnych.</p>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK STATYSTYKA ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-stat">📐 Statystyka — co kiedy stosować</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <div class="callout tip">
+    <span class="ci">📐</span><div>Ten blok to <strong>pojęciowa</strong> powtórka z metodologii/statystyki (prezentacje dr Skruczaj-Olejnik) — pokrewnego przedmiotu o SPSS. Skupiamy się na <strong>tym, czego używać i kiedy</strong>, bez instrukcji klikania w programie.</div>
+  </div>
+
+  <!-- S13 -->
+  <section id="S13">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <div class="section-header-text">
+        <h2>Zmienne i skale pomiarowe</h2>
+        <div class="src-tag">Źródło: <span>Prezentacja 1</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Rodzaje zmiennych</h3>
+      <ul class="alist">
+        <li><strong>Zależna</strong> (wyjaśniana) — jej zmienność wyjaśniamy; <strong>niezależna</strong> (wyjaśniająca) — wyjaśnia tę zmienność</li>
+        <li><strong>Jakościowa</strong> — opisywana nazwami (płeć, kolor oczu); <strong>ilościowa</strong> — wartości liczbowe (wiek, wynik testu)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Cztery skale pomiarowe — fundament doboru testu statystycznego</h3>
+      <table class="ltable">
+        <tr><th>Skala</th><th>Typ</th><th>Co umożliwia</th><th>Przykład</th></tr>
+        <tr><td><strong>Nominalna</strong></td><td>jakościowa</td><td>tylko klasyfikacja (=, ≠)</td><td>płeć, kolor oczu</td></tr>
+        <tr><td><strong>Porządkowa</strong> (rangowa)</td><td>jakościowa</td><td>klasyfikacja + porządkowanie (&lt;, &gt;), ale nie „o ile"</td><td>wykształcenie, waga: chudy/norma/gruby</td></tr>
+        <tr><td><strong>Przedziałowa</strong> (interwałowa)</td><td>ilościowa</td><td>równe jednostki, różnice; <span class="uwaga">brak zera bezwzględnego</span> (wartości ujemne)</td><td>temperatura °C</td></tr>
+        <tr><td><strong>Stosunkowa</strong> (ilorazowa)</td><td>ilościowa</td><td>wszystko + <span class="term">zero absolutne</span> → „ile razy"</td><td>wzrost, wiek, czas</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">💡</span><div>Poziom pomiaru = <strong>najważniejsze kryterium</strong> doboru testu statystycznego. Skale ilościowe → testy parametryczne; porządkowe/nominalne → nieparametryczne.</div></div>
+    </div>
+  </section>
+
+  <!-- S14 -->
+  <section id="S14">
+    <div class="section-header">
+      <div class="section-num">14</div>
+      <div class="section-header-text">
+        <h2>Statystyki opisowe</h2>
+        <div class="src-tag">Źródło: <span>Prezentacja 1</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Trzy grupy statystyk opisowych</h3>
+      <table class="ltable">
+        <tr><th>Grupa</th><th>Miary</th></tr>
+        <tr><td><strong>Tendencji centralnej</strong></td><td>średnia (M), mediana (Me), modalna/dominanta (Mo)</td></tr>
+        <tr><td><strong>Rozproszenia</strong></td><td><span class="term">wariancja</span>, odchylenie standardowe (SD), rozstęp (R)</td></tr>
+        <tr><td><strong>Symetrii rozkładu</strong></td><td>skośność, kurtoza</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Tendencja centralna</h3>
+      <ul class="alist">
+        <li><strong>Średnia (M)</strong> — suma wartości / N; dla skal przedziałowych i ilorazowych; podstawa wnioskowania</li>
+        <li><strong>Mediana (Me)</strong> — wartość środkowa (50% poniżej); dla skal ≥ porządkowych; miejsce = (N+1)/2; przy parzystym N — średnia dwóch środkowych</li>
+        <li><strong>Modalna (Mo)</strong> — wartość najczęstsza; może być wielomodalna lub żadna (rozkład prostokątny)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Rozproszenie — wariancja i SD</h3>
+      <p><strong>Rozstęp (R)</strong> = max − min (najprostszy, mało precyzyjny).</p>
+      <p><strong>Wariancja</strong> = miara rozproszenia wokół średniej = suma kwadratów odchyleń od średniej / (N−1).</p>
+      <div class="formula">Wariancja = Σ(x − M)² / (N − 1)<small>np. dla 1,3,5,5,11 (M=5): [16+4+0+0+36]/4 = 14</small></div>
+      <p><strong>Odchylenie standardowe (SD)</strong> = <span class="term">pierwiastek z wariancji</span> (√14 ≈ 3,74). Im większe, tym dane bardziej rozproszone.</p>
+      <div class="callout tip"><span class="ci">🔗</span><div>Wariancja wraca w psychometrii: S<sub>x</sub> = S<sub>t</sub> + S<sub>e</sub> (rozdz. 4) oraz przy testach t — chcemy <strong>małej wariancji wewnątrzgrupowej</strong> i <strong>dużej międzygrupowej</strong>.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Symetria rozkładu — skośność i kurtoza</h3>
+      <table class="ltable">
+        <tr><th>Miara</th><th>&gt; 0</th><th>= 0</th><th>&lt; 0</th></tr>
+        <tr><td><strong>Skośność</strong></td><td>prawoskośny (M&gt;Me&gt;Mo)</td><td>normalny</td><td>lewoskośny (M&lt;Me&lt;Mo)</td></tr>
+        <tr><td><strong>Kurtoza</strong></td><td>leptokurtyczny (smukły, skupiony)</td><td>normalny</td><td>platokurtyczny (spłaszczony, rozproszony)</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- S15 -->
+  <section id="S15">
+    <div class="section-header">
+      <div class="section-num">15</div>
+      <div class="section-header-text">
+        <h2>Który test wybrać — tabela decyzyjna</h2>
+        <div class="src-tag">Źródło: <span>Prezentacje 3, 4, 5</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🧭 Co kiedy stosować — ściąga</h3>
+      <table class="ltable">
+        <tr><th>Cel analizy</th><th>Test parametryczny</th><th>Odpowiednik nieparametryczny</th></tr>
+        <tr><td>związek 2 zmiennych <strong>ilościowych</strong></td><td><strong>r Pearsona</strong> (rozkład normalny)</td><td><strong>rho Spearmana</strong> / tau-b Kendalla (porządkowe lub brak normalności)</td></tr>
+        <tr><td>związek 2 zmiennych <strong>jakościowych</strong></td><td colspan="2"><strong>chi-kwadrat (χ²)</strong> + tabele krzyżowe</td></tr>
+        <tr><td>średnia próby vs <strong>znane kryterium</strong></td><td><strong>t-Studenta dla jednej próby</strong></td><td>—</td></tr>
+        <tr><td><strong>2 niezależne</strong> grupy (np. K vs M)</td><td><strong>t-Studenta dla prób niezależnych</strong></td><td><strong>U Manna-Whitneya</strong></td></tr>
+        <tr><td><strong>2 pomiary</strong> tej samej grupy (przed–po)</td><td><strong>t-Studenta dla prób zależnych</strong></td><td><strong>Wilcoxona</strong> (test znaków rangowych)</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Korelacje — parametryczne vs nieparametryczne</h3>
+      <ul class="alist">
+        <li><strong>r Pearsona</strong> — najpopularniejsza, związki <em>liniowe</em>, zmienne <strong>ilościowe</strong> o rozkładzie <strong>normalnym</strong></li>
+        <li><strong>rho Spearmana / tau-b Kendalla</strong> — zmienne mogą być <strong>porządkowe</strong>; rozkład <strong>nie musi</strong> być normalny</li>
+        <li>korelacja = współwystępowanie, <span class="strata">NIE związek przyczynowo-skutkowy</span></li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Testy t-Studenta — kiedy i założenia</h3>
+      <p>Testujemy <strong>istotność różnicy między dwiema średnimi</strong>. Zmienna niezależna <strong>dwuwartościowa</strong>, zależna <strong>ilościowa</strong>.</p>
+      <h4>Założenia testów parametrycznych</h4>
+      <ul class="alist">
+        <li><strong>normalność rozkładu</strong> zmiennej zależnej (sprawdzamy testem <strong>Shapiro-Wilka</strong> — wynik nieistotny = rozkład normalny)</li>
+        <li><strong>równoliczność grup</strong> (sprawdzamy chi²)</li>
+        <li><strong>jednorodność wariancji</strong> — tylko dla prób niezależnych (test <strong>Levene'a</strong>)</li>
+      </ul>
+      <div class="callout info"><span class="ci">📊</span><div><strong>Test Levene'a:</strong> jeśli <em>nieistotny</em> (p&gt;0,05) → wariancje jednorodne (homogeniczne); jeśli <em>istotny</em> (p&lt;0,05) → niejednorodne (heterogeniczne), odczytujemy t z innego wiersza. Testy t są dość <strong>odporne</strong> na złamanie założeń (zwłaszcza N&gt;30 i równoliczne grupy).</div></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Złamanie założeń (np. skrajna skośność, zmienna porządkowa) → sygnał do użycia <strong>testów nieparametrycznych</strong> (U Manna-Whitneya zamiast t niezależnych; Wilcoxona zamiast t zależnych).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Jednorodność wariancji — po co?</h3>
+      <p>Planując badanie chcemy <strong>małej wariancji wewnątrzgrupowej</strong> (grupy jednorodne) i <strong>dużej wariancji międzygrupowej</strong> (duża różnica między grupami) — wtedy łatwiej wykryć istotny efekt.</p>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK EGZAMIN ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-exam">📝 Egzamin — klucz realnych pytań</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S16 -->
+  <section id="S16">
+    <div class="section-header">
+      <div class="section-num">16</div>
+      <div class="section-header-text">
+        <h2>25 realnych pytań egzaminacyjnych (II termin 2024)</h2>
+        <div class="src-tag">Źródło: <span>zdjęcia arkusza egzaminacyjnego</span></div>
+      </div>
+    </div>
+
+    <div class="callout exam">
+      <span class="ci">🎯</span><div>Poniżej <strong>autentyczne pytania z egzaminu</strong> z zaznaczonymi (na zielono w arkuszu) <strong>poprawnymi odpowiedziami</strong>. Egzamin to test <strong>jednokrotnego wyboru</strong>. To najlepszy materiał do nauki pod kątem stylu pytań.</div>
+    </div>
+
+    <div class="lcard">
+      <div class="qitem"><div class="q"><b>1.</b> Jak zmniejszyć szerokość przedziału ufności, jeśli nie możemy zmienić własności psychometrycznych testu?</div><div class="a"><strong>Zmniejszyć poziom ufności</strong> (np. z 95% do 85%)</div></div>
+      <div class="qitem"><div class="q"><b>2.</b> Na rzetelność testu wpływa:</div><div class="a"><strong>Wszystkie odpowiedzi są poprawne</strong> (jakość pytań, długość testu, jednorodność mierzonej zmiennej)</div></div>
+      <div class="qitem"><div class="q"><b>3.</b> Współczynnik Alfa Cronbacha:</div><div class="a"><strong>Pozwala ocenić, na ile odpowiedzi na pozycje testowe są determinowane nasileniem jednej cechy</strong></div></div>
+      <div class="qitem"><div class="q"><b>4.</b> Standardowy błąd pomiaru:</div><div class="a"><strong>Jest odchyleniem standardowym rozkładu błędów pomiaru wokół wyniku prawdziwego</strong></div></div>
+      <div class="qitem"><div class="q"><b>5.</b> Wskaż <em>fałszywe</em> założenie dotyczące adaptacji kulturowej testu:</div><div class="a"><strong>„Ta sama cecha ma zawsze takie same przejawy w każdej kulturze"</strong> (to zdanie fałszywe)</div></div>
+      <div class="qitem"><div class="q"><b>6.</b> Operacjonalizacja mierzonej właściwości jest związana z:</div><div class="a"><strong>Określeniem zachowania identyfikowanego z mierzonym konstruktem</strong></div></div>
+      <div class="qitem"><div class="q"><b>7.</b> IRT umożliwia konstruowanie testów adaptatywnych, ponieważ zakłada, że:</div><div class="a"><strong>Właściwości pozycji testowych są niezależne od wyników w próbie, na której opracowano test</strong></div></div>
+      <div class="qitem"><div class="q"><b>8.</b> Zadania testu inteligencji mają współczynnik trudności IRT. Na które pytanie poprawnie odpowiada najwięcej osób?</div><div class="a"><strong>−0,88</strong> (im niższy/bardziej ujemny parametr trudności, tym łatwiejsze zadanie)</div></div>
+      <div class="qitem"><div class="q"><b>9.</b> Co <em>nie</em> jest założeniem Klasycznej Teorii Testów (KTT)?</div><div class="a"><strong>Niezależność norm od wyników w próbie normalizacyjnej</strong> (to założenie IRT)</div></div>
+      <div class="qitem"><div class="q"><b>10.</b> W teście o normalnym rozkładzie wyników surowych prawdopodobnie dominują:</div><div class="a"><strong>Pytania o umiarkowanej trudności</strong></div></div>
+      <div class="qitem"><div class="q"><b>11.</b> Jakie parametry pozycji szacowane są w dwuparametrycznym modelu IRT?</div><div class="a"><strong>Trudność i moc dyskryminacyjna</strong></div></div>
+      <div class="qitem"><div class="q"><b>12.</b> Badacz konstruuje test inteligencji dla populacji ogólnej. Analizując trudność pozycji powinien:</div><div class="a"><strong>Uwzględnić pozycje o zróżnicowanej trudności</strong> (łatwe, przeciętnie trudne i trudne)</div></div>
+      <div class="qitem"><div class="q"><b>13.</b> Walidacja krzyżowa polega na:</div><div class="a"><strong>Ocenie parametrów testu w nowej grupie</strong> <span class="note">(w arkuszu zaznaczono żartobliwy dystraktor „badanie obrazowe kręgosłupa" — merytorycznie poprawna jest ocena parametrów w nowej grupie)</span></div></div>
+      <div class="qitem"><div class="q"><b>14.</b> Zewnętrzny układ odniesienia dla wyników, wyznaczony przez reprezentatywną dla populacji próbę, to:</div><div class="a"><strong>Normy</strong></div></div>
+      <div class="qitem"><div class="q"><b>15.</b> Analiza czynnikowa wykazała istnienie 5 czynników. Oznacza to, że:</div><div class="a"><strong>Pięć zmiennych nieobserwowalnych najlepiej wyjaśnia odpowiedzi na zadania w teście</strong></div></div>
+      <div class="qitem"><div class="q"><b>16.</b> Które pozycje w teście zwykle mają najwyższą moc dyskryminacyjną?</div><div class="a"><strong>Pozycje o umiarkowanej trudności</strong></div></div>
+      <div class="qitem"><div class="q"><b>17.</b> Metoda połówkowa badania rzetelności wymaga:</div><div class="a"><strong>Podziału testu na dwie połowy nie różniące się trudnością</strong></div></div>
+      <div class="qitem"><div class="q"><b>18.</b> Jeśli test jest zbyt trudny dla badanej grupy, rozkład wyników będzie:</div><div class="a"><strong>Prawoskośny</strong></div></div>
+      <div class="qitem"><div class="q"><b>19.</b> Skonstruowałeś nowy kwestionariusz do diagnozy inteligencji — by oszacować trafność, przede wszystkim:</div><div class="a"><strong>Oblicz korelacje jego wyników z wynikami innych uznanych testów inteligencji</strong></div></div>
+      <div class="qitem"><div class="q"><b>20.</b> Argumentem za trafnością kryterialną testu do diagnozy ADHD jest:</div><div class="a"><strong>Uzyskiwanie wyższych wyników przez osoby słabo radzące sobie z zadaniami wymagającymi wysokiej sprawności uwagi</strong></div></div>
+      <div class="qitem"><div class="q"><b>21.</b> Ze zjawiskiem zróżnicowanego funkcjonowania pozycji (DIF) mamy do czynienia, gdy:</div><div class="a"><strong>Osoby różniące się pochodzeniem etnicznym, przy takim samym nasileniu mierzonej cechy, udzielają różnych odpowiedzi</strong></div></div>
+      <div class="qitem"><div class="q"><b>22.</b> Porównując wyniki 24-letniego mężczyzny z normami bez podziału na płeć dla osób 18–79 lat:</div><div class="a"><strong>Możemy określić, jak wypada na tle populacji wszystkich osób dorosłych</strong></div></div>
+      <div class="qitem"><div class="q"><b>23.</b> Osoba uzyskała wynik 9 stenów, a półprzedział ufności wynosi 2 — wynik prawdziwy zawiera się:</div><div class="a"><strong>W przedziale od 7 do 11 stena</strong>, z prawdopodobieństwem równym przyjętemu poziomowi ufności (9±2)</div></div>
+      <div class="qitem"><div class="q"><b>24.</b> Co jest prawdą o błędzie pomiaru w teście?</div><div class="a"><strong>Jest tym większy, im niższa jest rzetelność testu</strong></div></div>
+      <div class="qitem"><div class="q"><b>25.</b> Wyniki której skali obarczone są najmniejszym błędem pomiaru? (Asertywność α=0,90; Kontrola emocji α=0,84; Rozumienie relacji α=0,94)</div><div class="a"><strong>Rozumienie relacji — α=0,94</strong> (najwyższa α = najmniejszy błąd pomiaru)</div></div>
+    </div>
+
+    <div class="summary-box">
+      <h4>🔑 Najczęstsze pułapki egzaminacyjne</h4>
+      <ul>
+        <li><strong>α Cronbacha to rzetelność</strong>, nie trafność — do trafności korelujemy z innymi testami</li>
+        <li><strong>Niezależność od próby</strong> = założenie IRT, NIE KTT</li>
+        <li><strong>Wyższy poziom ufności = szerszy przedział</strong> (chcesz węższy → obniż poziom ufności)</li>
+        <li><strong>Wyższa α = mniejszy błąd pomiaru</strong>; niższa rzetelność = większy błąd</li>
+        <li><strong>Trudność IRT:</strong> wartość ujemna/niska = zadanie łatwe (więcej osób odpowiada dobrze)</li>
+        <li><strong>Umiarkowana trudność</strong> = najwyższa moc dyskryminacyjna i dominacja w rozkładzie normalnym</li>
+        <li><strong>DIF</strong> tylko gdy grupy mają <em>takie samo</em> nasilenie cechy, a mimo to różne odpowiedzi</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════ LITERATURA ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-lit">📚 Literatura</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <section id="lit">
+    <div class="lcard">
+      <h3>Literatura obowiązkowa (sylabus)</h3>
+      <ul class="alist">
+        <li>Hornowska, E. (2018). <em>Testy psychologiczne. Teoria i praktyka.</em> Warszawa: Scholar.</li>
+        <li>Fronczyk, K. (2009). <em>Psychometria: podstawowe zagadnienia.</em> Warszawa: Vizja Press&amp;IT.</li>
+      </ul>
+      <h3 style="margin-top:1.3rem;">Statystyka (przedmiot pokrewny — pomocniczo)</h3>
+      <ul class="alist">
+        <li>Bedyńska, S., Cypryańska, M. (2013). <em>Statystyczny drogowskaz. Tom 1.</em> Warszawa: Sedno/SWPS.</li>
+      </ul>
+      <div class="callout info" style="margin-top:1rem;"><span class="ci">ℹ️</span><div>Egzamin: <strong>test jednokrotnego wyboru, pytania problemowe i teoretyczne</strong> (50 pkt). Zaliczenie przedmiotu: ≥ 51% całości; każda forma (egzamin, raport, współpraca) wymaga min. 50% punktów.</div></div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<footer>StudyZone &mdash; Zaawansowana psychometria · notatka na podstawie prezentacji wykładowych, sylabusu i materiałów statystycznych · materiał pomocniczy do nauki</footer>
+
+<script>
+// Podświetlanie aktywnej sekcji w spisie treści
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) map[id] = a;
+  });
+  var sections = Object.keys(map).map(function (id) { return document.getElementById(id); });
+  function onScroll() {
+    var pos = window.scrollY + 90;
+    var current = null;
+    sections.forEach(function (s) { if (s.offsetTop <= pos) current = s.id; });
+    links.forEach(function (a) { a.classList.remove('active'); });
+    if (current && map[current]) map[current].classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>
