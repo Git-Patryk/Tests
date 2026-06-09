@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 4 – Zaawansowana metodologia badań</title>
+<style>
+  :root {
+    --blue:   #3b82f6;
+    --blue2:  #2563eb;
+    --blue3:  #93c5fd;
+    --blue4:  #dbeafe;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f5f8ff;
+    --border: #dbe2ec;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #eff6ff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1e40af 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #eff6ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #bfdbfe;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #1e40af; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #eff6ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #1e40af; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e40af, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(37,99,235,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #1e40af; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
+  <h1>🔬 Zaawansowana metodologia badań</h1>
+  <p>Test 4 · Poziom 4 · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POZIOM 4 · REPLIKACJA, OPEN SCIENCE I STATYSTYKA</div>
+    <h2>Witaj w Teście 4!</h2>
+    <p>Test sprawdza <strong>replikację, ruch Open Science i wnioskowanie statystyczne</strong> — typy replikacji, kryzys replikacyjny, prerejestrację i p-hacking, hipotezy i błędy I/II rodzaju, wartość p, wielkość efektu, moc oraz meta-analizę.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>typy replikacji · Bem vs Galak · kryzys replikacyjny i OSC 2015 (~50%) · publication bias · oszustwo Stapela · SMAR (Wojciszke) · priming i Florida effect · prerejestracja / HARKing / Registered Reports · p-hacking (Head 2015) · H₀ i H₁ · błąd I i II rodzaju · czym JEST p · wielkość efektu i Cohen's d · moc i G*Power · meta-analiza (fixed/random, forest/funnel plot)</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  {
+    q: "Co charakteryzuje replikację bezpośrednią (direct)?",
+    opts: [
+      { t: "Nic się nie zmienia — te same narzędzia i procedura, ale zbiera się NOWE dane", c: true },
+      { t: "Zmienia się metoda analizy statystycznej na tych samych danych", c: false },
+      { t: "Modyfikuje się próbę, manipulację i pomiar", c: false },
+      { t: "Powtarza się tę samą analizę na tych samych danych", c: false },
+    ],
+    exp: "Replikacja bezpośrednia powtarza badanie bez zmian (te same narzędzia, procedura), ale na nowych danych. Modyfikacja elementów metody to replikacja rozszerzona/konceptualna."
+  },
+  {
+    q: "Czym jest re-analiza jako typ replikacji?",
+    opts: [
+      { t: "Zastosowaniem innych metod analizy statystycznej do TYCH SAMYCH danych", c: true },
+      { t: "Zebraniem nowych danych tą samą procedurą", c: false },
+      { t: "Powtórzeniem badania z inną próbą i manipulacją", c: false },
+      { t: "Powtórzeniem dokładnie tej samej analizy na tych samych danych", c: false },
+    ],
+    exp: "Re-analiza używa innych metod analizy statystycznej na tych samych danych. (Weryfikacja = te same dane i te same metody; replikacja bezpośrednia/rozszerzona = nowe dane.)"
+  },
+  {
+    q: "Co pokazały próby replikacji efektu „feeling the future” Bema (2011) przez Galaka i wsp. (2012)?",
+    opts: [
+      { t: "Z 7 bezpośrednich replikacji tylko 1 potwierdziła wynik", c: true },
+      { t: "Wszystkie 7 replikacji w pełni potwierdziło prekognicję", c: false },
+      { t: "Żadna replikacja nie została w ogóle przeprowadzona", c: false },
+      { t: "Replikacje wykazały efekt jeszcze silniejszy niż Bem", c: false },
+    ],
+    exp: "Bem opisał wyniki sugerujące prekognicję; Galak i wsp. zrobili 7 bezpośrednich replikacji — tylko 1 potwierdziła wynik. Wniosek: nadzwyczajne twierdzenia wymagają nadzwyczajnie mocnych dowodów."
+  },
+  {
+    q: "Jaki był wynik projektu Open Science Collaboration (2015)?",
+    opts: [
+      { t: "Z prób replikacji 100 badań odtworzono ok. 50% efektów", c: true },
+      { t: "Odtworzono ok. 95% efektów", c: false },
+      { t: "Nie udało się odtworzyć żadnego efektu", c: false },
+      { t: "Replikowano wyłącznie badania kliniczne", c: false },
+    ],
+    exp: "OSC (2015) podjęło próbę replikacji 100 badań i odtworzyło ok. 50% efektów. Pytanie przesunęło się z „czy się powtarzają?” na „dlaczego tak wiele się nie powtarza?”."
+  },
+  {
+    q: "Czym jest publication bias (błąd publikacyjny) jako przyczyna kryzysu replikacyjnego?",
+    opts: [
+      { t: "Łatwiej publikować wyniki pozytywne (istotne) niż zerowe", c: true },
+      { t: "Czasopisma publikują wyłącznie replikacje, a nie badania oryginalne", c: false },
+      { t: "Autorzy publikują tylko wyniki nieistotne", c: false },
+      { t: "Recenzenci preferują badania na małych próbach", c: false },
+    ],
+    exp: "Publication bias polega na tym, że łatwiej opublikować wyniki pozytywne/istotne niż zerowe. Wraz z małymi próbami, niską mocą i niechęcią czasopism do replikacji napędza to kryzys replikacyjny."
+  },
+  {
+    q: "Po czym m.in. wykryto fabrykację danych w oszustwie Stapela?",
+    opts: [
+      { t: "Po „zbyt ładnych” wynikach, różnicach w p mimo tych samych testów i niepoprawnych zaokrągleniach", c: true },
+      { t: "Po zbyt dużych próbach i wysokiej mocy testów", c: false },
+      { t: "Po prerejestracji wszystkich jego badań", c: false },
+      { t: "Po tym, że publikował wyłącznie wyniki nieistotne", c: false },
+    ],
+    exp: "Oszustwo Stapela wykryto m.in. po „zbyt ładnych” wynikach, różnicach w wartościach p mimo tych samych testów, niepoprawnych zaokrągleniach i usuwaniu outlierów bez raportowania (eliminacja danych zmniejsza wariancję i sztucznie zwiększa istotność)."
+  },
+  {
+    q: "Na czym polega strategia SMAR (Systematycznie Modyfikowane AutoReplikacje, Wojciszke)?",
+    opts: [
+      { t: "Ten sam zespół wielokrotnie powtarza badanie, CELOWO modyfikując próbę, metody i zmienne, by pokazać stabilność efektu", c: true },
+      { t: "Różne zespoły powtarzają badanie bez żadnych zmian", c: false },
+      { t: "Jednorazowe badanie na bardzo dużej próbie", c: false },
+      { t: "Ponowna analiza cudzych danych innymi metodami", c: false },
+    ],
+    exp: "SMAR to wielokrotne powtarzanie przez ten sam zespół badania wykazującego prawidłowość, przy celowym modyfikowaniu próby, metod pomiaru i zmiennych — by pokazać stabilność (rzetelność) efektu mimo zmian procedury."
+  },
+  {
+    q: "Czym jest torowanie (priming) na przykładzie Florida effect (Bargh, Chen & Burrows, 1996)?",
+    opts: [
+      { t: "Czynniki tła wprowadzają osobę w stan wpływający na zachowanie bez jej świadomości (po słowach o starości szła wolniej)", c: true },
+      { t: "Świadome instruowanie uczestnika, jak ma się zachować", c: false },
+      { t: "Podanie placebo zamiast aktywnego leku", c: false },
+      { t: "Powtarzanie pomiaru u tych samych osób w czasie", c: false },
+    ],
+    exp: "Priming (torowanie) to wpływ czynników tła wprowadzających osobę w stan oddziałujący na zachowanie bez świadomości. W Florida effect po primingu stereotypu osoby starszej (Floryda, samotny, pomarszczony) uczestnicy szli wolniej w korytarzu."
+  },
+  {
+    q: "Co pokazały autoreplikacje efektu primingu zachowania (Doyen 2012, Shanks 2013)?",
+    opts: [
+      { t: "Efekt nie pojawia się — primingi zachowania często się nie replikują, choć primingi poznawcze (semantyczne) są stabilne", c: true },
+      { t: "Efekt potwierdzono jeszcze silniej niż u Bargha", c: false },
+      { t: "Wszystkie rodzaje primingu okazały się niereplikowalne", c: false },
+      { t: "Replikacje dotyczyły wyłącznie primingów semantycznych", c: false },
+    ],
+    exp: "Przy dużym N i prerejestracji (Doyen 2012, Shanks 2013) efekt primingu zachowania nie pojawia się. Primingi poznawcze/semantyczne są stabilne, primingi zachowania często nie. SMAR nie służy „potwierdzaniu na siłę”, lecz mapowaniu warunków efektu."
+  },
+  {
+    q: "Czym jest prerejestracja badania?",
+    opts: [
+      { t: "Publicznym przedstawieniem planu badania (hipotezy, dobór, analizy) PRZED zebraniem danych, np. na OSF", c: true },
+      { t: "Zgłoszeniem gotowych wyników do czasopisma po analizie", c: false },
+      { t: "Rejestracją uczestników badania w bazie danych", c: false },
+      { t: "Powtórnym przeprowadzeniem już opublikowanego badania", c: false },
+    ],
+    exp: "Prerejestracja to publiczne przedstawienie planu badawczego (teoria, hipotezy, plan doboru, narzędzia, plan analiz) przed zebraniem danych (np. na OSF). Oddziela część konfirmacyjną od eksploracyjnej i chroni przed HARKingiem."
+  },
+  {
+    q: "Czym jest HARKing?",
+    opts: [
+      { t: "Formułowaniem hipotezy dopiero po poznaniu wyników (Hypothesizing After the Results are Known)", c: true },
+      { t: "Rejestrowaniem hipotez przed zebraniem danych", c: false },
+      { t: "Publikowaniem wyłącznie wyników nieistotnych", c: false },
+      { t: "Powtarzaniem badania przez ten sam zespół", c: false },
+    ],
+    exp: "HARKing (Hypothesizing After the Results are Known) to przedstawianie hipotezy postawionej po analizie jako gdyby była postawiona przed badaniem. Prerejestracja chroni przed tą praktyką."
+  },
+  {
+    q: "Na czym polega procedura Registered Reports?",
+    opts: [
+      { t: "Projekt jest recenzowany PRZED zebraniem danych i przy dobrej metodzie dostaje in-principle acceptance, a po danych przechodzi drugi etap recenzji", c: true },
+      { t: "Recenzja odbywa się dopiero po zebraniu i przeanalizowaniu danych", c: false },
+      { t: "Publikuje się wyłącznie wyniki istotne statystycznie", c: false },
+      { t: "Autor sam decyduje, które analizy ujawnić", c: false },
+    ],
+    exp: "W Registered Reports projekt recenzowany jest przed zebraniem danych; przy poprawnej metodzie otrzymuje in-principle acceptance, a po zebraniu danych następuje drugi etap recenzji. Ogranicza to wpływ sensacyjności wyniku na decyzję o publikacji."
+  },
+  {
+    q: "Co — według Heada i wsp. (2015) — zdradza obecność p-hackingu w literaturze?",
+    opts: [
+      { t: "Nadreprezentacja wyników tuż poniżej 0,05 (zamiast naprawdę silnych p < 0,025)", c: true },
+      { t: "Przewaga wyników z bardzo niskim p < 0,001", c: false },
+      { t: "Brak jakichkolwiek wyników istotnych statystycznie", c: false },
+      { t: "Nadmiar bezpośrednich replikacji", c: false },
+    ],
+    exp: "Head i wsp. (2015) wykazali w wielu dziedzinach nadreprezentację wyników tuż poniżej 0,05 — ślad p-hackingu (naginania analiz, aż p<0,05). „Istotny” nie znaczy „rzetelny”; remedium to prerejestracja, otwarte dane i nacisk na wielkość efektu."
+  },
+  {
+    q: "Czym jest hipoteza zerowa (H₀) w stosunku do hipotezy alternatywnej (H₁)?",
+    opts: [
+      { t: "H₀ to „twierdzenie do obalenia”, H₁ to konkurencyjna możliwość (badawcza)", c: true },
+      { t: "H₀ to hipoteza badawcza, a H₁ to twierdzenie do obalenia", c: false },
+      { t: "H₀ i H₁ to dwie nazwy tej samej hipotezy", c: false },
+      { t: "H₀ zawsze przewiduje kierunek efektu, H₁ nigdy", c: false },
+    ],
+    exp: "H₀ (zerowa) to „twierdzenie do obalenia”, a H₁ (alternatywna/badawcza) to konkurencyjna możliwość. Testowanie statystyczne — w duchu Poppera — szuka podstaw do odrzucenia (falsyfikacji) H₀."
+  },
+  {
+    q: "Czym różni się hipoteza kierunkowa od niekierunkowej?",
+    opts: [
+      { t: "Kierunkowa przewiduje kierunek efektu, niekierunkowa tylko że różnica wystąpi", c: true },
+      { t: "Kierunkowa dotyczy wskaźników, niekierunkowa teorii", c: false },
+      { t: "Kierunkowa to H₀, niekierunkowa to H₁", c: false },
+      { t: "To dwa określenia hipotezy operacyjnej", c: false },
+    ],
+    exp: "Hipoteza kierunkowa przewiduje kierunek zależności (np. grupa A > grupa B), a niekierunkowa zakłada jedynie, że różnica wystąpi (bez wskazania kierunku)."
+  },
+  {
+    q: "Czym jest błąd I rodzaju (α)?",
+    opts: [
+      { t: "Stwierdzeniem efektu, którego nie ma (odrzucenie prawdziwej H₀) — fałszywy alarm", c: true },
+      { t: "Niewykryciem realnie istniejącego efektu", c: false },
+      { t: "Poprawnym odrzuceniem fałszywej H₀", c: false },
+      { t: "Błędem doboru próby", c: false },
+    ],
+    exp: "Błąd I rodzaju (α) to odrzucenie prawdziwej H₀ — stwierdzamy efekt, którego nie ma (fałszywy alarm). Bywa częstszy przy zbyt dużych próbach."
+  },
+  {
+    q: "Czym jest błąd II rodzaju (β) i kiedy jest częstszy?",
+    opts: [
+      { t: "Nieodrzuceniem fałszywej H₀ (przeoczeniem realnego efektu) — częstszy przy małych próbach i niskiej mocy", c: true },
+      { t: "Odrzuceniem prawdziwej H₀ — częstszym przy dużych próbach", c: false },
+      { t: "Poprawnym przyjęciem H₁", c: false },
+      { t: "Błędem wynikającym wyłącznie z fałszowania danych", c: false },
+    ],
+    exp: "Błąd II rodzaju (β) to nieodrzucenie fałszywej H₀ — przeoczenie realnego efektu. Jest częstszy przy zbyt małych próbach i niskiej mocy (np. wczesne badania fMRI z n=10–15)."
+  },
+  {
+    q: "Czym JEST wartość p?",
+    opts: [
+      { t: "Prawdopodobieństwem uzyskania takiego (lub bardziej skrajnego) wyniku przy założeniu, że H₀ jest prawdziwa", c: true },
+      { t: "Prawdopodobieństwem, że hipoteza badawcza jest prawdziwa", c: false },
+      { t: "Prawdopodobieństwem powtórzenia (replikacji) wyniku", c: false },
+      { t: "Prawdopodobieństwem popełnienia błędu I rodzaju w danym badaniu", c: false },
+    ],
+    exp: "p to prawdopodobieństwo uzyskania takiego (lub bardziej skrajnego) wyniku PRZY ZAŁOŻENIU prawdziwości H₀. p to NIE jest prawdopodobieństwo błędu I rodzaju, replikacji ani prawdziwości hipotezy."
+  },
+  {
+    q: "Jak należy rozumieć wynik p > 0,05?",
+    opts: [
+      { t: "Że nie możemy odrzucić H₀ — efekt może być mały lub próba za mała; to nie dowód „braku efektu”", c: true },
+      { t: "Że udowodniono brak jakiegokolwiek efektu", c: false },
+      { t: "Że hipoteza badawcza została potwierdzona", c: false },
+      { t: "Że popełniono błąd I rodzaju", c: false },
+    ],
+    exp: "p > 0,05 oznacza tylko, że nie możemy odrzucić H₀ — efekt może być mały lub próba za mała. Traktowanie „nieistotnego wyniku” jako dowodu braku efektu to błąd."
+  },
+  {
+    q: "Czym wielkość efektu różni się od istotności statystycznej?",
+    opts: [
+      { t: "Mierzy siłę/rozmiar efektu i jest odporna na wielkość próby", c: true },
+      { t: "Rośnie automatycznie wraz z wielkością próby", c: false },
+      { t: "Jest tym samym co wartość p", c: false },
+      { t: "Mówi tylko, czy efekt jest istotny, nie jak duży", c: false },
+    ],
+    exp: "Wielkość efektu to miara siły/rozmiaru różnicy lub związku, odporna na wielkość próby — w odróżnieniu od istotności, która zależy od N. Dlatego jest wiarygodniejszą miarą „jak duży jest efekt”."
+  },
+  {
+    q: "Jak interpretuje się wartości Cohen's d?",
+    opts: [
+      { t: "≈0,2 efekt mały, ≈0,5 średni, ≈0,8 duży", c: true },
+      { t: "≈0,2 duży, ≈0,5 średni, ≈0,8 mały", c: false },
+      { t: "≈0,2 średni, ≈0,5 duży, ≈0,8 bardzo duży", c: false },
+      { t: "d zawsze musi przekraczać 1,0, by efekt był istotny", c: false },
+    ],
+    exp: "Cohen's d to standaryzowana różnica średnich: d ≈ 0,2 to efekt mały, ≈ 0,5 średni, ≈ 0,8 duży."
+  },
+  {
+    q: "Czym jest moc testu i jaki jest jej standard?",
+    opts: [
+      { t: "Moc = 1 − β, czyli prawdopodobieństwo wykrycia prawdziwego efektu; standard to 0,80", c: true },
+      { t: "Moc = 1 − α, czyli prawdopodobieństwo błędu I rodzaju; standard 0,05", c: false },
+      { t: "Moc = wielkość próby podzielona przez efekt", c: false },
+      { t: "Moc = prawdopodobieństwo, że H₀ jest prawdziwa", c: false },
+    ],
+    exp: "Moc = 1 − β — prawdopodobieństwo wykrycia prawdziwego efektu (standard 0,80). W analizie a priori (G*Power), znając zakładaną wielkość efektu, α i moc, szukamy najmniejszej potrzebnej próby. Im silniejszy efekt, tym mniejsza próba."
+  },
+  {
+    q: "Czym jest meta-analiza?",
+    opts: [
+      { t: "Wystandaryzowaną procedurą ilościowej syntezy wyników wielu niezależnych badań na ten sam temat", c: true },
+      { t: "Jakościowym streszczeniem jednego badania", c: false },
+      { t: "Ponowną analizą surowych danych pojedynczego badania", c: false },
+      { t: "Badaniem na bardzo dużej, pojedynczej próbie", c: false },
+    ],
+    exp: "Meta-analiza to wystandaryzowana procedura ilościowej syntezy wyników wielu niezależnych badań na ten sam temat (historycznie: spór Eysenck vs Smith & Glass 1977 o psychoterapię). Daje precyzyjniejsze wnioski, ocenia wielkość efektu i wykrywa błąd publikacyjny."
+  },
+  {
+    q: "Czym różni się model fixed effects od random effects w meta-analizie?",
+    opts: [
+      { t: "Fixed zakłada jeden wspólny prawdziwy efekt; random dopuszcza zróżnicowanie efektów między badaniami", c: true },
+      { t: "Fixed dopuszcza zróżnicowanie efektów, random zakłada jeden wspólny", c: false },
+      { t: "Oba zakładają dokładnie ten sam model efektu", c: false },
+      { t: "Fixed dotyczy forest plot, random funnel plot", c: false },
+    ],
+    exp: "Model fixed effects zakłada jeden wspólny efekt prawdziwy dla wszystkich badań, a random effects dopuszcza, że prawdziwe efekty różnią się między badaniami."
+  },
+  {
+    q: "Do czego służy funnel plot w meta-analizie?",
+    opts: [
+      { t: "Do wykrywania błędu publikacyjnego (asymetria lejka)", c: true },
+      { t: "Do wizualizacji efektów poszczególnych badań i efektu zbiorczego", c: false },
+      { t: "Do obliczania mocy testu", c: false },
+      { t: "Do kodowania liczebności badań", c: false },
+    ],
+    exp: "Funnel plot służy do wykrywania błędu publikacyjnego — jego asymetria sugeruje brakujące (niepublikowane) badania. Wizualizacją efektów poszczególnych badań i efektu zbiorczego jest forest plot."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#1e40af'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#2563eb'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#3b82f6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
