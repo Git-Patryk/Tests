@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 3 – Zaawansowana metodologia badań</title>
+<style>
+  :root {
+    --blue:   #3b82f6;
+    --blue2:  #2563eb;
+    --blue3:  #93c5fd;
+    --blue4:  #dbeafe;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f5f8ff;
+    --border: #dbe2ec;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #eff6ff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1e40af 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #eff6ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #bfdbfe;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #1e40af; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #eff6ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #1e40af; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e40af, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(37,99,235,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #1e40af; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
+  <h1>🔬 Zaawansowana metodologia badań</h1>
+  <p>Test 3 · Poziom 3 · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POZIOM 3 · TRAFNOŚĆ, RZETELNOŚĆ I ARTEFAKTY</div>
+    <h2>Witaj w Teście 3!</h2>
+    <p>Test sprawdza <strong>trafność, rzetelność i artefakty pomiaru</strong> — rodzaje trafności, błąd pomiaru i jego diagnozowanie, efekt placebo i balanced placebo design, regresję do średniej oraz etykietowanie (badanie Rosenhana).</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>trafność vs rzetelność · 4 rodzaje trafności · trafność treściowa / zbieżna-różnicowa / kryterialna · błąd pomiaru (X = T + E, Spearman) · błąd losowy vs systematyczny · α Cronbacha, test-retest, ICC, SEM · qui pro quo · placebo i nocebo (Bąbel) · balanced placebo design (Marlatt) · regresja do średniej · Rosenhan i etykietowanie · błąd I i II rodzaju</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  {
+    q: "Czym jest trafność (validity) pomiaru/badania?",
+    opts: [
+      { t: "Stopniem, w jakim badanie mierzy to, co miało mierzyć, i pozwala na poprawne wnioskowanie", c: true },
+      { t: "Stopniem, w jakim narzędzie daje powtarzalne, stabilne wyniki", c: false },
+      { t: "Liczbą pozycji w kwestionariuszu", c: false },
+      { t: "Wielkością próby badawczej", c: false },
+    ],
+    exp: "Trafność = stopień, w jakim badanie mierzy to, co miało mierzyć, i pozwala na poprawne wnioskowanie. Powtarzalność/stabilność wyników to rzetelność, nie trafność."
+  },
+  {
+    q: "Termometr stale zawyżający temperaturę o 2°C jest:",
+    opts: [
+      { t: "Rzetelny (konsekwentny), ale nietrafny", c: true },
+      { t: "Trafny, ale nierzetelny", c: false },
+      { t: "Zarówno trafny, jak i rzetelny", c: false },
+      { t: "Ani trafny, ani rzetelny", c: false },
+    ],
+    exp: "Termometr zawyżający o 2° daje konsekwentne wyniki (jest rzetelny), ale nie mierzy prawdziwej wartości (jest nietrafny). Podobnie test „odporności na stres”, który faktycznie mierzy szybkość czytania."
+  },
+  {
+    q: "Na jakie pytanie odpowiada trafność wewnętrzna?",
+    opts: [
+      { t: "Czy efekt wynika z manipulacji zmienną niezależną, a nie z innych czynników?", c: true },
+      { t: "Czy wyniki można uogólnić na inne osoby i sytuacje?", c: false },
+      { t: "Czy warunki badania przypominają realne życie?", c: false },
+      { t: "Czy narzędzie w ogóle mierzy jakiekolwiek zjawisko?", c: false },
+    ],
+    exp: "Trafność wewnętrzna pyta, czy obserwowany efekt wynika z manipulacji ZN, a nie ze zmiennych zakłócających. Zagraża jej brak randomizacji II stopnia i efekt eksperymentatora/oczekiwań."
+  },
+  {
+    q: "Co zagraża trafności zewnętrznej?",
+    opts: [
+      { t: "Brak randomizacji I stopnia i sztuczność sytuacji (utrudniają uogólnienie)", c: true },
+      { t: "Zmienne zakłócające wewnątrz eksperymentu", c: false },
+      { t: "Źle skonstruowany kwestionariusz", c: false },
+      { t: "Zbyt duża liczba pozycji w teście", c: false },
+    ],
+    exp: "Trafność zewnętrzna dotyczy możliwości uogólnienia wyników na inne osoby/sytuacje; zagraża jej brak randomizacji I stopnia (niereprezentatywna próba) i sztuczność sytuacji."
+  },
+  {
+    q: "Czego dotyczy trafność ekologiczna?",
+    opts: [
+      { t: "Tego, czy warunki badania przypominają realne życie", c: true },
+      { t: "Tego, czy narzędzie mierzy zamierzony konstrukt", c: false },
+      { t: "Tego, czy efekt wynika z manipulacji ZN", c: false },
+      { t: "Tego, czy wynik jest stabilny w czasie", c: false },
+    ],
+    exp: "Trafność ekologiczna mówi, czy warunki badania przypominają realne życie. Im wyższa kontrola laboratoryjna, tym zwykle niższa trafność ekologiczna."
+  },
+  {
+    q: "Na czym polega trafność treściowa narzędzia?",
+    opts: [
+      { t: "Eksperci oceniają, czy narzędzie obejmuje wszystkie aspekty mierzonego konstruktu", c: true },
+      { t: "Narzędzie koreluje z innymi testami tego samego konstruktu", c: false },
+      { t: "Narzędzie przewiduje przyszłe zachowanie (np. sukces zawodowy)", c: false },
+      { t: "Wyniki są stabilne w powtórnym pomiarze", c: false },
+    ],
+    exp: "Trafność treściowa polega na ocenie przez ekspertów, czy narzędzie obejmuje wszystkie istotne aspekty konstruktu. Korelacja z innymi testami to trafność teoretyczna, a przewidywanie przyszłości — kryterialna predykcyjna."
+  },
+  {
+    q: "Czym różni się trafność zbieżna od różnicowej (teoretyczna)?",
+    opts: [
+      { t: "Zbieżna: test koreluje z innymi testami tego samego; różnicowa: NIE koreluje z testami czegoś innego", c: true },
+      { t: "Zbieżna: test nie koreluje z niczym; różnicowa: koreluje ze wszystkim", c: false },
+      { t: "Zbieżna dotyczy przyszłości, różnicowa teraźniejszości", c: false },
+      { t: "To dwie nazwy tego samego rodzaju trafności", c: false },
+    ],
+    exp: "Trafność zbieżna = narzędzie koreluje z innymi miarami tego samego konstruktu; trafność różnicowa = NIE koreluje z miarami innych, niezwiązanych konstruktów. Razem tworzą trafność teoretyczną."
+  },
+  {
+    q: "Co to jest trafność kryterialna predykcyjna?",
+    opts: [
+      { t: "Zdolność narzędzia do przewidywania przyszłego kryterium (np. test rekrutacyjny → sukces zawodowy)", c: true },
+      { t: "Korelacja z kryterium mierzonym tu i teraz (np. test IQ ↔ obecne oceny)", c: false },
+      { t: "Ocena treści przez ekspertów", c: false },
+      { t: "Brak korelacji z niepowiązanymi konstruktami", c: false },
+    ],
+    exp: "Trafność kryterialna predykcyjna to zdolność narzędzia do przewidywania przyszłości (test rekrutacyjny → przyszły sukces). Korelacja z kryterium „tu i teraz” (IQ ↔ bieżące oceny) to trafność równoczesna."
+  },
+  {
+    q: "Jak brzmi podstawowe równanie teorii pomiaru?",
+    opts: [
+      { t: "Wynik obserwowany = wynik prawdziwy + błąd (X = T + E)", c: true },
+      { t: "Wynik prawdziwy = wynik obserwowany × rzetelność", c: false },
+      { t: "Błąd = wynik prawdziwy − rzetelność", c: false },
+      { t: "Wynik obserwowany = trafność + rzetelność", c: false },
+    ],
+    exp: "Każdy pomiar jest obciążony błędem: X(obserwowany) = T(prawdziwy) + E(błąd). Błąd to „szum”, który nie jest istotą mierzonego konstruktu."
+  },
+  {
+    q: "Co — według Charlesa Spearmana (1904) — sądzono o „wyniku prawdziwym”?",
+    opts: [
+      { t: "Że to fikcja, ale fikcja konieczna („the true score is a fiction — a necessary one”)", c: true },
+      { t: "Że da się go zmierzyć bezpośrednio i bezbłędnie", c: false },
+      { t: "Że jest tożsamy z wynikiem obserwowanym", c: false },
+      { t: "Że nie istnieje i jest zbędnym pojęciem", c: false },
+    ],
+    exp: "Spearman (1904), pionier koncepcji błędu pomiaru i rzetelności, ujmował wynik prawdziwy jako „fikcję — fikcję konieczną”: jest teoretyczną konstrukcją niezbędną do myślenia o błędzie."
+  },
+  {
+    q: "Jak działa błąd losowy i co obniża?",
+    opts: [
+      { t: "Działa w różne strony, „rozmywa” wyniki — obniża rzetelność", c: true },
+      { t: "Daje stałe przekłamanie w jedną stronę — obniża trafność", c: false },
+      { t: "Zwiększa zarówno trafność, jak i rzetelność", c: false },
+      { t: "Dotyczy wyłącznie reprezentatywności próby", c: false },
+    ],
+    exp: "Błąd losowy działa w różne strony i „rozmywa” wyniki, przez co obniża rzetelność. Stałe, jednokierunkowe przekłamanie to błąd systematyczny."
+  },
+  {
+    q: "Jak działa błąd systematyczny i co obniża?",
+    opts: [
+      { t: "Daje stałe przekłamanie (np. źle skalibrowana waga) — obniża trafność, nie musi obniżać rzetelności", c: true },
+      { t: "Rozmywa wyniki w różne strony — obniża rzetelność", c: false },
+      { t: "Nie wpływa na żaden parametr pomiaru", c: false },
+      { t: "Dotyczy tylko doboru próby, nie narzędzia", c: false },
+    ],
+    exp: "Błąd systematyczny to stałe przekłamanie (źle skalibrowana waga, tendencja do „zgadzania się”). Obniża trafność (konstruktu/kryterialną), a niekoniecznie rzetelność — wyniki mogą być spójnie błędne."
+  },
+  {
+    q: "Czym różni się błąd pomiaru od błędu doboru próby?",
+    opts: [
+      { t: "Błąd pomiaru to „szum” w narzędziu/procedurze; błąd doboru próby to problem reprezentatywności (trafność zewnętrzna)", c: true },
+      { t: "To dwa określenia tego samego zjawiska", c: false },
+      { t: "Błąd pomiaru dotyczy reprezentatywności, a błąd doboru — narzędzia", c: false },
+      { t: "Oba dotyczą wyłącznie wielkości efektu", c: false },
+    ],
+    exp: "Błąd pomiaru = „szum” w narzędziu/procedurze (wpływa na rzetelność/trafność konstruktu). Błąd doboru próby = problem reprezentatywności, czyli trafności zewnętrznej („psychologia — nauka o szczurach i studentach psychologii”)."
+  },
+  {
+    q: "Co diagnozuje współczynnik α Cronbacha?",
+    opts: [
+      { t: "Rzetelność (spójność wewnętrzną) testu", c: true },
+      { t: "Trafność treściową narzędzia", c: false },
+      { t: "Wielkość efektu w eksperymencie", c: false },
+      { t: "Reprezentatywność próby", c: false },
+    ],
+    exp: "α Cronbacha to wskaźnik rzetelności — spójności wewnętrznej testu (czy pozycje mierzą to samo)."
+  },
+  {
+    q: "Co sprawdza metoda test–retest, a co ICC / κ Cohena?",
+    opts: [
+      { t: "Test–retest: stabilność wyniku w czasie; ICC/κ: zgodność sędziów (oceniających)", c: true },
+      { t: "Test–retest: zgodność sędziów; ICC/κ: trafność predykcyjną", c: false },
+      { t: "Oba sprawdzają trafność ekologiczną", c: false },
+      { t: "Test–retest: wielkość próby; ICC/κ: wielkość efektu", c: false },
+    ],
+    exp: "Test–retest bada stabilność wyniku w czasie, a ICC (lub κ Cohena) — zgodność sędziów/oceniających. Oba to narzędzia diagnozowania rzetelności."
+  },
+  {
+    q: "Na czym polega błąd qui pro quo („ten zamiast tego”)?",
+    opts: [
+      { t: "Na nieporozumieniu — badany i badacz rozumieją to samo słowo inaczej, więc odpowiedź nie dotyczy tego, co chcieliśmy zmierzyć", c: true },
+      { t: "Na losowym rozmyciu wyników przy wielu pomiarach", c: false },
+      { t: "Na celowym fałszowaniu danych przez badacza", c: false },
+      { t: "Na zbyt małej próbie badawczej", c: false },
+    ],
+    exp: "Qui pro quo to błąd nieporozumienia: np. „często”, „dochód” (brutto czy netto?), „rodzeństwo” (przyrodnie też?) znaczą co innego dla badanego i badacza. Skutkuje systematycznym błędem pomiaru; zapobiega mu pilotaż, precyzyjne definicje i ramy czasowe."
+  },
+  {
+    q: "Czym jest placebo według ujęcia Bąbla?",
+    opts: [
+      { t: "Metodą (lub składnikiem metody) bez specyficznego działania, wpływającą przez kontekst, formę podania i informacje", c: true },
+      { t: "Substancją, która zawsze przynosi poprawę zdrowia", c: false },
+      { t: "Aktywnym lekiem o udowodnionym działaniu farmakologicznym", c: false },
+      { t: "Błędem statystycznym przy małej próbie", c: false },
+    ],
+    exp: "Placebo = metoda lub składnik metody bez specyficznego działania w danych warunkach, który wpływa przez kontekst, formę podania, zachowanie personelu i przekazane informacje. Placebo nie daje wyłącznie poprawy — może też szkodzić (nocebo)."
+  },
+  {
+    q: "Które mechanizmy wymieniono jako odpowiedzialne za działanie placebo?",
+    opts: [
+      { t: "Oczekiwania, warunkowanie klasyczne i lęk", c: true },
+      { t: "Randomizacja, manipulacja i kontrola", c: false },
+      { t: "Trafność, rzetelność i moc testu", c: false },
+      { t: "Regresja do średniej i dropout", c: false },
+    ],
+    exp: "Mechanizmy placebo to: oczekiwania (zmieniają doznania i fizjologię), warunkowanie klasyczne (bodźce towarzyszące leczeniu same wywołują reakcję) oraz lęk (zwłaszcza w bólu — jego obniżenie zmniejsza ból)."
+  },
+  {
+    q: "Na czym polega balanced placebo design (Marlatt i wsp., 1973)?",
+    opts: [
+      { t: "Na skrzyżowaniu dwóch czynników: co badany realnie dostał × co myśli, że dostał", c: true },
+      { t: "Na podaniu wszystkim tej samej dawki alkoholu", c: false },
+      { t: "Na całkowitej rezygnacji z grupy placebo", c: false },
+      { t: "Na wielokrotnym pomiarze tych samych osób w czasie", c: false },
+    ],
+    exp: "Balanced placebo design krzyżuje dwa czynniki — co badany realnie otrzymał (alkohol/tonik) × co myśli, że otrzymał — by oddzielić efekt farmakologiczny od efektu oczekiwań."
+  },
+  {
+    q: "Co — według Marlatta — decydowało o ilości wypitego napoju i ocenie zawartości alkoholu?",
+    opts: [
+      { t: "Instructional set (przekonanie, co się pije), a nie realna obecność alkoholu", c: true },
+      { t: "Wyłącznie realna obecność alkoholu w napoju", c: false },
+      { t: "Wielkość próby badawczej", c: false },
+      { t: "Płeć uczestników", c: false },
+    ],
+    exp: "U Marlatta decydował instructional set (przekonanie), a nie realna obecność alkoholu — „utrata kontroli” u alkoholików nie wynikała z samego alkoholu. Efekty oczekiwań są silniejsze dla miar subiektywnych niż dla „twardych” wskaźników wykonania."
+  },
+  {
+    q: "Na czym polega regresja do średniej?",
+    opts: [
+      { t: "Po skrajnym wyniku kolejny pomiar jest zwykle bliższy średniej — przez losowe fluktuacje, nie trwałą zmianę", c: true },
+      { t: "Skrajne wyniki przy powtórzeniu stają się jeszcze bardziej skrajne", c: false },
+      { t: "Każda poprawa po placebo jest realnym efektem leczenia", c: false },
+      { t: "Średnia próby zawsze rośnie wraz z liczbą pomiarów", c: false },
+    ],
+    exp: "Regresja do średniej: po skrajnym wyniku kolejny pomiar jest zwykle bliższy średniej z powodu losowych fluktuacji. Do lekarza trafiamy przy najsilniejszych objawach, więc następny pomiar i tak będzie łagodniejszy — nawet bez leczenia."
+  },
+  {
+    q: "Z czego składa się „odpowiedź placebo” (cała poprawa obserwowana w grupie placebo)?",
+    opts: [
+      { t: "Z właściwego efektu placebo + regresji do średniej + spontanicznej poprawy + błędu pomiaru + zmiany raportowania", c: true },
+      { t: "Wyłącznie z właściwego efektu placebo", c: false },
+      { t: "Wyłącznie z regresji do średniej", c: false },
+      { t: "Z efektu farmakologicznego aktywnego leku", c: false },
+    ],
+    exp: "Nie każda poprawa „po placebo” jest efektem placebo. „Odpowiedź placebo” = właściwy efekt placebo + regresja do średniej + spontaniczna poprawa + błąd pomiaru + zmiana raportowania."
+  },
+  {
+    q: "Jaki był główny wynik I części badania Rosenhana (1973) „On Being Sane in Insane Places”?",
+    opts: [
+      { t: "Żaden lekarz nie rozpoznał, że pseudopacjenci są zdrowi — wszyscy dostali diagnozę (głównie schizofrenii)", c: true },
+      { t: "Wszyscy pseudopacjenci zostali natychmiast rozpoznani jako zdrowi", c: false },
+      { t: "Pseudopacjentów nigdy nie przyjęto do szpitala", c: false },
+      { t: "Lekarze rozpoznali zdrowych, ale mylili się co do chorych", c: false },
+    ],
+    exp: "8 zdrowych pseudopacjentów zgłosiło jeden objaw, potem zachowywali się normalnie. Żaden lekarz nie rozpoznał, że są zdrowi — wszyscy z diagnozą (głównie schizofrenii), wypisani jako „schizofrenia w remisji” (śr. 19 dni)."
+  },
+  {
+    q: "Jak błąd konfirmacji i efekt etykietowania ujawniły się w badaniu Rosenhana?",
+    opts: [
+      { t: "Po nadaniu diagnozy normalne zachowania interpretowano jako jej potwierdzenie (notatki = „maniakalne zapisywanie objawów”)", c: true },
+      { t: "Personel ignorował diagnozy i traktował wszystkich jak zdrowych", c: false },
+      { t: "Pseudopacjenci sami zaczęli wierzyć, że są chorzy", c: false },
+      { t: "Diagnozy zmieniano losowo co kilka dni", c: false },
+    ],
+    exp: "Po przyjęciu diagnozy wszystko interpretowano na jej potwierdzenie (błąd konfirmacji), a sama etykieta „chory” kształtowała postrzeganie zachowań (efekt etykietowania) — np. robienie notatek opisano jako „maniakalne zapisywanie objawów”."
+  },
+  {
+    q: "Jak druga część badania Rosenhana wiąże się z błędami I i II rodzaju (H₀: „wszyscy zdrowi”)?",
+    opts: [
+      { t: "I część = wszędzie widziano chorobę = błąd I rodzaju; II część = uznano 41 zdrowych za symulantów = błąd II rodzaju", c: true },
+      { t: "I część = błąd II rodzaju; II część = błąd I rodzaju", c: false },
+      { t: "Obie części ilustrują wyłącznie błąd I rodzaju", c: false },
+      { t: "Żadna z części nie ma związku z błędami statystycznymi", c: false },
+    ],
+    exp: "Przy H₀ „wszyscy zdrowi”: I część — wszędzie widziano chorobę = odrzucenie prawdziwej H₀ = błąd I rodzaju. II część — po ostrzeżeniu uznano 41 z 193 prawdziwych pacjentów za symulantów (choć Rosenhan nikogo nie wysłał) = niedostrzeżenie choroby = błąd II rodzaju."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#1e40af'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#2563eb'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#3b82f6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
