@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 1 – Zaawansowana metodologia badań</title>
+<style>
+  :root {
+    --blue:   #3b82f6;
+    --blue2:  #2563eb;
+    --blue3:  #93c5fd;
+    --blue4:  #dbeafe;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f5f8ff;
+    --border: #dbe2ec;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #eff6ff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1e40af 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #eff6ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #bfdbfe;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #1e40af; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #eff6ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #1e40af; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e40af, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(37,99,235,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #1e40af; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
+  <h1>🔬 Zaawansowana metodologia badań</h1>
+  <p>Test 1 · Poziom 1 · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POZIOM 1 · FUNDAMENTY</div>
+    <h2>Witaj w Teście 1!</h2>
+    <p>Test sprawdza <strong>fundamenty metodologii</strong> — po co nam metodologia, 5 pytań metodologa, klasyczne badania, koncepcje przyczynowości (Hume, Bacon, Mill) oraz falsyfikację Poppera i efekt Barnuma.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Po co metodologia · 5 pytań metodologa · katharsis (Bushman) · Bartlett · Festinger &amp; Carlsmith · trzy warunki przyczynowości Hume'a · indukcja eliminacyjna Bacona · kanony Milla i kanon jedynej różnicy · falsyfikacja Poppera · efekt Barnuma (Forer)</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // === 1. PO CO METODOLOGIA ===
+  {
+    q: "Nauka bywa określana jako „zdyscyplinowana ciekawość”. Na czym polega w tym ujęciu rola metodologii?",
+    opts: [
+      { t: "Zamienia intuicje w testowalne twierdzenia i chroni przed błędami poznawczymi badacza", c: true },
+      { t: "Dostarcza ostatecznych dowodów potwierdzających każdą teorię raz na zawsze", c: false },
+      { t: "Zastępuje teorię, bo liczą się tylko zebrane dane", c: false },
+      { t: "Służy wyłącznie do liczenia statystyk po zakończeniu badania", c: false }
+    ],
+    exp: "Metodologia łączy teorię z praktyką: pomaga przełożyć teorię na hipotezy, dostarcza narzędzi czyniących badanie rzetelnym i powtarzalnym oraz chroni przed błędami poznawczymi badacza — zamienia intuicje w testowalne twierdzenia."
+  },
+  {
+    q: "Czym według wykładu jest „teoria bez badań”?",
+    opts: [
+      { t: "Filozofią i spekulacją — jak spójna, lecz nietestowana teoria Freuda", c: true },
+      { t: "Najczystszą formą nauki, bo nie zakłócają jej dane", c: false },
+      { t: "Zbieraniem danych bez sensu", c: false },
+      { t: "Replikacją wcześniejszych eksperymentów", c: false }
+    ],
+    exp: "Teoria bez badań = filozofia, spekulacja. Freud miał spójną teorię, ale brakowało rygorystycznych testów, dlatego dziś jest bardziej inspiracją niż wiedzą naukową."
+  },
+  {
+    q: "Czym jest „badanie bez teorii” (np. 1000 ankiet „koty czy psy?”)?",
+    opts: [
+      { t: "Zbieraniem danych bez sensu — sam opis, bez hipotezy i wniosków ogólnych", c: true },
+      { t: "Wzorcowym przykładem nauki dzięki dużej próbie", c: false },
+      { t: "Falsyfikacją teorii", c: false },
+      { t: "Operacjonalizacją konstruktu", c: false }
+    ],
+    exp: "Badania bez teorii to zbieranie danych bez sensu — 1000 ankiet „koty czy psy?” daje tylko opis, nie naukę: brak hipotezy i brak wniosków ogólnych. Sama duża próba nie czyni z tego nauki."
+  },
+  {
+    q: "Od czego — według wykładu — naprawdę zaczyna się nauka?",
+    opts: [
+      { t: "Od przewidywania, czyli postawienia hipotezy", c: true },
+      { t: "Od zebrania jak największej próby", c: false },
+      { t: "Od analizy statystycznej danych", c: false },
+      { t: "Od publikacji wyników", c: false }
+    ],
+    exp: "Duża próba ≠ nauka. Nauka zaczyna się od przewidywania — od postawienia hipotezy, którą można następnie testować."
+  },
+
+  // === 2. 5 PYTAŃ METODOLOGA ===
+  {
+    q: "Jaka jest poprawna sekwencja „5 pytań metodologa”?",
+    opts: [
+      { t: "Hipoteza → operacjonalizacja → projekt → trafność → wiarygodność/replikowalność", c: true },
+      { t: "Projekt → hipoteza → trafność → operacjonalizacja → publikacja", c: false },
+      { t: "Operacjonalizacja → hipoteza → wiarygodność → projekt → trafność", c: false },
+      { t: "Trafność → hipoteza → projekt → operacjonalizacja → replikacja", c: false }
+    ],
+    exp: "Sekwencja: hipoteza → operacjonalizacja (konstrukty → wskaźniki) → projekt → trafność → wiarygodność/replikowalność."
+  },
+  {
+    q: "Co oznacza pytanie metodologa „Jak to operacjonalizuję?”",
+    opts: [
+      { t: "Jak przełożyć konstrukty na mierzalne wskaźniki", c: true },
+      { t: "Jaki test statystyczny zastosować na końcu", c: false },
+      { t: "Czy wynik da się powtórzyć w innym laboratorium", c: false },
+      { t: "Jak duża powinna być próba badawcza", c: false }
+    ],
+    exp: "Operacjonalizacja to przełożenie konstruktów (np. „stres”, „pamięć”) na konkretne, mierzalne wskaźniki."
+  },
+
+  // === 3. KLASYCZNE BADANIA ===
+  {
+    q: "Co wykazał eksperyment Bushmana, Baumeistera i Stacka (1999) testujący hipotezę katharsis?",
+    opts: [
+      { t: "Osoby bijące w worek bokserski były bardziej agresywne, nie mniej", c: true },
+      { t: "Wyładowanie agresji w worku skutecznie obniżało późniejszą agresję", c: false },
+      { t: "Wyładowanie i spokojne siedzenie dawały identyczny poziom agresji", c: false },
+      { t: "Spokojne siedzenie zwiększało agresję bardziej niż bicie w worek", c: false }
+    ],
+    exp: "Wbrew intuicji „trzeba się wyładować”, prowokowani studenci bijący w worek byli BARDZIEJ agresywni, nie mniej. Pokazuje to, że sama intuicja nie wystarcza — potrzebny jest test empiryczny."
+  },
+  {
+    q: "Jaki wniosek o pamięci płynie z badań Bartletta (1932) „Wojna duchów”?",
+    opts: [
+      { t: "Pamięć to rekonstrukcja oparta na schematach, a nie wierny zapis", c: true },
+      { t: "Pamięć to dokładny, fotograficzny zapis zdarzeń", c: false },
+      { t: "Pamięć poprawia się przy kolejnych odtworzeniach", c: false },
+      { t: "Ludzie dodają do wspomnień coraz więcej szczegółów nadprzyrodzonych", c: false }
+    ],
+    exp: "W metodzie odtworzeń seryjnych odtworzenia były skracane („kajak”→„łódź”), usuwano wątki nadprzyrodzone — pamięć to rekonstrukcja oparta na schematach, nie wierny zapis."
+  },
+  {
+    q: "W eksperymencie Festingera i Carlsmitha (1959) kto oceniał nudne zadanie jako ciekawsze?",
+    opts: [
+      { t: "Osoby, które dostały 1 dolara za zachwalanie zadania", c: true },
+      { t: "Osoby, które dostały 20 dolarów za zachwalanie zadania", c: false },
+      { t: "Osoby z grupy kontrolnej bez żadnej zapłaty", c: false },
+      { t: "Wszystkie grupy oceniły zadanie tak samo", c: false }
+    ],
+    exp: "Osoby płacone tylko 1$ oceniały nudne zadanie jako ciekawsze niż płacone 20$. Mała zapłata nie usprawiedliwia kłamstwa → powstaje dysonans poznawczy → zmiana postawy."
+  },
+
+  // === 4. HUME ===
+  {
+    q: "Według Davida Hume'a, czego tak naprawdę doświadczamy zamiast „przyczyny”?",
+    opts: [
+      { t: "Jedynie następstwa zdarzeń — nie mamy „zmysłu przyczyny”", c: true },
+      { t: "Bezpośrednio obserwowanej siły przyczynowej", c: false },
+      { t: "Statystycznej korelacji między zmiennymi", c: false },
+      { t: "Mechanizmu mediacyjnego łączącego zdarzenia", c: false }
+    ],
+    exp: "Hume twierdził, że nie mamy „zmysłu przyczyny” — widzimy jedynie następstwo zdarzeń, a przyczynowość jest wnioskiem, nie bezpośrednim spostrzeżeniem."
+  },
+  {
+    q: "Które trzy warunki przyczynowości wskazał Hume?",
+    opts: [
+      { t: "Bliskość w czasie i przestrzeni, następstwo czasowe, stała koniunkcja", c: true },
+      { t: "Randomizacja, manipulacja, grupa kontrolna", c: false },
+      { t: "Trafność, rzetelność, replikowalność", c: false },
+      { t: "Zgodność, różnica, zmiany towarzyszące", c: false }
+    ],
+    exp: "Hume wskazał trzy warunki: bliskość w czasie i przestrzeni, następstwo czasowe (X przed Y) oraz stałą koniunkcję (zawsze gdy X, to Y). Zgodność/różnica/zmiany towarzyszące to kanony Milla, nie Hume'a."
+  },
+  {
+    q: "Dlaczego warunki Hume'a są „konieczne, ale niewystarczające” (kogut i słońce, lody i utonięcia)?",
+    opts: [
+      { t: "Mogą je spełniać zwykłe korelacje wynikające ze wspólnej trzeciej zmiennej", c: true },
+      { t: "Są zbyt rygorystyczne, by spełnić je w realnych badaniach", c: false },
+      { t: "Wymagają randomizacji, której Hume nie znał", c: false },
+      { t: "Dotyczą tylko zjawisk fizycznych, nie psychologicznych", c: false }
+    ],
+    exp: "Kogut i wschód słońca oraz sprzedaż lodów i utonięcia spełniają wszystkie trzy warunki, a to tylko korelacja — wspólną przyczyną jest zmienna trzecia (np. upał). Dlatego warunki są konieczne, ale niewystarczające."
+  },
+
+  // === 5. BACON ===
+  {
+    q: "Jaką metodę poznania zaproponował Francis Bacon, nazywany ojcem nowoczesnej metody naukowej?",
+    opts: [
+      { t: "Indukcję eliminacyjną — systematyczne tablice odsiewające kandydatów na przyczynę", c: true },
+      { t: "Dedukcję z aksjomatów na wzór geometrii", c: false },
+      { t: "Falsyfikację hipotez przez kontrprzykłady", c: false },
+      { t: "Introspekcję jako główne źródło wiedzy", c: false }
+    ],
+    exp: "Bacon zaproponował indukcję eliminacyjną: zamiast intuicji — systematyczne tablice, w których przyczynę „odsiewa się” przez eliminację kandydatów. Falsyfikacja to dopiero Popper."
+  },
+  {
+    q: "Jakie trzy tablice gromadził Bacon, by wykryć przyczynę?",
+    opts: [
+      { t: "Obecności, nieobecności i stopniowalności (zjawisko w różnym stopniu)", c: true },
+      { t: "Zgodności, różnicy i reszt", c: false },
+      { t: "Zysków, strat i punktu odniesienia", c: false },
+      { t: "Trafności, rzetelności i mocy", c: false }
+    ],
+    exp: "Bacon gromadził wiedzę w trzech tablicach: obecności (skutek występuje), nieobecności (nie występuje) i stopniowalności (występuje w różnym stopniu)."
+  },
+
+  // === 6. MILL ===
+  {
+    q: "Czym są kanony indukcji Johna Stuarta Milla w stosunku do dorobku Bacona?",
+    opts: [
+      { t: "„Uszczegółowionymi tablicami Bacona” — ścisłymi zasadami wykrywania przyczynowości", c: true },
+      { t: "Całkowitym odrzuceniem podejścia Bacona", c: false },
+      { t: "Pierwszym sformułowaniem zasady falsyfikacji", c: false },
+      { t: "Statystycznym testem istotności różnic", c: false }
+    ],
+    exp: "Kanony Milla to „uszczegółowione tablice Bacona” — ścisłe logiczne zasady wykrywania przyczynowości (zgodności, różnicy, zmian towarzyszących)."
+  },
+  {
+    q: "Na czym polega kanon zgodności Milla?",
+    opts: [
+      { t: "Jeśli w różnych sytuacjach z tym samym zjawiskiem zawsze powtarza się ten sam czynnik, jest on przyczyną", c: true },
+      { t: "Jeśli usunięcie jedynego różniącego czynnika usuwa zjawisko, jest on przyczyną", c: false },
+      { t: "Jeśli zmiana jednej zmiennej pociąga zmianę drugiej, są powiązane przyczynowo", c: false },
+      { t: "Jeśli zjawisko nigdy nie występuje, czynnik jest bez znaczenia", c: false }
+    ],
+    exp: "Kanon zgodności: różne sytuacje, to samo zjawisko, zawsze ten sam czynnik → on jest przyczyną (np. różni ludzie po tej samej potrawie mają zatrucie)."
+  },
+  {
+    q: "Na czym polega kanon różnicy Milla?",
+    opts: [
+      { t: "Zjawisko jest albo go nie ma, a sytuacje różnią się tylko jednym czynnikiem", c: true },
+      { t: "Różne sytuacje, ale zawsze ten sam wspólny czynnik", c: false },
+      { t: "Im bardziej zmienia się przyczyna, tym bardziej zmienia się skutek", c: false },
+      { t: "Po odjęciu znanych przyczyn pozostaje reszta zjawiska", c: false }
+    ],
+    exp: "Kanon różnicy: porównujemy sytuację, w której zjawisko występuje, z tą, gdzie go nie ma, a różnią się tylko jednym czynnikiem (np. jedna grupa śpi 8h, druga 4h → gorsza pamięć)."
+  },
+  {
+    q: "Na czym polega kanon zmian towarzyszących Milla?",
+    opts: [
+      { t: "Zmiana jednej zmiennej pociąga za sobą zmianę drugiej", c: true },
+      { t: "Różne sytuacje z tym samym zjawiskiem mają zawsze wspólny czynnik", c: false },
+      { t: "Zjawisko jest albo go nie ma, a sytuacje różnią się jednym czynnikiem", c: false },
+      { t: "Po odjęciu znanych przyczyn pozostaje niewyjaśniona reszta", c: false }
+    ],
+    exp: "Kanon zmian towarzyszących: gdy zmiana jednej zmiennej pociąga za sobą zmianę drugiej, są one powiązane przyczynowo (np. im dłuższa deprywacja snu, tym gorsze wyniki). To zalążek myślenia korelacyjnego."
+  },
+  {
+    q: "Który kanon Milla stanowi logiczny fundament eksperymentu?",
+    opts: [
+      { t: "Kanon jedynej różnicy — jedyną systematyczną różnicą między grupami jest manipulacja zmienną niezależną", c: true },
+      { t: "Kanon zgodności — wspólny czynnik wielu sytuacji", c: false },
+      { t: "Kanon zmian towarzyszących — współzmienność dwóch zmiennych", c: false },
+      { t: "Kanon reszt — odejmowanie znanych przyczyn", c: false }
+    ],
+    exp: "Kanon jedynej różnicy (kanon różnicy) = logiczny fundament eksperymentu: jedyną systematyczną różnicą między grupą eksperymentalną a kontrolną jest manipulacja zmienną niezależną. To historyczny prototyp grupy kontrolnej."
+  },
+  {
+    q: "Które ograniczenie kanonów Milla wskazano na wykładzie?",
+    opts: [
+      { t: "Nie uwzględniają losowości i statystyki (np. regresji do średniej) ani mediatorów/moderatorów", c: true },
+      { t: "Wymagają randomizacji uczestników do grup", c: false },
+      { t: "Działają tylko przy bardzo dużych próbach", c: false },
+      { t: "Są stosowalne wyłącznie do zjawisk psychologicznych", c: false }
+    ],
+    exp: "Kanony zakładają prostą, jednokierunkową przyczynowość; nie uwzględniają mediatorów/moderatorów ani losowości i statystyki (np. regresji do średniej) i wymagają pełnej obserwacji wszystkich warunków, co jest nierealne."
+  },
+
+  // === 7. POPPER ===
+  {
+    q: "Na czym polega kluczowa krytyka indukcji u Karla Poppera?",
+    opts: [
+      { t: "Nie da się „udowodnić” teorii — można jedynie próbować ją obalić (sfalsyfikować)", c: true },
+      { t: "Indukcja jest jedyną pewną drogą do prawdy naukowej", c: false },
+      { t: "Teorie można w 100% potwierdzić dużą liczbą obserwacji", c: false },
+      { t: "Nauka powinna unikać stawiania hipotez", c: false }
+    ],
+    exp: "Popper twierdził, że nie da się udowodnić teorii — można jedynie próbować ją obalić. Nauka to proces stawiania hipotez i prób ich falsyfikacji."
+  },
+  {
+    q: "Co oznacza „asymetria” w koncepcji falsyfikacji Poppera?",
+    opts: [
+      { t: "Jeden kontrprzykład może obalić teorię, lecz żadna liczba potwierdzeń nie dowodzi jej w 100%", c: true },
+      { t: "Jedno potwierdzenie wystarczy, by uznać teorię za prawdziwą", c: false },
+      { t: "Teorie fałszywe i prawdziwe są równie łatwe do wykazania", c: false },
+      { t: "Falsyfikacja jest trudniejsza niż dowodzenie prawdziwości", c: false }
+    ],
+    exp: "Asymetria: możemy pokazać, że teoria jest fałszywa (jeden kontrprzykład — np. jeden wiarygodny mężczyzna obala „na mężczyznach nie można polegać”), ale nigdy nie dowiedziemy jej prawdziwości w 100%."
+  },
+  {
+    q: "Które twierdzenie jest naukowe według kryterium Poppera?",
+    opts: [
+      { t: "„Stres obniża pamięć krótkotrwałą” — można wskazać obserwację, która je obala", c: true },
+      { t: "„Każde zachowanie wynika z nieświadomych popędów”", c: false },
+      { t: "„Kanapka z serem jest najsmaczniejsza”", c: false },
+      { t: "Twierdzenie, które zawsze da się dopasować do faktów", c: false }
+    ],
+    exp: "Twierdzenie naukowe można sfalsyfikować — da się wskazać obserwację, która je obala (np. „stres obniża pamięć krótkotrwałą”). Twierdzenia nienaukowe „zawsze się dopasują” i dają wyjaśnienia po fakcie."
+  },
+  {
+    q: "Jak — zgodnie z wykładem — uczynić zbyt ogólne twierdzenie testowalnym?",
+    opts: [
+      { t: "Uszczegółowić je, np. „...smaczniejsza dla 9-latków niż z szynką”", c: true },
+      { t: "Sformułować je tak ogólnie, by pasowało do każdej sytuacji", c: false },
+      { t: "Oprzeć je na nieświadomych popędach", c: false },
+      { t: "Usunąć z niego wszelkie warunki i ograniczenia", c: false }
+    ],
+    exp: "Zbyt ogólne twierdzenia („kanapka z serem jest najsmaczniejsza”) są nieweryfikowalne. Uszczegółowienie („...smaczniejsza dla 9-latków niż z szynką”) czyni je testowalnymi."
+  },
+
+  // === 8. EFEKT BARNUMA ===
+  {
+    q: "Czym jest efekt Barnuma (Forer, 1949)?",
+    opts: [
+      { t: "Skłonnością do uznawania ogólnych, nieprecyzyjnych opisów za trafne i osobiste („to dokładnie ja!”)", c: true },
+      { t: "Tendencją do odrzucania wszystkich opisów osobowości jako nietrafnych", c: false },
+      { t: "Powrotem skrajnych wyników do średniej przy powtórnym pomiarze", c: false },
+      { t: "Skłonnością do zapamiętywania tylko negatywnych informacji o sobie", c: false }
+    ],
+    exp: "Efekt Barnuma (Forer, 1949) to skłonność do uznawania ogólnych, nieprecyzyjnych opisów za trafne i spersonalizowane. Bazują na nim horoskopy — działają zdania powszechne, z „ale”, mieszające cechy (np. „Masz potrzebę, by ludzie cię lubili, ale jesteś krytyczny wobec siebie”)."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#1e40af'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#2563eb'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#3b82f6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
