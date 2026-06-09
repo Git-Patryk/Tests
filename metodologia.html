@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaawansowana metodologia badań – Notatki</title>
+<style>
+  :root {
+    --bg:       #05080d;
+    --card:     #0b111b;
+    --border:   #16202e;
+    --text:     #e6edf6;
+    --muted:    #708099;
+
+    /* blue accent */
+    --nc:       #3b82f6;
+    --nc-dim:   rgba(59,130,246,.13);
+    --nc-glow:  rgba(59,130,246,.30);
+    --nc-border:rgba(59,130,246,.32);
+
+    /* light content area */
+    --c-bg:     #f6faff;
+    --c-text:   #15233a;
+    --c-muted:  #5a6b82;
+    --c-border: #d8e6fb;
+    --c-head:   #1d4ed8;
+    --c-head2:  #2563eb;
+    --c-row:    #edf4ff;
+
+    /* status colors */
+    --green:  #4ade80;
+    --blue:   #60a5fa;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,.020) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,.020) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    padding: .9rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(5,8,13,.94);
+    backdrop-filter: blur(14px);
+    display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+  nav a:hover { color: var(--nc); }
+  nav .sep { color: var(--border); font-size: .82rem; }
+  nav .current { color: var(--text); font-weight: 600; font-size: .82rem; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2.8rem;
+    align-items: start;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    position: sticky; top: 60px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 1.4rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .toc::-webkit-scrollbar { width: 3px; }
+  .toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .toc-title {
+    font-size: .63rem; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted);
+    padding-bottom: .7rem; border-bottom: 1px solid var(--border); margin-bottom: .9rem;
+  }
+  .toc-group { margin-bottom: 1.1rem; }
+  .toc-group-label {
+    font-size: .6rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--nc); opacity: .75; margin-bottom: .3rem;
+  }
+  .toc a {
+    display: block; padding: .28rem .55rem; border-radius: 5px;
+    font-size: .78rem; color: var(--muted); text-decoration: none; line-height: 1.4;
+    transition: color .15s, background .15s;
+  }
+  .toc a:hover { color: var(--text); background: var(--nc-dim); }
+  .toc a.active { color: var(--nc); background: var(--nc-dim); font-weight: 600; }
+
+  /* ── MAIN ── */
+  .content { min-width: 0; padding: 2.2rem 0; }
+
+  /* Page header */
+  .page-header { margin-bottom: 2.4rem; }
+  .subject-icon { font-size: 2.6rem; margin-bottom: .7rem; filter: drop-shadow(0 0 14px var(--nc)); }
+  .subject-tag {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    border-radius: 20px; padding: .22rem .8rem;
+    font-size: .7rem; font-weight: 700; color: var(--nc);
+    text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem;
+  }
+  .page-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 800; line-height: 1.2; margin-bottom: .5rem;
+    background: linear-gradient(90deg, #fff 45%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .page-header .subtitle { color: var(--muted); font-size: .88rem; max-width: 640px; line-height: 1.6; }
+  .accent-line { width: 44px; height: 2px; background: var(--nc); box-shadow: 0 0 8px var(--nc); border-radius: 2px; margin: 1rem 0; }
+
+  /* Exam strip */
+  .exam-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: .7rem; margin-bottom: 2.2rem; }
+  .exam-badge { background: var(--card); border: 1px solid var(--border); border-radius: 11px; padding: .9rem 1.1rem; }
+  .exam-badge .label { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .25rem; }
+  .exam-badge .value { font-size: .92rem; font-weight: 700; color: var(--text); }
+  .exam-badge.hi { border-color: var(--nc-border); background: var(--nc-dim); }
+  .exam-badge.hi .value { color: var(--nc); }
+
+  /* Group divider */
+  .group-divider { display: flex; align-items: center; gap: 1rem; margin: 2.8rem 0 1.8rem; }
+  .group-divider-label {
+    font-size: .66rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; white-space: nowrap;
+    padding: .28rem .85rem; border-radius: 20px;
+  }
+  .gdl-fund     { background: rgba(96,165,250,.12); color: var(--blue);   border: 1px solid rgba(96,165,250,.25); }
+  .gdl-core     { background: var(--nc-dim);          color: var(--nc);    border: 1px solid var(--nc-border); }
+  .gdl-valid    { background: rgba(52,211,153,.1);     color: #34d399;     border: 1px solid rgba(52,211,153,.22); }
+  .gdl-stat     { background: rgba(74,222,128,.1);     color: var(--green); border: 1px solid rgba(74,222,128,.22); }
+  .gdl-exam     { background: rgba(251,146,60,.14);   color: var(--orange);border: 1px solid rgba(251,146,60,.3); }
+  .gdl-lit      { background: rgba(138,117,96,.14);    color: var(--muted); border: 1px solid rgba(138,117,96,.3); }
+  .group-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── SECTION ── */
+  section { margin-bottom: 3rem; scroll-margin-top: 72px; }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: .9rem;
+    margin-bottom: 1.2rem; padding-bottom: .9rem; border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 900; color: var(--nc);
+  }
+  .section-header-text h2 { font-size: 1.1rem; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: .18rem; }
+  .section-header-text .src-tag { font-size: .7rem; color: var(--muted); font-style: italic; }
+  .section-header-text .src-tag span { color: var(--nc); opacity: .85; font-style: normal; }
+
+  /* ── LIGHT CONTENT CARD ── */
+  .lcard {
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 13px;
+    padding: 1.5rem 1.7rem;
+    margin-bottom: .9rem;
+    color: var(--c-text);
+  }
+
+  .lcard h3 {
+    font-size: .97rem; font-weight: 800;
+    color: var(--c-head); margin-bottom: .85rem;
+    padding-bottom: .5rem; border-bottom: 2px solid #dceafe;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .lcard h4 {
+    font-size: .88rem; font-weight: 700;
+    color: var(--c-head2); margin: 1rem 0 .5rem;
+  }
+  .lcard > p { font-size: .875rem; line-height: 1.68; color: var(--c-text); margin-bottom: .6rem; }
+
+  /* Arrow list */
+  .alist { list-style: none; padding: 0; }
+  .alist li {
+    position: relative; padding: .38rem .4rem .38rem 1.5rem;
+    font-size: .875rem; line-height: 1.68; color: var(--c-text);
+    border-bottom: 1px solid rgba(59,130,246,.1);
+  }
+  .alist li:last-child { border-bottom: none; }
+  .alist li::before { content: '→'; position: absolute; left: 0; top: .38rem; color: var(--nc); font-weight: 700; }
+  .alist li strong { color: var(--c-head); }
+  .alist li em { color: var(--c-muted); font-style: italic; }
+
+  /* Numbered list */
+  .nlist { padding-left: 1.3rem; }
+  .nlist li {
+    font-size: .875rem; line-height: 1.7; color: var(--c-text);
+    padding: .25rem 0; border-bottom: 1px solid rgba(59,130,246,.07);
+  }
+  .nlist li:last-child { border-bottom: none; }
+  .nlist li strong { color: var(--c-head); }
+
+  /* Table */
+  .ltable { width: 100%; border-collapse: collapse; font-size: .835rem; margin: .6rem 0; border-radius: 10px; overflow: hidden; }
+  .ltable th {
+    text-align: left; padding: .55rem .85rem;
+    background: var(--nc); color: #fff;
+    font-size: .73rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .ltable td { padding: .5rem .85rem; color: var(--c-text); border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; }
+  .ltable tr:last-child td { border-bottom: none; }
+  .ltable tr:nth-child(even) td { background: rgba(59,130,246,.05); }
+  .ltable tr:hover td { background: rgba(59,130,246,.09); }
+  .ltable td strong { color: var(--c-head); }
+
+  /* Two-col grid */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-bottom: .8rem; }
+
+  /* Pill */
+  .pill { display: inline-block; padding: .12rem .5rem; border-radius: 5px; font-size: .73rem; font-weight: 700; }
+  .pill-v { background: var(--nc-dim); color: var(--nc); border: 1px solid var(--nc-border); }
+  .pill-g { background: rgba(74,222,128,.1); color: #15803d; border: 1px solid rgba(74,222,128,.2); }
+  .pill-b { background: rgba(96,165,250,.1); color: #1d4ed8; border: 1px solid rgba(96,165,250,.2); }
+  .pill-y { background: rgba(251,191,36,.1); color: #b8860b; border: 1px solid rgba(251,191,36,.2); }
+  .pill-r { background: rgba(220,38,38,.1); color: #dc2626; border: 1px solid rgba(220,38,38,.25); }
+
+  /* Callout */
+  .callout {
+    border-radius: 9px; padding: .85rem 1.1rem;
+    margin: .7rem 0; font-size: .855rem; line-height: 1.72;
+    display: flex; gap: .75rem; align-items: flex-start;
+    color: var(--text);
+  }
+  .callout .ci { font-size: .95rem; flex-shrink: 0; margin-top: .05rem; }
+  .callout.exam  { background: rgba(59,130,246,.16); border-left: 3px solid var(--nc); }
+  .callout.tip   { background: rgba(74,222,128,.13);  border-left: 3px solid var(--green); }
+  .callout.warn  { background: rgba(251,191,36,.14);  border-left: 3px solid var(--yellow); }
+  .callout.info  { background: rgba(96,165,250,.13);  border-left: 3px solid var(--blue); }
+  .callout strong { color: #fff; }
+
+  /* Callout wewnątrz jasnych kart — ciemny tekst */
+  .lcard .callout { color: var(--c-text); }
+  .lcard .callout strong { color: var(--c-head); }
+  .lcard .callout.exam { background: rgba(59,130,246,.12); }
+  .lcard .callout.tip  { background: rgba(74,222,128,.12); }
+  .lcard .callout.warn { background: rgba(251,191,36,.16); }
+  .lcard .callout.info { background: rgba(96,165,250,.12); }
+
+  /* Formula box */
+  .formula {
+    background: #0f1929; border: 1px solid var(--nc-border); border-radius: 9px;
+    padding: .8rem 1.1rem; margin: .7rem 0; text-align: center;
+    font-size: 1.05rem; font-weight: 700; color: var(--nc); letter-spacing: .02em;
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+  }
+  .lcard .formula {
+    background: #eaf2ff; color: var(--c-head); border-color: var(--c-border);
+  }
+  .formula small { display: block; font-size: .72rem; font-weight: 500; color: var(--c-muted); margin-top: .35rem; letter-spacing: 0; font-family: 'Segoe UI', sans-serif; }
+
+  /* Section summary box */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(59,130,246,.12), rgba(37,99,235,.06));
+    border: 1px solid var(--nc-border); border-radius: 13px;
+    padding: 1.3rem 1.5rem; margin-top: 1rem;
+  }
+  .summary-box h4 { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--nc); margin-bottom: .8rem; }
+  .summary-box ul { list-style: none; padding: 0; }
+  .summary-box li { font-size: .855rem; line-height: 1.6; color: var(--text); padding: .25rem 0 .25rem 1.4rem; position: relative; }
+  .summary-box li::before { content: '◆'; position: absolute; left: 0; color: var(--nc); font-size: .7rem; top: .45rem; }
+  .summary-box li strong { color: #fff; }
+
+  /* Summary-box wewnątrz jasnych kart — ciemny tekst na jasnym tle */
+  .lcard .summary-box {
+    background: linear-gradient(135deg, rgba(59,130,246,.10), rgba(37,99,235,.04));
+    border: 1px solid var(--c-border);
+  }
+  .lcard .summary-box h4 { color: var(--c-head); }
+  .lcard .summary-box li { color: var(--c-text); }
+  .lcard .summary-box li strong { color: var(--c-head); }
+
+  /* Exam Q&A item */
+  .qitem { border-bottom: 1px solid var(--c-border); padding: .85rem 0; }
+  .qitem:last-child { border-bottom: none; }
+  .qitem .q { font-size: .88rem; font-weight: 700; color: var(--c-head); margin-bottom: .4rem; }
+  .qitem .q b { color: var(--nc); margin-right: .35rem; }
+  .qopts { list-style: none; padding: 0; margin: .4rem 0 0; }
+  .qopts li {
+    font-size: .84rem; line-height: 1.5; color: var(--c-text);
+    padding: .32rem .55rem .32rem 1.7rem; position: relative;
+    border-radius: 6px; margin-bottom: .22rem; border: 1px solid transparent;
+  }
+  .qopts li::before { content: '○'; position: absolute; left: .5rem; top: .34rem; color: var(--c-muted); font-size: .7rem; }
+  .qopts li.ok {
+    background: rgba(74,222,128,.14); color: #15803d; font-weight: 700;
+    border-color: rgba(74,222,128,.4);
+  }
+  .qopts li.ok::before { content: '✓'; color: #15803d; font-weight: 900; font-size: .78rem; left: .45rem; }
+  .qitem .note { font-size: .8rem; color: var(--c-muted); font-style: italic; padding-left: 1.7rem; margin-top: .35rem; }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 2rem; color: var(--muted); font-size: .72rem; border-top: 1px solid var(--border); }
+
+  /* Mobile */
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 0 1rem 4rem; }
+    .toc { position: static; max-height: none; overflow: visible; border: 1px solid var(--border); border-radius: 12px; background: var(--card); padding: 1rem 1.2rem; margin: 1rem 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .exam-strip { grid-template-columns: 1fr 1fr; }
+    .ltable { font-size: .78rem; }
+    .ltable th, .ltable td { padding: .4rem .6rem; }
+  }
+  @media (max-width: 480px) {
+    .exam-strip { grid-template-columns: 1fr; }
+  }
+  /* ── SEMANTIC COLOR HELPERS ── */
+  .zysk   { color: #15803d; font-weight: 700; }   /* zysk / pozytyw */
+  .strata { color: #dc2626; font-weight: 700; }   /* strata / błąd */
+  .term   { color: #1d4ed8; font-weight: 700; }   /* termin kluczowy */
+  .uwaga  { color: #c2410e; font-weight: 700; }   /* uwaga / wyjątek */
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <a href="swps.html">SWPS</a>
+  <span class="sep">/</span>
+  <a href="swps-metodologia.html">Zaawansowana metodologia badań</a>
+  <span class="sep">/</span>
+  <span class="current">Notatki</span>
+</nav>
+
+<div class="layout">
+
+<!-- ── TOC ── -->
+<aside class="toc">
+  <div class="toc-title">Spis treści</div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">⚡ O przedmiocie</div>
+    <a href="#info">Zakres i egzamin</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🧭 Fundamenty nauki</div>
+    <a href="#S1">1 · Po co metodologia · 5 pytań</a>
+    <a href="#S2">2 · Przyczynowość: Hume → Mill</a>
+    <a href="#S3">3 · Popper · falsyfikacja</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🔬 Schematy i zmienne</div>
+    <a href="#S4">4 · Rodzaje badań i schematy</a>
+    <a href="#S5">5 · Eksperyment: manipulacja, randomizacja</a>
+    <a href="#S6">6 · Pomiar między- vs wewnątrzosobowy</a>
+    <a href="#S7">7 · Mediatory i moderatory</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🎯 Trafność i rzetelność</div>
+    <a href="#S8">8 · Trafność i jej rodzaje</a>
+    <a href="#S9">9 · Błąd pomiaru · rzetelność</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">⚗️ Artefakty</div>
+    <a href="#S10">10 · Placebo, oczekiwania, regresja</a>
+    <a href="#S11">11 · Etykietowanie · Rosenhan · qui pro quo</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🔁 Replikacja & Open Science</div>
+    <a href="#S12">12 · Replikacja i kryzys replikacyjny</a>
+    <a href="#S13">13 · SMAR · priming</a>
+    <a href="#S14">14 · Prerejestracja · p-hacking</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📊 Wnioskowanie statystyczne</div>
+    <a href="#S15">15 · Hipotezy · błędy I i II rodzaju</a>
+    <a href="#S16">16 · Wielkość efektu · moc · próba</a>
+    <a href="#S17">17 · Meta-analiza</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📋 Sondaże i dobór próby</div>
+    <a href="#S18">18 · Badania samoopisowe</a>
+    <a href="#S19">19 · Dobór próby</a>
+    <a href="#S20">20 · Sztuka pytań · metody zbierania</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🧮 Analizy i integracja</div>
+    <a href="#S21">21 · Analiza wielopoziomowa</a>
+    <a href="#S22">22 · Integracja wiedzy</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📝 Egzamin</div>
+    <a href="#S23">23 · Pytania z wykładów</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📚 Literatura</div>
+    <a href="#lit">Zestawienie</a>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="content">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="subject-icon">🔬</div>
+    <div class="subject-tag">SWPS · Rok 4 · Semestr letni</div>
+    <h1>Zaawansowana metodologia badań</h1>
+    <div class="accent-line"></div>
+    <p class="subtitle">Jak nauka odróżnia prawdę od atrakcyjnej opowieści: przyczynowość (Hume, Mill, Popper), schematy badawcze i zmienne, mediatory i moderatory, trafność i rzetelność, artefakty (placebo, regresja do średniej, etykietowanie), replikacja i Open Science (SMAR, prerejestracja, p-hacking), wnioskowanie statystyczne (błędy I/II rodzaju, wielkość efektu, meta-analiza), sondaże i dobór próby oraz analiza wielopoziomowa.</p>
+  </div>
+
+  <!-- INFO -->
+  <div class="exam-strip" id="info">
+    <div class="exam-badge hi">
+      <div class="label">Egzamin</div>
+      <div class="value">40 pytań · wykład + lektury</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Wykład</div>
+      <div class="value">40 pkt · zalicza 21</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Ćwiczenia</div>
+      <div class="value">60 pkt · zalicza 30</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Prowadzący</div>
+      <div class="value">dr hab. A. Brzezicka</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ci">ℹ️</span><div>Notatka powstała na podstawie <strong>prezentacji wykładowych (W1–W3 + materiały ćwiczeniowe)</strong> oraz <strong>lektur obowiązkowych</strong> (Bąbel 2009, Marlatt 1973, Karwowski 2018, Łaguna 2018, Śpiewak &amp; Kossowska 2008). Egzamin obejmuje <strong>treści z wykładu, ale także te z lektur</strong>. Sekcja 23 zbiera <strong>pytania, które padły na slajdach „pytanie na egzaminie"</strong>.</div>
+  </div>
+
+  <!-- ══════════ BLOK FUNDAMENTY ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-fund">🧭 Fundamenty nauki — po co i jak badamy</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S1 -->
+  <section id="S1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-header-text">
+        <h2>Po co metodologia · 5 pytań metodologa</h2>
+        <div class="src-tag">Źródło: <span>Wykład 1</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Metodologia jako kompas nauki</h3>
+      <p>Nauka to <strong>zdyscyplinowana ciekawość</strong> — zamienia intuicje w <span class="term">testowalne twierdzenia</span>. Metodologia łączy teorię z praktyką: pomaga przełożyć teorię na hipotezy, dostarcza narzędzi czyniących badanie rzetelnym i powtarzalnym oraz chroni przed błędami poznawczymi badacza.</p>
+      <ul class="alist">
+        <li><strong>Teoria bez badań</strong> = filozofia, spekulacja (np. Freud miał spójną teorię, ale brakowało rygorystycznych testów → dziś bardziej inspiracja niż wiedza naukowa)</li>
+        <li><strong>Badania bez teorii</strong> = zbieranie danych bez sensu (1000 ankiet „koty czy psy?" to tylko opis, nie nauka — brak hipotezy, brak wniosków ogólnych)</li>
+        <li><strong>Duża próba ≠ nauka</strong> — nauka zaczyna się od przewidywania (hipotezy)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>5 pytań metodologa</h3>
+      <p>Sekwencja: <em>hipoteza → operacjonalizacja → projekt → trafność → wiarygodność/replikowalność</em>.</p>
+      <ol class="nlist">
+        <li><strong>Co jest pytaniem badawczym / hipotezą?</strong></li>
+        <li><strong>Jak to operacjonalizuję?</strong> (konstrukty → wskaźniki)</li>
+        <li><strong>Jaki projekt</strong> daje poziom wnioskowania, którego chcę? (korelacja vs eksperyment vs quasi)</li>
+        <li><strong>Jakie są zagrożenia trafności?</strong> (wewnętrznej, zewnętrznej, konstruktu)</li>
+        <li><strong>Czy wynik jest wiarygodny i replikowalny?</strong> (moc, prerejestracja, rodzaj danych)</li>
+      </ol>
+    </div>
+
+    <div class="lcard">
+      <h3>Dlaczego testujemy teorie — przykłady</h3>
+      <ul class="alist">
+        <li><strong>Hipoteza katharsis (Bushman, Baumeister &amp; Stack, 1999):</strong> intuicja mówi „trzeba się wyładować". Eksperyment: prowokowani studenci, losowo do warunku „bicie w worek" vs spokojne siedzenie. Wynik: bijący w worek byli <span class="strata">bardziej</span> agresywni, nie mniej → <em>intuicja nie wystarcza</em></li>
+        <li><strong>Bartlett (1932), „Wojna duchów":</strong> pamięć to <span class="term">rekonstrukcja</span> oparta na schematach, nie wierny zapis — odtworzenia były skracane, „kajak"→„łódź", usuwano wątki nadprzyrodzone (metoda odtworzeń seryjnych)</li>
+        <li><strong>Festinger &amp; Carlsmith (1959), dysonans poznawczy:</strong> osoby płacone <strong>1$</strong> za zachwalanie nudnego zadania oceniały je jako ciekawsze niż płacone 20$ (mała zapłata → dysonans → zmiana postawy)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section id="S2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-header-text">
+        <h2>Przyczynowość: Hume → Bacon → Mill</h2>
+        <div class="src-tag">Źródło: <span>Wykład 1–2</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>David Hume (1711–1776) — trzy warunki przyczynowości</h3>
+      <p>Nie mamy „zmysłu przyczyny" — widzimy jedynie następstwo zdarzeń. Aby powiedzieć, że <em>X powoduje Y</em>:</p>
+      <ul class="alist">
+        <li><strong>Bliskość w czasie i przestrzeni</strong> — X i Y występują blisko siebie</li>
+        <li><strong>Następstwo czasowe</strong> — X jest pierwsze, Y później</li>
+        <li><strong>Stała koniunkcja</strong> — zawsze gdy pojawia się X, pojawia się Y</li>
+      </ul>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Warunki Hume'a są <strong>konieczne, ale niewystarczające</strong>. <span class="term">Kogut i słońce</span> oraz <span class="term">lody i utonięcia</span> spełniają wszystkie trzy, a to tylko korelacja (wspólna przyczyna = upał, czyli zmienna trzecia).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Francis Bacon (1561–1626) — indukcja eliminacyjna</h3>
+      <p>Ojciec nowoczesnej metody naukowej. Zamiast intuicji — <span class="term">systematyczne tablice</span>: gromadzimy wiedzę o sytuacjach, w których skutek <strong>występuje</strong> (tablica obecności), <strong>nie występuje</strong> (tablica nieobecności) i <strong>występuje w różnym stopniu</strong> (tablica stopniowalności). Przyczynę „odsiewamy" przez eliminację kandydatów.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>John Stuart Mill (1806–1873) — kanony indukcji</h3>
+      <p>„Uszczegółowione tablice Bacona" — ścisłe zasady wykrywania przyczynowości:</p>
+      <table class="ltable">
+        <tr><th>Kanon</th><th>Zasada</th><th>Przykład</th></tr>
+        <tr><td><strong>Zgodności</strong></td><td>różne sytuacje, to samo zjawisko, zawsze ten sam czynnik → on jest przyczyną</td><td>różni ludzie po tej samej potrawie mają zatrucie</td></tr>
+        <tr><td><strong>Różnicy</strong></td><td>zjawisko jest / go nie ma, sytuacje różnią się tylko jednym czynnikiem</td><td>jedna grupa śpi 8h, druga 4h → gorsza pamięć</td></tr>
+        <tr><td><strong>Zmian towarzyszących</strong></td><td>zmiana jednej zmiennej pociąga zmianę drugiej</td><td>im dłuższa deprywacja snu, tym gorsze wyniki</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Kanon jedynej różnicy</strong> (kanon różnicy) = logiczny fundament eksperymentu: <strong>jedyną systematyczną różnicą między grupą eksperymentalną a kontrolną jest manipulacja zmienną niezależną</strong>. To historyczny prototyp grupy kontrolnej.</div></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Ograniczenia kanonów: zakładają prostą, jednokierunkową przyczynowość; nie uwzględniają mediatorów/moderatorów ani <strong>losowości i statystyki</strong> (np. regresji do średniej); wymagają pełnej obserwacji wszystkich warunków (nierealne).</div></div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section id="S3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-header-text">
+        <h2>Karl Popper — falsyfikacja</h2>
+        <div class="src-tag">Źródło: <span>Wykład 1–2</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Od indukcji do falsyfikacji</h3>
+      <p>Popper (XX w.) krytykuje indukcję: <strong>nie da się „udowodnić" teorii</strong>, można jedynie próbować ją obalić. Nauka = proces stawiania hipotez i prób ich <span class="term">falsyfikacji</span>.</p>
+      <ul class="alist">
+        <li><strong>Asymetria:</strong> możemy pokazać, że teoria jest fałszywa (jeden kontrprzykład), ale nigdy w 100% dowieść, że jest prawdziwa</li>
+        <li>„Na mężczyznach nie można polegać" → wystarczy jeden wiarygodny mężczyzna, by obalić</li>
+        <li>Każde twierdzenie wywiedzione indukcyjnie ma status <strong>niepewnego</strong> — trzeba dążyć do jego falsyfikacji</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Twierdzenia naukowe vs nienaukowe</h3>
+      <table class="ltable">
+        <tr><th>🔬 Naukowe</th><th>❌ Nienaukowe</th></tr>
+        <tr><td>można sfalsyfikować (wskazać obserwację obalającą)</td><td>nie da się obalić — zawsze „się dopasują"</td></tr>
+        <tr><td>„Stres obniża pamięć krótkotrwałą"</td><td>„Każde zachowanie wynika z nieświadomych popędów"</td></tr>
+        <tr><td>wiążą się z ryzykiem, mogą zostać obalone</td><td>dają ogólne wyjaśnienia po fakcie</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Zbyt ogólne twierdzenia („kanapka z serem jest najsmaczniejsza") są nieweryfikowalne. <strong>Uszczegółowienie</strong> („...smaczniejsza dla 9-latków niż z szynką") czyni je testowalnymi.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Efekt Barnuma (Forer, 1949)</h3>
+      <p>Dlaczego twierdzenia niefalsyfikowalne wydają się „prawdziwe"? <span class="term">Efekt Barnuma</span> = skłonność do uznawania ogólnych, nieprecyzyjnych opisów za trafne i spersonalizowane („To brzmi dokładnie jak ja!"). Bazują na nim horoskopy. Działają zdania powszechne, z „ale" i mieszające cechy: <em>„Masz potrzebę, by ludzie cię lubili, ale jesteś krytyczny wobec siebie"</em>.</p>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK SCHEMATY ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">🔬 Schematy badawcze i zmienne</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S4 -->
+  <section id="S4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-header-text">
+        <h2>Rodzaje badań i trzy schematy</h2>
+        <div class="src-tag">Źródło: <span>Wykład 1</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Badania opisowe vs wyjaśniające</h3>
+      <table class="ltable">
+        <tr><th></th><th>Opisowe</th><th>Wyjaśniające</th></tr>
+        <tr><td><strong>Cel</strong></td><td>opisać zjawisko</td><td>ustalić przyczyny i mechanizmy</td></tr>
+        <tr><td><strong>Pytania</strong></td><td>Jak często? Jak wygląda? Jak się rozkłada?</td><td>Dlaczego? Co wpływa na co? Jaki mechanizm?</td></tr>
+        <tr><td><strong>Metody</strong></td><td>sondaże, badania przekrojowe, studium przypadku (H.M.), dzienniczki</td><td>eksperymenty, modele statystyczne, badania podłużne</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Trzy schematy badawcze</h3>
+      <ul class="alist">
+        <li><strong>Eksperymentalny</strong> — badacz <span class="term">manipuluje</span> zmienną niezależną i kontroluje warunki; jedyny pozwala wnioskować o <span class="term">przyczynowości</span></li>
+        <li><strong>Quasi-eksperymentalny</strong> — oddziaływanie <span class="strata">poza kontrolą</span> badacza (np. porównanie wypalonych i niewypalonych pracowników); brak wnioskowania o przyczynie i skutku</li>
+        <li><strong>Korelacyjny</strong> — szukamy relacji między zmiennymi (predyktor → zmienna przewidywana); słabe możliwości wnioskowania przyczynowego</li>
+      </ul>
+      <div class="callout tip"><span class="ci">💡</span><div>Schemat badawczy i hipoteza <strong>pozwalają przewidzieć, jaki test statystyczny</strong> zostanie użyty.</div></div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section id="S5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-header-text">
+        <h2>Eksperyment: manipulacja, randomizacja, kontrola</h2>
+        <div class="src-tag">Źródło: <span>Wykład 1–2</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Oddziaływanie / manipulacja</h3>
+      <p>Oddziaływanie modyfikuje poziom zmiennej niezależnej. Grupy: <span class="term">eksperymentalna, kontrolna, placebo, nocebo</span>.</p>
+      <ul class="alist">
+        <li>Grupa kontrolna nie zawsze jest „bez oddziaływania" — często to <strong>dotychczasowe leczenie</strong></li>
+        <li><strong>Superiority</strong> — chcemy udowodnić, że nasze oddziaływanie jest <em>istotnie lepsze</em></li>
+        <li><strong>Non-inferiority</strong> — że jest <em>przynajmniej nie gorsze</em> (lub aktywność minimalna: rozmowa zamiast psychoterapii)</li>
+        <li>Postulat <strong>kanonu jedynej różnicy</strong> (Mill) przy konstruowaniu grup</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Randomizacja (dwa stopnie)</h3>
+      <table class="ltable">
+        <tr><th>Stopień</th><th>Co to</th><th>Czemu służy</th></tr>
+        <tr><td><strong>I stopnia</strong></td><td>losowy dobór osób z populacji do badania</td><td>reprezentatywność → <span class="term">trafność zewnętrzna</span></td></tr>
+        <tr><td><strong>II stopnia</strong></td><td>losowy dobór do warunków eksperymentalnych</td><td>równoważność grup → <span class="term">trafność wewnętrzna</span></td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>Randomizacja <strong>I stopnia NIE jest warunkiem definicyjnym eksperymentu</strong> — w psychologii rzadko ją spełniamy (badamy studentów, ochotników), a mimo to są to eksperymenty, tyle że z ograniczoną trafnością zewnętrzną.</div></div>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Dobór losowy przygotowuje <strong>osoba trzecia + narzędzie zewnętrzne</strong> (człowiek nie generuje liczb losowych — pojawia się wzorzec; np. Randomizer.org). Losować trzeba z zapasem na dropout.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Kontrola zmiennych zakłócających + wady eksperymentu</h3>
+      <ul class="alist">
+        <li><strong>Eksperyment laboratoryjny</strong> — silna kontrola zmiennych, ale <span class="strata">niska trafność ekologiczna</span> (sytuacja sztuczna)</li>
+        <li><strong>Eksperyment naturalny</strong> — słaba kontrola, ale <span class="zysk">wysoka trafność ekologiczna</span></li>
+      </ul>
+      <p><strong>Wady eksperymentów:</strong> zwykle prosty schemat (choć możliwe plany wieloczynnikowe: ANOVA 2×2, 3×2, schematy mieszane); mało reprezentatywne próby; sztuczność sytuacji; efekt oczekiwań eksperymentatora i badanego; <strong>ograniczenia etyczne</strong> (nie wolno, gdy oddziaływanie szkodzi — np. wyuczona bezradność, Zimbardo).</p>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section id="S6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-header-text">
+        <h2>Pomiar między- vs wewnątrzosobowy</h2>
+        <div class="src-tag">Źródło: <span>Wykład 1–2</span></div>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>Dwie logiki porównania</h3>
+      <ul class="alist">
+        <li><strong>Między osobami:</strong> zmienna definiuje przynależność do grupy (grupy niezależne, rozłączne — np. udział w terapii: tak/nie)</li>
+        <li><strong>Wewnątrz osób:</strong> wielokrotny pomiar tych samych osób (powtarzany pomiar, np. IQ co pół roku) lub pomiar różnych aspektów (analiza profili)</li>
+      </ul>
+      <table class="ltable">
+        <tr><th>Schemat</th><th>Zalety</th><th>Wady</th></tr>
+        <tr><td><strong>Między osobami</strong></td><td>brak efektu zmęczenia/uczenia; łatwiej ukryć cel</td><td>potrzeba więcej badanych; mniejsza kontrola zmiennych</td></tr>
+        <tr><td><strong>Wewnątrz osób</strong></td><td>mniej osób; większa kontrola zmiennych zakłócających</td><td>efekt zmęczenia i uczenia; trudniej ukryć cel</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- S7 -->
+  <section id="S7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-header-text">
+        <h2>Mediatory i moderatory</h2>
+        <div class="src-tag">Źródło: <span>Wykład 1–2 · często na egzaminie</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Kluczowe rozróżnienie</h3>
+      <table class="ltable">
+        <tr><th></th><th>Mediator</th><th>Moderator</th></tr>
+        <tr><td><strong>Odpowiada na pytanie</strong></td><td><span class="term">DLACZEGO</span> zależność występuje</td><td><span class="term">KIEDY / NA KOGO</span> efekt działa</td></tr>
+        <tr><td><strong>Rola</strong></td><td>zmienna pośrednicząca (proces, stan)</td><td>czynnik decydujący o sile/kierunku zależności</td></tr>
+        <tr><td><strong>Znaczenie</strong></td><td>budowanie teorii, planowanie interwencji</td><td>praktyczne — warunki graniczne efektu</td></tr>
+      </table>
+      <ul class="alist">
+        <li><strong>Mediator:</strong> mindfulness → ↓ stresu (mediator) → ↑ efektywności. Stres ⇒ krótszy sen (mediator) ⇒ gorsza pamięć</li>
+        <li><strong>Moderator:</strong> mindfulness działa najlepiej u osób o dużej otwartości; preferencje partnerskie różnią się płciowo <em>tylko</em> przy związku krótkoterminowym (moderator = rodzaj związku)</li>
+      </ul>
+      <div class="callout tip"><span class="ci">💡</span><div>Znajomość <strong>mediatorów</strong> ułatwia wskazanie moderatorów (rozumiemy mechanizm). Odwrotnie nie zawsze — płeć jest tak ogólnym moderatorem, że to marna wskazówka co do mediatora.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Jak rozpoznać w opisie badania</h3>
+      <ul class="alist">
+        <li>„<em>...a to właśnie krótszy sen pogarsza pamięć</em>" → łańcuch X→M→Y = <strong>mediacja</strong></li>
+        <li>„<em>efekt jest szczególnie wyraźny u osób z...</em>" / „<em>zależy od poziomu...</em>" → <strong>moderacja</strong></li>
+        <li>Dieta → nastrój, ale tylko przy bogatej mikrobiocie → mikrobiota = <strong>moderator</strong></li>
+        <li>Media społ. → lęk społeczny, silniej u osób o niskiej samoocenie → samoocena = <strong>moderator</strong></li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div>„Badacz testuje, jak aktywizacja stereotypu wpływa na ocenę kandydatów, i jak tę relację <strong>modyfikuje płeć kandydata</strong>" → płeć kandydata to <strong>moderator</strong>.</div></div>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK TRAFNOŚĆ ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-valid">🎯 Trafność i rzetelność pomiaru</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S8 -->
+  <section id="S8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-header-text">
+        <h2>Trafność i jej rodzaje</h2>
+        <div class="src-tag">Źródło: <span>Wykład 2–3</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Czym jest trafność</h3>
+      <p><span class="term">Trafność</span> = stopień, w jakim badanie mierzy to, co miało mierzyć, i pozwala na poprawne wnioskowanie. Sedno: <em>nie tylko czy narzędzie coś mierzy, ale czy mierzy to, co sądzimy, i czy wolno nam tak interpretować wynik</em>.</p>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Termometr zawyżający o 2° jest <strong>rzetelny</strong> (konsekwentny), ale <strong>nietrafny</strong>. Test mierzący „odporność na stres", który de facto mierzy szybkość czytania — rzetelny, lecz nietrafny.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Cztery rodzaje trafności</h3>
+      <table class="ltable">
+        <tr><th>Rodzaj</th><th>Pytanie</th><th>Zagrożenia</th></tr>
+        <tr><td><strong>Wewnętrzna</strong></td><td>czy efekt wynika z manipulacji ZN, a nie z innych czynników?</td><td>zmienne zakłócające, brak randomizacji II, efekt eksperymentatora/oczekiwań</td></tr>
+        <tr><td><strong>Zewnętrzna</strong></td><td>czy wyniki można uogólnić na inne osoby/sytuacje?</td><td>brak randomizacji I, sztuczność sytuacji</td></tr>
+        <tr><td><strong>Pomiaru (konstruktu)</strong></td><td>czy narzędzie mierzy dane zjawisko?</td><td>źle skonstruowany kwestionariusz, brak rzetelności</td></tr>
+        <tr><td><strong>Ekologiczna</strong></td><td>czy warunki przypominają realne życie?</td><td>wysoka kontrola = niższa trafność ekologiczna</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Jak badać trafność pomiaru (konstruktu)</h3>
+      <ul class="alist">
+        <li><strong>Treściowa</strong> — eksperci oceniają, czy narzędzie obejmuje wszystkie aspekty konstruktu</li>
+        <li><strong>Teoretyczna:</strong> <span class="term">zbieżna</span> (koreluje z innymi testami tego samego) i <span class="term">różnicowa</span> (nie koreluje z testami czegoś innego)</li>
+        <li><strong>Kryterialna:</strong> <span class="term">równoczesna</span> (korelacja z kryterium tu i teraz, np. test IQ ↔ oceny) i <span class="term">predykcyjna</span> (przewiduje przyszłość, np. test rekrutacyjny → sukces zawodowy)</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div>Problem <strong>trafności pomiaru</strong> ilustruje sytuacja: „kwestionariusz mający mierzyć lęk w rzeczywistości silniej odzwierciedla neurotyczność". (Stabilne wyniki w teście–retest to <em>rzetelność</em>, nie trafność.)</div></div>
+      <div class="callout tip"><span class="ci">💡</span><div>Trafność wewnętrzną sprawdzamy m.in. <strong>ANCOVA</strong> (kontrola zmiennych towarzyszących); zewnętrzną — <strong>replikacjami</strong> w różnych populacjach i badaniami terenowymi.</div></div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section id="S9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-header-text">
+        <h2>Błąd pomiaru i rzetelność</h2>
+        <div class="src-tag">Źródło: <span>Wykład 2–3 · Spearman 1904</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Wynik obserwowany = wynik prawdziwy + błąd</h3>
+      <p>Każdy pomiar jest obciążony błędem. Charles Spearman (1904) — początki koncepcji błędu pomiaru i rzetelności: <em>„the true score is a fiction — a necessary one"</em>.</p>
+      <div class="formula">X<sub>obserwowany</sub> = T<sub>prawdziwy</sub> + E<sub>błąd</sub><small>błąd to „szum", który nie jest istotą mierzonego konstruktu</small></div>
+      <table class="ltable">
+        <tr><th>Typ błędu</th><th>Działanie</th><th>Skutek</th></tr>
+        <tr><td><strong>Losowy</strong></td><td>działa w różne strony, „rozmywa" wyniki</td><td>obniża <span class="term">rzetelność</span></td></tr>
+        <tr><td><strong>Systematyczny</strong></td><td>stałe przekłamanie (źle skalibrowana waga, tendencja „zgadzania się")</td><td>obniża <span class="term">trafność</span> (konstruktu/kryterialną); nie musi obniżać rzetelności</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div><strong>Błąd pomiaru</strong> = „szum" w narzędziu/procedurze. <strong>Błąd doboru próby</strong> = problem reprezentatywności (trafność zewnętrzna). „Psychologia to nauka o szczurach i studentach psychologii".</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Jak ograniczać i diagnozować błąd</h3>
+      <div class="two-col">
+        <div>
+          <h4>Ograniczać</h4>
+          <ul class="alist">
+            <li>standaryzacja procedury</li>
+            <li>automatyzacja i zaślepienie (blind)</li>
+            <li>lepsze pozycje, więcej prób/pozycji</li>
+            <li>pozycje odwrócone (kontrola tendencji)</li>
+            <li>walidacja krzyżowa / replikacje</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Diagnozować</h4>
+          <ul class="alist">
+            <li><strong>α Cronbacha</strong> — rzetelność testu</li>
+            <li><strong>test–retest</strong> — stabilność w czasie</li>
+            <li>formy równoległe</li>
+            <li>zgodność sędziów (<strong>ICC / κ Cohena</strong>)</li>
+            <li><strong>SEM</strong>, korekta Spearmana, modele SEM</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout tip"><span class="ci">💡</span><div>Czasy reakcji (RT): redukcja szumu przez <strong>więcej prób, mediany zamiast średnich, trimming/winsoryzację</strong> i predefiniowane kryteria odrzutu. Stoper manualny → bramki foto (automatyzacja zmniejsza błąd i efekt oczekiwań).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Błąd qui pro quo („ten zamiast tego")</h3>
+      <p>Błąd <strong>nieporozumienia</strong>: badany i badacz rozumieją to samo słowo inaczej, więc odpowiedź nie dotyczy tego, co chcieliśmy zmierzyć.</p>
+      <ul class="alist">
+        <li>„Jak często pije Pan alkohol?" — co to „często"? „Dochód" — brutto czy netto? „Rodzeństwo" — przyrodnie też?</li>
+        <li>Szersze znaczenie: złudzenie, że manipulacja wywołuje <em>wyłącznie</em> przewidywane efekty, a narzędzie jest wrażliwe <em>tylko</em> na naszą zmienną</li>
+        <li><strong>Skutek:</strong> systematyczny błąd pomiaru, spadek trafności treściowej i konstruktu</li>
+        <li><strong>Zapobieganie:</strong> pilotaż + wywiady, precyzyjne definicje i ramy czasowe („w ciągu 7 dni"), unikanie żargonu, kotwice skali</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK ARTEFAKTY ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-exam">⚗️ Artefakty i błędy interpretacji</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S10 -->
+  <section id="S10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-header-text">
+        <h2>Placebo, oczekiwania, regresja do średniej</h2>
+        <div class="src-tag">Źródło: <span>Wykład 2 · Bąbel 2009 · Marlatt 1973</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Efekt placebo (Bąbel)</h3>
+      <p><span class="term">Placebo</span> = metoda lub składnik metody <strong>bez specyficznego działania</strong> w danych warunkach, który wpływa na efekt przez kontekst, formę podania, zachowanie personelu i przekazane informacje. <em>Placebo nie daje wyłącznie poprawy</em> — może też szkodzić (nocebo).</p>
+      <h4>Mechanizmy działania placebo</h4>
+      <ul class="alist">
+        <li><strong>Oczekiwania</strong> — to, czego się spodziewamy, zmienia doznania, fizjologię i zachowanie</li>
+        <li><strong>Warunkowanie klasyczne</strong> — bodźce towarzyszące leczeniu zaczynają same wywoływać reakcję</li>
+        <li><strong>Lęk</strong> — zwłaszcza w bólu; obniżenie lęku zmniejsza ból, wzrost nasila</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Balanced placebo design — alkohol (Marlatt i wsp., 1973)</h3>
+      <p>Aby <strong>oddzielić efekt farmakologiczny od efektu oczekiwań</strong>, krzyżuje się dwa czynniki: <em>co dostał</em> × <em>co myśli, że dostał</em>.</p>
+      <table class="ltable">
+        <tr><th>Myśli: alkohol</th><th>Myśli: tonik</th></tr>
+        <tr><td>realnie alkohol + opinia</td><td>realnie alkohol, bez opinii</td></tr>
+        <tr><td>realnie tonik + opinia</td><td>realnie tonik, bez opinii</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>Wynik Marlatta: o ilości wypitego napoju i ocenie zawartości alkoholu decydował <strong>instructional set (przekonanie)</strong>, a <strong>nie</strong> realna obecność alkoholu — „utrata kontroli" u alkoholików nie wynikała z samego alkoholu. Efekty oczekiwań są silniejsze dla miar subiektywnych, słabsze dla „twardych" wskaźników wykonania (Rimm i wsp., 1982).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Regresja do średniej</h3>
+      <p>Zjawisko statystyczne: po <strong>skrajnym</strong> wyniku kolejny pomiar jest zwykle bliższy średniej — przez losowe fluktuacje, nie trwałą zmianę. Do badania/lekarza trafiamy, gdy objawy są najsilniejsze → kolejny pomiar i tak będzie łagodniejszy, nawet bez leczenia.</p>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Nie każda poprawa „po placebo" jest <strong>efektem placebo</strong>. „Odpowiedź placebo" (cała poprawa w grupie placebo) = właściwy efekt placebo + <strong>regresja do średniej</strong> + spontaniczna poprawa + błąd pomiaru + zmiana raportowania.</div></div>
+      <div class="callout exam"><span class="ci">🎯</span><div>Najlepsza ilustracja regresji do średniej: „osoby z <strong>najwyższym</strong> wynikiem stresu w I pomiarze uzyskały <strong>niższe</strong> wyniki w II — nawet jeśli program mógł nie mieć rzeczywistego wpływu".</div></div>
+    </div>
+  </section>
+
+  <!-- S11 -->
+  <section id="S11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div class="section-header-text">
+        <h2>Etykietowanie · Rosenhan · błędy poznawcze</h2>
+        <div class="src-tag">Źródło: <span>Wykład 2 · Rosenhan 1973</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>„On Being Sane in Insane Places" (Rosenhan, 1973)</h3>
+      <p>8 zdrowych pseudopacjentów zgłosiło się do szpitali z jednym objawem („słyszę głos: pusty, głuchy, uderzenie"), potem zachowywali się normalnie. <strong>Żaden lekarz nie rozpoznał, że są zdrowi</strong> — wszyscy z diagnozą schizofrenii; wypisani jako „schizofrenia w remisji" (śr. 19 dni, do 52).</p>
+      <ul class="alist">
+        <li><strong>Błąd konfirmacji</strong> — po przyjęciu diagnozy wszystko interpretowano na jej potwierdzenie (robienie notatek = „maniakalne zapisywanie objawów")</li>
+        <li><strong>Efekt etykietowania</strong> — sama etykieta „chory" kształtowała postrzeganie zachowań</li>
+        <li><strong>Błąd atrybucji i kontekstu</strong> — zachowania tłumaczono zaburzeniem, nie sytuacją</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Druga część badania = błąd w drugą stronę</h3>
+      <p>Szpital uprzedzono, że przyśle pseudopacjentów. Z 193 nowych pacjentów personel uznał <strong>41 za „prawdopodobnych symulantów"</strong> — choć Rosenhan nie wysłał nikogo.</p>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Powiązanie ze statystyką (H₀: „wszyscy zdrowi"): I część = wszędzie widzieli chorobę = <strong>błąd I rodzaju</strong> (odrzucenie prawdziwej H₀); II część = wszędzie widzieli symulantów, nie dostrzegali choroby = <strong>błąd II rodzaju</strong>.</div></div>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK REPLIKACJA ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-core">🔁 Replikacja i Open Science</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S12 -->
+  <section id="S12">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div class="section-header-text">
+        <h2>Replikacja i kryzys replikacyjny</h2>
+        <div class="src-tag">Źródło: <span>Wykład 2–3 + ćwiczenia</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Typy replikacji</h3>
+      <table class="ltable">
+        <tr><th>Typ</th><th>Co się zmienia</th><th>Dane</th></tr>
+        <tr><td><strong>Bezpośrednia (direct)</strong></td><td>nic — te same osoby, narzędzia, procedura</td><td>nowe</td></tr>
+        <tr><td><strong>Rozszerzona / konceptualna</strong></td><td>elementy metody (próba, manipulacja, pomiar)</td><td>nowe</td></tr>
+        <tr><td><strong>Re-analiza</strong></td><td>inne metody analizy statystycznej</td><td>te same</td></tr>
+        <tr><td><strong>Weryfikacja</strong></td><td>nic — te same metody analizy</td><td>te same</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Bem (2011) vs Galak (2012) — „feeling the future"</h3>
+      <p>Bem opisał wyniki sugerujące <strong>prekognicję</strong> (badani „przeczuwali" przyszły bodziec). Galak i wsp. zrobili <strong>7 bezpośrednich replikacji</strong> na materiałach Bema — tylko 1 potwierdziła wynik.</p>
+      <div class="callout tip"><span class="ci">💡</span><div>Pojedynczy, nawet spektakularny i istotny statystycznie wynik nie jest mocnym dowodem. <strong>Nadzwyczajne twierdzenia wymagają nadzwyczajnie mocnych dowodów.</strong></div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Kryzys replikacyjny</h3>
+      <p><strong>Open Science Collaboration (2015):</strong> próba replikacji 100 badań → odtworzono ok. <strong>50%</strong> efektów. Przesunięcie pytania z „czy się powtarzają?" na „dlaczego tak wiele się nie powtarza?".</p>
+      <ul class="alist">
+        <li>małe próby i niska moc statystyczna</li>
+        <li><strong>publication bias</strong> — łatwiej publikować wyniki pozytywne niż zerowe</li>
+        <li>przecenianie pojedynczych istotnych wyników; zbyt rzadkie bezpośrednie replikacje</li>
+        <li>czasopisma cenią oryginalność, nie chcą publikować replikacji</li>
+      </ul>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>Oszustwo Stapela</strong> (fabrykował dane): wykryte m.in. przez różnice w wartościach p mimo tych samych testów, „zbyt ładne" wyniki, niepoprawne zaokrąglenia, usuwanie outlierów bez raportowania. Eliminacja danych zmniejsza wariancję ZZ → sztucznie zwiększa istotność.</div></div>
+    </div>
+  </section>
+
+  <!-- S13 -->
+  <section id="S13">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <div class="section-header-text">
+        <h2>Strategia SMAR · priming</h2>
+        <div class="src-tag">Źródło: <span>Wykład 2–3 · Wojciszke</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>SMAR — Systematycznie Modyfikowane AutoReplikacje (Wojciszke)</h3>
+      <p>Wielokrotne powtarzanie przez <strong>ten sam zespół</strong> badania wykazującego prawidłowość, przy <em>celowym</em> modyfikowaniu próby, metod pomiaru i zmiennych. Cel: pokazać stabilność efektu mimo zmian procedury.</p>
+      <p><strong>Jak w praktyce:</strong> eksperyment bazowy → autoreplikacja 1 (inna populacja) → autoreplikacja 2 (inne narzędzie) → autoreplikacja 3 (inny kontekst, np. online). Jeśli efekt się utrzymuje — zyskuje wiarygodność teoretyczną.</p>
+      <div class="summary-box">
+        <h4>Cele SMAR</h4>
+        <ul>
+          <li>wykazanie <strong>rzetelności</strong> podstawowego efektu</li>
+          <li>sprawdzenie skuteczności manipulacji i trafności miar</li>
+          <li>maksymalizacja trafności <strong>wewnętrznej</strong> oraz <strong>zewnętrznej i teoretycznej</strong></li>
+          <li>eliminacja alternatywnych wyjaśnień</li>
+          <li>poszukiwanie <strong>moderatorów</strong> i <strong>mediatorów</strong> efektu</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Florida effect / priming (Bargh, Chen &amp; Burrows, 1996)</h3>
+      <p><span class="term">Torowanie (priming)</span> = czynniki tła wprowadzają osobę w stan wpływający na zachowanie bez świadomości. Teza: po primingu stereotypu „osoby starszej" (słowa: Floryda, samotny, pomarszczony) uczestnicy szli wolniej w korytarzu.</p>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Autoreplikacje (Doyen 2012, Shanks 2013, duże N, prerejestracja) → efekt <strong>nie pojawia się</strong>. SMAR nie służy „potwierdzaniu na siłę", lecz mapowaniu warunków, w których efekt znika/utrzymuje się. <strong>Primingi poznawcze</strong> (semantyczne) są stabilne; <strong>primingi zachowania</strong> — często nie.</div></div>
+    </div>
+  </section>
+
+  <!-- S14 -->
+  <section id="S14">
+    <div class="section-header">
+      <div class="section-num">14</div>
+      <div class="section-header-text">
+        <h2>Prerejestracja · p-hacking · dobre praktyki</h2>
+        <div class="src-tag">Źródło: <span>Materiały ćwiczeniowe</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Prerejestracja</h3>
+      <p>Publiczne przedstawienie planu badawczego <strong>przed</strong> zebraniem danych (teoria, hipotezy, plan doboru, narzędzia, plan analiz) — np. na <strong>OSF</strong> (Open Science Framework).</p>
+      <ul class="alist">
+        <li>oddziela aspekty <strong>konfirmacyjne</strong> od <strong>eksploracyjnych</strong></li>
+        <li>chroni przed <strong>HARKing</strong> (Hypothesizing After the Results are Known)</li>
+        <li>umożliwia publikację wyników <strong>nieistotnych</strong>; buduje zaufanie do nauki</li>
+      </ul>
+      <div class="callout info"><span class="ci">ℹ️</span><div><strong>Registered Reports</strong> — projekt recenzowany <em>przed</em> zebraniem danych; przy poprawnej metodzie dostaje <strong>in-principle acceptance</strong>; drugi etap recenzji po zebraniu danych. Ogranicza wpływ sensacyjności wyniku.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>P-hacking</h3>
+      <p>Manipulowanie analizami, aż wynik stanie się istotny (p &lt; 0,05): testowanie wielu zmiennych i raportowanie tylko „ładnych", usuwanie „nietypowych" obserwacji, zmiana hipotezy po analizie (HARKing).</p>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>Head i wsp. (2015):</strong> w wielu dziedzinach jest nadreprezentacja wyników <strong>tuż poniżej 0,05</strong> (vs naprawdę silnych p &lt; 0,025) → ślad p-hackingu. „Istotny" nie znaczy „rzetelny". Remedium: prerejestracja, otwarte dane, raportowanie wszystkich analiz, nacisk na <strong>wielkość efektu</strong> i replikacje.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Aspekty etyczne i wykorzystanie narzędzi</h3>
+      <ul class="alist">
+        <li>Wniosek do <strong>Komisji Etycznej</strong>: bezpieczeństwo i dobrostan uczestników, obiektywna ocena ryzyka, zgodność ze standardami (lekcje z Milgrama, Zimbardo)</li>
+        <li>Skale z artykułów — zaleca się kontakt z autorem; <strong>testy psychologiczne</strong> stosować tylko jako magister psychologii, zgodnie z podręcznikiem testu</li>
+        <li>Często zakaz publikowania pełnych wersji testów w sieci; naruszenie praw autorskich → sankcje</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK STATYSTYKA ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-stat">📊 Wnioskowanie statystyczne</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S15 -->
+  <section id="S15">
+    <div class="section-header">
+      <div class="section-num">15</div>
+      <div class="section-header-text">
+        <h2>Hipotezy · błędy I i II rodzaju</h2>
+        <div class="src-tag">Źródło: <span>Wykład 2 + ćwiczenia</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Rodzaje hipotez</h3>
+      <ul class="alist">
+        <li><strong>Zerowa (H₀)</strong> — „twierdzenie do obalenia"; <strong>alternatywna / badawcza (H₁)</strong> — konkurencyjna możliwość</li>
+        <li><strong>Kierunkowa</strong> (przewiduje kierunek) vs <strong>niekierunkowa</strong></li>
+        <li><strong>Teoretyczna</strong> (ogólna) vs <strong>operacyjna</strong> (na poziomie wskaźników)</li>
+      </ul>
+      <div class="callout tip"><span class="ci">💡</span><div>Testowanie statystyczne jest bliskie duchowi Poppera: nie dowodzimy prawdziwości, tylko szukamy podstaw do <strong>odrzucenia (falsyfikacji) H₀</strong>. Testy = narzędzia probabilistyczne do falsyfikacji H₀.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Błędy I i II rodzaju</h3>
+      <table class="ltable">
+        <tr><th>Rzeczywistość ↓ / Decyzja →</th><th>Nie odrzucamy H₀</th><th>Odrzucamy H₀</th></tr>
+        <tr><td><strong>H₀ prawdziwa</strong></td><td>✔ poprawna</td><td><span class="strata">❌ Błąd I rodzaju (α)</span> — fałszywy alarm</td></tr>
+        <tr><td><strong>H₀ fałszywa</strong></td><td><span class="strata">❌ Błąd II rodzaju (β)</span> — przeoczony efekt</td><td>✔ poprawna (H₁)</td></tr>
+      </table>
+      <ul class="alist">
+        <li><strong>Błąd I rodzaju (α)</strong> — stwierdzamy efekt, którego nie ma; częstszy przy <em>zbyt dużych</em> próbach</li>
+        <li><strong>Błąd II rodzaju (β)</strong> — nie wykrywamy realnego efektu; częstszy przy <em>zbyt małych</em> próbach i niskiej mocy (np. wczesne badania fMRI, n=10–15)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Czym JEST, a czym NIE JEST p</h3>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>p to</strong> prawdopodobieństwo uzyskania takiego (lub bardziej skrajnego) wyniku <strong>przy założeniu, że H₀ jest prawdziwa</strong>.<br><strong>p to NIE</strong> prawdopodobieństwo błędu I rodzaju, ani prawdopodobieństwo replikacji, ani prawdopodobieństwo hipotezy.</div></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>p &gt; 0,05 ≠ „brak efektu".</strong> Oznacza tylko, że nie możemy odrzucić H₀ — efekt może być mały lub próba za mała. Błąd: „nieistotny wynik = brak efektu".</div></div>
+    </div>
+  </section>
+
+  <!-- S16 -->
+  <section id="S16">
+    <div class="section-header">
+      <div class="section-num">16</div>
+      <div class="section-header-text">
+        <h2>Wielkość efektu · moc · wielkość próby</h2>
+        <div class="src-tag">Źródło: <span>Materiały ćwiczeniowe · socscistatistics</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Wielkość efektu</h3>
+      <p>Miara <strong>siły/rozmiaru</strong> różnicy między grupami lub związku między zmiennymi. W odróżnieniu od istotności jest <strong>odporna na wielkość próby</strong> → bardziej wiarygodna miara „jak duży jest efekt".</p>
+      <div class="formula">d = (M₁ − M₂) / SD<sub>pooled</sub><small>Cohen's d — standaryzowana różnica średnich (kalkulator socscistatistics)</small></div>
+      <table class="ltable">
+        <tr><th>Cohen's d</th><th>Interpretacja</th></tr>
+        <tr><td>≈ 0,2</td><td>efekt mały</td></tr>
+        <tr><td>≈ 0,5</td><td>efekt średni</td></tr>
+        <tr><td>≈ 0,8</td><td>efekt duży</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Moc i szacowanie wielkości próby (G*Power)</h3>
+      <ul class="alist">
+        <li><strong>Alfa (α)</strong> — błąd I rodzaju (zwykle 0,05)</li>
+        <li><strong>Beta (β)</strong> — błąd II rodzaju</li>
+        <li><strong>Moc = 1 − β</strong> — prawdopodobieństwo wykrycia prawdziwego efektu (standard 0,80)</li>
+      </ul>
+      <p>Szacowanie <strong>a priori</strong>: znając zakładaną wielkość efektu, α i moc, szukamy <em>najmniejszej</em> próby potrzebnej do wykrycia efektu. Wielkość efektu zależy od analizy (inna dla testu t, inna dla χ²).</p>
+      <div class="callout tip"><span class="ci">💡</span><div>Im <strong>silniejszy</strong> spodziewany efekt, tym <strong>mniejsza</strong> potrzebna próba. Słaby efekt wymaga dużej próby, by go wykryć.</div></div>
+    </div>
+  </section>
+
+  <!-- S17 -->
+  <section id="S17">
+    <div class="section-header">
+      <div class="section-num">17</div>
+      <div class="section-header-text">
+        <h2>Meta-analiza</h2>
+        <div class="src-tag">Źródło: <span>Karwowski 2018</span></div>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>Czym jest i po co</h3>
+      <p><span class="term">Meta-analiza</span> = wystandaryzowana procedura <strong>ilościowej syntezy</strong> wyników wielu niezależnych badań na ten sam temat. Historycznie: spór Eysenck vs Smith &amp; Glass (1977) o skuteczność psychoterapii.</p>
+      <ul class="alist">
+        <li>daje precyzyjniejsze wnioski niż pojedyncze badanie; ocenia <strong>wielkość efektu</strong></li>
+        <li>minimalizuje wpływ pojedynczego badacza; identyfikuje różnice między badaniami i <strong>moderatory</strong></li>
+        <li>wykrywa <strong>błąd publikacyjny</strong> (publication bias)</li>
+      </ul>
+    </div>
+    <div class="lcard">
+      <h3>Etapy i modele</h3>
+      <ol class="nlist">
+        <li>sformułowanie problemu i hipotez</li>
+        <li>systematyczny przegląd literatury</li>
+        <li>wybór badań wg z góry ustalonych kryteriów</li>
+        <li>kodowanie danych (liczebności, wielkości efektów)</li>
+        <li>analiza i interpretacja</li>
+      </ol>
+      <table class="ltable">
+        <tr><th>Element</th><th>Znaczenie</th></tr>
+        <tr><td><strong>Fixed effects</strong></td><td>zakłada jeden wspólny efekt prawdziwy</td></tr>
+        <tr><td><strong>Random effects</strong></td><td>dopuszcza zróżnicowanie efektów między badaniami</td></tr>
+        <tr><td><strong>Forest plot</strong></td><td>wizualizacja efektów poszczególnych badań i efektu zbiorczego</td></tr>
+        <tr><td><strong>Funnel plot</strong></td><td>wykrywanie <span class="term">błędu publikacyjnego</span> (asymetria lejka)</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK SONDAŻE ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-fund">📋 Sondaże, dobór próby, pytania</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S18 -->
+  <section id="S18">
+    <div class="section-header">
+      <div class="section-num">18</div>
+      <div class="section-header-text">
+        <h2>Badania samoopisowe</h2>
+        <div class="src-tag">Źródło: <span>Wykład 3</span></div>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>Trzy formy</h3>
+      <ul class="alist">
+        <li><strong>Sondaże</strong> — badania opinii/postaw na próbie populacji, ustandaryzowane pytania, wnioskowanie o całej populacji</li>
+        <li><strong>Ankiety</strong> — kwestionariusze do samoopisu (samodzielnie lub z ankieterem)</li>
+        <li><strong>Analiza danych zastanych</strong> (wtórna, reanaliza) — wykorzystanie już zebranych danych do nowych pytań</li>
+      </ul>
+      <p><strong>Zalety:</strong> wszechstronność, efektywność (tanie, szybkie, duża próba), możliwość uogólniania (przy dobrym losowaniu) i porównań między krajami.</p>
+    </div>
+    <div class="lcard">
+      <h3>Sondaże omnibus i medium realizacji</h3>
+      <p><strong>Omnibus</strong> — wielotematyczne sondaże, gdzie kilku zleceniodawców dokłada własne pytania do jednej fali na tej samej próbie (instytut robi rekrutację i ważenie). Przykłady: <strong>GSS, European Social Survey, Polski Generalny Sondaż Społeczny</strong>.</p>
+      <p><strong>Medium:</strong> ankieta pocztowa, <strong>CAPI</strong> (computer-assisted personal interview), grupowa, <strong>CATI</strong> (telefoniczna), online/panelowa.</p>
+      <h4>Struktura ankiety — list przewodni</h4>
+      <p>Wyjaśnia cel, kto prowadzi, dlaczego ten adresat, na czym polega udział; zapewnia o dobrowolności, poufności/anonimowości, RODO i podaje kontakt. Zwiększa <strong>response rate</strong> i spełnia wymogi etyczne.</p>
+    </div>
+  </section>
+
+  <!-- S19 -->
+  <section id="S19">
+    <div class="section-header">
+      <div class="section-num">19</div>
+      <div class="section-header-text">
+        <h2>Dobór próby</h2>
+        <div class="src-tag">Źródło: <span>Wykład 3</span></div>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>Pojęcia podstawowe</h3>
+      <ul class="alist">
+        <li><strong>Rama doboru</strong> — z czego losujemy (np. zweryfikowana lista e-mail z dziekanatu)</li>
+        <li><strong>Błąd próby</strong> — rozbieżność między charakterystykami próby a populacji</li>
+        <li><strong>Nonresponse</strong> — trzeba zaplanować zapas zaproszeń (np. 40% niedostępnych)</li>
+      </ul>
+    </div>
+    <div class="lcard">
+      <h3>Metody doboru</h3>
+      <table class="ltable">
+        <tr><th>Metoda</th><th>Na czym polega</th><th>Uwaga</th></tr>
+        <tr><td><strong>Losowa prosta</strong></td><td>losujemy n z pełnej listy</td><td rowspan="3">złoty standard uogólniania; wymaga ramy, droższa</td></tr>
+        <tr><td><strong>Warstwowa</strong></td><td>dzielimy na warstwy (płeć, rok) i losujemy w każdej</td></tr>
+        <tr><td><strong>Klastrowa</strong></td><td>losujemy klastry (szkoły), potem osoby w nich</td></tr>
+        <tr><td><strong>Kwotowa</strong> (nielosowa)</td><td>próba „mini-populacja" wg proporcji cech (Gallup)</td><td>szybka, ale ostrożnie z wnioskami</td></tr>
+        <tr><td><strong>Kula śnieżna</strong> (nielosowa)</td><td>uczestnicy polecają kolejnych</td><td>dla ukrytych populacji; brak reprezentatywności (homofilia)</td></tr>
+        <tr><td><strong>Dogodna / celowa</strong></td><td>ochotnicy / dobrani wg kryterium</td><td>ograniczone wnioskowanie</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div><strong>Ważenie:</strong> jeśli kobiety są nadreprezentowane (70% w próbie vs 60% w populacji), nadajemy wagi (K: 0,60/0,70 ≈ 0,857 — „odchudzamy"; M: 0,40/0,30 ≈ 1,333 — doważamy).</div></div>
+      <div class="callout exam"><span class="ci">🎯</span><div>By najdokładniej zbadać zaufanie do rządu wśród <strong>bezrobotnych Polaków</strong> → próba <strong>losowa</strong> (umożliwia uogólnianie z kontrolą błędu).</div></div>
+    </div>
+  </section>
+
+  <!-- S20 -->
+  <section id="S20">
+    <div class="section-header">
+      <div class="section-num">20</div>
+      <div class="section-header-text">
+        <h2>Sztuka układania pytań · metody zbierania danych</h2>
+        <div class="src-tag">Źródło: <span>Wykład 3 · Bradburn i wsp. 2004</span></div>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>Co się dzieje w głowie badanego</h3>
+      <p>Po zadaniu pytania badany <strong>konstruuje</strong> odpowiedź (rzadko ma gotową opinię): interpretacja → wydobycie/utworzenie opinii → kalkulacja oceny → wybór sposobu komunikacji. Dwa modele integracji informacji: <strong>szkiców wielokrotnych</strong> (uporządkowany, wszystko tak samo ważne) vs idea <strong>Pandemonium Selfridge'a</strong> (chaotyczny, jedne informacje wyrazistsze).</p>
+    </div>
+    <div class="lcard">
+      <h3>Typowe źródła błędu pomiaru w pytaniach</h3>
+      <ul class="alist">
+        <li><strong>Wieloznaczność/żargon</strong> („często", „regularnie", „używki")</li>
+        <li><strong>Pytania podwójne</strong> („Czy treść była zgodna z sylabusem <em>i</em> oczekiwaniami?")</li>
+        <li><strong>Negacje/podwójne przeczenia</strong> („Czy nie masz nic przeciwko nie jeżdżeniu metrem?")</li>
+        <li><strong>Brak ram czasowych/definicji</strong>; <strong>qui pro quo</strong>; <strong>kontekst/priming</strong> poprzednich pytań</li>
+      </ul>
+    </div>
+    <div class="lcard">
+      <h3>Efekty kolejności, skali i autoprezentacji</h3>
+      <ul class="alist">
+        <li><strong>Efekt świeżości</strong> — wybór ostatniej opcji (zwł. sondaż telefoniczny, silniejszy u starszych)</li>
+        <li><strong>Efekt pierwszeństwa</strong> — przy skali na papierze chętniej opcje początkowe</li>
+        <li><strong>Skala</strong> 1–10 daje rozkład normalny; skala −5…+5 — skośny (minus sugeruje „coś nie tak"). Skala wymusza interpretację „normy" (książka z innej biblioteki: 4 dni)</li>
+        <li><strong>Filtr aprobaty społecznej</strong> — pytani o wiek podają „okrągłe" liczby; o głosowanie myli się 25%; o zarobki ≥połowa podaje niedokładnie</li>
+        <li><strong>Efekt zmęczenia</strong> — krótkie skale; pierwsze pytania czytane uważniej</li>
+      </ul>
+      <div class="callout tip"><span class="ci">💡</span><div>Badanie procesu rozumienia: <strong>protokoły retrospektywne</strong> („co Pan rozumie przez to pytanie?"). Lepiej wykorzystywać <strong>sprawdzone, gotowe narzędzia</strong> niż tworzyć od zera.</div></div>
+    </div>
+    <div class="lcard">
+      <h3>Metody zbierania danych — zalety i wady (przegląd)</h3>
+      <table class="ltable">
+        <tr><th>Metoda</th><th>Typ</th><th>Zaleta / wada</th></tr>
+        <tr><td><strong>Wywiad</strong></td><td>pierwotny, jakościowy</td><td>+ emocje, ton, dopytanie / − drogi, zależny od ankietera</td></tr>
+        <tr><td><strong>Ankieta</strong></td><td>pierwotny, mieszany</td><td>+ szybka, tania, duża próba / − nieszczere/niepełne odpowiedzi</td></tr>
+        <tr><td><strong>Focus group</strong></td><td>pierwotny, jakościowy</td><td>+ reakcje, niewerbalne / − bias moderatora, dominacja ekstrawertyków</td></tr>
+        <tr><td><strong>Obserwacja</strong></td><td>pierwotny, jakościowy</td><td>+ bez self-reportu / − nie bada postaw, subiektywizm obserwatora</td></tr>
+        <tr><td><strong>Dane zastane</strong></td><td>wtórny, mieszany</td><td>+ łatwy dostęp, kontekst historyczny / − dane nieaktualne/niepełne</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK ANALIZY ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-stat">🧮 Analizy zaawansowane i integracja</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S21 -->
+  <section id="S21">
+    <div class="section-header">
+      <div class="section-num">21</div>
+      <div class="section-header-text">
+        <h2>Analiza wielopoziomowa</h2>
+        <div class="src-tag">Źródło: <span>Łaguna 2018 · Wykład 2</span></div>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>Dane zagnieżdżone (hierarchiczne)</h3>
+      <p><span class="term">Analiza wielopoziomowa</span> (multilevel / hierarchical linear modeling, HLM) — gdy dane mają strukturę zagnieżdżoną: osoby należą do podgrup.</p>
+      <ul class="alist">
+        <li>uczniowie (poziom 1) w klasach/szkołach (poziom 2); pracownicy w oddziałach firmy w krajach</li>
+        <li>efekty zależą nie tylko od jednostki, ale i od <strong>kontekstu</strong> (nauczyciel, manager, klimat oddziału)</li>
+      </ul>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Zignorowanie struktury wielopoziomowej i użycie tradycyjnych metod może prowadzić do <strong>błędu I rodzaju</strong>. Przy danych zagnieżdżonych stosuje się analizę wielopoziomową <strong>nawet przy niskim ICC</strong> (Nezlek, 2012). Mieszanie poziomów analizy to częsty błąd.</div></div>
+    </div>
+  </section>
+
+  <!-- S22 -->
+  <section id="S22">
+    <div class="section-header">
+      <div class="section-num">22</div>
+      <div class="section-header-text">
+        <h2>Integracja wiedzy psychologicznej</h2>
+        <div class="src-tag">Źródło: <span>Śpiewak &amp; Kossowska 2008</span></div>
+      </div>
+    </div>
+    <div class="lcard">
+      <h3>Dwie niebezpieczne tendencje</h3>
+      <p>Psychologia społeczna sięga po narzędzia z psychofizjologii, neuronauki, psychologii poznawczej. Integracja wiedzy jest cenna, ale grożą jej dwie skrajności:</p>
+      <ul class="alist">
+        <li><strong>Izolacjonizm</strong> — zawężanie badania zjawiska do <em>jednego narzędzia</em> lub tradycji teoretycznej</li>
+        <li><strong>Redukcjonizm</strong> — sprowadzanie fenomenów społecznych do poziomu elementarnych zjawisk psychicznych</li>
+      </ul>
+      <div class="callout tip"><span class="ci">💡</span><div>„Mądra integracja" = łączenie wiedzy o społecznych mechanizmach zachowania bez gubienia poziomu zjawiska i bez sztucznej redukcji.</div></div>
+    </div>
+  </section>
+
+  <!-- ══════════ EGZAMIN ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-exam">📝 Pytania z wykładów</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <section id="S23">
+    <div class="section-header">
+      <div class="section-num">23</div>
+      <div class="section-header-text">
+        <h2>Pytania typu egzaminacyjnego (ze slajdów)</h2>
+        <div class="src-tag">Źródło: <span>slajdy „pytanie na egzaminie / powtórka"</span></div>
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="qitem">
+        <div class="q"><b>1.</b> Aktywizacja stereotypu wpływa na ocenę kandydatów, a relację modyfikuje płeć kandydata. Czym jest „płeć kandydata"?</div>
+        <ul class="qopts">
+          <li>Zmienną zależną</li>
+          <li>Mediatorem</li>
+          <li class="ok">Moderatorem</li>
+          <li>Zmienną zakłócającą</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>2.</b> Stres → krótszy sen → gorsza pamięć. Jaką rolę pełni „długość snu"?</div>
+        <ul class="qopts">
+          <li>Zmienną zależną (Y)</li>
+          <li class="ok">Mediator (zmienna pośrednicząca)</li>
+          <li>Moderator</li>
+          <li>Zmienną zakłócającą</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>3.</b> Co najlepiej ilustruje regresję do średniej?</div>
+        <ul class="qopts">
+          <li class="ok">Osoby z najwyższym stresem w I pomiarze mają niższy wynik w II — nawet bez realnego wpływu programu</li>
+          <li>Badani poprawiają wyniki, bo nauczyli się rozwiązywać zadania szybciej</li>
+          <li>Istotna korelacja dwóch zmiennych w dużej próbie</li>
+          <li>Bardzo podobne wyniki w dwóch pomiarach (wysoka rzetelność)</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>4.</b> „Kanon jedynej różnicy" (Mill) w logice eksperymentu oznacza, że:</div>
+        <ul class="qopts">
+          <li>Grupa eksperymentalna jest liczniejsza niż kontrolna</li>
+          <li>Systematyczną różnicą jest manipulacja zmienną zależną</li>
+          <li class="ok">Jedyną systematyczną różnicą między grupami jest manipulacja zmienną niezależną</li>
+          <li>Zmienna zależna musi być mierzona dwa razy (pre i post)</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>5.</b> Która sytuacja najlepiej ilustruje problem trafności pomiaru?</div>
+        <ul class="qopts">
+          <li>Test daje podobne wyniki przy dwóch wypełnieniach w krótkim odstępie</li>
+          <li class="ok">Kwestionariusz mający mierzyć lęk silniej odzwierciedla neurotyczność niż lęk</li>
+          <li>Użyto ANOVA zamiast regresji liniowej</li>
+          <li>Za mało osób dla wysokiej mocy statystycznej</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>6.</b> Narzędzie z wielu prób (pytań) sprawia, że badanie cechuje się:</div>
+        <ul class="qopts">
+          <li>niską trafnością wewnętrzną</li>
+          <li>wysoką replikowalnością</li>
+          <li class="ok">wysoką rzetelnością pomiaru</li>
+          <li>wysoką trafnością zewnętrzną</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>7.</b> Badania w warunkach naturalnych (vs laboratoryjne) cechują się:</div>
+        <ul class="qopts">
+          <li class="ok">wysoką trafnością zewnętrzną</li>
+          <li>wysoką trafnością wewnętrzną</li>
+          <li>wysoką rzetelnością</li>
+          <li>niską efektywnością</li>
+        </ul>
+      </div>
+      <div class="qitem">
+        <div class="q"><b>8.</b> Jaką próbę zastosować, by najdokładniej zbadać zaufanie do rządu wśród bezrobotnych Polaków?</div>
+        <ul class="qopts">
+          <li class="ok">losową</li>
+          <li>kwotową</li>
+          <li>dobraną metodą „kuli śnieżnej"</li>
+          <li>trudno powiedzieć</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ LITERATURA ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-lit">📚 Literatura</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <section id="lit">
+    <div class="lcard">
+      <h3>Lektury obowiązkowe</h3>
+      <ul class="alist">
+        <li>Brzeziński, J. (red.). <em>Metodologia badań psychologicznych. Wybór tekstów.</em> PWN (rozdz. 2, 3) — m.in. Wojciszke o <strong>SMAR</strong>.</li>
+        <li>Brzeziński, J. (2000). <em>Badania eksperymentalne w psychologii i pedagogice</em>, rozdz. 7. Scholar.</li>
+        <li>Śpiewak, S. i Kossowska, M. (2008). <em>Eksperymentalne metody badania zjawisk społecznych...</em> Psychologia Społeczna, 3, 7–10.</li>
+        <li>Bąbel, P. (2009). <em>Możliwości wykorzystania placebo do wspomagania wyników sportowych.</em> (placebo, nocebo, warunkowanie, oczekiwania, lęk)</li>
+        <li>Marlatt, Demming &amp; Reid (1973). <em>Loss of Control Drinking in Alcoholics: An Experimental Analogue.</em> J. Abnormal Psychology (balanced placebo design)</li>
+        <li>Karwowski, M. (2018). <em>Metaanaliza: o ilościowym syntetyzowaniu ustaleń empirycznych.</em> Polskie Forum Psychologiczne.</li>
+        <li>Łaguna, M. (2018). <em>Wprowadzenie do wielopoziomowej analizy danych.</em> Polskie Forum Psychologiczne.</li>
+        <li>Rosenhan, D.L. (1973). <em>On Being Sane in Insane Places.</em> Science, 179.</li>
+      </ul>
+      <h3 style="margin-top:1.3rem;">Linki z wykładu</h3>
+      <ul class="alist">
+        <li>Spearman, C. (1904). <em>The Proof and Measurement of Association between Two Things.</em> (JSTOR) — korelacja, korekta na atenuację</li>
+        <li>Crash Course Psychology #2 — przegląd metod badawczych i biasów</li>
+        <li>socscistatistics — kalkulator <strong>Cohen's d</strong> (wielkość efektu)</li>
+        <li>intellspot — metody zbierania danych: zalety i wady</li>
+      </ul>
+      <div class="callout info" style="margin-top:1rem;"><span class="ci">ℹ️</span><div>Egzamin: <strong>40 pytań</strong> z treści wykładów <em>oraz</em> lektur. Wykład 40 pkt (zalicza 21), ćwiczenia 60 pkt (zalicza 30).</div></div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<footer>StudyZone &mdash; Zaawansowana metodologia badań · notatka na podstawie prezentacji wykładowych i lektur obowiązkowych · materiał pomocniczy do nauki</footer>
+
+<script>
+// Podświetlanie aktywnej sekcji w spisie treści
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) map[id] = a;
+  });
+  var sections = Object.keys(map).map(function (id) { return document.getElementById(id); });
+  function onScroll() {
+    var pos = window.scrollY + 90;
+    var current = null;
+    sections.forEach(function (s) { if (s.offsetTop <= pos) current = s.id; });
+    links.forEach(function (a) { a.classList.remove('active'); });
+    if (current && map[current]) map[current].classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+<!-- ── TRYB POWTÓRKI: zasłoń i sprawdź ── -->
+<style>
+  .recall-fab { position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+    display: flex; flex-direction: column; align-items: flex-end; gap: .5rem;
+    font-family: 'Segoe UI', system-ui, sans-serif; }
+  .recall-fab button { border: none; cursor: pointer; border-radius: 22px;
+    padding: .6rem 1.1rem; font-size: .85rem; font-weight: 700; color: #fff;
+    background: linear-gradient(135deg, var(--c-head), var(--c-head2));
+    box-shadow: 0 4px 16px var(--nc-glow); transition: transform .12s, box-shadow .2s; }
+  .recall-fab button:hover { transform: translateY(-1px); box-shadow: 0 6px 22px var(--nc-glow); }
+  .recall-fab .recall-sub { display: none; gap: .4rem; }
+  body.recall-on .recall-fab .recall-sub { display: flex; }
+  .recall-fab .recall-sub button { font-size: .75rem; padding: .42rem .8rem;
+    background: #fff; color: var(--c-head); border: 1.5px solid var(--nc-border); box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+  .recall-fab .recall-sub button:hover { background: var(--nc-dim); }
+
+  body.recall-on .recall-hide { filter: blur(6px); background: var(--nc-dim);
+    border-radius: 4px; cursor: pointer; transition: filter .12s, background .12s;
+    -webkit-user-select: none; user-select: none; }
+  body.recall-on .recall-hide:hover { filter: blur(3px); }
+  body.recall-on .recall-hide.revealed { filter: none; background: transparent;
+    cursor: default; -webkit-user-select: auto; user-select: auto; }
+
+  @media print { .recall-fab { display: none; } body.recall-on .recall-hide { filter: none; background: transparent; } }
+</style>
+
+<div class="recall-fab" id="recallFab">
+  <div class="recall-sub">
+    <button type="button" data-recall="reveal">Odsłoń wszystko</button>
+    <button type="button" data-recall="hide">Zasłoń ponownie</button>
+  </div>
+  <button type="button" data-recall="toggle" id="recallToggle">🙈 Tryb powtórki</button>
+</div>
+
+<script>
+(function () {
+  var SEL = '.content .term, .content .ltable td:not(:first-child), .content .alist li > strong, .content .nlist li > strong, .content .alist li > em, .content .value, .content .exam-badge, .content .pill, .content .qopts li.ok, .content .formula';
+  var body = document.body, on = false, prepared = false;
+  function prepare() {
+    if (prepared) return;
+    document.querySelectorAll(SEL).forEach(function (el) {
+      if (!el.closest('.recall-hide')) el.classList.add('recall-hide');
+    });
+    prepared = true;
+  }
+  function setOn(v) {
+    on = v;
+    if (on) prepare();
+    body.classList.toggle('recall-on', on);
+    document.getElementById('recallToggle').textContent = on ? '\u{1F441}️ Wyłącz powt\xf3rkę' : '\u{1F648} Tryb powt\xf3rki';
+  }
+  document.getElementById('recallFab').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var a = b.getAttribute('data-recall');
+    if (a === 'toggle') setOn(!on);
+    else if (a === 'reveal') document.querySelectorAll('.recall-hide').forEach(function (el){ el.classList.add('revealed'); });
+    else if (a === 'hide') document.querySelectorAll('.recall-hide').forEach(function (el){ el.classList.remove('revealed'); });
+  });
+  var content = document.querySelector('.content');
+  if (content) content.addEventListener('click', function (e) {
+    if (!on) return;
+    var t = e.target.closest('.recall-hide'); if (!t) return;
+    t.classList.toggle('revealed');
+  });
+})();
+</script>
+
+</body>
+</html>
