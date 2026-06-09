@@ -385,7 +385,7 @@
     <div class="toc-group-label">🔁 Replikacja & Open Science</div>
     <a href="#S12">12 · Replikacja i kryzys replikacyjny</a>
     <a href="#S13">13 · SMAR · priming</a>
-    <a href="#S14">14 · Prerejestracja · p-hacking</a>
+    <a href="#S14">14 · Prerejestracja · p-hacking · multiverse</a>
   </div>
 
   <div class="toc-group">
@@ -982,8 +982,8 @@
     <div class="section-header">
       <div class="section-num">14</div>
       <div class="section-header-text">
-        <h2>Prerejestracja · p-hacking · dobre praktyki</h2>
-        <div class="src-tag">Źródło: <span>Materiały ćwiczeniowe</span></div>
+        <h2>Prerejestracja · p-hacking · multiverse</h2>
+        <div class="src-tag">Źródło: <span>Materiały ćwiczeniowe · Wagenmakers 2022 · Steegen 2016</span></div>
       </div>
     </div>
 
@@ -1002,6 +1002,28 @@
       <h3>P-hacking</h3>
       <p>Manipulowanie analizami, aż wynik stanie się istotny (p &lt; 0,05): testowanie wielu zmiennych i raportowanie tylko „ładnych", usuwanie „nietypowych" obserwacji, zmiana hipotezy po analizie (HARKing).</p>
       <div class="callout warn"><span class="ci">⚠️</span><div><strong>Head i wsp. (2015):</strong> w wielu dziedzinach jest nadreprezentacja wyników <strong>tuż poniżej 0,05</strong> (vs naprawdę silnych p &lt; 0,025) → ślad p-hackingu. „Istotny" nie znaczy „rzetelny". Remedium: prerejestracja, otwarte dane, raportowanie wszystkich analiz, nacisk na <strong>wielkość efektu</strong> i replikacje.</div></div>
+    </div>
+
+    <div class="lcard" id="multiverse">
+      <h3>Nowe nurty: analiza multiverse (Steegen i wsp., 2016)</h3>
+      <p>Przy danych badacz podejmuje wiele <strong>arbitralnych decyzji analitycznych</strong> (jak usuwać outliery, jak kodować/transformować zmienne, które kowariaty włączyć, jak wykluczać obserwacje) — to tzw. <span class="term">ogród rozwidlających się ścieżek</span> (garden of forking paths). Każda kombinacja decyzji to osobny zbiór danych i osobny wynik.</p>
+      <ul class="alist">
+        <li><strong>Multiverse analysis</strong> = przeliczenie wyniku dla <em>wszystkich rozsądnych</em> kombinacji decyzji i pokazanie <strong>całego rozkładu</strong> wyników, a nie jednej „wybranej" ścieżki</li>
+        <li>Pokazuje, czy efekt jest <strong>odporny (robust)</strong> na decyzje analityczne, czy zależy od jednej konkretnej, dogodnej ścieżki (kruchy efekt = ostrzeżenie przed p-hackingiem)</li>
+        <li>Zwiększa <strong>transparentność</strong>: czytelnik widzi, ile wyników było istotnych, a ile nie</li>
+      </ul>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Jeśli efekt jest istotny tylko dla <strong>kilku z wielu</strong> kombinacji decyzji, to sygnał, że może być artefaktem elastyczności analitycznej, a nie realnym zjawiskiem.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Badania multi-analyst (Wagenmakers i wsp., 2022)</h3>
+      <p><span class="term">Multi-analyst</span> = <strong>wiele niezależnych zespołów</strong> analizuje <em>te same dane</em>, odpowiadając na <em>to samo pytanie</em> badawcze. Tytuł manifestu Wagenmakersa: <em>„One statistical analysis must not rule them all"</em> — jedna analiza nie powinna rządzić wszystkimi.</p>
+      <ul class="alist">
+        <li>Zespoły dochodzą do <strong>różnych wyników i wniosków</strong> mimo identycznych danych — uwidacznia to ukrytą zmienność wynikającą z wyborów analityka</li>
+        <li>Cel: ujawnić, jak bardzo wnioski zależą od <strong>analityka</strong>, a nie tylko od danych; podnieść wiarygodność przez triangulację podejść</li>
+        <li>Wspólny mianownik z multiverse: walka z <strong>nieprzejrzystą elastycznością analityczną</strong> (researcher degrees of freedom)</li>
+      </ul>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Multiverse i multi-analyst to <strong>„nowe nurty w analizie i wnioskowaniu"</strong> — uzupełniają prerejestrację: prerejestracja ogranicza elastyczność <em>z góry</em>, a te metody <strong>ujawniają</strong> jej skutki <em>po fakcie</em>.</div></div>
     </div>
 
     <div class="lcard">
@@ -1092,6 +1114,17 @@
       <p>Szacowanie <strong>a priori</strong>: znając zakładaną wielkość efektu, α i moc, szukamy <em>najmniejszej</em> próby potrzebnej do wykrycia efektu. Wielkość efektu zależy od analizy (inna dla testu t, inna dla χ²).</p>
       <div class="callout tip"><span class="ci">💡</span><div>Im <strong>silniejszy</strong> spodziewany efekt, tym <strong>mniejsza</strong> potrzebna próba. Słaby efekt wymaga dużej próby, by go wykryć.</div></div>
     </div>
+
+    <div class="lcard">
+      <h3>Uzasadnianie wielkości próby (sample size justification)</h3>
+      <p>Dobra praktyka Open Science: nie tylko <em>policzyć</em> N, ale <strong>uzasadnić</strong>, skąd się wzięło. Liczy się przede wszystkim <strong>jawność założeń</strong> — jaką wielkość efektu przyjęto, jaką moc, jaką α i dlaczego.</p>
+      <ul class="alist">
+        <li><strong>Analiza mocy a priori</strong> — od zakładanej wielkości efektu (SESOI, smallest effect size of interest) do N</li>
+        <li><strong>Ograniczenia zasobów</strong> — ile danych realnie da się zebrać; wtedy raportujemy, jaki efekt jesteśmy w stanie wykryć (analiza wrażliwości / sensitivity)</li>
+        <li>Niska moc = ryzyko <strong>błędu II rodzaju</strong> i niestabilnych, „migoczących" wyników (Jarmakowska-Kostrzanowska, 2021; Białek &amp; Wolski, 2023 — w kontekście kryzysu wiarygodności)</li>
+      </ul>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Samo „bo tylu zebraliśmy" lub „bo tyle bywa w literaturze" <strong>nie jest</strong> uzasadnieniem. Wielkość próby trzeba powiązać z mocą i wielkością efektu, którą chcemy wykryć.</div></div>
+    </div>
   </section>
 
   <!-- S17 -->
@@ -1161,6 +1194,18 @@
       <p><strong>Medium:</strong> ankieta pocztowa, <strong>CAPI</strong> (computer-assisted personal interview), grupowa, <strong>CATI</strong> (telefoniczna), online/panelowa.</p>
       <h4>Struktura ankiety — list przewodni</h4>
       <p>Wyjaśnia cel, kto prowadzi, dlaczego ten adresat, na czym polega udział; zapewnia o dobrowolności, poufności/anonimowości, RODO i podaje kontakt. Zwiększa <strong>response rate</strong> i spełnia wymogi etyczne.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Badania korelacyjne, dzienniczkowe i panelowe</h3>
+      <p>Poza pojedynczym sondażem (pomiar w jednym punkcie czasu) ważne są schematy <strong>obserwujące zmienność w czasie</strong>:</p>
+      <table class="ltable">
+        <tr><th>Schemat</th><th>Na czym polega</th><th>Mocna strona</th></tr>
+        <tr><td><strong>Korelacyjny / przekrojowy</strong></td><td>jeden pomiar wielu zmiennych naraz</td><td>szybki opis związków; brak wnioskowania o kierunku</td></tr>
+        <tr><td><strong>Dzienniczkowy</strong> (diary)</td><td>te same osoby raportują <strong>wielokrotnie, na bieżąco</strong> (np. codziennie) w naturalnym kontekście</td><td>mała retrospekcja, wysoka trafność ekologiczna; dane zagnieżdżone (pomiary w osobach) → analiza wielopoziomowa</td></tr>
+        <tr><td><strong>Panelowy</strong></td><td>ta sama próba (panel) badana <strong>w kolejnych falach</strong> w dłuższych odstępach</td><td>śledzi zmianę wewnątrzosobową; pozwala badać następstwo czasowe</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Badania dzienniczkowe i panelowe dają dane o strukturze <strong>zagnieżdżonej / podłużnej</strong> (powtarzane pomiary w osobach), dlatego naturalnie łączą się z <strong>analizą wielopoziomową</strong> (zob. sekcja 21, Łaguna 2018).</div></div>
     </div>
   </section>
 
