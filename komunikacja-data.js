@@ -1,0 +1,74 @@
+/* Komunikacja i perswazja — fiszki do trybu Nauka (active recall).
+   Autorskie, na podstawie notatki komunikacja.html. Kategorie = 4 bloki sylabusa. */
+window.RECALL_DECK = {
+  meta: {
+    title: "Komunikacja i perswazja",
+    icon: "🗣️",
+    accent: "#8b5cf6",
+    accent2: "#7c3aed",
+    hub: "swps-komunikacja.html",
+    hubName: "Komunikacja i perswazja",
+    key: "komunikacja_recall_v1",
+    testHref: "komunikacja-testy.html",
+    cats: [
+      {id:"B1", label:"1 · Komunikacja i perswazja"},
+      {id:"B2", label:"2 · (Social) media"},
+      {id:"B3", label:"3 · Wpływ społeczny"},
+      {id:"B4", label:"4 · Biznes / polityka"}
+    ]
+  },
+  cards: [
+    {id:"B1-1", sec:"B1", f:"Czym jest komunikowanie?", b:"Kontakt między min. 2 osobami, w którym nadawca przekazuje odbiorcy za pomocą zrozumiałych znaków pewne treści — w celu wywołania zamierzonych skutków."},
+    {id:"B1-2", sec:"B1", f:"Cztery podstawowe elementy perswazji (formuła Lasswella)?", b:"Nadawca (kto mówi), Komunikat (co), Kanał (jakim kanałem), Odbiorca (do kogo) — oraz „z jakim skutkiem?”."},
+    {id:"B1-3", sec:"B1", f:"Trzy rodzaje szumu informacyjnego?", b:"Fizyczny (zakłócenia w kanale — hałas, zasięg), semantyczny (różne rozumienie znaków), psychiczny (nastawienia, emocje, uprzedzenia odbiorcy)."},
+    {id:"B1-4", sec:"B1", f:"Czym jest sprzężenie zwrotne (feedback)?", b:"Reakcja odbiorcy, dzięki której nadawca wie, czy i jak komunikat został odebrany. Jego brak (np. komunikacja masowa) utrudnia korektę przekazu."},
+    {id:"B1-5", sec:"B1", f:"Czym jest perswazja (Wojciszke 2011)?", b:"Zmienianie postaw odbiorców za pomocą przekazów (argumentów i komunikatów) — w odróżnieniu od przymusu czy nagrody/kary."},
+    {id:"B1-6", sec:"B1", f:"Trójkomponentowy model postawy?", b:"Poznawczy (wiedza, przekonania), afektywny/emocjonalny (uczucia, oceny), behawioralny (tendencje do działania)."},
+    {id:"B1-7", sec:"B1", f:"Funkcje postaw wg Katza (1960)?", b:"Orientacyjna (poznawcza), instrumentalna (użyteczności), ekspresji wartości, społeczno-adaptacyjna, obrony ego. Perswazja działa, gdy dopasujemy argument do funkcji postawy."},
+    {id:"B1-8", sec:"B1", f:"Model ELM — dwa tory przetwarzania przekazu (Petty & Cacioppo)?", b:"Centralny: mocne argumenty i fakty (wysoka motywacja i zdolność) → trwała, odporna zmiana. Peryferyczny: wskazówki (atrakcyjność, autorytet, płynność) → nietrwała zmiana."},
+    {id:"B1-9", sec:"B1", f:"Trzy filary perswazji wg Arystotelesa?", b:"Logos (rozum — argumenty, logika), Pathos (emocje odbiorcy), Ethos (wiarygodność i charakter mówcy)."},
+    {id:"B1-10", sec:"B1", f:"Funkcje mowy niewerbalnej (Argyle)?", b:"Komunikowanie postaw i emocji, autoprezentacja (wizerunek), funkcje rytualne (powitania), podtrzymywanie komunikacji werbalnej (regulacja rozmowy)."},
+    {id:"B1-11", sec:"B1", f:"Reguła Mehrabiana (7–38–55%) — na czym polega pułapka?", b:"Badania dotyczyły tylko komunikatów o uczuciach i postawach w sytuacji sprzeczności kanałów. Błędem jest stosować je do całej komunikacji („treść to tylko 7%”) — to mit."},
+
+    {id:"B2-1", sec:"B2", f:"Czym jest agenda setting?", b:"Duża uwaga mediów poświęcana zagadnieniu zwiększa jego spostrzeganą ważność. Media nie mówią nam, co myśleć, ale skutecznie wskazują, o czym myśleć (McCombs & Shaw)."},
+    {id:"B2-2", sec:"B2", f:"Trzy typy tendencyjności mediów (D'Alessio & Allen)?", b:"Gatekeeping bias (selekcja — co trafia do mediów), coverage bias (prezentacja — ilość czasu/miejsca), statement bias (komentowanie — oceny, ton dziennikarzy)."},
+    {id:"B2-3", sec:"B2", f:"Czym jest priming?", b:"Narzucanie standardów oceny zjawiska, zanim się z nim spotkamy. Media budują dostępność tematu w pamięci — tymczasową (bieżący przekaz) lub chroniczną (częsta ekspozycja)."},
+    {id:"B2-4", sec:"B2", f:"Czym jest framing?", b:"Ujmowanie zagadnienia w określone ramy interpretacyjne, które kierują tym, jak je rozumiemy i oceniamy (Tversky & Kahneman 1981; Gamson & Modigliani)."},
+    {id:"B2-5", sec:"B2", f:"Pięć typów framingu (Semetko & Valkenburg 2000)?", b:"Konfliktu, koncentracji na człowieku (human interest), konsekwencji ekonomicznych, moralności, odpowiedzialności."},
+    {id:"B2-6", sec:"B2", f:"Na czym polega efekt źródła?", b:"Nawet silna rama może stracić moc, jeśli pochodzi ze źródła bez autorytetu lub niezgodnego z przynależnością grupową / sympatiami odbiorcy. Siła ramy nie wynika tylko z treści."},
+    {id:"B2-7", sec:"B2", f:"Zasada „Five F” w relacjach z mediami?", b:"Fast, Factual, Frank, Fair, Friendly — szybko, rzeczowo, szczerze, uczciwie, przyjaźnie."},
+    {id:"B2-8", sec:"B2", f:"Czym jest fake news (Lazer i in. 2018)?", b:"Treść publikowana lub rozpowszechniana jako „prawdziwa”, gdy w rzeczywistości taka nie jest. Bliska teoriom pseudonaukowym i spiskowym."},
+    {id:"B2-9", sec:"B2", f:"Kto jest najbardziej podatny na fake news?", b:"Osoby o wysokiej zależności emocjonalnej (Martel i in.), niskim myśleniu analitycznym (Pennycook i in.), skłonne do histerii (Escola-Gascon i in.)."},
+    {id:"B2-10", sec:"B2", f:"Badanie Irlandia 2018 (fałszywe wspomnienia) — wniosek?", b:"Przed referendum aborcyjnym badani częściej „pamiętali” fałszywe newsy zgodne z własną postawą. Dezinformacja tworzy fałszywe wspomnienia spójne z poglądami."},
+    {id:"B2-11", sec:"B2", f:"Czym jest prebunking / teoria inokulacji?", b:"Uodparnianie z wyprzedzeniem — pokazanie osłabionej dawki manipulacji i mechanizmu, którym się posługuje, zanim odbiorca spotka ją naprawdę (van der Linden, Roozenbeek)."},
+
+    {id:"B3-1", sec:"B3", f:"Wpływ informacyjny vs normatywny?", b:"Informacyjny: „by mieć słuszność” — inni jako źródło wiedzy o tym, co prawdziwe. Normatywny: „by być lubianym” — dostosowanie dla akceptacji i uniknięcia odrzucenia."},
+    {id:"B3-2", sec:"B3", f:"Czym jest konformizm (Asch 1951)?", b:"Uleganie naciskowi grupowemu — zmiana zachowania lub opinii wywołana rzeczywistym lub wyobrażonym wpływem innych."},
+    {id:"B3-3", sec:"B3", f:"Co nasila konformizm (cechy grupy)?", b:"Wielkość grupy (efekt rośnie do ~4–5 osób), jednomyślność, ważność grupy dla osoby, normy kultury kolektywnej."},
+    {id:"B3-4", sec:"B3", f:"Co osłabia konformizm?", b:"Wysoka samoocena i pozycja, zaangażowanie w pierwszą odmienną ocenę, doświadczenie życiowe, znalezienie min. 1 sprzymierzeńca (łamie jednomyślność), kultura indywidualistyczna."},
+    {id:"B3-5", sec:"B3", f:"Wyznaczniki posłuszeństwa wobec autorytetu (Milgram 1963)?", b:"Nadzór wykonania, wielkość autorytetu, mały dystans fizyczny autorytetu, brak konfliktu autorytetów, brak obserwacji cudzego nieposłuszeństwa, eskalacja metodą małych kroków."},
+    {id:"B3-6", sec:"B3", f:"Z czego składa się wiarygodność autorytetu?", b:"Wiedza + zaufanie + dobra wola. Symbole autorytetu (tytuł, fartuch) bywają mylone z realną kompetencją."},
+    {id:"B3-7", sec:"B3", f:"Sześć (+1) reguł wpływu Cialdiniego?", b:"Wzajemności, zaangażowania i konsekwencji, społeczny dowód słuszności, autorytetu, lubienia (sympatii), niedostępności — oraz siódma: jedności („My”)."},
+    {id:"B3-8", sec:"B3", f:"Reguła wzajemności + technika?", b:"Czujemy presję, by odwzajemnić to, co dostaliśmy (nawet nieproszone). Technika „drzwiami w twarz” (door-in-the-face): najpierw duża prośba (odrzucona), potem mniejsza jako ustępstwo."},
+    {id:"B3-9", sec:"B3", f:"Reguła zaangażowania i konsekwencji + techniki?", b:"Dążymy do spójności z wcześniejszym zobowiązaniem (najsilniej: aktywne, publiczne, dobrowolne, wymagające wysiłku). Techniki: stopa w drzwiach (foot-in-the-door), niska piłka (low-ball)."},
+    {id:"B3-10", sec:"B3", f:"Społeczny dowód słuszności + jego „cienie”?", b:"O tym, co właściwe, wnioskujemy z zachowań innych (zwłaszcza podobnych, w niepewności). Cienie: efekt widza (rozproszenie odpowiedzialności) i niewiedza wielu (pluralistic ignorance)."},
+    {id:"B3-11", sec:"B3", f:"Reguła niedostępności i reaktancja?", b:"Rzeczy rzadkie cenimy wyżej; perspektywa utraty motywuje silniej niż zysk. Reaktancja (Brehm): ograniczenie swobody zwiększa chęć posiadania zagrożonego dobra."},
+    {id:"B3-12", sec:"B3", f:"Reguła jedności („My”)?", b:"Najsilniej ulegamy tym, z którymi dzielimy wspólną tożsamość — „jednym z nas”. To więcej niż lubienie. Siódma reguła dodana w „Pre-swazji” (2016)."},
+    {id:"B3-13", sec:"B3", f:"Czym jest pre-swazja (Cialdini 2016)?", b:"To, co dzieje się tuż przed przekazem, decyduje o jego skuteczności. Kierując uwagę odbiorcy na wybrany element, uprzywilejowujemy go w jego umyśle, zanim padnie propozycja."},
+    {id:"B3-14", sec:"B3", f:"Bodziec seksualny i lękowy w reklamie — jakie „ale”?", b:"Seksualny działa tylko, gdy jest związany z produktem (inaczej pamiętamy reklamę, nie markę). Lękowy wymaga skutecznej rekomendacji, jak uniknąć zagrożenia (model Tannera i in. 1991)."},
+    {id:"B3-15", sec:"B3", f:"Perswazja a dotyk (Smith, Gier & Willis 1982)?", b:"Lekki dotyk ramienia podnosi skłonność do spróbowania produktu (79% vs 51%) i zakupu (37% vs 19%). W kulturze polskiej bywa jednak odbierany jako naruszenie granic."},
+    {id:"B3-16", sec:"B3", f:"Cztery strefy dystansu (E. Hall)?", b:"Intymna (0–46 cm — najbliżsi), osobista (46 cm–1,2 m — znajomi), społeczna (1,2–3,6 m — kontakty formalne), publiczna (powyżej 3,6 m — wystąpienia)."},
+    {id:"B3-17", sec:"B3", f:"Efekt kameleona i mimikra?", b:"Nieświadome naśladowanie gestów, postawy i mowy rozmówcy. Mimikra działa jak „klej społeczny”, zwiększając sympatię (mimikra werbalna podnosi napiwki — Kulesza i in.)."},
+
+    {id:"B4-1", sec:"B4", f:"Marketing 5.0 (Kotler i in. 2021)?", b:"Ewolucja akcentu: od produktu, przez konsumenta, po człowieka, wartości i doświadczenia (CX) — wspierane nowymi technologiami. Coraz mniej o cechach, coraz bardziej o sensie i przeżyciu."},
+    {id:"B4-2", sec:"B4", f:"Trzy poziomy framingu wg Lakoffa?", b:"Surface framing (slogany, hasła), issue framing (konkretne kwestie w ramach), deep framing (wartości — najgłębszy poziom, fundament tożsamości i moralności)."},
+    {id:"B4-3", sec:"B4", f:"„Nie myśl o słoniu” — o czym uczy Lakoff?", b:"Negowanie ramy ją aktywuje. Zaprzeczając na cudzych warunkach, wzmacniasz ich ramę. Trzeba przeformułować debatę we własnych ramach (wartościach), a nie reagować w cudzych."},
+    {id:"B4-4", sec:"B4", f:"Struktura opowieści (storytelling)?", b:"Bohater (utożsamienie), wartości (co reprezentuje), cele (do czego dąży), przeciwności/wróg (napięcie). Buduje relację i ułatwia zapamiętanie — działa silniej niż lista argumentów."},
+    {id:"B4-5", sec:"B4", f:"Reguła Rives'a — ile treści przygotować na wystąpienie?", b:"Planowany czas × 0,9 (20 minut → przygotuj treść na 18 minut). Resztę zajmą reakcje publiczności — oklaski, śmiech, pytania."},
+    {id:"B4-6", sec:"B4", f:"Dwie funkcje wieloznaczności strategicznej (Cwalina & Koniak 2014)?", b:"Prewencyjna/defensywna (obrona wizerunku, unikanie konfrontacji) i promocyjna/strategiczna (budowanie i wzmacnianie wizerunku oraz poparcia)."},
+    {id:"B4-7", sec:"B4", f:"Rodzaje strategicznej wieloznaczności?", b:"Semantyczna — ogólniki i banały („sytuacja w służbie zdrowia musi się zmienić”). Argumentacyjna — różne opcje bez opowiedzenia się za którąkolwiek („są argumenty za i przeciw…”)."},
+    {id:"B4-8", sec:"B4", f:"Reguły jasnego języka Orwella (1946) — idea?", b:"M.in.: unikaj banalnych metafor, używaj krótszego wyrazu zamiast długiego, wyrzuć zbędne słowo, używaj strony czynnej zamiast biernej, codziennych słów zamiast żargonu."},
+    {id:"B4-9", sec:"B4", f:"Zasada „jednego przekazu” (Heath & Heath 2020)?", b:"„Jeśli mówisz 3 rzeczy na raz, nic nie mówisz”. Jak nie ma 5 gwiazd polarnych, tak nie ma 5 najważniejszych celów — jeden jasny przekaz przewodni > wiele rozmytych."},
+    {id:"B4-10", sec:"B4", f:"Model „Co i dla kogo?” (Drzewiecka 2016)?", b:"Rozpoznanie oczekiwań i sytuacji odbiorcy → oferta → framing sytuacji i oferty → rozmowa/kampania. Punkt wyjścia to perspektywa odbiorcy, nie „co ja chcę powiedzieć”."}
+  ]
+};

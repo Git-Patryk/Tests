@@ -1,0 +1,80 @@
+/* Zaawansowana psychometria — fiszki do trybu Nauka (active recall).
+   Autorskie, na podstawie notatki psychometria.html (w tym pułapki z realnego egzaminu). */
+window.RECALL_DECK = {
+  meta: {
+    title: "Zaawansowana psychometria",
+    icon: "📏",
+    accent: "#f97316",
+    accent2: "#ea580c",
+    hub: "swps-psychometria.html",
+    hubName: "Psychometria",
+    key: "psychometria_recall_v1",
+    testHref: "psychometria-testy.html",
+    cats: [
+      {id:"P1", label:"1 · Podstawy i konstrukcja"},
+      {id:"P2", label:"2 · Rzetelność"},
+      {id:"P3", label:"3 · Trafność i DIF"},
+      {id:"P4", label:"4 · Normy i modele"},
+      {id:"P5", label:"5 · Statystyka"}
+    ]
+  },
+  cards: [
+    {id:"P1-1", sec:"P1", f:"Czym jest psychometria?", b:"Dyscyplina psychologii zajmująca się teorią testów, ich opracowywaniem i praktycznym wykorzystaniem."},
+    {id:"P1-2", sec:"P1", f:"Podejście idiograficzne vs nomotetyczne?", b:"Idiograficzne: co specyficzne dla danej osoby (jakościowe, techniki swobodne). Nomotetyczne: nasilenie cechy uniwersalnej dla populacji (ilościowe, standaryzowane). Diagnoza testowa jest nomotetyczna."},
+    {id:"P1-3", sec:"P1", f:"Czym jest cecha?", b:"Właściwość zachowania o międzyosobniczej zmienności i wewnątrzosobniczej stałości (czasowej i międzysytuacyjnej). Cechy to zmienne latentne — nie istnieją realnie, mają status opisowy."},
+    {id:"P1-4", sec:"P1", f:"Co odróżnia test psychologiczny od psychozabawy?", b:"Test: standaryzowana procedura, jasne reguły wyniku, trafność i rzetelność, normy, oparcie w teorii i określony cel. Psychozabawa: niekontrolowane warunki, brak teorii, norm i badań empirycznych."},
+    {id:"P1-5", sec:"P1", f:"Skąd wiemy, co naprawdę mierzy test?", b:"Z podręcznika testowego (rozdział „Podstawy teoretyczne”) i z treści pozycji — nie z samej nazwy testu ani z własnych przekonań. Zawsze sprawdź definicję autora."},
+    {id:"P1-6", sec:"P1", f:"Czym jest standaryzacja i co wynika ze zmiany procedury?", b:"Ujednolicony sposób posługiwania się testem, minimalizujący czynniki zakłócające. Zmiana procedury → nie wolno korzystać z norm ani z rzetelności/trafności z podręcznika (szacowano je przy standardowej procedurze)."},
+    {id:"P1-7", sec:"P1", f:"Obowiązki etyczne badającego (przed / w trakcie / po)?", b:"Przed: dobór narzędzi, informacja o celu i poufności, zgoda. W trakcie: przestrzeganie procedury, ochrona materiału. Po: poprawna interpretacja, informacja zwrotna, właściwe przechowywanie."},
+    {id:"P1-8", sec:"P1", f:"Na czym polega istota operacjonalizacji mierzonej właściwości?", b:"Na określeniu zachowania identyfikowanego z mierzonym konstruktem (plus: wskazanie przedmiotu pomiaru, wybór modelu teoretycznego, obszaru zastosowania i grup docelowych)."},
+    {id:"P1-9", sec:"P1", f:"Itemmetria — jakie własności pojedynczej pozycji oceniamy?", b:"Trudność (odsetek poprawnych odpowiedzi), moc dyskryminacyjną (różnicowanie osób o niskim/wysokim nasileniu), trafność (związek z konstruktem), stronniczość (DIF)."},
+
+    {id:"P2-1", sec:"P2", f:"Czym jest rzetelność?", b:"Cecha testu oznaczająca powtarzalność pomiaru oraz precyzję (dokładność), z jaką mierzymy danym narzędziem."},
+    {id:"P2-2", sec:"P2", f:"Równanie klasycznej teorii testu (Gulliksen 1951)?", b:"Xx = Xt + Xe (wynik otrzymany = prawdziwy + błąd). Założenia: średnia błędu = 0, błąd nieskorelowany z wynikiem prawdziwym, błędy nieskorelowane między sobą."},
+    {id:"P2-3", sec:"P2", f:"Dlaczego to wariancja jest parametrem obciążonym błędem?", b:"Sx = St + Se — wariancja wyników otrzymanych jest zawsze większa od prawdziwych (powiększona o błąd). Średnia pozostaje bez zmian: M = Mt."},
+    {id:"P2-4", sec:"P2", f:"Cztery metody szacowania rzetelności (KTT)?", b:"Stabilność bezwzględna (test–retest), testy równoległe, metoda połówkowa, zgodność wewnętrzna (α Cronbacha)."},
+    {id:"P2-5", sec:"P2", f:"Czego wymaga metoda połówkowa?", b:"Podziału testu na dwie równoważne połowy NIE różniące się trudnością (np. pozycje parzyste/nieparzyste), a następnie korelacji połówek."},
+    {id:"P2-6", sec:"P2", f:"Co opisuje współczynnik α Cronbacha?", b:"Stopień, w jakim odpowiedzi na pozycje są determinowane nasileniem jednej cechy (zgodność wewnętrzna); można go traktować jako średnią ze wszystkich korelacji połówkowych (0–1). NIE liczy się go metodą test–retest."},
+    {id:"P2-7", sec:"P2", f:"Jak interpretować wartości α Cronbacha?", b:"0–0,7 niska (bezużyteczny do diagnozy indywidualnej); 0,7–0,9 umiarkowanie wysoka (użyteczny); 0,9–1 bardzo wysoka. Im wyższa α, tym mniejszy błąd pomiaru."},
+    {id:"P2-8", sec:"P2", f:"Co wpływa na rzetelność testu?", b:"Jakość pytań, długość testu (dłuższy zwykle rzetelniejszy) oraz jednorodność (homogeniczność) mierzonej zmiennej — wszystkie te czynniki naraz."},
+    {id:"P2-9", sec:"P2", f:"Czym jest SEM (standardowy błąd pomiaru)?", b:"Odchylenie standardowe rozkładu błędów pomiaru wokół wyniku prawdziwego; odpowiada 68% pewności. To NIE korelacja Pearsona ani SEE."},
+    {id:"P2-10", sec:"P2", f:"Jak działa przedział ufności i półprzedział?", b:"PU = wynik otrzymany ± półprzedział. Im wyższy poziom ufności, tym szerszy przedział (85%→7, 90%→8, 95%→9). By zwęzić przedział bez zmiany testu — obniż poziom ufności."},
+    {id:"P2-11", sec:"P2", f:"Czym jest SEE i estymowany wynik prawdziwy (EWP)?", b:"SEE (Lord i Novick) — błąd zależny od wyniku prawdziwego. EWP = wynik×Rtt + średnia×(1−Rtt) — „ściąga” wynik ku średniej (np. 80×0,8 + 100×0,2 = 84). W praktyce stosuje się prostszy SEM."},
+
+    {id:"P3-1", sec:"P3", f:"Czym jest trafność?", b:"Zakres, w jakim wynik testu rzeczywiście odzwierciedla cechę, którą test ma mierzyć. Współcześnie 3 rodzaje traktuje się jako trzy aspekty tej samej trafności."},
+    {id:"P3-2", sec:"P3", f:"Trzy rodzaje trafności?", b:"Treściowa (reprezentatywna próbka dziedziny — sędziowie kompetentni), kryterialna (związek z zewnętrznym kryterium — diagnostyczna lub prognostyczna), teoretyczna (reprezentowanie konstruktu — analiza czynnikowa, korelacje, różnice międzygrupowe)."},
+    {id:"P3-3", sec:"P3", f:"Trafność zbieżna vs różnicowa?", b:"Zbieżna: oczekujemy związku z innymi testami mierzącymi TĘ SAMĄ cechę. Różnicowa: oczekujemy BRAKU związku z testami mierzącymi inne cechy."},
+    {id:"P3-4", sec:"P3", f:"Jak oszacować trafność nowego testu inteligencji?", b:"Obliczyć korelacje jego wyników z wynikami innych uznanych testów inteligencji. (α i omega to rzetelność, nie trafność!)"},
+    {id:"P3-5", sec:"P3", f:"Co oznacza „analiza czynnikowa wykazała 5 czynników”?", b:"Że pięć zmiennych nieobserwowalnych (latentnych) najlepiej wyjaśnia odpowiedzi na zadania w teście. NIE oznacza: test ma 5 zadań / jest nierzetelny."},
+    {id:"P3-6", sec:"P3", f:"Czym jest stronniczość (tendencyjność) testu?", b:"Błąd systematyczny związany z wynikami osób z konkretnej podgrupy (rasa, płeć, wiek, narodowość). Obniża trafność (gł. teoretyczną); nie ma związku z błędami losowymi ani z uprzedzeniami w sensie potocznym."},
+    {id:"P3-7", sec:"P3", f:"Czym jest DIF (zróżnicowane funkcjonowanie pozycji)?", b:"Gdy osoby z różnych grup, ale o TAKIM SAMYM nasileniu mierzonej cechy, udzielają różnych odpowiedzi na daną pozycję. (Gdy różnią się też nasileniem cechy — to zwykła różnica międzygrupowa, nie DIF.)"},
+    {id:"P3-8", sec:"P3", f:"DIF jednorodny vs niejednorodny?", b:"Jednorodny: pozycja ma w grupach różną trudność. Niejednorodny: różni się dodatkowo mocą dyskryminacyjną (efekt interakcyjny)."},
+    {id:"P3-9", sec:"P3", f:"Wzór korekty na zgadywanie?", b:"PK = P − B/(m−1), gdzie P=poprawne, B=błędne, m=liczba wariantów. Np. 40 − 20/(6−1) = 36."},
+
+    {id:"P4-1", sec:"P4", f:"Reguła 68–95–99,7 w rozkładzie normalnym?", b:"±1 SD ≈ 68% obserwacji, ±2 SD ≈ 95%, ±3 SD ≈ 99,7%. W rozkładzie normalnym M = Me = Mo."},
+    {id:"P4-2", sec:"P4", f:"Parametry skal: steny, staniny, teny, IQ?", b:"Steny 1–10 (M=5,5; SD=2); staniny 1–9 (M=5; SD=2); teny 1–100 (M=50; SD=10); IQ (M=100; SD=15)."},
+    {id:"P4-3", sec:"P4", f:"Czym są normy?", b:"Zewnętrzny układ odniesienia dla wyników, wyznaczony przez reprezentatywną dla populacji próbę. Wynik surowy sam w sobie nic nie znaczy — przeliczamy go wg tabeli norm."},
+    {id:"P4-4", sec:"P4", f:"Co mówi centyl?", b:"Jaki % osób uzyskał wynik niższy lub równy. Np. 50 centyl = 50% osób niżej/równo; 90 centyl = 90% niżej, tylko 10% wyżej."},
+    {id:"P4-5", sec:"P4", f:"KTT vs IRT — parametry i błąd pomiaru?", b:"KTT: parametry zależne od próby normalizacyjnej, błąd stały. IRT (probabilistyczna): parametry niezależne od próby, błąd zależny od nasilenia cechy (funkcja informacyjna)."},
+    {id:"P4-6", sec:"P4", f:"Dlaczego IRT umożliwia testy adaptatywne?", b:"Bo zakłada, że właściwości pozycji są NIEZALEŻNE od wyników w próbie, na której opracowano test. Uwaga: niezależność od próby to założenie IRT, NIE KTT."},
+    {id:"P4-7", sec:"P4", f:"Trudność pozycji w KTT vs IRT?", b:"KTT: odsetek osób z poprawną odpowiedzią (0–1; wyższa liczba = łatwiejsze). IRT: parametr na skali nasilenia cechy (niższy/bardziej ujemny = łatwiejsze; np. −0,88 to najłatwiejsze)."},
+    {id:"P4-8", sec:"P4", f:"Co szacuje 2-parametryczny model IRT?", b:"Trudność i moc dyskryminacyjną. (Model 3-parametryczny dodaje jeszcze zgadywanie.)"},
+    {id:"P4-9", sec:"P4", f:"Które pozycje mają najwyższą moc dyskryminacyjną?", b:"Pozycje o umiarkowanej trudności — i to one dominują w teście o normalnym rozkładzie wyników surowych. Test dla populacji ogólnej powinien mieć pozycje o zróżnicowanej trudności."},
+    {id:"P4-10", sec:"P4", f:"Rozkład wyników a trudność testu?", b:"Test zbyt trudny → rozkład prawoskośny (dodatnio skośny, ogon w prawo). Zbyt łatwy → lewoskośny. Dobrze dobrany → normalny (dzwon)."},
+    {id:"P4-11", sec:"P4", f:"Fałszywe założenie adaptacji kulturowej testu?", b:"„Ta sama cecha ma zawsze takie same przejawy w każdej kulturze” — to FAŁSZ. Prawda: ta sama cecha może mieć w różnych kulturach różne przejawy (te same zachowania mogą być przejawem różnych cech)."},
+    {id:"P4-12", sec:"P4", f:"Czym jest walidacja krzyżowa?", b:"Ponowne badanie testem innej grupy osób i ocena parametrów testu w nowej grupie — sprawdzenie, czy własności psychometryczne się utrzymują."},
+
+    {id:"P5-1", sec:"P5", f:"Cztery skale pomiarowe?", b:"Nominalna (tylko klasyfikacja =, ≠), porządkowa (+ porządkowanie <, >, ale nie „o ile”), przedziałowa (równe jednostki, różnice; brak zera absolutnego — °C), stosunkowa (+ zero absolutne → „ile razy”)."},
+    {id:"P5-2", sec:"P5", f:"Dlaczego poziom pomiaru (skala) jest tak ważny?", b:"To najważniejsze kryterium doboru testu statystycznego: skale ilościowe → testy parametryczne; porządkowe/nominalne → nieparametryczne."},
+    {id:"P5-3", sec:"P5", f:"Trzy grupy statystyk opisowych?", b:"Tendencji centralnej (M, Me, Mo), rozproszenia (wariancja, SD, rozstęp), symetrii rozkładu (skośność, kurtoza)."},
+    {id:"P5-4", sec:"P5", f:"Miary tendencji centralnej i wymagania skali?", b:"Średnia (M): skale przedziałowe/ilorazowe. Mediana (Me): wartość środkowa (50% poniżej), skale ≥ porządkowe. Modalna (Mo): wartość najczęstsza."},
+    {id:"P5-5", sec:"P5", f:"Czym jest wariancja i jak liczy się SD?", b:"Wariancja = miara rozproszenia wokół średniej = Σ(x−M)²/(N−1). Odchylenie standardowe (SD) = pierwiastek z wariancji. Im większe, tym dane bardziej rozproszone."},
+    {id:"P5-6", sec:"P5", f:"Skośność i kurtoza — jak czytać znak?", b:"Skośność > 0: prawoskośny (M>Me>Mo); < 0: lewoskośny (M<Me<Mo). Kurtoza > 0: leptokurtyczny (smukły, skupiony); < 0: platokurtyczny (spłaszczony, rozproszony)."},
+    {id:"P5-7", sec:"P5", f:"Który test: związek dwóch zmiennych ilościowych?", b:"r Pearsona (rozkład normalny, związki liniowe). Nieparametrycznie: rho Spearmana / tau-b Kendalla (zmienne porządkowe lub brak normalności)."},
+    {id:"P5-8", sec:"P5", f:"Który test: 2 niezależne grupy vs 2 pomiary tej samej grupy?", b:"Niezależne (np. K vs M): t-Studenta dla prób niezależnych (nieparam. U Manna-Whitneya). Zależne (przed–po): t-Studenta dla prób zależnych (nieparam. Wilcoxona)."},
+    {id:"P5-9", sec:"P5", f:"Założenia parametrycznych testów t?", b:"Normalność rozkładu zmiennej zależnej (Shapiro-Wilk — nieistotny = normalny), równoliczność grup (chi²) oraz jednorodność wariancji (test Levene'a — tylko dla prób niezależnych)."},
+    {id:"P5-10", sec:"P5", f:"Jak interpretować test Levene'a?", b:"Nieistotny (p>0,05) → wariancje jednorodne (homogeniczne). Istotny (p<0,05) → niejednorodne (heterogeniczne) — odczytujemy t z innego wiersza."},
+    {id:"P5-11", sec:"P5", f:"Korelacja a przyczynowość?", b:"Korelacja = współwystępowanie (kierunek i siła związku), a NIE związek przyczynowo-skutkowy."},
+    {id:"P5-12", sec:"P5", f:"Po co mała wariancja wewnątrzgrupowa, a duża międzygrupowa?", b:"Grupy jednorodne (mała wariancja wewnątrz) i duża różnica między grupami (duża wariancja między) ułatwiają wykrycie istotnego efektu."}
+  ]
+};

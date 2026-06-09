@@ -84,7 +84,8 @@
   }
   .mode-card.tests  { --mc: var(--nc);  --mg: var(--ng); }
   .mode-card.notes  { --mc: var(--nc2); --mg: var(--ng2); }
-  .mode-card.cards  { --mc: #34d399; --mg: rgba(52,211,153,.10); }
+  .mode-card.recall { --mc: #34d399; --mg: rgba(52,211,153,.10); }
+  .mode-card.cards  { --mc: #22d3ee; --mg: rgba(34,211,238,.10); }
   .mode-card::before { background: radial-gradient(circle, var(--mc), transparent 70%); }
 
   .mode-card.disabled { opacity: .38; cursor: not-allowed; pointer-events: none; }
@@ -150,9 +151,19 @@
     <a class="mode-card notes active" href="komunikacja.html">
       <div class="mode-emblem">📖</div>
       <div class="mode-name">Notatki</div>
-      <div class="mode-desc">Opracowanie z wykładu i sylabusu: model komunikacji, ELM, mowa niewerbalna, media (framing, fake news), reguły Cialdiniego, storytelling i język w polityce</div>
+      <div class="mode-desc">Krok 1 — przeczytaj: model komunikacji, ELM, mowa niewerbalna, media (framing, fake news), reguły Cialdiniego, storytelling i język w polityce</div>
       <div class="mode-footer">
-        <span class="mode-badge">Dostępne</span>
+        <span class="mode-badge">Krok 1</span>
+        <span class="mode-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="mode-card recall active" href="komunikacja-recall.html">
+      <div class="mode-emblem">🎯</div>
+      <div class="mode-name">Nauka</div>
+      <div class="mode-desc">Krok 2 — active recall z systemem pudełek Leitnera: najpierw przypominasz, potem odsłaniasz i oceniasz. Postęp zapisuje się w przeglądarce</div>
+      <div class="mode-footer">
+        <span class="mode-badge">Zapis postępu</span>
         <span class="mode-arrow">→</span>
       </div>
     </a>
@@ -160,9 +171,9 @@
     <a class="mode-card tests active" href="komunikacja-testy.html">
       <div class="mode-emblem">📝</div>
       <div class="mode-name">Testy</div>
-      <div class="mode-desc">Trzy poziomy quizów (po 25 pytań) z komunikacji i perswazji — od podstaw po egzamin próbny</div>
+      <div class="mode-desc">Krok 3 — sprawdź się: trzy poziomy quizów (po 25 pytań), od podstaw po egzamin próbny</div>
       <div class="mode-footer">
-        <span class="mode-badge">Dostępne</span>
+        <span class="mode-badge">Krok 3</span>
         <span class="mode-arrow">→</span>
       </div>
     </a>
