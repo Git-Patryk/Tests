@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 1 – Podstawy Badań Klinicznych – StudyZone</title>
+<style>
+  :root {
+    --green:  #2d6a4f;
+    --green2: #40916c;
+    --green3: #74c69d;
+    --green4: #d8f3dc;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f8f9fa;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ef;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p {
+    margin-top: .5rem;
+    opacity: .85;
+    font-size: .95rem;
+  }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* START */
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem;
+    color: var(--green);
+    margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .info-box {
+    background: var(--green4);
+    border-radius: 10px;
+    padding: 1rem .8rem;
+  }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--green); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  /* BUTTON */
+  .btn {
+    display: inline-block;
+    padding: .85rem 2.2rem;
+    border: none;
+    border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--green2);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(64,145,108,.35);
+  }
+  .btn-primary:hover { background: var(--green); transform: translateY(-2px); }
+  .btn-secondary {
+    background: var(--green4);
+    color: var(--green);
+  }
+  .btn-secondary:hover { background: var(--green3); color: #fff; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 50px;
+    height: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green2), var(--green3));
+    border-radius: 50px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    color: var(--gray);
+    margin-bottom: .4rem;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    margin-bottom: 1rem;
+  }
+  .q-meta {
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--green2);
+    margin-bottom: .6rem;
+  }
+  .q-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #1a1a2e;
+    margin-bottom: 1.5rem;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: .9rem 1.1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+    text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--green3); background: #f0faf4; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--green2); background: var(--green4); }
+  .option.wrong   { border-color: var(--red);    background: var(--red2);   }
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem;
+    transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--green2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red);    color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  /* EXPLANATION */
+  .explanation {
+    border-left: 4px solid var(--green2);
+    background: #f0faf4;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem;
+    font-size: .9rem;
+    line-height: 1.6;
+    color: var(--gray);
+    margin-top: 1rem;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--green); }
+
+  /* NAV */
+  .nav-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin: .5rem 0;
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--green); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+  .review-item.ok   { background: var(--green4); border-left: 3px solid var(--green2); }
+  .review-item.fail { background: var(--red2);   border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Podstawy Badań Klinicznych</h1>
+  <p>Test 1 · Podstawy · 30 pytań</p>
+</header>
+
+<!-- START -->
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście egzaminacyjnym!</h2>
+    <p>Test 1 obejmuje fundamenty przedmiotu: proces powstawania nowego leku i fazy badań klinicznych (0–IV), podstawy farmakologii i farmakokinetyki (LADME, biodostępność, metabolizm CYP, wydalanie), postacie leku, badania przedkliniczne (3M, zasada 3R, GLP, zasada dwóch gatunków) oraz wytyczne ICH.</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>30</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>5</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 30</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--green);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    topic: "I. Proces powstawania leku",
+    q: "Ile średnio trwa cały proces badań i rozwoju nowego leku (BiR)?",
+    opts: ["Około 3 lata", "Około 12 lat", "Około 25 lat", "Około 40 lat"],
+    ans: 1,
+    exp: "Cały proces trwa średnio <strong>ok. 12,3 lat</strong>: odkrycie substancji + badania podstawowe i przedkliniczne (4,5–5 lat), badania kliniczne (5–7 lat) oraz rejestracja i wprowadzenie na rynek (ok. 1,5 roku)."
+  },
+  {
+    topic: "I. Proces powstawania leku",
+    q: "Jaki jest obecnie średni koszt opracowania jednego nowego leku?",
+    opts: ["Ok. 25 mln USD", "Ok. 250 mln USD", "Ok. 2,56 mld USD", "Ok. 50 mld USD"],
+    ans: 2,
+    exp: "Koszt opracowania nowego leku wynosi obecnie średnio <strong>2,56 mld USD</strong> — wynika to z ogromnego ryzyka niepowodzenia i wieloletnich, multidyscyplinarnych badań."
+  },
+  {
+    topic: "I. Proces powstawania leku",
+    q: "Z około ilu interesujących cząsteczek na etapie badań podstawowych powstaje ostatecznie 1 lek dopuszczony do obrotu?",
+    opts: ["Z ok. 50", "Z ok. 500", "Z 5–10 tys.", "Z ok. 1 mln"],
+    ans: 2,
+    exp: "Z <strong>5–10 tys. potencjalnie interesujących cząsteczek</strong> tylko ok. 5 jest podawanych ludziom (5–10% przechodzi wszystkie fazy), a finalnie <strong>1 zostaje dopuszczona do obrotu</strong>."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Czym zajmuje się farmakokinetyka?",
+    opts: ["Wpływem leku na organizm", "Wpływem organizmu na lek", "Wyłącznie metabolizmem wątrobowym", "Projektowaniem postaci leku"],
+    ans: 1,
+    exp: "Farmakokinetyka to <strong>wpływ organizmu na lek</strong> (LADME). Wpływ leku na organizm opisuje farmakodynamika."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Co oznacza akronim LADME opisujący losy leku w organizmie?",
+    opts: ["Liberation, Absorption, Distribution, Metabolism, Excretion", "Liver, Absorption, Diffusion, Metabolism, Elimination", "Liberation, Adsorption, Degradation, Metabolism, Excretion", "Ligand, Activation, Distribution, Modulation, Effect"],
+    ans: 0,
+    exp: "LADME = <strong>Liberation (uwolnienie), Absorption (wchłanianie), Distribution (rozmieszczenie), Metabolism (metabolizm), Excretion (wydalanie)</strong> — kolejne etapy losu związku w ustroju."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Jaką biodostępność ma lek po podaniu dożylnym?",
+    opts: ["50%", "80%", "100%", "Zależną od pH moczu"],
+    ans: 2,
+    exp: "Po podaniu <strong>dożylnym biodostępność wynosi 100%</strong> — cała dawka trafia bezpośrednio do krążenia ogólnego, bez etapu wchłaniania."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Na czym polega efekt pierwszego przejścia (first pass effect)?",
+    opts: ["Na natychmiastowym wydaleniu leku przez nerki", "Na intensywnym metabolizowaniu leku podczas pierwszego przepływu przez wątrobę", "Na wiązaniu leku z białkami osocza w 100%", "Na rozpadzie tabletki w żołądku"],
+    ans: 1,
+    exp: "Efekt pierwszego przejścia to <strong>metabolizm leku podczas pierwszego przepływu przez wątrobę</strong>, zmniejszający biodostępność po podaniu doustnym. Leki o dużym efekcie: nitrogliceryna, morfina, lidokaina, verapamil."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Która droga podania pozwala ominąć efekt pierwszego przejścia?",
+    opts: ["Doustna", "Podjęzykowa (sublingual)", "Doodbytnicza całkowicie", "Dożylna z opóźnieniem"],
+    ans: 1,
+    exp: "Drogi omijające wątrobę to m.in. <strong>podjęzykowa (SL), policzkowa (buccal) i przezskórna (TTS)</strong>. Droga doustna podlega efektowi pierwszego przejścia, a doodbytnicza omija go tylko częściowo."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Co przedstawia parametr AUC w farmakokinetyce?",
+    opts: ["Maksymalne stężenie leku we krwi", "Czas do osiągnięcia stężenia maksymalnego", "Pole pod krzywą zależności stężenia leku od czasu", "Objętość dystrybucji leku"],
+    ans: 2,
+    exp: "AUC (Area Under the Curve) to <strong>pole pod krzywą stężenie–czas</strong>; jest miarą ekspozycji na lek i podstawą badań biorównoważności (BA/BE)."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Jaki przedział 90% przedziału ufności (CI) dla AUC i Cmax jest akceptowany w badaniach biorównoważności (BA/BE) wg EMA/FDA?",
+    opts: ["50–150%", "80–125%", "90–110%", "95–105%"],
+    ans: 1,
+    exp: "Akceptowany przedział dla 90% CI w badaniach biorównoważności to <strong>80–125%</strong> — porównanie AUC i Cmax dwóch produktów jest podstawą badań BA/BE."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Do czego wykorzystywana jest objętość dystrybucji (Vd)?",
+    opts: ["Do określenia dawki nasycenia (loading dose)", "Do pomiaru pH moczu", "Do oceny efektu pierwszego przejścia", "Do oznaczenia masy cząsteczkowej leku"],
+    ans: 0,
+    exp: "Vd to hipotetyczna objętość, w której lek miałby stężenie jak we krwi; <strong>wykorzystuje się ją do określenia dawki nasycenia (Ld – loading dose)</strong>."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Od jakiego stopnia wiązanie leku z białkami osocza ma znaczenie kliniczne?",
+    opts: ["Powyżej 20%", "Powyżej 50%", "Powyżej 80%", "Już od 5%"],
+    ans: 2,
+    exp: "Znaczenie kliniczne wiązanie leku z białkami ma wówczas, gdy przekracza <strong>80%</strong>. Lek związany z białkami jest nieaktywny, nie przenika błon, nie jest metabolizowany ani wydalany."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Który izoenzym cytochromu P450 odpowiada za około 50% metabolizmu leków?",
+    opts: ["CYP2D6", "CYP3A4", "CYP1A2", "CYP2E1"],
+    ans: 1,
+    exp: "<strong>CYP3A4 odpowiada za ok. 50% metabolizmu leków</strong>, a CYP2D6 za ok. 25%. Aktywność izoenzymów zależy od polimorfizmu genetycznego oraz indukcji i inhibicji."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Który czynnik jest INHIBITOREM enzymów metabolizujących leki (np. CYP3A4)?",
+    opts: ["Rifampicyna", "Barbiturany", "Sok z grejpfruta", "Dziurawiec"],
+    ans: 2,
+    exp: "<strong>Sok z grejpfruta jest inhibitorem</strong> (m.in. CYP3A4) — zwiększa stężenie leków. Rifampicyna, barbiturany i dziurawiec to induktory enzymatyczne, które obniżają stężenie leków."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Jakie są konsekwencje fenotypu PM (poor metabolizer) dla leku metabolizowanego przez dany enzym?",
+    opts: ["Szybki metabolizm i obniżone stężenie leku", "Wolna eliminacja, wzrost stężenia i ryzyko działań niepożądanych", "Brak wpływu na farmakokinetykę", "Całkowity brak wchłaniania leku"],
+    ans: 1,
+    exp: "U <strong>PM (poor metabolizer)</strong> brak aktywności enzymu powoduje wolną eliminację leku → <strong>wzrost stężenia i ryzyko działań niepożądanych</strong>. Odwrotnie u UM (ultra-rapid): szybki metabolizm, niskie stężenie, ryzyko nieskuteczności."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Co określa biologiczny okres półtrwania (t½) leku?",
+    opts: ["Czas, po którym stężenie leku we krwi zmniejsza się o połowę", "Maksymalne stężenie leku", "Objętość organizmu, do której dociera lek", "Całkowitą dawkę nasycenia"],
+    ans: 0,
+    exp: "t½ to <strong>czas, po którym stężenie leku we krwi zmniejsza się o połowę</strong>; pozwala określić odstępy dawkowania leków."
+  },
+  {
+    topic: "II. Farmakologia",
+    q: "Którą drogą wydalana jest większość leków z organizmu?",
+    opts: ["Przez nerki", "Z żółcią", "Przez płuca", "Z potem"],
+    ans: 0,
+    exp: "Większość leków wydalana jest przez <strong>nerki</strong>. Wydalanie nerkowe obejmuje przesączanie kłębuszkowe, wydzielanie i wchłanianie zwrotne kanalikowe."
+  },
+  {
+    topic: "III. Postacie leku",
+    q: "Co oznacza skrót API w kontekście postaci leku?",
+    opts: ["Active Pharmaceutical Ingredient – substancja czynna", "Approved Pharmaceutical Index", "Automated Production Interface", "Adverse Pharmacological Indicator"],
+    ans: 0,
+    exp: "API (<strong>Active Pharmaceutical Ingredient</strong>) to substancja czynna leku; postać farmaceutyczna określa, jak jest ona przygotowana do podania pacjentowi."
+  },
+  {
+    topic: "III. Postacie leku",
+    q: "Co to są tabletki MR (Modified Release)?",
+    opts: ["Tabletki o zmodyfikowanym uwalnianiu substancji czynnej", "Tabletki przeznaczone wyłącznie dopochwowo", "Tabletki bez substancji pomocniczych", "Tabletki produkowane wyłącznie metodą druku 3D"],
+    ans: 0,
+    exp: "MR (Modified Release) to tabletki o <strong>zmodyfikowanym uwalnianiu</strong> — kontrolują tempo, miejsce i czas uwalniania leku. Należą do nich m.in. SR, CR i ER."
+  },
+  {
+    topic: "III. Postacie leku",
+    q: "Czym charakteryzują się drażetki?",
+    opts: ["Są to tabletki powlekane specjalną masą", "Są to płynne zawiesiny do wstrząsania", "Są to czopki dopochwowe", "Są to proszki do sporządzania roztworów"],
+    ans: 0,
+    exp: "Drażetki to <strong>tabletki otoczone specjalną masą (powlekane)</strong> — chronią lek przed światłem i powietrzem, maskują smak i mogą zmieniać miejsce wchłaniania."
+  },
+  {
+    topic: "IV. Badania przedkliniczne",
+    q: "Czego dotyczy zasada 3R w badaniach z udziałem zwierząt?",
+    opts: ["Replacement, Reduction, Refinement", "Research, Results, Reporting", "Randomization, Replication, Reliability", "Risk, Reward, Regulation"],
+    ans: 0,
+    exp: "Zasada 3R: <strong>Replacement</strong> (zastąpienie zwierząt np. metodami in vitro), <strong>Reduction</strong> (zmniejszenie liczby zwierząt) i <strong>Refinement</strong> (ograniczenie cierpień)."
+  },
+  {
+    topic: "IV. Badania przedkliniczne",
+    q: "Na czym polega koncepcja 3M w badaniach podstawowych nad lekiem?",
+    opts: ["Mechanizmy, Modele, Markery", "Masa, Metabolizm, Mutacje", "Molekuły, Mieszaniny, Metody", "Mysz, Małpa, Minipig"],
+    ans: 0,
+    exp: "Badania podstawowe opracowują trzy obszary 3M: <strong>Mechanizmy</strong> (przyczyny choroby / działania leku), <strong>Modele</strong> (zwierzęce) i <strong>Markery</strong> (wyznaczniki efektu terapeutycznego)."
+  },
+  {
+    topic: "IV. Badania przedkliniczne",
+    q: "Co stanowi zasada dwóch gatunków w badaniach przedklinicznych (ICH M3(R2))?",
+    opts: ["Badania na min. dwóch gatunkach ssaków, z których jeden nie jest gryzoniem", "Badania wyłącznie na dwóch gatunkach gryzoni", "Badania na dwóch szczepach tej samej myszy", "Badania na dwóch grupach ludzi"],
+    ans: 0,
+    exp: "Pełny program toksykologiczny wymaga badań na <strong>co najmniej dwóch gatunkach ssaków, z których jeden musi być niegryzoniem</strong> (np. klasyczny duet szczur + pies beagle)."
+  },
+  {
+    topic: "IV. Badania przedkliniczne",
+    q: "Czym jest GLP (Good Laboratory Practice)?",
+    opts: ["System jakości zapewniający rzetelność i powtarzalność badań nieklinicznych", "Wytyczne dotyczące reklamy leków", "Procedura rejestracji wyrobów medycznych", "Metoda randomizacji pacjentów"],
+    ans: 0,
+    exp: "GLP to <strong>system jakości</strong> gwarantujący, że badania niekliniczne (toksykologiczne, farmakokinetyczne) są rzetelne, powtarzalne i weryfikowalne. Dane pierwotne (raw data) przechowuje się zwykle ≥10 lat."
+  },
+  {
+    topic: "IV. Badania przedkliniczne",
+    q: "Co oznacza badanie prowadzone 'in silico'?",
+    opts: ["Badanie w żywym organizmie", "Badanie w warunkach laboratoryjnych 'na szkle'", "Badanie za pomocą technologii komputerowych", "Badanie na materiale pobranym z organizmu"],
+    ans: 2,
+    exp: "<strong>In silico</strong> to badania z użyciem technologii komputerowych (podstawowa metoda w genomice). In vivo = w żywym organizmie, in vitro = 'na szkle', ex vivo = pozaustrojowo na pobranym materiale."
+  },
+  {
+    topic: "IV. Badania przedkliniczne",
+    q: "Jaki zestaw badań toksyczności jest minimalnie wymagany do rozpoczęcia badań I fazy?",
+    opts: ["Toksyczność ostra na 2 gatunkach i 2 drogach podania oraz badania powtarzanych dawek", "Wyłącznie test in vitro na komórkach ludzkich", "Badania trwające minimum 5 lat na ludziach", "Tylko ocena działania kancerogennego"],
+    ans: 0,
+    exp: "Do fazy I wymaga się m.in. potwierdzenia bezpieczeństwa, wstępnych danych PK, <strong>toksyczności ostrej (2 gatunki, 2 drogi podania)</strong>, toksyczności po dawkach powtarzanych oraz testów mutagenności i reprodukcyjnych."
+  },
+  {
+    topic: "V. ICH",
+    q: "Czego dotyczą wytyczne ICH oznaczone literą 'S' (Safety)?",
+    opts: ["Bezpieczeństwa – badań niekliniczych (toksyczność, genotoksyczność, karcynogenność)", "Jakości produktu leczniczego", "Skuteczności klinicznej", "Terminologii medycznej"],
+    ans: 0,
+    exp: "W ICH litery oznaczają: <strong>S = Safety (bezpieczeństwo, badania niekliniczne)</strong>, Q = Quality (jakość), E = Efficacy (skuteczność), M = Multidisciplinary (np. M1 = MedDRA, M3 = badania niekliniczne)."
+  },
+  {
+    topic: "V. ICH",
+    q: "Co to jest CTD (Common Technical Document) w rejestracji leku?",
+    opts: ["Dokumentacja rejestracyjna w formacie 5 modułów", "Karta obserwacji klinicznej pacjenta", "Formularz świadomej zgody", "Protokół randomizacji"],
+    ans: 0,
+    exp: "CTD to <strong>Wspólny Dokument Techniczny</strong> — dossier produktu leczniczego w formacie 5 modułów: 1 formalny, 2 podsumowania, 3 jakość, 4 dane przedkliniczne, 5 dane kliniczne."
+  },
+  {
+    topic: "I. Proces powstawania leku",
+    q: "Co jest celem fazy '0' badań klinicznych (mikrodawkowanie)?",
+    opts: ["Potwierdzenie skuteczności leku w dużej populacji", "Szybkie poznanie dystrybucji i farmakologii bardzo niskich (mikro)dawek leku", "Rejestracja leku po dopuszczeniu do obrotu", "Porównanie leku z istniejącym standardem terapii"],
+    ans: 1,
+    exp: "Faza 0 to badania z <strong>mikrodawkami leku</strong> na małej grupie (10–15 ochotników) — szybko dostarczają danych o dystrybucji i farmakologii niskich dawek przy niskim koszcie i ryzyku."
+  },
+  {
+    topic: "I. Proces powstawania leku",
+    q: "Kto jest typowym uczestnikiem fazy I badań klinicznych leku?",
+    opts: ["Kilka tysięcy chorych pacjentów", "Zwykle 20–100 zdrowych ochotników", "Wyłącznie dzieci", "Wyłącznie kobiety w ciąży"],
+    ans: 1,
+    exp: "Faza I to <strong>pierwsze podanie leku ludziom — zwykle 20–100 zdrowych ochotników</strong>. Celem są podstawowe dane o bezpieczeństwie, działaniach niepożądanych i farmakokinetyce oraz ustalenie dawki do fazy II/III."
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0;
+  score = 0;
+  answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) {
+    grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.';
+    bg = '#d8f3dc'; color = '#2d6a4f';
+  } else if (pct >= 75) {
+    grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.';
+    bg = '#e8f5e9'; color = '#388e3c';
+  } else if (pct >= 60) {
+    grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.';
+    bg = '#fff9c4'; color = '#f9a825';
+  } else if (pct >= 50) {
+    grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.';
+    bg = '#fff3e0'; color = '#e65100';
+  } else {
+    grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.';
+    bg = '#fde8e9'; color = '#c1121f';
+  }
+  circle.style.background = bg;
+  circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+
+  // review
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() {
+  startQuiz();
+  window.scrollTo(0, 0);
+}
+
+// Attach listeners directly — script is at bottom of body so DOM exists
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>
