@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 4 – Test całościowy (moduł AT) – StudyZone</title>
+<style>
+  :root {
+    --green:  #2d6a4f;
+    --green2: #40916c;
+    --green3: #74c69d;
+    --green4: #d8f3dc;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f8f9fa;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ef;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p {
+    margin-top: .5rem;
+    opacity: .85;
+    font-size: .95rem;
+  }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* START */
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem;
+    color: var(--green);
+    margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .info-box {
+    background: var(--green4);
+    border-radius: 10px;
+    padding: 1rem .8rem;
+  }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--green); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  /* BUTTON */
+  .btn {
+    display: inline-block;
+    padding: .85rem 2.2rem;
+    border: none;
+    border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--green2);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(64,145,108,.35);
+  }
+  .btn-primary:hover { background: var(--green); transform: translateY(-2px); }
+  .btn-secondary {
+    background: var(--green4);
+    color: var(--green);
+  }
+  .btn-secondary:hover { background: var(--green3); color: #fff; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 50px;
+    height: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green2), var(--green3));
+    border-radius: 50px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    color: var(--gray);
+    margin-bottom: .4rem;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    margin-bottom: 1rem;
+  }
+  .q-meta {
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--green2);
+    margin-bottom: .6rem;
+  }
+  .q-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #1a1a2e;
+    margin-bottom: 1.5rem;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: .9rem 1.1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+    text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--green3); background: #f0faf4; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--green2); background: var(--green4); }
+  .option.wrong   { border-color: var(--red);    background: var(--red2);   }
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem;
+    transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--green2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red);    color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  /* EXPLANATION */
+  .explanation {
+    border-left: 4px solid var(--green2);
+    background: #f0faf4;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem;
+    font-size: .9rem;
+    line-height: 1.6;
+    color: var(--gray);
+    margin-top: 1rem;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--green); }
+
+  /* NAV */
+  .nav-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin: .5rem 0;
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--green); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+  .review-item.ok   { background: var(--green4); border-left: 3px solid var(--green2); }
+  .review-item.fail { background: var(--red2);   border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Podstawy Badań Klinicznych</h1>
+  <p>Test 4 · Test całościowy (moduł AT) · 55 pytań</p>
+</header>
+
+<!-- START -->
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście egzaminacyjnym!</h2>
+    <p>Test 4 to test całościowy obejmujący WSZYSTKIE zagadnienia z sylabusu modułu AT: podstawy farmakologii klinicznej i formulacje oraz różnice działania zależne od płci i wieku, badania przedkliniczne i modele zwierzęce (ICH M3(R2)), przejście do badań FIH wraz z analizą danych toksykologicznych i wyznaczaniem dawki początkowej (NOAEL, HED, MRSD, MELD-10), rodzaje randomizacji i modele adaptacyjne/platformowe vs faza III, rejestrację leków i certyfikację wyrobów medycznych, badania IV fazy (RWD, RWE), działania niepożądane (AE/ADR/SAE/SUSAR, ciężkość, związek przyczynowy) oraz pharmacovigilance w praktyce (ICSR, E2B(R3), MedDRA, zarządzanie sygnałami, ADR w bazach EMA).</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>55</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>10</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 55</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--green);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    topic: "Blok 1 · Farmakologia i formulacje",
+    q: "Co opisuje farmakokinetyka, a co farmakodynamika?",
+    opts: ["Farmakokinetyka – wpływ organizmu na lek; farmakodynamika – wpływ leku na organizm", "Farmakokinetyka – wpływ leku na organizm; farmakodynamika – wpływ organizmu na lek", "Obie opisują wyłącznie metabolizm wątrobowy", "Obie dotyczą tylko wydalania nerkowego"],
+    ans: 0,
+    exp: "Farmakokinetyka = <strong>wpływ organizmu na lek</strong> (LADME), a farmakodynamika = <strong>wpływ leku na organizm</strong> (reakcja z receptorem, efekt farmakologiczny)."
+  },
+  {
+    topic: "Blok 1 · Farmakologia i formulacje",
+    q: "Jak postać farmaceutyczna (formulacja) wpływa na działanie leku?",
+    opts: ["Nie ma żadnego wpływu na farmakokinetykę", "Wpływa bezpośrednio na farmakokinetykę (AUC, Cmax, Tmax) i decyduje o dawkowaniu oraz bezpieczeństwie", "Wpływa tylko na smak leku", "Zmienia wyłącznie kolor tabletki"],
+    ans: 1,
+    exp: "Postać farmaceutyczna <strong>bezpośrednio wpływa na farmakokinetykę (AUC, Cmax, Tmax)</strong> — zmiana postaci (np. tabletka → TTS → inhalator) często wymaga badania pomostowego (bridging study)."
+  },
+  {
+    topic: "Blok 1 · Farmakologia i formulacje",
+    q: "Co cechuje tabletki o zmodyfikowanym uwalnianiu (MR – Modified Release)?",
+    opts: ["Uwalniają całą dawkę natychmiast", "Kontrolują tempo, miejsce i czas uwalniania leku (np. SR, CR, ER)", "Są przeznaczone wyłącznie do wstrzykiwań", "Nie zawierają substancji czynnej"],
+    ans: 1,
+    exp: "Tabletki MR <strong>kontrolują tempo, miejsce i czas uwalniania</strong>, aby utrzymać stabilne stężenie leku. Należą do nich SR (sustained), CR (controlled) i ER (extended release)."
+  },
+  {
+    topic: "Blok 1 · Farmakologia i formulacje",
+    q: "Co oznacza biodostępność leku i ile wynosi po podaniu dożylnym?",
+    opts: ["Frakcja leku docierająca do krążenia ogólnego; po podaniu dożylnym = 100%", "Czas półtrwania leku; po podaniu dożylnym = 50%", "Objętość dystrybucji; po podaniu dożylnym = 0%", "Stopień wiązania z białkami; po podaniu dożylnym = 80%"],
+    ans: 0,
+    exp: "Biodostępność to <strong>frakcja leku docierająca do krążenia ogólnego</strong>. Po podaniu dożylnym wynosi <strong>100%</strong> (brak etapu wchłaniania i efektu pierwszego przejścia)."
+  },
+  {
+    topic: "Blok 1 · Różnice płeć/wiek",
+    q: "Jak wiek pacjenta wpływa na metabolizm leków?",
+    opts: ["U noworodków układ mikrosomalny jest niedojrzały, a u osób starszych aktywność enzymów mikrosomalnych jest zmniejszona", "Metabolizm jest identyczny w każdym wieku", "Noworodki metabolizują leki najszybciej ze wszystkich grup wiekowych", "Osoby starsze metabolizują leki szybciej niż dzieci"],
+    ans: 0,
+    exp: "U <strong>noworodków układ mikrosomalny jest niedojrzały</strong>, małe dzieci mają przyspieszony metabolizm, a u <strong>osób starszych aktywność enzymów mikrosomalnych maleje</strong> — to wpływa na dawkowanie i ryzyko działań niepożądanych."
+  },
+  {
+    topic: "Blok 1 · Różnice płeć/wiek",
+    q: "Jak płeć wpływa na szybkość metabolizmu leków (wg materiału)?",
+    opts: ["Kobiety metabolizują leki szybciej niż mężczyźni", "Mężczyźni metabolizują leki szybciej", "Płeć nie ma żadnego znaczenia", "Tylko u kobiet działa cytochrom P450"],
+    ans: 1,
+    exp: "Wśród czynników wpływających na metabolizm wymienia się płeć — <strong>mężczyźni metabolizują leki szybciej</strong>. Inne czynniki to wiek, stany chorobowe, interakcje i czynniki genetyczne."
+  },
+  {
+    topic: "Blok 1 · Różnice płeć/wiek",
+    q: "Dlaczego kobiety w ciąży i karmiące piersią są grupą wymagającą szczególnej uwagi w farmakoterapii?",
+    opts: ["Bo leki nie przenikają u nich przez żadne bariery", "Bo lek może wpływać na matkę i dziecko, a związki lipofilne przenikają do mleka", "Bo metabolizm leków u nich nie zachodzi", "Bo nie wolno im podawać żadnych leków"],
+    ans: 1,
+    exp: "Ciąża i karmienie to czynniki ryzyka działań niepożądanych zależne od organizmu pacjenta — <strong>lek wpływa na matkę i dziecko</strong>, a związki <strong>lipofilne (rozpuszczalne w tłuszczach) przenikają do mleka matki</strong>."
+  },
+  {
+    topic: "Blok 1 · Badania przedkliniczne",
+    q: "Na czym polega koncepcja 3M w badaniach podstawowych nad lekiem?",
+    opts: ["Mechanizmy, Modele, Markery", "Mysz, Małpa, Minipig", "Masa, Metabolizm, Mutacje", "Molekuły, Mieszaniny, Metody"],
+    ans: 0,
+    exp: "3M to: <strong>Mechanizmy</strong> (przyczyny choroby / podstawa działania leku), <strong>Modele</strong> (zwierzęce – metabolizm, PK, bezpieczeństwo) i <strong>Markery</strong> (wyznaczniki efektu terapeutycznego)."
+  },
+  {
+    topic: "Blok 1 · Badania przedkliniczne",
+    q: "Czego dotyczy zasada 3R w badaniach z udziałem zwierząt?",
+    opts: ["Replacement (zastąpienie), Reduction (zmniejszenie liczby), Refinement (ograniczenie cierpień)", "Research, Results, Reporting", "Risk, Reward, Regulation", "Random, Repeat, Review"],
+    ans: 0,
+    exp: "Zasada 3R: <strong>Replacement</strong> (zastąpienie zwierząt np. metodami in vitro), <strong>Reduction</strong> (mniej zwierząt dzięki statystyce) i <strong>Refinement</strong> (procedury mniej obciążające)."
+  },
+  {
+    topic: "Blok 1 · Badania przedkliniczne",
+    q: "Co — zgodnie z ICH M3(R2) — stanowi zasada dwóch gatunków w badaniach przedklinicznych?",
+    opts: ["Badania na min. dwóch gatunkach ssaków, z których jeden musi być niegryzoniem", "Badania na dwóch szczepach tej samej myszy", "Badania wyłącznie na dwóch gatunkach gryzoni", "Badania na dwóch grupach ludzi"],
+    ans: 0,
+    exp: "ICH M3(R2) wymaga badań na <strong>co najmniej dwóch gatunkach ssaków, z których jeden nie jest gryzoniem</strong> (np. szczur + pies beagle); gatunki powinny różnić się fizjologią i metabolizmem."
+  },
+  {
+    topic: "Blok 1 · Badania przedkliniczne",
+    q: "Które układy ocenia się we wstępnym badaniu bezpieczeństwa farmakologicznego przed FIH?",
+    opts: ["Wyłącznie układ pokarmowy", "Ośrodkowy układ nerwowy, układ sercowo-naczyniowy i oddechowy", "Wyłącznie układ kostny", "Wyłącznie skórę i oko"],
+    ans: 1,
+    exp: "Wstępna ocena bezpieczeństwa obejmuje wpływ substancji na <strong>OUN, układ sercowo-naczyniowy i oddechowy</strong> zwierząt — to tzw. core battery bezpieczeństwa farmakologicznego."
+  },
+  {
+    topic: "Blok 1 · Badania przedkliniczne",
+    q: "Czym jest GLP (Good Laboratory Practice)?",
+    opts: ["System jakości zapewniający rzetelność i powtarzalność badań nieklinicznych (raw data zwykle ≥10 lat)", "Wytyczne dotyczące reklamy leków", "Procedura rejestracji wyrobów medycznych", "Metoda randomizacji pacjentów"],
+    ans: 0,
+    exp: "GLP to system jakości gwarantujący, że badania niekliniczne są <strong>rzetelne, powtarzalne i weryfikowalne</strong>; dane pierwotne (raw data) przechowuje się zwykle ≥10 lat, a raport zatwierdza Study Director."
+  },
+  {
+    topic: "Blok 1 · Badania przedkliniczne",
+    q: "Który gatunek jest typowym niegryzoniem w badaniach toksyczności powtarzanych dawek?",
+    opts: ["Mysz (Mus musculus)", "Szczur (Rattus norvegicus)", "Pies rasy beagle", "Świnka morska"],
+    ans: 2,
+    exp: "Klasycznym duetem w toksyczności powtarzanych dawek jest <strong>szczur (gryzoń) + pies beagle (niegryzoń)</strong>; alternatywnie świnia (minipig) lub makak dla leków biologicznych."
+  },
+  {
+    topic: "Blok 1 · FIH i toksykologia",
+    q: "Co oznacza skrót FIH w rozwoju leku?",
+    opts: ["First-in-Human – pierwsze podanie substancji człowiekowi", "Final Investigation of Health", "Fast Incremental Hepatic test", "Full Immunological History"],
+    ans: 0,
+    exp: "FIH (<strong>First-in-Human</strong>) to pierwsze podanie badanej substancji człowiekowi (zwykle faza I), poprzedzone kompletem danych przedklinicznych."
+  },
+  {
+    topic: "Blok 1 · FIH i toksykologia",
+    q: "Co oznacza NOAEL?",
+    opts: ["Najwyższą dawkę, przy której nie obserwuje się szkodliwych efektów (No Observed Adverse Effect Level)", "Najniższą dawkę toksyczną", "Maksymalną tolerowaną dawkę", "Dawkę śmiertelną dla połowy zwierząt"],
+    ans: 0,
+    exp: "NOAEL (<strong>No Observed Adverse Effect Level</strong>) – najwyższa dawka bez szkodliwych efektów; kluczowy punkt odniesienia. LOAEL to najniższa dawka z efektami toksycznymi."
+  },
+  {
+    topic: "Blok 1 · FIH i toksykologia",
+    q: "Czym jest MTD (Maximum Tolerated Dose)?",
+    opts: ["Największa dawka, którą zwierzęta mogą przyjąć bez istotnych uszkodzeń lub śmierci", "Minimalna dawka skuteczna", "Dawka równoważna dla człowieka", "Dawka placebo"],
+    ans: 0,
+    exp: "MTD (<strong>Maximum Tolerated Dose</strong>) to największa dawka tolerowana przez zwierzęta bez istotnych uszkodzeń lub śmierci."
+  },
+  {
+    topic: "Blok 1 · FIH i toksykologia",
+    q: "Czym jest HED i jak ją oblicza się ze współczynnika Km?",
+    opts: ["Human Equivalent Dose – dawka dla człowieka: HED = dawka zwierzęca × (Km zwierzęcia / Km człowieka)", "Dawka śmiertelna dla człowieka liczona z masy ciała", "Maksymalna dawka tolerowana przez zwierzę", "Dawka podtrzymująca u zwierzęcia"],
+    ans: 0,
+    exp: "HED (<strong>Human Equivalent Dose</strong>) przelicza dawkę zwierzęcą na człowieka wg powierzchni ciała: <strong>HED = dawka × Km(zwierzę)/Km(człowiek)</strong>. Km: mysz 3, szczur 6, pies 20, człowiek (60 kg) 37."
+  },
+  {
+    topic: "Blok 1 · FIH i toksykologia",
+    q: "Jak z HED wyznacza się MRSD (maksymalną zalecaną dawkę początkową) dla fazy I?",
+    opts: ["MRSD = HED × 10", "MRSD = HED / UF, gdzie współczynnik bezpieczeństwa UF = 10", "MRSD = HED + masa ciała", "MRSD = NOAEL × 37"],
+    ans: 1,
+    exp: "MRSD = <strong>HED / UF</strong>, gdzie standardowy <strong>współczynnik bezpieczeństwa UF = 10</strong>. Dawka FIH = MRSD × masa człowieka."
+  },
+  {
+    topic: "Blok 1 · FIH i toksykologia",
+    q: "Dla NOAEL u szczura = 50 mg/kg (Km szczur 6, człowiek 37) HED ≈ 8,1 mg/kg. Jaka jest MRSD przy UF = 10?",
+    opts: ["8,1 mg/kg", "0,81 mg/kg", "81 mg/kg", "48,6 mg/kg"],
+    ans: 1,
+    exp: "HED = 50 × (6/37) ≈ 8,1 mg/kg, a MRSD = 8,1 / 10 = <strong>0,81 mg/kg</strong>. Dawka FIH dla 60 kg = 0,81 × 60 ≈ 48,6 mg/dzień."
+  },
+  {
+    topic: "Blok 1 · FIH i toksykologia",
+    q: "Co oznacza wynik MELD ≥10 przy kwalifikacji uczestnika do badania FIH?",
+    opts: ["Prawidłową funkcję wątroby i pełną kwalifikację", "Zaburzenia funkcji wątroby — wskazanie do wykluczenia lub redukcji dawki", "Konieczność zwiększenia dawki", "Brak znaczenia klinicznego"],
+    ans: 1,
+    exp: "MELD ≥10 wskazuje na <strong>zaburzenia funkcji wątroby</strong> (większe ryzyko toksyczności i akumulacji leku) → wykluczenie lub redukcja dawki. MELD <10 = prawidłowa funkcja, kandydat do FIH."
+  },
+  {
+    topic: "Blok 2 · Randomizacja i schematy",
+    q: "Czym jest randomizacja w badaniu klinicznym?",
+    opts: ["Celowym doborem pacjentów według cech klinicznych", "Losowym przydziałem uczestników do grup — najważniejszym mechanizmem ograniczającym błąd selekcji", "Analizą wyników po zakończeniu badania", "Wyborem terapii przez pacjenta"],
+    ans: 1,
+    exp: "Randomizacja to <strong>losowy przydział (nie dobór!) do grup</strong> — najważniejszy mechanizm ograniczający błąd selekcji, stosowany głównie w prospektywnych badaniach III fazy."
+  },
+  {
+    topic: "Blok 2 · Randomizacja i schematy",
+    q: "Jaka jest różnica między randomizacją prostą a blokową?",
+    opts: ["Prosta zapewnia równe grupy, blokowa losuje całe szpitale", "Prosta może dać nierówne grupy w małej próbie, a blokowa zapewnia równą liczebność ramion", "Obie metody są identyczne", "Blokowa nie jest metodą losową"],
+    ans: 1,
+    exp: "Randomizacja prosta jest łatwa, ale <strong>w małej próbie może dać nierówne grupy</strong>; randomizacja blokowa (permutowane bloki) <strong>zapewnia równą liczebność ramion</strong>, choć bywa częściowo przewidywalna."
+  },
+  {
+    topic: "Blok 2 · Randomizacja i schematy",
+    q: "Na czym polega randomizacja adaptacyjna?",
+    opts: ["Prawdopodobieństwo przydziału do grupy zmienia się w trakcie badania (np. response-adaptive)", "Pacjenci są przydzielani zawsze w proporcji 1:1 niezmiennie", "Losuje się tylko raz na początku badania", "Nie wymaga żadnej list randomizacyjnej i jest deterministyczna"],
+    ans: 0,
+    exp: "W randomizacji adaptacyjnej <strong>prawdopodobieństwo przydziału zmienia się w trakcie badania</strong>, by kontrolować rozkład cech lub kierować pacjentów do skuteczniejszego ramienia (response/outcome-adaptive)."
+  },
+  {
+    topic: "Blok 2 · Randomizacja i schematy",
+    q: "Jak różnią się badania koszykowe (basket) i parasolowe (umbrella) wśród protokołów głównych (master protocols)?",
+    opts: ["Basket: jedna mutacja w różnych nowotworach; umbrella: jeden nowotwór, różne mutacje", "Basket: jeden nowotwór, różne mutacje; umbrella: jedna mutacja, różne nowotwory", "Oba badają wyłącznie zdrowych ochotników", "Nie różnią się niczym"],
+    ans: 0,
+    exp: "Master protocols: <strong>basket</strong> testuje jedno leczenie u pacjentów z <strong>tą samą mutacją/biomarkerem w różnych typach raka</strong>; <strong>umbrella</strong> — <strong>jeden nowotwór, różne mutacje</strong>. Platform trial to kliniczna realizacja modelu MAMS."
+  },
+  {
+    topic: "Blok 2 · Randomizacja i schematy",
+    q: "Co oznacza MAMS w adaptacyjnych badaniach wieloramiennych?",
+    opts: ["Multi-Arm Multi-Stage – wiele ramion + analizy pośrednie zamykające słabe ramiona", "Maximum Allowed Medical Standard", "Multi-Agent Monitoring System", "Master Allocation of Medical Subjects"],
+    ans: 0,
+    exp: "MAMS (<strong>Multi-Arm Multi-Stage</strong>) to jedno badanie z wieloma ramionami i analizami pośrednimi — słabe ramiona są zamykane, obiecujące kontynuowane (wspólne ramię kontrolne zmniejsza próbę)."
+  },
+  {
+    topic: "Blok 2 · Randomizacja i schematy",
+    q: "Jaki jest cel badań III fazy, do których porównuje się modele adaptacyjne i platformowe?",
+    opts: ["Pierwsze podanie leku zdrowym ochotnikom", "Potwierdzenie skuteczności na większej skali i porównanie z dostępnym standardem leczenia", "Badanie mikrodawek leku", "Wyłącznie ocena kosztów terapii"],
+    ans: 1,
+    exp: "Faza III ma <strong>potwierdzić wyniki fazy II na większej skali i porównać nowy lek ze standardem leczenia</strong> (kilkaset–kilka tys. chorych); to klasyczny punkt odniesienia dla modeli adaptacyjnych/platformowych."
+  },
+  {
+    topic: "Blok 2 · Rejestracja i wyroby",
+    q: "Przez jaki system rejestruje się obecnie badania kliniczne produktów leczniczych w UE (Rozp. 536/2014)?",
+    opts: ["EUDAMED", "CTIS (Clinical Trials Information System)", "EudraVigilance", "MedDRA"],
+    ans: 1,
+    exp: "Badania kliniczne leków w UE rejestruje się przez <strong>CTIS</strong> (Clinical Trials Information System), zgodnie z Rozporządzeniem 536/2014. EUDAMED dotyczy wyrobów medycznych."
+  },
+  {
+    topic: "Blok 2 · Rejestracja i wyroby",
+    q: "Który moduł dokumentu CTD (Common Technical Document) zawiera wyniki badań klinicznych?",
+    opts: ["Moduł 1 (formalny)", "Moduł 3 (jakość)", "Moduł 4 (dane przedkliniczne)", "Moduł 5 (dane kliniczne)"],
+    ans: 3,
+    exp: "CTD ma 5 modułów; <strong>moduł 5 zawiera wyniki badań klinicznych</strong> (moduł 4 — przedkliniczne, 3 — jakość, 2 — podsumowania, 1 — dokumenty formalne)."
+  },
+  {
+    topic: "Blok 2 · Rejestracja i wyroby",
+    q: "Która procedura prowadzi do dopuszczenia leku w całej UE przez EMA i decyzję Komisji Europejskiej?",
+    opts: ["Procedura narodowa", "Procedura wzajemnego uznania (MRP)", "Procedura zdecentralizowana (DCP)", "Procedura scentralizowana (CP)"],
+    ans: 3,
+    exp: "Procedura <strong>scentralizowana (CP)</strong>: wniosek ocenia EMA (opinia CHMP), decyzję wydaje Komisja Europejska. Obowiązkowa m.in. dla leków biotechnologicznych, ATMP, sierocych i onkologicznych."
+  },
+  {
+    topic: "Blok 2 · Rejestracja i wyroby",
+    q: "Według jakiego kryterium klasyfikuje się wyroby medyczne na klasy I, IIa, IIb, III?",
+    opts: ["Według ceny", "Według potencjalnego ryzyka związanego z oddziaływaniem na organizm", "Według kraju produkcji", "Według wielkości producenta"],
+    ans: 1,
+    exp: "Wyroby medyczne klasyfikuje się <strong>wg potencjalnego ryzyka</strong>: I (niskie), IIa (średnie), IIb (wysokie), III (bardzo wysokie); wyroby IVD — klasy A–D. Regulują to MDR 2017/745 i IVDR 2017/746."
+  },
+  {
+    topic: "Blok 2 · Rejestracja i wyroby",
+    q: "Co potwierdza znak CE na wyrobie medycznym i kto bierze udział w ocenie zgodności?",
+    opts: ["Spełnienie zasadniczych wymagań UE; ocenę zgodności potwierdza jednostka notyfikowana", "Że wyrób jest refundowany przez NFZ", "Że wyrób przeszedł III fazę badań klinicznych", "Że wyrób jest produktem leczniczym"],
+    ans: 0,
+    exp: "Znak CE to deklaracja, że wyrób <strong>spełnia zasadnicze wymagania UE</strong> (m.in. MDR 2017/745); w ocenie zgodności wyrobów wyższych klas uczestniczy <strong>jednostka notyfikowana</strong>."
+  },
+  {
+    topic: "Blok 2 · Rejestracja i wyroby",
+    q: "Która norma reguluje badania kliniczne wyrobów medycznych (wywodzi się z GCP) i w jakiej bazie rejestruje się te badania?",
+    opts: ["ISO 14155; baza EUDAMED", "ISO 9001; baza CTIS", "ICH M3(R2); baza EudraVigilance", "ISO 14001; baza MedDRA"],
+    ans: 0,
+    exp: "Badania kliniczne wyrobów reguluje <strong>norma PN-EN ISO 14155</strong> (wywodzi się z GCP), a producent rejestruje je w module badań klinicznych <strong>EUDAMED</strong>. Obowiązkowej ocenie klinicznej podlegają wyroby klasy III i implanty."
+  },
+  {
+    topic: "Blok 2 · Faza IV (RWD/RWE)",
+    q: "Czym jest faza IV badań klinicznych?",
+    opts: ["Pierwszym podaniem leku zdrowym ochotnikom", "Badaniami po dopuszczeniu leku do obrotu (porejestracyjnymi) — dalsza ocena bezpieczeństwa i skuteczności w praktyce", "Badaniami mikrodawek leku", "Badaniami przedklinicznymi na zwierzętach"],
+    ans: 1,
+    exp: "Faza IV to badania <strong>po dopuszczeniu leku do obrotu</strong>: ocena długotrwałego stosowania, rzadkich działań niepożądanych, skuteczności w praktyce i kosztów; element strategii post-authorisation (PSUR, RMP, PASS/PAES)."
+  },
+  {
+    topic: "Blok 2 · Faza IV (RWD/RWE)",
+    q: "Jaka jest różnica między RWD a RWE?",
+    opts: ["RWD to dane o zdrowiu z rutynowych źródeł, a RWE to dowód kliniczny z analizy tych danych", "RWD to dowód, a RWE to surowe dane", "RWD i RWE to synonimy", "RWD dotyczy zwierząt, RWE ludzi"],
+    ans: 0,
+    exp: "RWD (Real-World Data) to <strong>dane o stanie zdrowia rutynowo zbierane z różnych źródeł</strong> (EHR, rejestry), a RWE (Real-World Evidence) to <strong>dowód kliniczny z analizy RWD</strong> — same dane nie są jeszcze dowodem."
+  },
+  {
+    topic: "Blok 2 · Faza IV (RWD/RWE)",
+    q: "Które są typowymi źródłami Real-World Data (RWD)?",
+    opts: ["Wyłącznie badania randomizowane III fazy", "Elektroniczna dokumentacja medyczna (EHR/EMR), rejestry chorób, bazy administracyjne, urządzenia noszone (wearables)", "Wyłącznie dane z fazy 0", "Wyłącznie wyniki badań na zwierzętach"],
+    ans: 1,
+    exp: "Źródła RWD to m.in. <strong>EHR/EMR, rejestry chorób i terapii, bazy administracyjne/claims, dane laboratoryjne, wearables i zgłoszenia spontaniczne</strong>. Kluczowe są ich adekwatność (relevance) i wiarygodność (reliability)."
+  },
+  {
+    topic: "Blok 2 · Faza IV (RWD/RWE)",
+    q: "Co jest głównym ograniczeniem badań opartych na RWE?",
+    opts: ["Zbyt wysoki koszt randomizacji", "Brak randomizacji i błędy systematyczne (confounding by indication, selection bias, immortal time bias)", "Niemożność zebrania jakichkolwiek danych", "Dostęp wyłącznie dla EMA"],
+    ans: 1,
+    exp: "Główne ograniczenie RWE to <strong>brak randomizacji i błędy systematyczne</strong> — m.in. confounding by indication, selection bias i immortal time bias; stąd metody jak propensity score czy target trial emulation."
+  },
+  {
+    topic: "Blok 2 · Faza IV (RWD/RWE)",
+    q: "Czym różnią się badania PASS i PAES w nadzorze porejestracyjnym?",
+    opts: ["PASS dotyczy bezpieczeństwa, a PAES skuteczności po autoryzacji", "PASS dotyczy skuteczności, a PAES bezpieczeństwa", "Oba dotyczą wyłącznie fazy I", "Oba są badaniami przedklinicznymi"],
+    ans: 0,
+    exp: "PASS (Post-Authorisation Safety Study) dotyczy <strong>bezpieczeństwa</strong> (np. rzadkie działania niepożądane), a PAES (Post-Authorisation Efficacy Study) — <strong>skuteczności</strong> po rejestracji."
+  },
+  {
+    topic: "Blok 2 · Faza IV (RWD/RWE)",
+    q: "Co oznacza symbol czarnego odwróconego trójkąta (▼) przy leku?",
+    opts: ["Że produkt jest wycofany", "Że produkt podlega dodatkowemu (intensywnemu) monitorowaniu", "Że produkt jest bez recepty", "Że produkt jest generykiem"],
+    ans: 1,
+    exp: "Czarny odwrócony trójkąt (▼) oznacza, że produkt jest <strong>objęty dodatkowym, intensywnym monitorowaniem</strong> (zwykle mniej danych); nie oznacza automatycznie, że produkt jest niebezpieczny."
+  },
+  {
+    topic: "Blok 3 · Działania niepożądane",
+    q: "Czym różni się AE (adverse event) od ADR (adverse drug reaction)?",
+    opts: ["AE nie musi mieć związku przyczynowego z lekiem; ADR to AE z potwierdzonym związkiem z produktem leczniczym", "AE dotyczy tylko zwierząt, ADR tylko ludzi", "AE jest zawsze ciężkie, ADR łagodne", "Nie ma między nimi różnicy"],
+    ans: 0,
+    exp: "AE (zdarzenie niepożądane) to każde zdarzenie medyczne u uczestnika, <strong>nawet bez związku z lekiem</strong>; ADR (działanie niepożądane) to AE z <strong>potwierdzonym związkiem przyczynowym z produktem leczniczym</strong>."
+  },
+  {
+    topic: "Blok 3 · Działania niepożądane",
+    q: "Które kryterium NIE definiuje ciężkiego zdarzenia/działania niepożądanego (SAE)?",
+    opts: ["Zgon lub zagrożenie życia", "Hospitalizacja lub jej przedłużenie", "Trwały lub znaczny uszczerbek na zdrowiu, wada wrodzona", "Łagodny, przemijający ból głowy ustępujący samoistnie"],
+    ans: 3,
+    exp: "SAE to zdarzenie powodujące <strong>zgon, zagrożenie życia, hospitalizację (lub jej przedłużenie), trwały uszczerbek, wadę wrodzoną/uszkodzenie płodu</strong>. Łagodny, przemijający ból głowy nie spełnia kryteriów ciężkości."
+  },
+  {
+    topic: "Blok 3 · Działania niepożądane",
+    q: "Co oznacza SUSAR i jaka jest jego definicja ('3 x YES')?",
+    opts: ["Podejrzewane, niespodziewane, ciężkie działanie niepożądane (Serious + Unexpected + związek)", "Standardowe, spodziewane, łagodne działanie", "Zwykłe zdarzenie w fazie IV", "Reakcja opisana w ChPL"],
+    ans: 0,
+    exp: "SUSAR (Suspected Unexpected Serious Adverse Reaction) jest jednocześnie <strong>ciężkie, niespodziewane i związane z lekiem</strong> ('3 x YES': Serious, Associated, Unexpected); niespodziewane = nieopisane w broszurze badacza."
+  },
+  {
+    topic: "Blok 3 · Działania niepożądane",
+    q: "Co oznacza, że działanie niepożądane jest 'niespodziewane' (unexpected)?",
+    opts: ["Że jest zgodne z opisem w broszurze badacza / ChPL", "Że jego charakter lub nasilenie nie jest zgodne z informacją o produkcie (broszurą badacza lub ChPL)", "Że wystąpiło u więcej niż połowy pacjentów", "Że jest zawsze łagodne"],
+    ans: 1,
+    exp: "Niespodziewane działanie niepożądane to takie, którego <strong>charakter lub nasilenie nie jest zgodny z informacją o produkcie</strong> — broszurą badacza (badania kliniczne) lub Charakterystyką Produktu Leczniczego (leki dopuszczone)."
+  },
+  {
+    topic: "Blok 3 · Działania niepożądane",
+    q: "Czym jest AESI (Adverse Event of Special Interest)?",
+    opts: ["Zdarzenie (ciężkie lub nie) istotne naukowo/medycznie dla oceny bezpieczeństwa, wymagające wnikliwej analizy", "Działanie zawsze łagodne i ignorowane", "Synonim placebo", "Wyłącznie błąd lekarski"],
+    ans: 0,
+    exp: "AESI to zdarzenie (ciężkie lub nie), które z naukowego/medycznego punktu widzenia jest <strong>istotne dla oceny bezpieczeństwa</strong> i wymaga monitoringu/szybkiego zgłaszania (np. zapalenie mięśnia sercowego po szczepionkach mRNA, CRS w terapii CAR-T)."
+  },
+  {
+    topic: "Blok 3 · Działania niepożądane",
+    q: "Działania niepożądane typu A (augmented) w klasyfikacji farmakologicznej są:",
+    opts: ["Niezależne od dawki, rzadkie, nieprzewidywalne (alergiczne)", "Zależne od dawki, przewidywalne, częste, zwykle łagodne", "Wyłącznie genetycznie uwarunkowane", "Ujawniające się po latach od odstawienia"],
+    ans: 1,
+    exp: "Typ A (augmented) jest <strong>zależny od dawki, przewidywalny i częsty</strong> (nasilone działanie farmakologiczne, np. hipoglikemia po lekach przeciwcukrzycowych). Typ B (bizarre) jest niezależny od dawki, rzadki i nieprzewidywalny."
+  },
+  {
+    topic: "Blok 3 · Pharmacovigilance",
+    q: "Czym jest ICSR (Individual Case Safety Report)?",
+    opts: ["Opisem pojedynczego przypadku działania niepożądanego przekazywanym do podmiotu/władz", "Międzynarodowym rejestrem badań", "Słownikiem terminów medycznych", "Raportem rocznym o sprzedaży leku"],
+    ans: 0,
+    exp: "ICSR (<strong>Individual Case Safety Report</strong>) to opis pojedynczego przypadku działania niepożądanego przekazywany do podmiotu odpowiedzialnego lub odnośnych władz (m.in. w wymianie elektronicznej)."
+  },
+  {
+    topic: "Blok 3 · Pharmacovigilance",
+    q: "Czym jest standard ICH E2B(R3)?",
+    opts: ["Standardem elektronicznej wymiany pojedynczych zgłoszeń bezpieczeństwa (ICSR)", "Słownikiem terminologii medycznej", "Procedurą rejestracji wyrobów medycznych", "Wytyczną dotyczącą randomizacji"],
+    ans: 0,
+    exp: "ICH <strong>E2B(R3)</strong> to standard <strong>elektronicznej wymiany pojedynczych zgłoszeń bezpieczeństwa (ICSR)</strong> — określa format danych przekazywanych m.in. do EudraVigilance."
+  },
+  {
+    topic: "Blok 3 · Pharmacovigilance",
+    q: "Czym jest MedDRA?",
+    opts: ["Słownikiem (terminologią) medyczną do raportowania działań niepożądanych (ICH M1)", "Bazą danych badań klinicznych", "Systemem rejestracji leków", "Współczynnikiem przeliczania dawki"],
+    ans: 0,
+    exp: "MedDRA (<strong>Medical Dictionary for Regulatory Activities</strong>) to ustandaryzowana <strong>terminologia medyczna</strong> stosowana m.in. do kodowania działań niepożądanych; w ICH odpowiada wytycznej M1."
+  },
+  {
+    topic: "Blok 3 · Pharmacovigilance",
+    q: "Czym jest sygnał (signal) w nadzorze nad bezpieczeństwem farmakoterapii?",
+    opts: ["Informacją o możliwym, dotychczas nieznanym lub niedostatecznie udokumentowanym związku przyczynowym między zdarzeniem a lekiem", "Potwierdzoną reakcją opisaną już w ChPL", "Numerem rejestracyjnym leku", "Maksymalną dawką leku"],
+    ans: 0,
+    exp: "Sygnał to <strong>informacja o możliwym związku przyczynowym między zdarzeniem niepożądanym a lekiem</strong>, dotąd nieznanym lub niedostatecznie udokumentowanym; zwykle składa się nań kilka zgłoszeń. Proces ich identyfikacji to signal detection/management."
+  },
+  {
+    topic: "Blok 3 · Pharmacovigilance",
+    q: "W jakich terminach działa procedura szybkiego zgłaszania (expedited reporting) SUSAR z badań klinicznych?",
+    opts: ["7 dni dla raportów wstępnych o śmierci/zagrożeniu życia, 15 dni dla pozostałych", "24 godziny dla wszystkich", "30 dni dla wszystkich", "Bez żadnego terminu"],
+    ans: 0,
+    exp: "Dla raportów wstępnych dotyczących śmierci/zagrożenia życia (m.in. SUSAR) obowiązuje termin <strong>7 dni</strong>; dla pozostałych raportów wstępnych i uzupełniających — <strong>15 dni</strong>."
+  },
+  {
+    topic: "Blok 3 · Pharmacovigilance",
+    q: "Który komitet EMA odpowiada za ocenę ryzyka w nadzorze nad bezpieczeństwem farmakoterapii?",
+    opts: ["CHMP", "PRAC (Pharmacovigilance Risk Assessment Committee)", "CEC", "DSMB"],
+    ans: 1,
+    exp: "<strong>PRAC</strong> (Pharmacovigilance Risk Assessment Committee) to komitet EMA ds. oceny ryzyka. CHMP wydaje opinie naukowe przy rejestracji, a DSMB/CEC to komitety monitorujące w obrębie badania."
+  },
+  {
+    topic: "Blok 3 · Pharmacovigilance",
+    q: "Czym jest PSUR (Periodic Safety Update Report)?",
+    opts: ["Okresowym raportem o bezpieczeństwie po dopuszczeniu leku do obrotu, oceniającym bilans korzyści–ryzyka", "Raportem dotyczącym wyłącznie badań przedklinicznych", "Wnioskiem o rejestrację wyrobu", "Formularzem świadomej zgody"],
+    ans: 0,
+    exp: "PSUR to <strong>okresowy raport o bezpieczeństwie po rejestracji</strong>, oceniający bilans korzyści–ryzyka (PBRER wg ICH E2C(R2)). Odpowiednikiem w trakcie badań klinicznych jest DSUR."
+  },
+  {
+    topic: "Blok 3 · ADR w bazach EMA",
+    q: "Czym jest EudraVigilance?",
+    opts: ["Unijnym systemem elektronicznego raportowania i analizy działań niepożądanych leków", "Bazą wyrobów medycznych", "Systemem rejestracji badań klinicznych", "Słownikiem terminologii medycznej"],
+    ans: 0,
+    exp: "EudraVigilance to <strong>unijny system monitorowania bezpieczeństwa leków</strong> — umożliwia elektroniczne raportowanie działań niepożądanych i ich analizę, wspierając wczesne wykrywanie problemów bezpieczeństwa."
+  },
+  {
+    topic: "Blok 3 · ADR w bazach EMA",
+    q: "Czemu służy komponent EVDAS (EudraVigilance Data Analysis System)?",
+    opts: ["Wykrywaniu sygnałów na podstawie danych z EudraVigilance", "Rejestracji wyrobów medycznych", "Przeliczaniu dawki początkowej", "Randomizacji pacjentów"],
+    ans: 0,
+    exp: "EVDAS (EudraVigilance Data Analysis System) to narzędzie do <strong>wykrywania sygnałów</strong> na podstawie zgromadzonych w EudraVigilance zgłoszeń o podejrzewanych działaniach niepożądanych."
+  },
+  {
+    topic: "Blok 3 · ADR w bazach EMA",
+    q: "Co umożliwia publiczny portal adrreports.eu?",
+    opts: ["Publiczne przeszukiwanie europejskiej bazy zgłoszeń o podejrzewanych działaniach niepożądanych leków", "Składanie wniosków o rejestrację leku", "Zakup leków online", "Przegląd cen leków w aptekach"],
+    ans: 0,
+    exp: "Portal <strong>www.adrreports.eu</strong> to publicznie dostępne narzędzie do <strong>przeszukiwania europejskiej bazy zgłoszeń o podejrzewanych działaniach niepożądanych leków</strong> (dane z EudraVigilance)."
+  },
+  {
+    topic: "Blok 3 · ADR w bazach EMA",
+    q: "Czym jest zgłoszenie spontaniczne (spontaneous reporting) działań niepożądanych?",
+    opts: ["Zgłaszaniem działań niepożądanych leku po dopuszczeniu do obrotu, ze źródła innego niż badanie kliniczne", "Obowiązkowym elementem fazy I", "Raportem z badań przedklinicznych", "Wnioskiem o refundację"],
+    ans: 0,
+    exp: "Zgłoszenie spontaniczne to <strong>zgłaszanie działań niepożądanych po dopuszczeniu leku do obrotu</strong> (przez lekarzy, farmaceutów, pacjentów), ze źródła innego niż badanie kliniczne — służy wykrywaniu nowych, nieznanych wcześniej działań."
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0;
+  score = 0;
+  answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) {
+    grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.';
+    bg = '#d8f3dc'; color = '#2d6a4f';
+  } else if (pct >= 75) {
+    grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.';
+    bg = '#e8f5e9'; color = '#388e3c';
+  } else if (pct >= 60) {
+    grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.';
+    bg = '#fff9c4'; color = '#f9a825';
+  } else if (pct >= 50) {
+    grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.';
+    bg = '#fff3e0'; color = '#e65100';
+  } else {
+    grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.';
+    bg = '#fde8e9'; color = '#c1121f';
+  }
+  circle.style.background = bg;
+  circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+
+  // review
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() {
+  startQuiz();
+  window.scrollTo(0, 0);
+}
+
+// Attach listeners directly — script is at bottom of body so DOM exists
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>
