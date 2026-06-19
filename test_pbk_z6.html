@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test źródłowy 6 – Podstawy Badań Klinicznych – StudyZone</title>
+<style>
+  :root {
+    --green:  #2d6a4f;
+    --green2: #40916c;
+    --green3: #74c69d;
+    --green4: #d8f3dc;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f8f9fa;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ef;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p {
+    margin-top: .5rem;
+    opacity: .85;
+    font-size: .95rem;
+  }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* START */
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem;
+    color: var(--green);
+    margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .info-box {
+    background: var(--green4);
+    border-radius: 10px;
+    padding: 1rem .8rem;
+  }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--green); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  /* BUTTON */
+  .btn {
+    display: inline-block;
+    padding: .85rem 2.2rem;
+    border: none;
+    border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--green2);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(64,145,108,.35);
+  }
+  .btn-primary:hover { background: var(--green); transform: translateY(-2px); }
+  .btn-secondary {
+    background: var(--green4);
+    color: var(--green);
+  }
+  .btn-secondary:hover { background: var(--green3); color: #fff; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 50px;
+    height: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green2), var(--green3));
+    border-radius: 50px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    color: var(--gray);
+    margin-bottom: .4rem;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    margin-bottom: 1rem;
+  }
+  .q-meta {
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--green2);
+    margin-bottom: .6rem;
+  }
+  .q-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #1a1a2e;
+    margin-bottom: 1.5rem;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: .9rem 1.1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+    text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--green3); background: #f0faf4; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--green2); background: var(--green4); }
+  .option.wrong   { border-color: var(--red);    background: var(--red2);   }
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem;
+    transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--green2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red);    color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  /* EXPLANATION */
+  .explanation {
+    border-left: 4px solid var(--green2);
+    background: #f0faf4;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem;
+    font-size: .9rem;
+    line-height: 1.6;
+    color: var(--gray);
+    margin-top: 1rem;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--green); }
+
+  /* NAV */
+  .nav-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin: .5rem 0;
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--green); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+  .review-item.ok   { background: var(--green4); border-left: 3px solid var(--green2); }
+  .review-item.fail { background: var(--red2);   border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Podstawy Badań Klinicznych</h1>
+  <p>W2.3 · Badania IV fazy (RWD/RWE) · 20 pytań</p>
+</header>
+
+<!-- START -->
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście egzaminacyjnym!</h2>
+    <p>Test oparty na wykładzie W2.3: istota fazy IV i post-authorisation, Real-World Data i Real-World Evidence (źródła, zastosowania, ograniczenia, biasy), causal inference (confounding, target trial emulation), narzędzia regulacyjne (PSUR, RMP, PASS, PAES), dodatkowy monitoring (czarny trójkąt), warunkowe dopuszczenie (CMA) oraz rozszerzanie wskazań.</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>20</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>4</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 20</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--green);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    topic: "I. RWD/RWE",
+    q: "Różnica między RWD a RWE polega na tym, że:",
+    opts: ["RWD to dowód kliniczny, a RWE to surowe dane", "RWE pochodzi wyłącznie z badań RCT", "oba pojęcia są tożsame", "RWD to rutynowo zbierane dane o zdrowiu, a RWE to dowód kliniczny uzyskany z ich analizy"],
+    ans: 3,
+    exp: "<strong>RWD</strong> (real world data) to rutynowo zbierane dane o stanie zdrowia (EHR, rejestry), a <strong>RWE</strong> (real world evidence) to dowód kliniczny uzyskany z ich analizy. Same dane nie są jeszcze dowodem — RWE zależy od projektu badania."
+  },
+  {
+    topic: "I. RWD/RWE",
+    q: "Przy ocenie źródła RWD kluczowe są dwa kryteria:",
+    opts: ["randomizacja i zaślepienie", "wielkość i kolor bazy danych", "szybkość i koszt", "relevance (adekwatność) i reliability (wiarygodność)"],
+    ans: 3,
+    exp: "Kluczowe są <strong>relevance (adekwatność) i reliability (wiarygodność)</strong> źródła danych względem konkretnego pytania badawczego. Randomizacja i zaślepienie nie dotyczą danych obserwacyjnych RWD."
+  },
+  {
+    topic: "II. Biasy w RWE",
+    q: "Immortal time bias to błąd polegający na tym, że:",
+    opts: ["leczenie zależy od stanu klinicznego wpływającego na wynik", "brakuje danych o punktach końcowych", "część czasu przed rozpoczęciem leczenia jest błędnie przypisana do grupy leczonej, zawyżając efekt terapii", "pacjenci trafiają do badania w sposób niereprezentatywny"],
+    ans: 2,
+    exp: "<strong>Immortal time bias</strong> — część czasu przed rozpoczęciem leczenia jest błędnie przypisana do grupy leczonej (pacjent musiał ten okres przeżyć bez zdarzenia), co zawyża efekt terapii. Confounding by indication i selection bias to inne błędy."
+  },
+  {
+    topic: "II. Biasy w RWE",
+    q: "Confounding by indication oznacza, że:",
+    opts: ["pacjenci otrzymują leczenie ze względu na stan kliniczny, który sam wpływa na wynik", "dane są błędnie sklasyfikowane przez urządzenie", "do badania trafia niereprezentatywna grupa pacjentów", "brakuje randomizacji bloków"],
+    ans: 0,
+    exp: "Confounding by indication: <strong>pacjenci otrzymują leczenie ze względu na stan kliniczny, który sam w sobie wpływa na wynik</strong> — efekt może być fałszywie przypisany terapii zamiast chorobie. To jeden z głównych problemów RWE wynikających z braku randomizacji."
+  },
+  {
+    topic: "II. Biasy w RWE",
+    q: "W podejściu causal inference metoda „target trial emulation” polega na:",
+    opts: ["odtworzeniu hipotetycznego RCT w danych obserwacyjnych (z jasnym time zero, populacją, ekspozycją i punktami końcowymi)", "losowym przydziale pacjentów do grup", "powtórzeniu fazy III z większą próbą", "zaślepieniu badaczy oceniających wyniki"],
+    ans: 0,
+    exp: "Target trial emulation to <strong>odtworzenie hipotetycznego RCT w danych obserwacyjnych</strong> — wymaga precyzyjnego zdefiniowania time zero, populacji, ekspozycji i punktów końcowych oraz minimalizacji biasów (np. immortal time bias). Warunkiem wiarygodności jest exchangeability."
+  },
+  {
+    topic: "III. RCT vs RWE",
+    q: "Relacja RCT i RWE najlepiej opisuje stwierdzenie, że:",
+    opts: ["RWE zastępuje RCT we wszystkich decyzjach", "RCT ma wyższą trafność zewnętrzną niż RWE", "obie metody odpowiadają na identyczne pytania", "RCT ma wysoką trafność wewnętrzną, a RWE większą zgodność z praktyką (trafność zewnętrzna) — są komplementarne"],
+    ans: 3,
+    exp: "RCT zapewnia wysoką <strong>trafność wewnętrzną (internal validity)</strong>, a RWE większą zgodność z praktyką kliniczną (<strong>external validity</strong>). To metody komplementarne — różne pytania wymagają różnych projektów."
+  },
+  {
+    topic: "IV. Narzędzia regulacyjne",
+    q: "PASS (Post-Authorisation Safety Studies) służą przede wszystkim do:",
+    opts: ["rejestracji wyrobów medycznych", "oceny skuteczności po rejestracji", "uzyskania dalszych informacji o bezpieczeństwie, identyfikacji/kwantyfikacji ryzyka i oceny skuteczności działań minimalizujących ryzyko", "ustalenia dawki w fazie I"],
+    ans: 2,
+    exp: "PASS (często obligatoryjne) służą do <strong>uzyskania dalszych informacji o bezpieczeństwie (rzadkie ADR), identyfikacji i kwantyfikacji ryzyka oraz oceny skuteczności działań minimalizujących ryzyko</strong>. Skuteczności po rejestracji dotyczą PAES."
+  },
+  {
+    topic: "IV. Narzędzia regulacyjne",
+    q: "PSUR (Periodic Safety Update Report) wg EMA to dokument mający przede wszystkim:",
+    opts: ["oceniać bilans korzyści–ryzyka w określonych punktach czasowych po autoryzacji", "wyłącznie listę zgłoszonych działań niepożądanych", "zastępować broszurę badacza", "rejestrować badanie kliniczne w CTIS"],
+    ans: 0,
+    exp: "PSUR to nie tylko lista ADR — EMA definiuje go jako dokument <strong>oceniający bilans korzyści–ryzyka w określonych punktach czasowych po autoryzacji</strong>. ICH E2C(R2) harmonizuje ten obszar przez PBRER."
+  },
+  {
+    topic: "IV. Narzędzia regulacyjne",
+    q: "Symbol czarnego odwróconego trójkąta (▼) na produkcie leczniczym oznacza, że:",
+    opts: ["produkt jest wycofywany z obrotu", "produkt jest lekiem generycznym", "produkt podlega dodatkowemu (intensywnemu) monitorowaniu, zwykle przy mniejszej ilości danych", "produkt jest automatycznie niebezpieczny"],
+    ans: 2,
+    exp: "Czarny odwrócony trójkąt oznacza produkt objęty <strong>dodatkowym, intensywnym monitorowaniem</strong> (zwykle mniej danych niż dla innych produktów). NIE oznacza automatycznie, że produkt jest niebezpieczny."
+  },
+  {
+    topic: "V. Dopuszczenie warunkowe",
+    q: "Warunkowe dopuszczenie do obrotu (CMA) stosuje się, gdy:",
+    opts: ["dostępne są pełne, kompletne dane kliniczne", "istnieje niezaspokojona potrzeba medyczna i potrzebny jest wcześniejszy dostęp, mimo mniej kompletnych danych — z wiążącymi obowiązkami porejestracyjnymi", "lek jest generykiem leku referencyjnego", "produkt nie wymaga dalszych danych"],
+    ans: 1,
+    exp: "CMA umożliwia <strong>wcześniejszy dostęp do terapii przy niezaspokojonej potrzebie medycznej (unmet medical need)</strong> na podstawie mniej kompletnych danych — pod warunkiem wiążących obowiązków porejestracyjnych (regulator akceptuje niepewność tylko przy mocnym planie jej zmniejszania)."
+  },
+  {
+    topic: "I. RWD/RWE",
+    q: "Który z poniższych NIE jest typowym źródłem RWD?",
+    opts: ["elektroniczna dokumentacja medyczna (EHR)", "spontaniczne zgłoszenia działań niepożądanych", "rejestry chorób i dane z wearables", "randomizowane badanie III fazy prowadzone w kontrolowanych warunkach"],
+    ans: 3,
+    exp: "Źródła RWD to dane zbierane rutynowo: EHR/EMR, rejestry, bazy claims, dane laboratoryjne, dane od pacjentów, wearables, spontaniczne zgłoszenia ADR. <strong>Randomizowane badanie III fazy w kontrolowanych warunkach</strong> to klasyczny RCT, nie RWD."
+  },
+  {
+    topic: "VI. Rozszerzanie wskazań",
+    q: "RWE zwykle NIE wystarcza do rozszerzenia wskazań, gdy:",
+    opts: ["nowa populacja jest identyczna z dotychczasową", "ryzyko confoundingu jest minimalne", "potrzebny jest twardy dowód korzyści klinicznej lub porównanie z aktywnym komparatorem przy dużym ryzyku confoundingu", "wcześniejsze dane opierały się na twardych punktach końcowych"],
+    ans: 2,
+    exp: "RWE nie wystarcza, gdy nowa populacja znacznie różni się od dotychczasowej, <strong>potrzebne jest porównanie z aktywnym komparatorem, ryzyko confoundingu jest bardzo duże, wcześniejsze dane opierały się na surogatach lub potrzebny jest twardy dowód korzyści klinicznej</strong>."
+  },
+  {
+    topic: "I. Faza IV",
+    q: "Termin „faza IV” w ujęciu regulatora:",
+    opts: ["kończy się z chwilą rejestracji leku", "obejmuje wyłącznie badania interwencyjne", "jest użyteczny dydaktycznie, ale post-authorisation obejmuje też PSUR, RMP, zarządzanie sygnałami, PASS, PAES i zmiany w pozwoleniu", "dotyczy tylko leków sierocych"],
+    ans: 2,
+    exp: "„Faza IV” jest <strong>terminem użytecznym dydaktycznie</strong>, ale regulator myśli szerzej — post-authorisation obejmuje nie tylko badania, lecz także PSUR, RMP, zarządzanie sygnałami, PASS, PAES i procedury zmian w pozwoleniu."
+  },
+  {
+    topic: "VII. Badania post-marketing",
+    q: "Drug Utilisation Studies (DUS) w fazie IV analizują przede wszystkim:",
+    opts: ["czy i w jaki sposób produkt jest przepisywany, sprzedawany i stosowany w danej populacji oraz jakie ma to przełożenie kliniczne i ekonomiczne", "biorównoważność leku generycznego", "toksyczność na modelach zwierzęcych", "mechanizm działania leku na poziomie receptora"],
+    ans: 0,
+    exp: "DUS to badania obserwacyjne analizujące <strong>czy produkt jest stosowany przez badaną populację, jak jest przepisywany, sprzedawany i wykorzystywany oraz jakie ma to przełożenie kliniczne, społeczne i ekonomiczne</strong>."
+  },
+  {
+    topic: "IV. Narzędzia regulacyjne",
+    q: "PAES (Post-Authorisation Efficacy Studies) najlepiej opisuje stwierdzenie:",
+    opts: ["to powtórka fazy III z większą próbą", "to odpowiedź na konkretne niepewności dotyczące skuteczności po rejestracji, wspierająca aktualną ocenę korzyści–ryzyka", "dotyczą wyłącznie bezpieczeństwa leku", "są zawsze nieinterwencyjne"],
+    ans: 1,
+    exp: "PAES <strong>nie jest powtórką fazy III</strong> — to odpowiedź na konkretne, nierozstrzygnięte niepewności dotyczące skuteczności po rejestracji, wykorzystująca różne projekty badawcze i wspierająca utrzymanie aktualnej oceny korzyści–ryzyka."
+  },
+  {
+    topic: "V. Post-authorisation",
+    q: "W ramce decyzyjnej post-authorisation formalna, zatwierdzana przez regulatora zmiana w pozwoleniu na dopuszczenie do obrotu (np. zmiana ChPL/wskazania) to:",
+    opts: ["sygnał", "variation (wariacja)", "PASS", "RMP"],
+    ans: 1,
+    exp: "<strong>Variation</strong> to formalna, zatwierdzana przez regulatora zmiana w pozwoleniu (np. zmiana ChPL/wskazania). Ścieżka: sygnał → signal management, PSUR → ocena trendów, RMP → zarządzanie ryzykiem, PASS/PAES → nowe dane, variation → zmiana pozwolenia."
+  },
+  {
+    topic: "VIII. Faza III vs real world",
+    q: "Badania rejestracyjne (faza III) w porównaniu z warunkami real-world charakteryzują się:",
+    opts: ["długoterminową ekspozycją i polifarmakoterapią", "wyselekcjonowaną populacją, kontrolowanymi warunkami i krótką obserwacją", "realnymi pacjentami z wielochorobowością", "wykrywaniem rzadkich zdarzeń niepożądanych"],
+    ans: 1,
+    exp: "Badania rejestracyjne mają <strong>wyselekcjonowaną populację, kontrolowane warunki, krótką obserwację i ograniczoną liczebność dla rzadkich zdarzeń</strong>. Real-world dostarcza realnych pacjentów z wielochorobowością, polifarmakoterapią i długą ekspozycją."
+  },
+  {
+    topic: "VI. Rozszerzanie wskazań",
+    q: "W UE rozszerzenie wskazania leku to nowa ocena korzyści–ryzyka, która zwykle przechodzi przez:",
+    opts: ["procedurę narodową od zera", "procedury porejestracyjne, w tym type II variations albo extension applications", "rejestrację w EUDAMED", "wyłącznie zgłoszenie do komisji bioetycznej"],
+    ans: 1,
+    exp: "Rozszerzenie wskazania (nowa choroba, populacja, wcześniejsza linia leczenia, inny biomarker) to nowa ocena korzyści–ryzyka, która w UE przechodzi przez <strong>procedury porejestracyjne — type II variations albo extension applications</strong> zależnie od charakteru zmiany."
+  },
+  {
+    topic: "II. Biasy w RWE",
+    q: "Selection bias w badaniach RWE oznacza, że:",
+    opts: ["do badania trafia niereprezentatywna grupa pacjentów, przez co wyniki nie odzwierciedlają rzeczywistej populacji", "leczenie zależy od stanu klinicznego wpływającego na wynik", "część czasu jest błędnie przypisana do grupy leczonej", "brakuje danych o ekspozycji"],
+    ans: 0,
+    exp: "<strong>Selection bias</strong> — do badania trafia niereprezentatywna grupa pacjentów, przez co wyniki nie odzwierciedlają rzeczywistej populacji. To odrębny błąd od confounding by indication i immortal time bias."
+  },
+  {
+    topic: "III. Causal inference",
+    q: "Warunkiem wiarygodności wnioskowania przyczynowego w RWE jest exchangeability, czyli:",
+    opts: ["identyczna liczebność grup", "zaślepienie pacjentów", "pełna randomizacja pacjentów", "brak niekontrolowanego confoundingu między porównywanymi grupami"],
+    ans: 3,
+    exp: "Exchangeability to <strong>brak niekontrolowanego confoundingu</strong> — porównywane grupy są „wymienne” pod względem czynników zakłócających. To kluczowy warunek przybliżenia warunków RCT w danych obserwacyjnych (obok poprawnej definicji target trial)."
+  }
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0;
+  score = 0;
+  answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) {
+    grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.';
+    bg = '#d8f3dc'; color = '#2d6a4f';
+  } else if (pct >= 75) {
+    grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.';
+    bg = '#e8f5e9'; color = '#388e3c';
+  } else if (pct >= 60) {
+    grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.';
+    bg = '#fff9c4'; color = '#f9a825';
+  } else if (pct >= 50) {
+    grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.';
+    bg = '#fff3e0'; color = '#e65100';
+  } else {
+    grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.';
+    bg = '#fde8e9'; color = '#c1121f';
+  }
+  circle.style.background = bg;
+  circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+
+  // review
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() {
+  startQuiz();
+  window.scrollTo(0, 0);
+}
+
+// Attach listeners directly — script is at bottom of body so DOM exists
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>

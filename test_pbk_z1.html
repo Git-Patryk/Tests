@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test źródłowy 1 – Podstawy Badań Klinicznych – StudyZone</title>
+<style>
+  :root {
+    --green:  #2d6a4f;
+    --green2: #40916c;
+    --green3: #74c69d;
+    --green4: #d8f3dc;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f8f9fa;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ef;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p {
+    margin-top: .5rem;
+    opacity: .85;
+    font-size: .95rem;
+  }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* START */
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem;
+    color: var(--green);
+    margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .info-box {
+    background: var(--green4);
+    border-radius: 10px;
+    padding: 1rem .8rem;
+  }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--green); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  /* BUTTON */
+  .btn {
+    display: inline-block;
+    padding: .85rem 2.2rem;
+    border: none;
+    border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--green2);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(64,145,108,.35);
+  }
+  .btn-primary:hover { background: var(--green); transform: translateY(-2px); }
+  .btn-secondary {
+    background: var(--green4);
+    color: var(--green);
+  }
+  .btn-secondary:hover { background: var(--green3); color: #fff; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 50px;
+    height: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green2), var(--green3));
+    border-radius: 50px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    color: var(--gray);
+    margin-bottom: .4rem;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    margin-bottom: 1rem;
+  }
+  .q-meta {
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--green2);
+    margin-bottom: .6rem;
+  }
+  .q-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #1a1a2e;
+    margin-bottom: 1.5rem;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: .9rem 1.1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+    text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--green3); background: #f0faf4; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--green2); background: var(--green4); }
+  .option.wrong   { border-color: var(--red);    background: var(--red2);   }
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem;
+    transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--green2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red);    color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  /* EXPLANATION */
+  .explanation {
+    border-left: 4px solid var(--green2);
+    background: #f0faf4;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem;
+    font-size: .9rem;
+    line-height: 1.6;
+    color: var(--gray);
+    margin-top: 1rem;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--green); }
+
+  /* NAV */
+  .nav-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin: .5rem 0;
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--green); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+  .review-item.ok   { background: var(--green4); border-left: 3px solid var(--green2); }
+  .review-item.fail { background: var(--red2);   border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Podstawy Badań Klinicznych</h1>
+  <p>W1.1 · Farmakologia, ICH i postacie leku · 20 pytań</p>
+</header>
+
+<!-- START -->
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście egzaminacyjnym!</h2>
+    <p>Test oparty na wykładzie W1.1: wytyczne ICH (Quality/Safety/Efficacy/Multidisciplinary), farmakokinetyka (LADME, efekt pierwszego przejścia, biodostępność, AUC, Vd, wiązanie z białkami), metabolizm (CYP, polimorfizm, induktory/inhibitory), wydalanie nerkowe oraz postacie farmaceutyczne leku.</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>20</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>4</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 20</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--green);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    topic: "I. ICH",
+    q: "Rozwinięcie skrótu ICH (instytucji wydającej wytyczne dla badań) to:",
+    opts: ["International Council for Harmonisation of Technical Requirements for Pharmaceuticals for Human Use", "Institute of Clinical Harmonisation", "International Convention on Human Health", "International Committee for Healthcare"],
+    ans: 0,
+    exp: "ICH = <strong>International Council for Harmonisation of Technical Requirements for Pharmaceuticals for Human Use</strong> — harmonizuje wymagania techniczne dla leków stosowanych u ludzi (kategorie wytycznych: Quality, Safety, Efficacy, Multidisciplinary)."
+  },
+  {
+    topic: "I. ICH",
+    q: "Wytyczne ICH dotyczące genotoksyczności (np. ICH S2) oraz toksykologii należą do kategorii oznaczanej literą:",
+    opts: ["S (Safety)", "Q (Quality)", "E (Efficacy)", "M (Multidisciplinary)"],
+    ans: 0,
+    exp: "Wytyczne bezpieczeństwa (badania niekliniczne, toksykologia, genotoksyczność) to grupa <strong>Safety (S)</strong>. Quality = jakość, Efficacy = skuteczność/badania kliniczne, Multidisciplinary = zagadnienia przekrojowe (np. M3 — badania niekliniczne wspierające badania kliniczne)."
+  },
+  {
+    topic: "II. Farmakokinetyka",
+    q: "Etap „L” akronimu LADME (liberation) zależy GŁÓWNIE od:",
+    opts: ["czynników technologicznych postaci leku", "stopnia wiązania z białkami", "przepływu krwi przez wątrobę", "pH moczu"],
+    ans: 0,
+    exp: "Liberation to rozpad postaci leku, uwolnienie cząsteczek i ich rozpuszczenie w płynach ustrojowych — przebieg tych procesów zależy <strong>głównie od czynników technologicznych</strong> (np. rodzaju tabletki, substancji pomocniczych)."
+  },
+  {
+    topic: "II. Farmakokinetyka",
+    q: "Który z wymienionych leków NIE jest klasycznym przykładem leku o dużym efekcie pierwszego przejścia (niskiej biodostępności doustnej)?",
+    opts: ["Nitrogliceryna", "Morfina", "Digoksyna", "Lidokaina"],
+    ans: 2,
+    exp: "Wykład wymienia jako leki o dużym efekcie pierwszego przejścia: <strong>nitroglicerynę, morfinę, lidokainę i werapamil</strong>. Digoksyna nie należy do tej grupy — jest wydalana głównie przez nerki/żółć."
+  },
+  {
+    topic: "II. Farmakokinetyka",
+    q: "Która droga podania jedynie CZĘŚCIOWO omija efekt pierwszego przejścia (z dużymi różnicami międzyosobniczymi)?",
+    opts: ["Przezskórna (TTS)", "Doodbytnicza", "Podjęzykowa (SL)", "Policzkowa (buccal)"],
+    ans: 1,
+    exp: "Drogi SL, buccal i TTS omijają wątrobę. Droga <strong>doodbytnicza</strong> wchłania lek w ograniczonym stopniu i tylko <strong>częściowo</strong> omija efekt pierwszego przejścia, z dużą zmiennością międzyosobniczą."
+  },
+  {
+    topic: "II. Farmakokinetyka",
+    q: "Objętość dystrybucji Vd > 100 l u dorosłego oznacza, że lek:",
+    opts: ["jest wydalany wyłącznie z żółcią", "silnie kumuluje się w tkankach", "nie przenika przez błony biologiczne", "jest ograniczony do łożyska naczyniowego"],
+    ans: 1,
+    exp: "Wg skali z wykładu: Vd≈5 l = dystrybucja ograniczona do krwi, Vd≈40 l = rozmieszczenie we wszystkich płynach, a <strong>Vd > 100 l = silna kumulacja leku w tkankach</strong> (lek opuszcza krew i gromadzi się pozanaczyniowo)."
+  },
+  {
+    topic: "II. Farmakokinetyka",
+    q: "Wiązanie leku z białkami osocza ma znaczenie kliniczne, gdy stopień wiązania przekracza:",
+    opts: ["50%", "20%", "80%", "99,9%"],
+    ans: 2,
+    exp: "Znaczenie kliniczne wiązania z białkami pojawia się, gdy przekracza ono <strong>80%</strong>. Lek związany jest nieaktywny farmakologicznie, nie przenika błon, nie jest metabolizowany ani wydalany — wyparcie go zwiększa siłę i skraca czas działania."
+  },
+  {
+    topic: "III. Metabolizm",
+    q: "Który izoenzym cytochromu P450 odpowiada za metabolizm największego odsetka leków (≈50%)?",
+    opts: ["CYP1A2", "CYP3A4", "CYP2D6", "CYP2C9"],
+    ans: 1,
+    exp: "<strong>CYP3A4</strong> odpowiada za ok. 50% metabolizmu leków, a CYP2D6 za ok. 25%. Mimo że CYP2D6 metabolizuje mniej, jest silnie polimorficzny (ponad 100 wariantów allelu)."
+  },
+  {
+    topic: "III. Metabolizm",
+    q: "Procesy II fazy metabolizmu leków wg Williamsa prowadzą zwykle do:",
+    opts: ["powstania metabolitu toksycznego", "powstania związków nieczynnych farmakologicznie", "aktywacji proleku do postaci czynnej", "inaktywacji leku macierzystego przez utlenianie"],
+    ans: 1,
+    exp: "Procesy I fazy mogą inaktywować lek, aktywować prolek lub tworzyć metabolit aktywny/toksyczny. <strong>Procesy II fazy (sprzęganie) prowadzą zwykle do powstania związków nieczynnych farmakologicznie</strong>, ułatwiając eliminację."
+  },
+  {
+    topic: "III. Metabolizm",
+    q: "Pacjent z fenotypem PM (Poor Metabolizer) dla danego enzymu CYP doświadczy najczęściej:",
+    opts: ["całkowitego braku wchłaniania leku", "szybkiego metabolizmu i nieskuteczności leku", "wolnej eliminacji, wzrostu stężenia i ryzyka działań niepożądanych", "typowej, niezmienionej farmakokinetyki"],
+    ans: 2,
+    exp: "PM = brak aktywności enzymu → <strong>lek wolno się eliminuje, rośnie jego stężenie i ryzyko działań niepożądanych</strong>. Odwrotnie UM (ultra-rapid) — szybki metabolizm, spadek stężenia i możliwa nieskuteczność."
+  },
+  {
+    topic: "III. Metabolizm",
+    q: "Który z czynników jest INDUKTOREM enzymów metabolizujących (przyspiesza metabolizm leków)?",
+    opts: ["Cymetydyna", "Sok z grejpfruta", "Erytromycyna", "Dziurawiec (ziele św. Jana)"],
+    ans: 3,
+    exp: "Induktory (przyspieszają metabolizm, mogą osłabiać działanie leków): rifampicyna, karbamazepina, barbiturany, nikotyna, alkohol i <strong>dziurawiec</strong>. Sok z grejpfruta, erytromycyna i cymetydyna to inhibitory (zwiększają stężenie leku)."
+  },
+  {
+    topic: "III. Wydalanie",
+    q: "Aby przyspieszyć wydalanie nerkowe leku o charakterze słabego kwasu (np. kwasu acetylosalicylowego, barbituranów), należy:",
+    opts: ["nasilić wchłanianie zwrotne", "zmniejszyć GFR", "zalkalizować mocz", "zakwasić mocz"],
+    ans: 2,
+    exp: "<strong>Alkalizacja moczu</strong> przyspiesza wydalanie słabych kwasów (ASA, barbiturany, sulfonamidy), bo zwiększa ich jonizację i ogranicza wchłanianie zwrotne. Zakwaszanie moczu przyspiesza wydalanie słabych zasad (kodeina, morfina, chinina)."
+  },
+  {
+    topic: "III. Wydalanie",
+    q: "Który parametr farmakokinetyczny służy przede wszystkim do ustalenia wielkości DAWKI PODTRZYMUJĄCEJ?",
+    opts: ["Stała eliminacji", "AUC", "Biologiczny okres półtrwania (t½)", "Objętość dystrybucji (Vd)"],
+    ans: 0,
+    exp: "<strong>Stała eliminacji</strong> określa szybkość usuwania porcji leku z kompartmentu centralnego i pozwala ustalić dawkę podtrzymującą. Vd służy do określenia dawki nasycenia, t½ — odstępów dawkowania, a AUC — ekspozycji."
+  },
+  {
+    topic: "II. Farmakokinetyka",
+    q: "Dostępność biologiczna BEZWZGLĘDNA to porównanie:",
+    opts: ["AUC u zdrowych ochotników i u pacjentów", "preparatu badanego z preparatem standardowym o znanej biodostępności", "dwóch różnych soli tej samej substancji czynnej", "leku podanego pozanaczyniowo z tym samym lekiem podanym donaczyniowo"],
+    ans: 3,
+    exp: "Biodostępność <strong>bezwzględna</strong> = porównanie leku podanego pozanaczyniowo z tym samym lekiem podanym donaczyniowo (i.v. = 100%). Biodostępność względna to porównanie z preparatem standardowym o znanej biodostępności."
+  },
+  {
+    topic: "II. Farmakokinetyka",
+    q: "Pinocytoza jako mechanizm przechodzenia leków przez błony jest:",
+    opts: ["tożsama z dyfuzją bierną przez pory", "możliwa tylko w kanalikach nerkowych", "dominującym mechanizmem dla większości małych leków", "rzadka dla małych cząsteczek, ale kluczowa dla leków biologicznych i nanotechnologicznych"],
+    ans: 3,
+    exp: "Dla większości leków dominuje dyfuzja bierna. <strong>Pinocytoza jest rzadkim mechanizmem dla klasycznych małych cząsteczek, ale kluczowym dla leków biologicznych i nanotechnologicznych</strong> nowej generacji."
+  },
+  {
+    topic: "IV. Postacie leku",
+    q: "Tabletki typu MR (Modified Release) obejmują m.in. SR, CR i ER. Skrót CR oznacza:",
+    opts: ["szybkie uwalnianie w żołądku", "natychmiastowe rozpuszczenie pod językiem", "ściśle kontrolowany profil uwalniania", "uwalnianie zależne wyłącznie od pH jelita"],
+    ans: 2,
+    exp: "W ramach MR: SR (Sustained Release) — powolne, przedłużone uwalnianie; <strong>CR (Controlled Release) — ściśle kontrolowany profil uwalniania</strong>; ER (Extended Release) — dłuższy efekt po pojedynczej dawce. Celem jest utrzymanie stabilnego Cavg."
+  },
+  {
+    topic: "IV. Postacie leku",
+    q: "Charakterystycznym składem tabletek musujących jest połączenie:",
+    opts: ["żelatyny i skrobi", "laktozy i talku", "stearynianu magnezu i parafiny", "kwasu organicznego (winowego lub cytrynowego) i węglanu"],
+    ans: 3,
+    exp: "Tabletki musujące zawierają <strong>kwas organiczny (winowy lub cytrynowy) oraz węglan</strong> — ich reakcja w wodzie uwalnia CO₂. Laktoza, talk, stearynian magnezu czy skrobia to typowe substancje pomocnicze zwykłych tabletek."
+  },
+  {
+    topic: "IV. Postacie leku",
+    q: "Tabletki wytwarzane metodą druku 3D umożliwiają m.in. tzw. polypill, czyli:",
+    opts: ["kilka substancji czynnych w jednej tabletce, uwalnianych w różnym czasie", "tabletkę bez substancji pomocniczych", "tabletkę rozpuszczalną wyłącznie w jelicie grubym", "tabletkę o pojedynczej, bardzo wysokiej dawce"],
+    ans: 0,
+    exp: "Druk 3D pozwala na personalizację dawki, kontrolę uwalniania, produkcję na żądanie oraz <strong>polypill — kilka substancji czynnych w jednej tabletce uwalnianych w różnym czasie</strong>."
+  },
+  {
+    topic: "IV. Postacie leku",
+    q: "„Bridging study” (badanie pomostowe) jest zwykle wymagane, gdy:",
+    opts: ["zmienia się jedynie kolor otoczki tabletki", "lek trafia do tej samej populacji w niezmienionej postaci", "kończy się ochrona patentowa leku", "zmienia się postać leku, droga podania, populacja lub warunki stosowania"],
+    ans: 3,
+    exp: "Bridging study „buduje most” między różnymi zestawami danych — przeprowadza się je, gdy <strong>zmienia się postać leku, droga podania, populacja lub warunki stosowania</strong> (często wraz z badaniem BE/PK)."
+  },
+  {
+    topic: "II. Farmakokinetyka",
+    q: "Parametr AUC (pole pod krzywą stężenie–czas) jest wykorzystywany przede wszystkim do:",
+    opts: ["wyznaczenia temperatury topnienia substancji", "pomiaru ekspozycji na lek i porównań w badaniach BA/BE", "określenia barwy metabolitu", "oceny masy cząsteczkowej leku"],
+    ans: 1,
+    exp: "AUC mierzy <strong>ekspozycję na lek</strong> (istotne w toksykologii), służy do wyliczeń PK (np. klirensu) oraz do <strong>porównań biorównoważności (BA/BE)</strong> — akceptowany przedział 90% CI dla AUC i Cmax to 80–125%."
+  }
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0;
+  score = 0;
+  answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) {
+    grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.';
+    bg = '#d8f3dc'; color = '#2d6a4f';
+  } else if (pct >= 75) {
+    grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.';
+    bg = '#e8f5e9'; color = '#388e3c';
+  } else if (pct >= 60) {
+    grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.';
+    bg = '#fff9c4'; color = '#f9a825';
+  } else if (pct >= 50) {
+    grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.';
+    bg = '#fff3e0'; color = '#e65100';
+  } else {
+    grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.';
+    bg = '#fde8e9'; color = '#c1121f';
+  }
+  circle.style.background = bg;
+  circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+
+  // review
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() {
+  startQuiz();
+  window.scrollTo(0, 0);
+}
+
+// Attach listeners directly — script is at bottom of body so DOM exists
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>

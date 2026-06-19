@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test źródłowy 8 – Podstawy Badań Klinicznych – StudyZone</title>
+<style>
+  :root {
+    --green:  #2d6a4f;
+    --green2: #40916c;
+    --green3: #74c69d;
+    --green4: #d8f3dc;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f8f9fa;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ef;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p {
+    margin-top: .5rem;
+    opacity: .85;
+    font-size: .95rem;
+  }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* START */
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem;
+    color: var(--green);
+    margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .info-box {
+    background: var(--green4);
+    border-radius: 10px;
+    padding: 1rem .8rem;
+  }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--green); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  /* BUTTON */
+  .btn {
+    display: inline-block;
+    padding: .85rem 2.2rem;
+    border: none;
+    border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--green2);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(64,145,108,.35);
+  }
+  .btn-primary:hover { background: var(--green); transform: translateY(-2px); }
+  .btn-secondary {
+    background: var(--green4);
+    color: var(--green);
+  }
+  .btn-secondary:hover { background: var(--green3); color: #fff; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 50px;
+    height: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green2), var(--green3));
+    border-radius: 50px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    color: var(--gray);
+    margin-bottom: .4rem;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    margin-bottom: 1rem;
+  }
+  .q-meta {
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--green2);
+    margin-bottom: .6rem;
+  }
+  .q-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #1a1a2e;
+    margin-bottom: 1.5rem;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: .9rem 1.1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+    text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--green3); background: #f0faf4; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--green2); background: var(--green4); }
+  .option.wrong   { border-color: var(--red);    background: var(--red2);   }
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem;
+    transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--green2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red);    color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  /* EXPLANATION */
+  .explanation {
+    border-left: 4px solid var(--green2);
+    background: #f0faf4;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem;
+    font-size: .9rem;
+    line-height: 1.6;
+    color: var(--gray);
+    margin-top: 1rem;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--green); }
+
+  /* NAV */
+  .nav-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin: .5rem 0;
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--green); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+  .review-item.ok   { background: var(--green4); border-left: 3px solid var(--green2); }
+  .review-item.fail { background: var(--red2);   border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Podstawy Badań Klinicznych</h1>
+  <p>W3.2 · Pharmacovigilance · 20 pytań</p>
+</header>
+
+<!-- START -->
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście egzaminacyjnym!</h2>
+    <p>Test oparty na wykładzie W3.2: definicje AE/ADR/SAE, AESI, działanie niespodziewane i SUSAR, raporty DSUR i PSUR/PBRER, CIOMS I i ICSR, zgłoszenia spontaniczne, procedura szybkiego zgłaszania (terminy 7/15 dni), sygnał i jego rozpoznawanie, stosunek korzyści do ryzyka oraz system nadzoru w UE (PRAC, EudraVigilance/EVDAS).</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>20</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>4</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 20</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--green);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    topic: "I. Definicje",
+    q: "Różnica między AE (adverse event) a ADR (adverse drug reaction) polega na tym, że:",
+    opts: ["AE jest zawsze cięższe niż ADR", "to synonimy", "ADR to AE, w którym potwierdzono związek przyczynowy z badanym produktem leczniczym", "AE dotyczy tylko leków zarejestrowanych, a ADR badanych"],
+    ans: 2,
+    exp: "AE (zdarzenie niepożądane) to każde zdarzenie medyczne u pacjenta, któremu podano lek — <strong>chociażby nie miało związku przyczynowego</strong>. ADR to AE, w którym <strong>potwierdzono związek z badanym produktem leczniczym</strong>."
+  },
+  {
+    topic: "I. Definicje",
+    q: "Które z poniższych NIE jest kryterium „ciężkości” (SAE/SADR) wg wykładu?",
+    opts: ["konieczność hospitalizacji lub jej przedłużenia", "trwały lub znaczny uszczerbek na zdrowiu", "zgon lub zagrożenie życia", "łagodna, przemijająca wysypka bez następstw"],
+    ans: 3,
+    exp: "Ciężkie zdarzenie/działanie (SAE/SADR) to: zgon, zagrożenie życia, hospitalizacja lub jej przedłużenie, trwały/znaczny uszczerbek na zdrowiu, choroba/wada wrodzona/uszkodzenie płodu. <strong>Łagodna, przemijająca wysypka</strong> nie spełnia kryteriów ciężkości."
+  },
+  {
+    topic: "II. SUSAR",
+    q: "SUSAR (Suspected Unexpected Serious Adverse Reaction) określa się jako tzw. „3× YES case”, co oznacza, że działanie jest jednocześnie:",
+    opts: ["Severe, Acute, Unrelated", "Serious, Anticipated, Urgent", "Spontaneous, Acute, Unexpected", "Serious, Associated (Suspected), Unexpected"],
+    ans: 3,
+    exp: "SUSAR = działanie <strong>Serious (ciężkie), Associated/Suspected (podejrzewany związek z badanym lekiem) i Unexpected (niespodziewane)</strong> — czyli nieopisane w broszurze badacza. To klasyczny „3× YES case”."
+  },
+  {
+    topic: "I. Definicje",
+    q: "Działanie „niespodziewane” (unexpected) to takie, którego charakter lub nasilenie nie jest zgodne z:",
+    opts: ["odczuciami pacjenta", "opinią komisji bioetycznej", "broszurą badacza (dla leków badanych) lub ChPL (dla leków dopuszczonych)", "wynikami badań przedklinicznych"],
+    ans: 2,
+    exp: "Działanie niespodziewane to takie, którego charakter/nasilenie nie jest zgodne z informacją o produkcie — dla leków badanych w <strong>broszurze badacza</strong>, a dla leków dopuszczonych w <strong>Charakterystyce Produktu Leczniczego (ChPL)</strong>."
+  },
+  {
+    topic: "III. Raporty",
+    q: "Raport DSUR (Development Safety Update Report):",
+    opts: ["jest tożsamy z PSUR", "dotyczy badań klinicznych i składany jest co roku do CTIS oraz komisji bioetycznej", "składa się tylko raz, na koniec badania", "dotyczy wyłącznie leków dopuszczonych do obrotu"],
+    ans: 1,
+    exp: "DSUR <strong>dotyczy wyłącznie badań klinicznych</strong> i ocenia bezpieczeństwo badanego leku; składa się go <strong>co roku do CTIS i komisji bioetycznej</strong>. Datą początkową zbierania danych jest DIBD (data pierwszej rejestracji pierwszego badania)."
+  },
+  {
+    topic: "III. Raporty",
+    q: "PSUR (Periodic Safety Update Report) w odróżnieniu od DSUR dotyczy okresu:",
+    opts: ["po dopuszczeniu produktu do obrotu", "badań przedklinicznych", "wyłącznie badań na zwierzętach", "fazy 0"],
+    ans: 0,
+    exp: "PSUR dotyczy okresu <strong>po dopuszczeniu produktu do obrotu</strong> — zbiorcze opracowanie danych o bezpieczeństwie w prawnie określonych odstępach (odpowiednik to PBRER). DSUR dotyczy badań klinicznych (faza przedrejestracyjna)."
+  },
+  {
+    topic: "IV. Zgłaszanie",
+    q: "W procedurze szybkiego zgłaszania (expedited reporting) dla leków dopuszczonych do obrotu ciężkie działania sponsor przedstawia niezwłocznie, nie później niż w ciągu:",
+    opts: ["15 dni", "30 dni", "90 dni", "7 dni"],
+    ans: 0,
+    exp: "Procedura szybkiego zgłaszania (dotyczy m.in. SUSAR) wymaga przekazania informacji niezwłocznie, nie później niż w <strong>15 dni</strong> od powzięcia informacji."
+  },
+  {
+    topic: "IV. Zgłaszanie",
+    q: "W badaniach klinicznych raporty WSTĘPNE dotyczące zgonu lub zagrożenia życia (w tym SUSAR) zgłasza się w ciągu:",
+    opts: ["7 dni", "15 dni", "30 dni", "2 dni"],
+    ans: 0,
+    exp: "Dla raportów z badań klinicznych: <strong>7 dni</strong> dla raportów wstępnych dotyczących śmierci/zagrożenia życia (SUSAR, AESI, urgent safety measures, serious breaches) oraz 15 dni dla pozostałych raportów wstępnych i raportów uzupełniających (follow-up)."
+  },
+  {
+    topic: "V. Zgłoszenia i ICSR",
+    q: "ICSR (Individual Case Safety Report) to:",
+    opts: ["zbiorczy raport roczny o bezpieczeństwie", "formularz rejestracji badania w CTIS", "lista wszystkich leków pacjenta", "opis pojedynczego przypadku działania niepożądanego przekazany podmiotowi odpowiedzialnemu lub odnośnym władzom"],
+    ans: 3,
+    exp: "ICSR to <strong>opis pojedynczego przypadku działania niepożądanego</strong> przekazany podmiotowi odpowiedzialnemu lub władzom; w elektronicznej wymianie informacji opisuje ADR związane z jednym lub kilkoma lekami u pacjenta."
+  },
+  {
+    topic: "V. Zgłoszenia i ICSR",
+    q: "Formularz CIOMS I służy do:",
+    opts: ["certyfikacji wyrobów medycznych", "zgłaszania pojedynczych przypadków niepożądanych działań produktów leczniczych", "oceny stosunku korzyści do ryzyka populacyjnie", "rejestracji badania klinicznego"],
+    ans: 1,
+    exp: "Formularz <strong>CIOMS I</strong> (opracowany przez Council for International Organisations of Medical Sciences) służy do <strong>zgłaszania pojedynczych przypadków niepożądanych działań</strong> produktów leczniczych."
+  },
+  {
+    topic: "VI. Sygnał",
+    q: "„Sygnał” (signal) w farmakowigilancji to:",
+    opts: ["każde zgłoszenie działania niepożądanego", "wyłącznie zgłoszenie ciężkiego zdarzenia", "informacja o możliwym, dotychczas nieznanym lub niewystarczająco udokumentowanym związku przyczynowym między zdarzeniem a lekiem", "potwierdzony, opisany w ChPL związek lek–działanie"],
+    ans: 2,
+    exp: "Sygnał to informacja o <strong>możliwym związku przyczynowym między zdarzeniem niepożądanym a lekiem, dotychczas nieznanym lub niewystarczająco udokumentowanym</strong>. Zwykle składa się nań kilka zgłoszeń, choć jedno dobrze udokumentowane może wystarczyć; potwierdzone sygnały włącza się do informacji o produkcie."
+  },
+  {
+    topic: "VII. System UE",
+    q: "Komitet EMA odpowiedzialny za ocenę ryzyka w nadzorze nad bezpieczeństwem farmakoterapii to:",
+    opts: ["CHMP", "COMP", "PRAC jest tożsamy z CHMP", "PRAC (Pharmacovigilance Risk Assessment Committee)"],
+    ans: 3,
+    exp: "<strong>PRAC</strong> (Pharmacovigilance Risk Assessment Committee) to komitet EMA ds. oceny ryzyka w nadzorze nad bezpieczeństwem farmakoterapii. CHMP zajmuje się oceną produktów leczniczych do dopuszczenia."
+  },
+  {
+    topic: "VII. System UE",
+    q: "EudraVigilance to unijny system, w którym narzędziem do WYKRYWANIA SYGNAŁÓW jest:",
+    opts: ["adrreports.eu jako baza zamknięta", "EUDAMED", "EVDAS (EudraVigilance Data Analysis System)", "CTIS"],
+    ans: 2,
+    exp: "W ramach EudraVigilance narzędziem do wykrywania sygnałów jest <strong>EVDAS</strong> (EudraVigilance Data Analysis System). Portal adrreports.eu to publicznie dostępne narzędzie do przeszukiwania bazy."
+  },
+  {
+    topic: "I. Definicje",
+    q: "AESI (Adverse Event of Special Interest) to zdarzenie:",
+    opts: ["(ciężkie lub nie) istotne z naukowego/medycznego punktu widzenia dla oceny bezpieczeństwa, wymagające monitoringu i wnikliwej analizy", "zawsze ciężkie i zawsze niespodziewane", "niepodlegające zgłaszaniu", "wyłącznie związane ze szczepionkami"],
+    ans: 0,
+    exp: "AESI to zdarzenie <strong>(ciężkie lub nie) istotne z naukowego i medycznego punktu widzenia dla oceny bezpieczeństwa</strong>, stąd monitoring i wnikliwa analiza; bywa wymagane niezwłoczne zgłoszenie. Przykłady: zapalenie mięśnia sercowego po szczepionkach mRNA, TTS, CRS po terapii CAR-T."
+  },
+  {
+    topic: "VI. Sygnał",
+    q: "Monitorowanie/zgłaszanie spontaniczne (Spontaneous Reporting) to zgłaszanie działań niepożądanych:",
+    opts: ["po dopuszczeniu leku do obrotu przez osoby wykonujące zawód medyczny, w celu wykrycia nowych i obserwacji znanych działań", "tylko przez pacjentów", "wyłącznie do producenta wyrobu medycznego", "wyłącznie w trakcie badania klinicznego"],
+    ans: 0,
+    exp: "Zgłaszanie spontaniczne to zgłaszanie ADR <strong>po dopuszczeniu leku do obrotu, przez osoby wykonujące zawód medyczny</strong> (lekarzy, dentystów, farmaceutów) — w celu wykrycia nowych, nieznanych działań i obserwacji znanych; zapewnia bezpieczeństwo w okresie porejestracyjnym."
+  },
+  {
+    topic: "VIII. Korzyść–ryzyko",
+    q: "„Stosunek korzyści do ryzyka” produktu leczniczego to ocena pozytywnych skutków terapeutycznych w odniesieniu do ryzyka, przy czym:",
+    opts: ["nie obejmuje jakości produktu", "ryzyko ogranicza się tylko do działań niepożądanych", "uwzględnia się zagrożenie dla środowiska", "z oceny WYŁĄCZA się zagrożenie niepożądanym wpływem na środowisko"],
+    ans: 3,
+    exp: "Stosunek korzyści do ryzyka to ocena pozytywnych skutków terapeutycznych względem ryzyka związanego z jakością, bezpieczeństwem i skutecznością — <strong>z wyłączeniem zagrożenia niepożądanym wpływem na środowisko</strong> (które wchodzi w definicję samego „ryzyka”, ale nie tego stosunku)."
+  },
+  {
+    topic: "IX. Ciała monitorujące",
+    q: "Niezależnym ciałem monitorującym dane o bezpieczeństwie w badaniu klinicznym jest:",
+    opts: ["sponsor badania", "URPL", "Data Monitoring Committee (DMC/DSMB)", "PRAC"],
+    ans: 2,
+    exp: "<strong>Data Monitoring Committee (DMC) / Data Safety Monitoring Board (DSMB)</strong> to niezależne ciało monitorujące bezpieczeństwo w badaniu. Inne to Clinical Endpoints Committee (CEC) i Steering Committee."
+  },
+  {
+    topic: "III. Raporty",
+    q: "Datą rozpoczęcia zbierania informacji dla DSUR (DIBD) jest:",
+    opts: ["data publikacji PSUR", "data pierwszej rejestracji pierwszego badania klinicznego z udziałem produktu leczniczego", "data dopuszczenia leku do obrotu", "data pierwszego zgłoszenia SUSAR"],
+    ans: 1,
+    exp: "DIBD (Development International Birth Date) to <strong>data pierwszej rejestracji pierwszego badania klinicznego</strong> z udziałem danego produktu — od niej liczy się okresy raportowania DSUR."
+  },
+  {
+    topic: "I. Definicje",
+    q: "Ciężkim niepożądanym DZIAŁANIEM produktu leczniczego może być także:",
+    opts: ["wyłącznie zgon pacjenta", "inne działanie, które lekarz wg swojej wiedzy uzna za ciężkie", "zdarzenie bez związku z lekiem", "każde łagodne zdarzenie po podaniu leku"],
+    ans: 1,
+    exp: "Oprócz zamkniętej listy kryteriów (zgon, zagrożenie życia, hospitalizacja, trwały uszczerbek, wada/uszkodzenie płodu), ciężkim działaniem jest też <strong>inne działanie, które lekarz wg swojego stanu wiedzy uzna za ciężkie</strong>."
+  },
+  {
+    topic: "VII. System UE",
+    q: "Publicznie dostępny portal do przeszukiwania europejskiej bazy zgłoszeń o podejrzewanych działaniach niepożądanych to:",
+    opts: ["EVDAS", "www.adrreports.eu", "EUDAMED", "CTIS"],
+    ans: 1,
+    exp: "<strong>www.adrreports.eu</strong> to publicznie dostępny portal do przeszukiwania bazy EudraVigilance. EVDAS jest wewnętrznym narzędziem do wykrywania sygnałów, CTIS dotyczy rejestracji badań, a EUDAMED — wyrobów medycznych."
+  }
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0;
+  score = 0;
+  answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) {
+    grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.';
+    bg = '#d8f3dc'; color = '#2d6a4f';
+  } else if (pct >= 75) {
+    grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.';
+    bg = '#e8f5e9'; color = '#388e3c';
+  } else if (pct >= 60) {
+    grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.';
+    bg = '#fff9c4'; color = '#f9a825';
+  } else if (pct >= 50) {
+    grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.';
+    bg = '#fff3e0'; color = '#e65100';
+  } else {
+    grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.';
+    bg = '#fde8e9'; color = '#c1121f';
+  }
+  circle.style.background = bg;
+  circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+
+  // review
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() {
+  startQuiz();
+  window.scrollTo(0, 0);
+}
+
+// Attach listeners directly — script is at bottom of body so DOM exists
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>
