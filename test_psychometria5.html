@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 5 – Zaawansowana psychometria</title>
+<style>
+  :root {
+    --teal:   #f97316;
+    --teal2:  #ea580c;
+    --teal3:  #fdba74;
+    --teal4:  #ffedd5;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f4faf9;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #fff7ed;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #9a3412 0%, var(--teal2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(234,88,12,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--teal2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #fff7ed;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #fed7aa;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--teal2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #9a3412; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal2), var(--teal3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(234,88,12,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--teal2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal3); background: #fff7ed; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--teal2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--teal4); border-color: var(--teal2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #9a3412; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--teal4); border-left: 4px solid var(--teal2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(234,88,12,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--teal2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9a3412, var(--teal2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(234,88,12,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #9a3412; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--teal4); border-left: 3px solid var(--teal2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="psychometria-testy.html">← Wróć do listy testów</a>
+  <h1>Zaawansowana psychometria</h1>
+  <p>Test 5 · Pytania egzaminacyjne · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN</div>
+    <h2>Test 5 — oryginalne pytania egzaminacyjne</h2>
+    <p>Zestaw <strong>autentycznych pytań z egzaminu</strong> „Zaawansowana psychometria”. Część II: adaptacja kulturowa, równoważność, normy, konstrukcja testu i trafność diagnostyczna.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Adaptacja kulturowa (transkrypcja–translacja–parafraza–trawestacja–rekonstrukcja) · rodzaje równoważności · podejście emic/etic · normalizacja i rozkład wyników · walidacja krzyżowa · konstrukcja pozycji · RMSEA/CFI/TLI · AUC, czułość i swoistość</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Wskaż FAŁSZYWE założenie dotyczące adaptacji kulturowej testu:", "opts": [{"t": "ta sama cecha ma zawsze takie same przejawy w każdej kulturze", "c": true}, {"t": "te same zachowania mogą być przejawem różnych cech w różnych kulturach", "c": false}, {"t": "takie same preferencje mogą być przejawem różnych cech w różnych kulturach", "c": false}, {"t": "ta sama cecha może mieć w różnych kulturach różne przejawy", "c": false}], "exp": "To zdanie jest FAŁSZYWE — właśnie dlatego, że ta sama cecha może przejawiać się różnie w różnych kulturach, potrzebna jest adaptacja kulturowa. Pozostałe zdania są prawdziwymi założeniami adaptacji."},
+  {"q": "Uporządkuj metody adaptacji kulturowej od podejścia NAJBARDZIEJ indygenizacyjnego do NAJBARDZIEJ uniwersalistycznego:", "opts": [{"t": "rekonstrukcja, parafraza, trawestacja, translacja, transkrypcja", "c": true}, {"t": "transkrypcja, translacja, trawestacja, parafraza, rekonstrukcja", "c": false}, {"t": "trawestacja, parafraza, rekonstrukcja, translacja, transkrypcja", "c": false}, {"t": "rekonstrukcja, transkrypcja, translacja, parafraza, trawestacja", "c": false}], "exp": "Indygenizacja (emic) = maksymalne dopasowanie do kultury docelowej — najdalej idzie rekonstrukcja (budowa narzędzia od nowa). Uniwersalizm (etic) = wierne przeniesienie — to transkrypcja (dosłowne tłumaczenie). Stąd kolejność: rekonstrukcja → parafraza → trawestacja → translacja → transkrypcja."},
+  {"q": "Jak często transkrypcja pozwala uzyskać adaptacje testów równoważne kulturowo i psychometrycznie?", "opts": [{"t": "rzadko", "c": true}, {"t": "często", "c": false}, {"t": "bardzo często", "c": false}, {"t": "praktycznie zawsze", "c": false}], "exp": "Transkrypcja (dosłowne przeniesienie) rzadko daje równoważność kulturową i psychometryczną, bo ignoruje różnice kulturowe znaczeń. Im bardziej 'dosłowna' metoda, tym mniejsza szansa na pełną równoważność."},
+  {"q": "Której metody adaptacji należy użyć, by otrzymać test trafny, wolny od stronniczości wewnątrz kultury i jednocześnie umożliwiający ilościowe porównania międzykulturowe?", "opts": [{"t": "trawestacji", "c": true}, {"t": "transkrypcji", "c": false}, {"t": "parafrazy", "c": false}, {"t": "rekonstrukcji", "c": false}], "exp": "Trawestacja równoważy wierność oryginałowi i dopasowanie kulturowe, dzięki czemu zachowuje porównywalność międzykulturową przy trafności wewnątrz kultury. Transkrypcja jest zbyt dosłowna, a rekonstrukcja — przez pełne przebudowanie — uniemożliwia porównania ilościowe."},
+  {"q": "Czy stosując z powodzeniem strategię rekonstrukcji otrzymuje się test równoważny z oryginałem?", "opts": [{"t": "nie — będzie równoważny kulturowo, ale NIE psychometrycznie", "c": true}, {"t": "tak — równoważny zarówno kulturowo, jak i psychometrycznie", "c": false}, {"t": "nie — nierównoważny ani kulturowo, ani psychometrycznie", "c": false}, {"t": "nie — równoważny psychometrycznie, ale nie kulturowo", "c": false}], "exp": "Rekonstrukcja buduje narzędzie na nowo, w pełni dopasowane do kultury docelowej (równoważność kulturowa), ale przez to traci porównywalność psychometryczną z oryginałem. To cena za maksymalne dopasowanie kulturowe."},
+  {"q": "Jaki proces nazywany jest 'narzuceniem pomiaru' (narzuconym etic)?", "opts": [{"t": "wykorzystanie narzędzia/teorii psychologicznej poza kulturą jej powstania, bez adaptacji", "c": true}, {"t": "zbudowanie testu od nowa dla danej kultury", "c": false}, {"t": "przetłumaczenie testu z udziałem dwóch niezależnych tłumaczy", "c": false}, {"t": "dostosowanie norm do nowej próby", "c": false}], "exp": "'Narzucenie pomiaru' to przeniesienie narzędzia/teorii z jednej kultury do innej bez sprawdzenia jego adekwatności (założenie, że konstrukt działa wszędzie tak samo). Budowa od nowa to rekonstrukcja, a nie narzucenie."},
+  {"q": "Jakie konstrukty psychologiczne są uniwersalne?", "opts": [{"t": "te, które są adekwatne dla bardzo wielu różnych kultur", "c": true}, {"t": "te, które są adekwatne dla pojedynczego kraju", "c": false}, {"t": "te, które są adekwatne dla języka angielskiego", "c": false}, {"t": "te, które są adekwatne dla tradycji europejskiej", "c": false}], "exp": "Konstrukt uniwersalny to taki, który zachowuje sens i zastosowanie w wielu różnych kulturach. Adekwatność tylko dla jednego kraju/języka/tradycji to z definicji konstrukt specyficzny kulturowo, a nie uniwersalny."},
+  {"q": "Jaką równoważnością charakteryzuje się test adaptowany, który jest trafny i zapewnia porównywalność wyników z formą źródłową?", "opts": [{"t": "psychometryczną", "c": true}, {"t": "konstruktu", "c": false}, {"t": "kulturową", "c": false}, {"t": "lingwistyczną", "c": false}], "exp": "Równoważność psychometryczna oznacza, że adaptacja zachowuje własności pomiarowe i pozwala porównywać wyniki z formą źródłową. Równoważność konstruktu/kulturowa/lingwistyczna dotyczą węższych aspektów (sensu cechy, kontekstu, języka)."},
+  {"q": "Która równoważność odnosi się do podobieństwa struktur czynnikowych oryginalnego i adaptowanego narzędzia?", "opts": [{"t": "strukturalna", "c": true}, {"t": "lingwistyczna", "c": false}, {"t": "kulturowa", "c": false}, {"t": "jednostki pomiaru", "c": false}], "exp": "Równoważność strukturalna dotyczy tego, czy test ma w obu kulturach taką samą strukturę czynnikową (te same wymiary). Równoważność jednostki pomiaru i lingwistyczna dotyczą innych poziomów (skali, języka)."},
+  {"q": "Która równoważność pozwala wnioskować, że RÓŻNICE wyników uzyskane tym samym testem w różnych kulturach są w pełni wzajemnie porównywalne?", "opts": [{"t": "jednostki pomiaru", "c": true}, {"t": "strukturalna", "c": false}, {"t": "kulturowa", "c": false}, {"t": "lingwistyczna", "c": false}], "exp": "Równoważność jednostki pomiaru oznacza tę samą jednostkę skali (przy możliwie różnym punkcie zerowym), co pozwala porównywać RÓŻNICE/relacje między kulturami. Porównywanie surowych wyników wymaga dopiero równoważności pełnej (skalarnej)."},
+  {"q": "Która równoważność daje możliwość BEZPOŚREDNICH porównań surowych wyników testów pomiędzy kulturami?", "opts": [{"t": "pełnej skali (skalarna)", "c": true}, {"t": "jednostki pomiaru", "c": false}, {"t": "strukturalna", "c": false}, {"t": "kulturowa", "c": false}], "exp": "Dopiero równoważność pełnej skali (ta sama jednostka i ten sam punkt zerowy) pozwala porównywać surowe wyniki wprost. Równoważność jednostki pomiaru wystarcza tylko do porównywania różnic, a nie wartości bezwzględnych."},
+  {"q": "W której metodzie adaptacji kulturowej powinno się przede wszystkim stosować 'back translation' (tłumaczenie zwrotne)?", "opts": [{"t": "transkrypcji (dosłownego tłumaczenia)", "c": true}, {"t": "trawestacji", "c": false}, {"t": "parafrazie", "c": false}, {"t": "rekonstrukcji", "c": false}], "exp": "Back translation kontroluje wierność DOSŁOWNEGO tłumaczenia, więc ma sens przede wszystkim przy transkrypcji/translacji. Przy trawestacji i rekonstrukcji treść jest celowo zmieniana, więc tłumaczenie zwrotne traci sens."},
+  {"q": "Który z testów ma w wersji polskiej pełną równoważność fasadową z oryginałem?", "opts": [{"t": "Test Matryc Ravena", "c": true}, {"t": "WAIS-R Wechslera", "c": false}, {"t": "STAI", "c": false}, {"t": "Delta Rottera", "c": false}], "exp": "Test Matryc Ravena jest niewerbalny (figury), więc wygląda identycznie niezależnie od języka — stąd pełna równoważność fasadowa. Testy werbalne (WAIS-R, STAI, Delta) wymagają tłumaczenia, które zmienia ich 'fasadę'."},
+  {"q": "Jakie podejście jest najczęściej stosowane przy adaptacji kulturowej testów psychologicznych?", "opts": [{"t": "etyczne (etic) — uniwersalistyczne", "c": true}, {"t": "emiczne (emic) — indygenizacyjne", "c": false}, {"t": "stronnicze", "c": false}, {"t": "odwrotne", "c": false}], "exp": "W praktyce najczęściej wychodzi się od istniejącego narzędzia i adaptuje je (podejście etic/uniwersalistyczne). Podejście emic (budowa od nowa dla danej kultury) jest rzadsze i bardziej pracochłonne."},
+  {"q": "Zewnętrzny układ odniesienia dla wyników testu, wyznaczony przez reprezentatywną dla populacji próbę, tworzy się w procesie:", "opts": [{"t": "normalizacji", "c": true}, {"t": "operacjonalizacji", "c": false}, {"t": "walidacji", "c": false}, {"t": "adaptacji", "c": false}], "exp": "Normalizacja to opracowanie norm na reprezentatywnej próbie (układ odniesienia do interpretacji wyniku). Operacjonalizacja dotyczy definiowania konstruktu przez zachowania, walidacja — trafności, a adaptacja — przeniesienia testu do innej kultury."},
+  {"q": "Jeśli test jest zbyt trudny dla badanej grupy, to rozkład wyników surowych będzie:", "opts": [{"t": "prawoskośny", "c": true}, {"t": "lewoskośny", "c": false}, {"t": "normalny", "c": false}, {"t": "prostokątny", "c": false}], "exp": "Zbyt trudny test daje skupienie niskich wyników, a 'ogon' rozkładu ciągnie się w prawo — rozkład prawoskośny (dodatnio skośny). Test zbyt łatwy dałby rozkład lewoskośny."},
+  {"q": "Tworząc normy do testu psychologicznego NIE musimy:", "opts": [{"t": "obliczać korelacji wyniku surowego z wynikiem przeliczonym", "c": true}, {"t": "decydować o wyborze odpowiedniej skali standardowej dla wyniku przeliczonego", "c": false}, {"t": "dbać o reprezentatywność próby normalizacyjnej", "c": false}, {"t": "analizować rozkładu wyników surowych w próbie normalizacyjnej", "c": false}], "exp": "Wynik przeliczony jest monotoniczną transformacją wyniku surowego, więc ich korelacja jest z założenia bardzo wysoka i nic nie wnosi — to czynność zbędna. Wybór skali, reprezentatywność próby i analiza rozkładu są natomiast konieczne."},
+  {"q": "Walidacja krzyżowa w swojej podstawowej wersji zakłada:", "opts": [{"t": "losowy podział grupy na dwie, tak by selekcja pozycji odbyła się na innej próbie niż ocena trafności", "c": true}, {"t": "krzyżowanie testów na podstawie mocy dyskryminacyjnych pozycji", "c": false}, {"t": "porównywanie różnych metod oceny trafności teoretycznej", "c": false}, {"t": "powtórne badanie tych samych osób po pewnym czasie", "c": false}], "exp": "Walidacja krzyżowa sprawdza, czy parametry testu utrzymują się w NIEZALEŻNEJ próbie — stąd podział na próbę do doboru pozycji i osobną do oceny trafności. Powtórne badanie tych samych osób to rzetelność test-retest, a nie walidacja krzyżowa."},
+  {"q": "Najważniejszym standardem przy konstruowaniu zadań/pytań do zupełnie nowego testu jest:", "opts": [{"t": "definicja mierzonego konstruktu", "c": true}, {"t": "możliwości techniczne", "c": false}, {"t": "dostępność zasobów (czasu i pieniędzy)", "c": false}, {"t": "potrzeby interesariuszy (osób badanych i badających)", "c": false}], "exp": "Pozycje muszą wynikać z jasnej definicji mierzonego konstruktu — to ona wyznacza, co i jak mierzyć. Zasoby, technika czy oczekiwania interesariuszy są ważne, ale wtórne wobec trafności treściowej opartej na definicji konstruktu."},
+  {"q": "Jaka ocena jest najważniejsza przy ocenie JĘZYKOWEJ pytań i zadań testowych?", "opts": [{"t": "poprawność gramatyczna, frazeologiczna, stylistyczna i ortograficzna", "c": true}, {"t": "związek pytania z potrzebami interesariuszy", "c": false}, {"t": "poprawność definicji mierzonego konstruktu", "c": false}, {"t": "związek pytania z dostępnymi zasobami", "c": false}], "exp": "Ocena JĘZYKOWA dotyczy poprawności sformułowania pozycji (gramatyka, styl, ortografia), tak by były jednoznaczne i zrozumiałe. Pozostałe kwestie (konstrukt, interesariusze, zasoby) są ważne, ale nie należą do oceny językowej."},
+  {"q": "Jeżeli w wyniku CFA współczynnik RMSEA wynosi 0,16, dopasowanie modelu jest:", "opts": [{"t": "zdecydowanie nieodpowiednie (bardzo złe)", "c": true}, {"t": "znakomite", "c": false}, {"t": "umiarkowane", "c": false}, {"t": "dobre", "c": false}], "exp": "RMSEA < 0,05 to dobre dopasowanie, 0,05–0,08 akceptowalne, a > 0,10 — złe. Wartość 0,16 znacznie przekracza próg 0,10, więc dopasowanie jest zdecydowanie nieodpowiednie."},
+  {"q": "Do czego w psychometrii stosuje się parametr AUC (pole pod krzywą ROC)?", "opts": [{"t": "do wyboru najlepszej zmiennej/punktu odcięcia w diagnozie (trafność diagnostyczna)", "c": true}, {"t": "do normalizacji wyników testowych", "c": false}, {"t": "do analizy rzetelności", "c": false}, {"t": "do analizy trafności treściowej", "c": false}], "exp": "AUC ocenia zdolność różnicowania między grupami (np. chorzy vs zdrowi) i pomaga wybrać najlepszy predyktor/punkt odcięcia — to wskaźnik trafności diagnostycznej. Nie służy normalizacji ani ocenie rzetelności."},
+  {"q": "Swoistość (specyficzność) testu to:", "opts": [{"t": "zdolność testu do prawidłowego rozpoznania BRAKU choroby tam, gdzie ona nie występuje", "c": true}, {"t": "zdolność testu do prawidłowego rozpoznania choroby tam, gdzie ona występuje", "c": false}, {"t": "odsetek wszystkich trafnych klasyfikacji w całej próbie", "c": false}, {"t": "odsetek osób chorych wśród wyników dodatnich", "c": false}], "exp": "Swoistość = trafne wykrywanie osób ZDROWYCH (prawdziwe wyniki negatywne). Trafne wykrywanie chorych to CZUŁOŚĆ; ogólny odsetek trafień to dokładność, a odsetek chorych wśród dodatnich to wartość predykcyjna dodatnia."},
+  {"q": "Skrót EFA oznacza:", "opts": [{"t": "Exploratory Factor Analysis (eksploracyjna analiza czynnikowa)", "c": true}, {"t": "Empirical Feedback Analysis", "c": false}, {"t": "elementarną frekwencję algorytmiczną", "c": false}, {"t": "European Factor Association", "c": false}], "exp": "EFA = Exploratory Factor Analysis — eksploracyjna analiza czynnikowa (poszukiwanie struktury czynnikowej w danych). Pozostałe rozwinięcia są zmyślone."},
+  {"q": "Który z poniższych modeli ma NAJGORSZE miary dopasowania?", "opts": [{"t": "RMSEA = 0,95; CFI = 0,05; TLI = 0,05", "c": true}, {"t": "RMSEA = 0,05; CFI = 0,99; TLI = 0,99", "c": false}, {"t": "RMSEA = 0,95; CFI = 0,99; TLI = 0,99", "c": false}, {"t": "RMSEA = 0,05; CFI = 0,05; TLI = 0,05", "c": false}], "exp": "Dobre dopasowanie to NISKI RMSEA (≤0,05) i WYSOKIE CFI/TLI (≥0,95). Najgorszy jest model zły na wszystkich wskaźnikach: wysoki RMSEA (0,95) i niskie CFI/TLI (0,05). Pozostałe modele są dobre na co najmniej części wskaźników."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#9a3412'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#ea580c'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#f97316'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

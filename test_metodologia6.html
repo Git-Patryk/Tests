@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 6 – Zaawansowana metodologia badań</title>
+<style>
+  :root {
+    --blue:   #3b82f6;
+    --blue2:  #2563eb;
+    --blue3:  #93c5fd;
+    --blue4:  #dbeafe;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f5f8ff;
+    --border: #dbe2ec;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #eff6ff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1e40af 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #eff6ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #bfdbfe;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #1e40af; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #eff6ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #1e40af; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e40af, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(37,99,235,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #1e40af; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
+  <h1>Zaawansowana metodologia badań</h1>
+  <p>Test 6 · Pytania egzaminacyjne · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN</div>
+    <h2>Test 6 — oryginalne pytania egzaminacyjne</h2>
+    <p>Zestaw <strong>autentycznych pytań z egzaminu</strong> z metodologii (prof. Traczyk i in.). Część I: wielkość efektu, moc testu, regresja i podstawy statystyki.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Wielkość efektu (d Cohena, η², ω²) · pokrycie rozkładów i U3 · moc testu i błędy I/II rodzaju · p-hacking · regresja (beta, R²) · mediacja (efekt całkowity) · linia regresji · błąd próby i błąd losowy · transformacje · bootstrapping</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Podsumowanie ilościowe wyników wielu podobnych badań w celu oszacowania wielkości efektu danej zmiennej niezależnej to:", "opts": [{"t": "meta-analiza", "c": true}, {"t": "eksperyment", "c": false}, {"t": "replikacja", "c": false}, {"t": "analiza archiwalna", "c": false}], "exp": "Meta-analiza statystycznie syntetyzuje wyniki wielu badań, dając łączną ocenę wielkości efektu. Replikacja to powtórzenie jednego badania, eksperyment to pojedyncze badanie z manipulacją, a analiza archiwalna korzysta z już istniejących danych."},
+  {"q": "Do oceny wielkości efektu w DWUczynnikowej analizie wariancji należy wykorzystać współczynnik:", "opts": [{"t": "eta-kwadrat (η²)", "c": true}, {"t": "d Cohena", "c": false}, {"t": "V Cramera", "c": false}, {"t": "współczynnik zgodności W", "c": false}], "exp": "Dla ANOVA (także dwuczynnikowej) miarą wielkości efektu jest eta-kwadrat. d Cohena dotyczy różnicy dwóch średnich, V Cramera — związku zmiennych nominalnych (chi²), a W Kendalla — zgodności sędziów."},
+  {"q": "Do oceny wielkości efektu w JEDNOczynnikowej analizie wariancji należy wykorzystać współczynnik:", "opts": [{"t": "eta-kwadrat (η²)", "c": true}, {"t": "d Cohena", "c": false}, {"t": "V Cramera", "c": false}, {"t": "współczynnik zgodności W", "c": false}], "exp": "W analizie wariancji (jedno- i wieloczynnikowej) wielkość efektu wyraża eta-kwadrat. Pozostałe współczynniki służą innym analizom (różnica średnich, tabele kontyngencji, zgodność ocen)."},
+  {"q": "Wskaźnik wielkości efektu ω² (omega kwadrat) wyniósł 0,13. Wielkość tego efektu jest:", "opts": [{"t": "duża", "c": true}, {"t": "bardzo duża", "c": false}, {"t": "średnia", "c": false}, {"t": "mała", "c": false}], "exp": "Dla η²/ω² umownie: ~0,01 = mały, ~0,06 = średni, ~0,14 = duży. Wartość 0,13 jest bliska progu 0,14, więc efekt klasyfikujemy jako duży (nie średni i nie 'bardzo duży' — takiej kategorii się nie używa)."},
+  {"q": "Wskaźnik wielkości efektu ω² (omega kwadrat) wyniósł 0,058. Wielkość tego efektu jest:", "opts": [{"t": "średnia", "c": true}, {"t": "duża", "c": false}, {"t": "bardzo duża", "c": false}, {"t": "mała", "c": false}], "exp": "Wartość ≈0,06 odpowiada progowi efektu średniego (mały ≈0,01, duży ≈0,14). Dlatego 0,058 to efekt średni, a nie mały czy duży."},
+  {"q": "Do obliczenia statystyki d Cohena KONIECZNA jest informacja o:", "opts": [{"t": "odchyleniu standardowym", "c": true}, {"t": "mocy testu", "c": false}, {"t": "wartości p", "c": false}, {"t": "liczbie osób badanych", "c": false}], "exp": "d Cohena = (różnica średnich) / odchylenie standardowe — bez SD nie da się jej policzyć. Moc, wartość p i liczebność próby nie wchodzą do wzoru na d (d jest niezależne od N)."},
+  {"q": "Do obliczenia statystyki d Cohena NIE jest konieczna informacja o:", "opts": [{"t": "liczebności próby", "c": true}, {"t": "wartościach średnich w porównywanych grupach", "c": false}, {"t": "różnicy między średnimi", "c": false}, {"t": "odchyleniu standardowym", "c": false}], "exp": "d Cohena zależy tylko od różnicy średnich i odchylenia standardowego — jest niezależne od liczebności próby. Dlatego to właśnie liczebność jest tu zbędna."},
+  {"q": "W liczniku statystyki d Cohena powinna znaleźć się:", "opts": [{"t": "różnica między średnimi", "c": true}, {"t": "liczba osób badanych", "c": false}, {"t": "poziom istotności", "c": false}, {"t": "odchylenie standardowe", "c": false}], "exp": "d Cohena = (M₁−M₂)/SD: w liczniku jest różnica średnich, a w mianowniku odchylenie standardowe. Liczebność i poziom istotności nie występują w tym wzorze."},
+  {"q": "Wielkość efektu (d Cohena) wynosi 0,75. W jakim stopniu pokrywają się rozkłady wyników w obu grupach?", "opts": [{"t": "0,71", "c": true}, {"t": "0,92", "c": false}, {"t": "0,50", "c": false}, {"t": "0,30", "c": false}], "exp": "Dla d = 0,75 współczynnik pokrycia rozkładów (OVL) wynosi ok. 0,71 (≈71%). Im większe d, tym mniejsze pokrycie — 0,92 odpowiadałoby bardzo małemu efektowi, a 0,30 efektowi znacznie większemu."},
+  {"q": "Wielkość efektu (d Cohena) wynosi 1. W jakim stopniu pokrywają się rozkłady wyników w obu grupach?", "opts": [{"t": "0,62", "c": true}, {"t": "0,71", "c": false}, {"t": "0,50", "c": false}, {"t": "0,90", "c": false}], "exp": "Dla d = 1 pokrycie rozkładów spada do ok. 0,62. Wartość 0,71 odpowiada mniejszemu efektowi (d≈0,75), a 0,90 — bardzo małemu efektowi."},
+  {"q": "Wielkość efektu wynosi d = 1 (średnia w grupie eksperymentalnej jest wyższa). Jaka część wyników grupy eksperymentalnej przewyższa średnią grupy kontrolnej?", "opts": [{"t": "0,84", "c": true}, {"t": "0,50", "c": false}, {"t": "0,71", "c": false}, {"t": "0,98", "c": false}], "exp": "Miara U3 = Φ(d): dla d = 1 to Φ(1) ≈ 0,84, czyli ok. 84% osób z grupy eksperymentalnej ma wynik wyższy niż średnia grupy kontrolnej. 0,50 oznaczałoby brak efektu (d=0)."},
+  {"q": "Jeśli d Cohena = 1, to jaka jest różnica (w punktach) na skali o średniej 100 i odchyleniu standardowym 20?", "opts": [{"t": "20 punktów", "c": true}, {"t": "15 punktów", "c": false}, {"t": "10 punktów", "c": false}, {"t": "5 punktów", "c": false}], "exp": "d = różnica średnich / SD, więc różnica = d × SD = 1 × 20 = 20 punktów. Pozostałe wartości odpowiadałyby d mniejszemu od 1 (np. 10 pkt → d = 0,5)."},
+  {"q": "Standaryzowany współczynnik kierunkowy (beta) dla pewnego predyktora wynosi b = −0,34 przy p < 0,001. Oznacza to, że:", "opts": [{"t": "wraz ze wzrostem wartości predyktora istotnie maleją wartości zmiennej zależnej", "c": true}, {"t": "wraz ze wzrostem predyktora istotnie rosną wartości zmiennej zależnej", "c": false}, {"t": "wraz ze wzrostem predyktora maleje wartość istotności", "c": false}, {"t": "wartości zmiennej zależnej nie zmieniają się", "c": false}], "exp": "Ujemna beta oznacza zależność odwrotną: wzrost predyktora wiąże się ze spadkiem ZZ, a p < 0,001 mówi, że jest ona istotna statystycznie. Znak dodatni oznaczałby wzrost ZZ; beta nie odnosi się do 'wartości istotności'."},
+  {"q": "Analiza regresji wykazała współczynnik R² = 5,7%. Oznacza to, że:", "opts": [{"t": "predyktory wyjaśniają 5,7% wariancji zmiennej zależnej", "c": true}, {"t": "badanie ma moc 5,7%", "c": false}, {"t": "model jest bardzo dobrze dopasowany do danych", "c": false}, {"t": "analiza jest nieistotna statystycznie", "c": false}], "exp": "R² to odsetek wariancji ZZ wyjaśniany przez model — tutaj 5,7%. To nie jest moc testu ani miara istotności; 5,7% to dopasowanie raczej słabe, więc 'bardzo dobre' jest błędne."},
+  {"q": "Efekt całkowity w analizie mediacji jest równy:", "opts": [{"t": "sumie efektu bezpośredniego i pośredniego", "c": true}, {"t": "iloczynowi efektu bezpośredniego i pośredniego", "c": false}, {"t": "różnicy efektu bezpośredniego i pośredniego", "c": false}, {"t": "ilorazowi efektu bezpośredniego i pośredniego", "c": false}], "exp": "Efekt całkowity = efekt bezpośredni + efekt pośredni (przez mediator). Iloczyn ścieżek a·b daje sam efekt POŚREDNI, a nie całkowity; różnica i iloraz nie mają tu zastosowania."},
+  {"q": "Moc testu i poziom istotności są ustalone (0,8 i 0,05). Przy małej spodziewanej wielkości efektu badacz powinien:", "opts": [{"t": "zwiększyć wielkość próby", "c": true}, {"t": "zmniejszyć wielkość próby", "c": false}, {"t": "zmienić parametry mocy i poziomu istotności", "c": false}, {"t": "zignorować wielkość próby", "c": false}], "exp": "Im mniejszy efekt, tym większa próba potrzebna, by go wykryć przy zadanej mocy i α. Zmniejszanie próby obniżyłoby moc; manipulowanie α/mocą zafałszowałoby wnioskowanie."},
+  {"q": "Wraz ze ZMNIEJSZENIEM liczebności próby:", "opts": [{"t": "zmniejsza się moc testu", "c": true}, {"t": "zwiększa się moc testu", "c": false}, {"t": "moc testu się nie zmienia", "c": false}, {"t": "zwiększa się liczba poziomów zmiennej zależnej", "c": false}], "exp": "Mniejsza próba = mniejsza moc (mniejsza szansa wykrycia istniejącego efektu). Liczebność nie ma związku z liczbą poziomów zmiennej zależnej."},
+  {"q": "Moc testu dopełnia się (sumuje do jedności) z:", "opts": [{"t": "błędem drugiego rodzaju (β)", "c": true}, {"t": "błędem pierwszego rodzaju (α)", "c": false}, {"t": "poziomem istotności", "c": false}, {"t": "znaczeniem praktycznym", "c": false}], "exp": "Moc = 1 − β, więc dopełnia się z błędem II rodzaju (β = przeoczenie istniejącego efektu). Błąd I rodzaju (α) to fałszywy alarm — to inny parametr; znaczenie praktyczne dotyczy wielkości efektu."},
+  {"q": "Po badaniu wartość istotności dla hipotezy zerowej wynosi p = 0,055. Badacz:", "opts": [{"t": "nie może dobierać danych od kolejnych osób, by 'dociągnąć' p poniżej 0,05", "c": true}, {"t": "powinien zebrać dane od dodatkowych 10 osób", "c": false}, {"t": "powinien dobierać dane, aż p spadnie poniżej 0,05", "c": false}, {"t": "powinien podnieść poziom istotności, by wynik był istotny", "c": false}], "exp": "Dobieranie danych aż do uzyskania istotności (optional stopping) i zmiana progu α po fakcie to p-hacking — zawyżają ryzyko błędu I rodzaju. Wielkości próby nie zwiększa się 'do skutku' po zobaczeniu wyniku."},
+  {"q": "Im większa liczba osób badanych w eksperymencie, tym:", "opts": [{"t": "większa moc testu i mniejsza wartość istotności p", "c": true}, {"t": "większa moc testu i większa wartość p", "c": false}, {"t": "mniejsza moc testu i mniejsza wartość p", "c": false}, {"t": "moc i p pozostają bez zmian", "c": false}], "exp": "Większa próba zwiększa moc i — przy istniejącym efekcie — obniża p (łatwiej osiągnąć istotność). Większa moc nie idzie w parze z rosnącym p."},
+  {"q": "Jaką metodą wyznaczana jest linia regresji?", "opts": [{"t": "metodą najmniejszych kwadratów — tak, by sumaryczne odległości punktów od linii były najmniejsze", "c": true}, {"t": "metodą najmniejszych kwadratów — tak, by odległości były największe", "c": false}, {"t": "metodą sumowania — by suma punktów była zerowa", "c": false}, {"t": "metodą podnoszenia do kwadratu współczynników korelacji", "c": false}], "exp": "Linia regresji minimalizuje sumę kwadratów odległości (reszt) punktów od linii. Maksymalizowanie odległości lub 'zerowanie sumy punktów' nie ma sensu, a podnoszenie korelacji do kwadratu daje R², nie linię."},
+  {"q": "Błąd próby wynika z tego, że:", "opts": [{"t": "każda próba odbiega nieco od populacji, z której pochodzi", "c": true}, {"t": "każda próba odbiega od populacji idealnej (wzorcowej)", "c": false}, {"t": "każda próba odbiega od próby kwotowej", "c": false}, {"t": "każda próba odbiega od dwóch prób wzorcowych", "c": false}], "exp": "Błąd próby (sampling error) to naturalna rozbieżność między próbą a populacją, z której ją losowano. Nie odnosi się do 'populacji idealnej' ani do prób kwotowych/wzorcowych."},
+  {"q": "W kontekście pomiaru błąd losowy znajduje odzwierciedlenie w:", "opts": [{"t": "odchyleniu standardowym rozkładu wyników", "c": true}, {"t": "średniej rozkładu wyników", "c": false}, {"t": "trafności pomiaru", "c": false}, {"t": "efekcie systematycznym", "c": false}], "exp": "Błąd losowy zwiększa rozrzut wyników, więc ujawnia się w odchyleniu standardowym (wariancji). Błąd SYSTEMATYCZNY przesuwa średnią i obniża trafność — to inny rodzaj błędu."},
+  {"q": "Przy złamaniu założenia o normalności rozkładu (np. rozkład prawoskośny) można wykonać przekształcenie:", "opts": [{"t": "pierwiastkowe", "c": true}, {"t": "standardowe", "c": false}, {"t": "ćwiartkowe", "c": false}, {"t": "potęgowe (podniesienie do wysokiej potęgi)", "c": false}], "exp": "Dla rozkładów prawoskośnych stosuje się transformacje 'ściągające' prawy ogon — logarytmiczną lub pierwiastkową. Standaryzacja (z) nie zmienia kształtu rozkładu, a podnoszenie do wysokiej potęgi pogłębiłoby skośność."},
+  {"q": "Stosując metodę bootstrappingu:", "opts": [{"t": "wielokrotnie losujemy ze zwracaniem próbkę spośród zebranych danych", "c": true}, {"t": "dokonujemy transformacji logarytmicznej", "c": false}, {"t": "dokonujemy transformacji pierwiastkowej", "c": false}, {"t": "usuwamy obserwacje odstające i sprawdzamy istotność", "c": false}], "exp": "Bootstrapping to wielokrotne losowanie ze zwracaniem z posiadanej próby w celu oszacowania rozkładu statystyki (np. przedziałów ufności). Nie jest to transformacja danych ani usuwanie obserwacji odstających."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#1e40af'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#2563eb'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#3b82f6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

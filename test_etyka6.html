@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 6 – Etyka w zastosowaniach psychologii</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #6a1ba0 0%, var(--purple2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #e9d8fd;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--purple2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #6a1ba0; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #6a1ba0; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a1ba0, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #6a1ba0; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="etyka-testy.html">← Wróć do listy testów</a>
+  <h1>Etyka w zastosowaniach psychologii</h1>
+  <p>Test 6 · Pytania egzaminacyjne · 20 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN</div>
+    <h2>Test 6 — oryginalne pytania egzaminacyjne</h2>
+    <p>Zestaw <strong>autentycznych pytań z egzaminu</strong> „Etyka w zastosowaniach psychologii”. Część I: prawo wykonywania zawodu, odpowiedzialność, tajemnica zawodowa i relacje z wymiarem sprawiedliwości.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Społeczny i prawny obowiązek denuncjacji · odpowiedzialność psychologa · prawo wykonywania zawodu · zwolnienie z tajemnicy (sprawy karne vs cywilne) · biegły sądowy · EFPA · projekt ustawy 2025/2026 · ochrona tytułu „psycholog” · klauzula sumienia</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>20 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "W trakcie terapii psycholog dowiedział się, że pacjent popełnia przestępstwo objęte SPOŁECZNYM obowiązkiem denuncjacji. Nie zgłosił tego policji ani prokuraturze. Czy postąpił zgodnie z etyką zawodową?", "opts": [{"t": "W przypadku przestępstwa objętego społecznym (a nie prawnym) obowiązkiem denuncjacji każda decyzja psychologa będzie zgodna z etyką zawodową", "c": true}, {"t": "Tak, ale tylko jeśli skłonił tę osobę, aby sama zgłosiła się na policję", "c": false}, {"t": "Nie, bo jest bezwzględnie zobowiązany do zgłoszenia tego organom ścigania", "c": false}, {"t": "Nie, bo tajemnica zawodowa nigdy nie chroni informacji o przestępstwach", "c": false}], "exp": "Obowiązek SPOŁECZNY (moralny) denuncjacji nie jest egzekwowany karnie i ustępuje przed tajemnicą zawodową — dlatego zarówno zgłoszenie, jak i niezgłoszenie jest etycznie dopuszczalne. Przymus zgłoszenia (odp. 3) dotyczy tylko PRAWNEGO obowiązku (najcięższe przestępstwa). Skłanianie pacjenta do samozgłoszenia nie jest warunkiem etyczności, a tajemnica chroni m.in. informacje o czynach z przeszłości."},
+  {"q": "Aby dowiedzieć się o wysokości kary grożącej psychologowi za ujawnienie tajemnicy zawodowej, należy sięgnąć do:", "opts": [{"t": "Kodeksu karnego", "c": true}, {"t": "Kodeksu cywilnego", "c": false}, {"t": "Ustawy o zawodzie psychologa i samorządzie zawodowym (2001)", "c": false}, {"t": "Kodeksu pracy", "c": false}], "exp": "Sankcja karna za naruszenie tajemnicy zawodowej wynika z Kodeksu karnego (art. 266 KK — grzywna, ograniczenie lub pozbawienie wolności do 2 lat). Kodeks cywilny dotyczy naprawienia szkody (odszkodowanie/zadośćuczynienie), a Ustawa z 2001 r. nie określa wysokości kary za to."},
+  {"q": "Obecnie psycholog wykonujący zawód w Polsce podlega odpowiedzialności:", "opts": [{"t": "Wyłącznie prawnej (zarówno karnej, jak i cywilnej)", "c": true}, {"t": "Dyscyplinarnej zawodowej oraz prawnej (karnej i cywilnej)", "c": false}, {"t": "Dyscyplinarnej zawodowej oraz prawnej, ale wyłącznie karnej", "c": false}, {"t": "Wyłącznie dyscyplinarnej zawodowej", "c": false}], "exp": "Ponieważ samorząd zawodowy psychologów nigdy nie powstał, NIE istnieje zawodowa odpowiedzialność dyscyplinarna — psycholog odpowiada więc tylko prawnie (karnie i cywilnie). Odpowiedzi wskazujące na odpowiedzialność dyscyplinarną są błędne aż do wejścia w życie nowej ustawy z samorządem."},
+  {"q": "Formalne prawo do wykonywania zawodu psychologa w Polsce uzyskuje się obecnie:", "opts": [{"t": "Wraz z uzyskaniem w polskiej uczelni dyplomu magistra psychologii", "c": true}, {"t": "Po uzyskaniu dyplomu magistra i odbyciu rocznego stażu", "c": false}, {"t": "Po uzyskaniu dyplomu i albo odbyciu stażu, albo członkostwa w PTP", "c": false}, {"t": "Prawo to obecnie w ogóle nie istnieje", "c": false}], "exp": "Ustawa z 2001 r. przewidywała staż i wpis na listę, ale z powodu braku przepisów wykonawczych i samorządu (Regionalnych Izb Psychologów) procedura nigdy nie ruszyła. W praktyce psycholog legitymuje się dyplomem magistra psychologii. Staż i członkostwo w PTP nie są formalnym warunkiem nadania prawa."},
+  {"q": "Sąd w procesie karnym zwalnia psychologa z tajemnicy zawodowej wobec osoby, której terapię prowadził. Psycholog wnosi na to zażalenie. W rezultacie:", "opts": [{"t": "Do czasu rozpatrzenia zażalenia sąd nie ma wglądu w dokumentację, a psycholog jest przesłuchiwany z wyłączeniem jawności", "c": true}, {"t": "Sąd musi całkowicie odstąpić od przesłuchania i od wglądu w dokumentację", "c": false}, {"t": "Zażalenie nie wstrzymuje niczego — przesłuchanie odbywa się jawnie", "c": false}, {"t": "Tajemnica zostaje uchylona automatycznie i bezwarunkowo", "c": false}], "exp": "Wniesienie zażalenia wstrzymuje wgląd w dokumentację do czasu jego rozpatrzenia, a samo przesłuchanie odbywa się z wyłączeniem jawności (bez osób postronnych) — to dwa łączne skutki. Sąd nie musi całkowicie odstępować od czynności, ale i nie uchyla tajemnicy automatycznie."},
+  {"q": "W przypadku osoby BEZ zaburzeń psychicznych psychologa może zwolnić z tajemnicy zawodowej:", "opts": [{"t": "Sąd lub prokuratura — ale wyłącznie w sprawie karnej; w sprawie cywilnej żadna instytucja", "c": true}, {"t": "Sąd lub prokuratura — zarówno w sprawie karnej, jak i cywilnej", "c": false}, {"t": "Wyłącznie sąd — w sprawie karnej i cywilnej", "c": false}, {"t": "Żadna instytucja nie może zwolnić ani w sprawie karnej, ani cywilnej", "c": false}], "exp": "Zwolnienie z tajemnicy jest możliwe tylko w procedurze KARNEJ (sąd lub prokuratura). W postępowaniu CYWILNYM brak jest procedury zwalniania psychologa z tajemnicy — pozostaje on nią związany. Dlatego warianty obejmujące sprawy cywilne są błędne."},
+  {"q": "W przypadku osoby Z zaburzeniami psychicznymi psychologa może zwolnić z tajemnicy zawodowej:", "opts": [{"t": "Żadna instytucja nie może zwolnić — ani w sprawie karnej, ani cywilnej", "c": true}, {"t": "Sąd lub prokuratura — w sprawie karnej i cywilnej", "c": false}, {"t": "Sąd lub prokuratura — wyłącznie w sprawie karnej", "c": false}, {"t": "Wyłącznie sąd — wyłącznie w sprawie karnej", "c": false}], "exp": "Informacje o osobie z zaburzeniami psychicznymi objęte są szczególną, bezwzględną ochroną (ustawa o ochronie zdrowia psychicznego) — nie obowiązuje tu standardowa procedura zwalniania z tajemnicy stosowana wobec osób bez zaburzeń. Dlatego żadna instytucja nie może zwolnić psychologa z tej tajemnicy."},
+  {"q": "Czym jest EFPA?", "opts": [{"t": "Federacją zrzeszającą europejskie stowarzyszenia psychologiczne", "c": true}, {"t": "Certyfikatem poświadczającym zgodność wykształcenia ze standardami europejskimi", "c": false}, {"t": "Europejskim odpowiednikiem kodeksu etycznego APA obowiązującym w całej UE", "c": false}, {"t": "Licencją dającą prawo wykonywania zawodu psychologa w krajach europejskich", "c": false}], "exp": "EFPA = European Federation of Psychologists' Associations — federacja krajowych stowarzyszeń (towarzystw) psychologicznych. Nie jest to certyfikat, kodeks ani licencja uprawniająca do wykonywania zawodu, lecz organizacja zrzeszająca."},
+  {"q": "W najnowszym projekcie Ustawy o zawodzie psychologa (2025/2026) jest podane, że:", "opts": [{"t": "Wszystkie poniższe (zgoda odbiorcy na świadczenia, definicja wykonywania zawodu oraz obowiązek tajemnicy)", "c": true}, {"t": "Tylko że podjęcie świadczeń następuje za zgodą odbiorcy", "c": false}, {"t": "Tylko że wykonywanie zawodu polega na świadczeniu usług (diagnoza, opiniowanie, psychoterapia, pomoc)", "c": false}, {"t": "Tylko że psycholog ma obowiązek zachowania tajemnicy informacji o kliencie", "c": false}], "exp": "Projekt zawiera wszystkie te elementy łącznie: zasadę zgody odbiorcy, katalog czynności składających się na wykonywanie zawodu oraz obowiązek tajemnicy. Każda z pojedynczych odpowiedzi jest prawdziwa, więc poprawna jest opcja zbiorcza."},
+  {"q": "Psycholog jako biegły sądowy przeprowadza rozmowę z oskarżonym, który przyznaje się do winy. Psycholog NIE przekazał tej informacji sądowi. Czy postąpił prawidłowo?", "opts": [{"t": "Nie — był zobowiązany do zachowania tajemnicy zawodowej i nie powinien donosić sądowi o przyznaniu się; jego zadaniem jest opinia, nie zbieranie dowodów winy", "c": true}, {"t": "Tak — powinien był natychmiast przekazać przyznanie się sądowi, bez względu na wszystko", "c": false}, {"t": "Tak, ale tylko jeśli oskarżony jest osobą zaburzoną psychicznie", "c": false}, {"t": "Nie, ale tylko jeśli oskarżony nie jest zaburzony psychicznie", "c": false}], "exp": "Biegły jest zobowiązany dochować tajemnicy zawodowej nawet wtedy, gdy oskarżony przyzna się do winy w rozmowie z psychologiem — jego rolą jest sporządzenie opinii o przedmiocie badania, a nie dostarczanie dowodów winy. Dlatego niepowiadomienie sądu o przyznaniu się jest prawidłowe."},
+  {"q": "Psycholog pracujący dla wymiaru sprawiedliwości może podjąć się diagnozy oskarżonego jako biegły, jeśli:", "opts": [{"t": "W żadnej z poniższych sytuacji — wcześniejsza relacja zawodowa z tą osobą wyklucza rolę biegłego (konflikt ról)", "c": true}, {"t": "Wykonywał, ale już nie wykonuje wobec tej osoby świadczenia niezwiązane z wymiarem sprawiedliwości (np. był jej terapeutą)", "c": false}, {"t": "Wykonywał, ale już nie wykonuje wobec niej świadczeń na zlecenie innego sądu (np. był mediatorem)", "c": false}, {"t": "W obu powyższych sytuacjach", "c": false}], "exp": "Każda wcześniejsza relacja zawodowa z osobą badaną (terapeuta, mediator) tworzy konflikt ról i podważa bezstronność biegłego — dlatego psycholog nie może podjąć się takiej diagnozy w żadnej z tych sytuacji."},
+  {"q": "Który akt prawny zawiera stwierdzenie, że tytuł zawodowy „psycholog” podlega w Polsce ochronie prawnej?", "opts": [{"t": "Ustawa o zawodzie psychologa i samorządzie zawodowym psychologów (2001)", "c": true}, {"t": "Ustawa (2001) oraz Kodeks karny", "c": false}, {"t": "Ustawa (2001) oraz Kodeks wykroczeń", "c": false}, {"t": "Żaden z powyższych", "c": false}], "exp": "Ochronę tytułu zawodowego „psycholog” przewiduje Ustawa o zawodzie psychologa z 2001 r. Kodeks karny i Kodeks wykroczeń nie zawierają takiego stwierdzenia, więc warianty je dodające są błędne."},
+  {"q": "Czy w najnowszym projekcie Ustawy o zawodzie psychologa (2025/2026) przewiduje się klauzulę sumienia?", "opts": [{"t": "Nie — dla żadnego z zawodów/czynności związanych z pomocą psychologiczną", "c": true}, {"t": "Tak, ale wyłącznie wobec dzieci poniżej 13 roku życia", "c": false}, {"t": "Tak, ale wyłącznie wobec osób z pełną zdolnością do czynności prawnych", "c": false}, {"t": "Tak, dla wszystkich czynności związanych z pomocą psychologiczną", "c": false}], "exp": "Projekt nie wprowadza klauzuli sumienia. Psycholog może odmówić świadczenia z ważnych powodów (np. brak kompetencji), ale nie na zasadzie klauzuli sumienia — dlatego wszystkie odpowiedzi „tak” są błędne."},
+  {"q": "Psycholog naruszył tajemnicę zawodową wobec osoby, która uczęszczała na terapię. Osoba ta może obecnie zgłosić zawiadomienie o przestępstwie do:", "opts": [{"t": "Prokuratury", "c": true}, {"t": "Prokuratury lub samorządu zawodowego psychologów", "c": false}, {"t": "Samorządu zawodowego psychologów", "c": false}, {"t": "Wyłącznie do PTP", "c": false}], "exp": "Naruszenie tajemnicy zawodowej jest przestępstwem (art. 266 KK), które zgłasza się do prokuratury. Samorząd zawodowy psychologów nie funkcjonuje, więc warianty go wskazujące są błędne."},
+  {"q": "Zgodnie z Ustawą o zawodzie psychologa (2001), karze podlega osoba, która:", "opts": [{"t": "W każdej z wymienionych sytuacji: posługuje się tytułem, świadczy usługi lub powierza je osobie bez prawa wykonywania zawodu", "c": true}, {"t": "Posługuje się tytułem zawodowym psychologa bez prawa wykonywania zawodu", "c": false}, {"t": "Świadczy usługi psychologiczne bez prawa wykonywania zawodu", "c": false}, {"t": "Powierza wykonanie świadczeń osobie bez prawa wykonywania zawodu", "c": false}], "exp": "Ustawa penalizuje wszystkie te zachowania łącznie, dlatego poprawna jest odpowiedź zbiorcza. Każdy z pojedynczych wariantów jest prawdziwy, ale niepełny."},
+  {"q": "„Społeczny obowiązek denuncjacji” w odniesieniu do psychologa oznacza, że psycholog:", "opts": [{"t": "Ma jedynie moralny (a nie prawny) obowiązek zawiadomienia o przestępstwie ściganym z urzędu — i nie podlega karze za niezawiadomienie, bo tajemnica zawodowa ma pierwszeństwo", "c": true}, {"t": "Ma prawny obowiązek zawiadomienia i podlega karze za jego niedopełnienie", "c": false}, {"t": "Nigdy nie może zawiadomić organów ścigania o jakimkolwiek przestępstwie", "c": false}, {"t": "Musi zawiadomić organy ścigania o każdym przestępstwie, o którym się dowie", "c": false}], "exp": "Obowiązek społeczny ma charakter moralny — jego niedopełnienie nie jest karalne, a w odniesieniu do informacji z relacji zawodowej tajemnica zawodowa ma pierwszeństwo. Karalny jest tylko PRAWNY obowiązek denuncjacji (najcięższe przestępstwa)."},
+  {"q": "Psycholog jest naocznym świadkiem śmiertelnego wypadku i rozpoznaje uciekającego sprawcę — to jego były pacjent. Co powinien zrobić?", "opts": [{"t": "Niezwłocznie podać policji dane sprawcy", "c": true}, {"t": "Zachować w tajemnicy, że zna sprawcę", "c": false}, {"t": "Zachować w tajemnicy dane sprawcy", "c": false}, {"t": "Skontaktować się ze sprawcą i nakłonić go do dobrowolnego ujawnienia się", "c": false}], "exp": "Psycholog był świadkiem przestępstwa POZA relacją terapeutyczną — tajemnica zawodowa nie obejmuje zdarzeń, których jest naocznym świadkiem jako obywatel, zwłaszcza przy poważnym przestępstwie zagrażającym życiu. Powinien przekazać dane policji; ukrywanie ich byłoby utrudnianiem postępowania."},
+  {"q": "Psycholog dowiaduje się, że jego klient — osoba ze zdiagnozowaną chorobą psychiczną — wykorzystuje osoby nieletnie. Co powinien zrobić?", "opts": [{"t": "Niezwłocznie powiadomić organy ścigania (np. policję)", "c": true}, {"t": "Nie może złamać tajemnicy ze względu na ustawę o ochronie zdrowia psychicznego", "c": false}, {"t": "Skonsultować się z superwizorem, zanim cokolwiek zrobi", "c": false}, {"t": "Jedynie powiadomić swojego superwizora", "c": false}], "exp": "Wykorzystywanie osób nieletnich należy do przestępstw objętych PRAWNYM obowiązkiem zawiadomienia (art. 240 KK) i wiąże się z bezpośrednim zagrożeniem dobra dziecka — ten obowiązek przeważa nad tajemnicą zawodową, nawet przy chorobie psychicznej klienta. Sama konsultacja z superwizorem nie wystarcza wobec trwającego zagrożenia."},
+  {"q": "Psycholog dowiaduje się, że jego klient jest sprawcą przemocy domowej (brak bezpośredniego zagrożenia życia). W tej sytuacji psycholog przede wszystkim:", "opts": [{"t": "Powinien skonsultować się np. z superwizorem, zanim ewentualnie złamie tajemnicę, oraz rozważyć działania ochronne (np. procedurę „Niebieskiej Karty”)", "c": true}, {"t": "Musi natychmiast zawiadomić policję, bo to przestępstwo z prawnym obowiązkiem denuncjacji", "c": false}, {"t": "Nie może podjąć żadnych działań — tajemnica jest bezwzględna", "c": false}, {"t": "Powinien natychmiast zakończyć współpracę z klientem", "c": false}], "exp": "Przemoc domowa (bez bezpośredniego zagrożenia życia) nie należy do katalogu przestępstw z prawnym obowiązkiem zawiadomienia, więc decyzji o uchyleniu tajemnicy nie podejmuje się pochopnie — najpierw konsultacja/superwizja i działania ochronne (Niebieska Karta). Tajemnica nie jest jednak bezwzględna, gdy w grę wchodzi zagrożenie zdrowia/życia."},
+  {"q": "Psycholog zauważa, że w cudzej publikacji nie wskazano autorów przywoływanych prac (możliwy plagiat). Jak powinien postąpić?", "opts": [{"t": "Najpierw porozmawiać z tą osobą; dopiero jeśli sytuacja się nie wyjaśni — zwrócić się do wydawnictwa/uczelni", "c": true}, {"t": "Natychmiast zgłosić sprawę do wydawnictwa i na uczelnię", "c": false}, {"t": "Zignorować sprawę, bo to nie jego kompetencja", "c": false}, {"t": "Opublikować zarzut publicznie, np. w mediach społecznościowych", "c": false}], "exp": "Zasada reagowania na naruszenia etyczne nakazuje najpierw bezpośrednią, kuluarową rozmowę z osobą, której to dotyczy (krytykując kolegę po fachu, nie poniża się go) — eskalacja do wydawnictwa/uczelni następuje dopiero, gdy rozmowa nie przyniesie rozwiązania. Natychmiastowe zgłaszanie/publiczne piętnowanie jest przedwczesne."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6a1ba0'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#9b35e8'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#d18bff'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

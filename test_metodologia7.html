@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 7 – Zaawansowana metodologia badań</title>
+<style>
+  :root {
+    --blue:   #3b82f6;
+    --blue2:  #2563eb;
+    --blue3:  #93c5fd;
+    --blue4:  #dbeafe;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f5f8ff;
+    --border: #dbe2ec;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #eff6ff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1e40af 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #eff6ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #bfdbfe;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #1e40af; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #eff6ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #1e40af; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e40af, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(37,99,235,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #1e40af; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
+  <h1>Zaawansowana metodologia badań</h1>
+  <p>Test 7 · Pytania egzaminacyjne · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN</div>
+    <h2>Test 7 — oryginalne pytania egzaminacyjne</h2>
+    <p>Zestaw <strong>autentycznych pytań z egzaminu</strong> z metodologii. Część II: plany eksperymentalne, interakcje, trafność oraz moderacja.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Plany powtarzane vs grupy niezależne · efekt wprawy i jego kontrola · randomizacja · schematy 3×2 i 2×2×2 · efekty główne, interakcje i efekty proste · trafność wewnętrzna i zewnętrzna · efekt sufitu/podłogi · moderacja</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Aby zrównoważyć efekt wprawy między osobami badanymi, należy zastosować:", "opts": [{"t": "pełny plan z powtarzanym pomiarem", "c": true}, {"t": "niepełny plan z powtarzanym pomiarem", "c": false}, {"t": "pełny plan z interakcją", "c": false}, {"t": "niepełny plan z interakcją", "c": false}], "exp": "Pełne zrównoważenie kolejności warunków (pełny plan z powtarzanym pomiarem) neutralizuje efekt wprawy. Plan niepełny równoważy tylko częściowo, a 'plan z interakcją' nie dotyczy kontroli efektu wprawy."},
+  {"q": "Pełny plan z powtarzanym pomiarem polega na tym, że badany:", "opts": [{"t": "bierze udział w każdym warunku eksperymentalnym po kilka razy, w różnych kolejnościach", "c": true}, {"t": "bierze udział w każdym warunku tylko raz, w odmiennych kolejnościach dla różnych grup", "c": false}, {"t": "jest przyporządkowany tylko do jednej grupy (eksperymentalnej lub kontrolnej)", "c": false}, {"t": "najpierw jest w grupie kontrolnej, a potem wprowadza się manipulację", "c": false}], "exp": "W planie PEŁNYM każdy badany przechodzi przez wszystkie warunki wielokrotnie i w różnych kolejnościach — to pełne zrównoważenie. Udział w każdym warunku raz w różnych kolejnościach to plan NIEPEŁNY; przyporządkowanie do jednej grupy to plan grup niezależnych."},
+  {"q": "Zmiana schematu z planu grup niezależnych na plan z powtarzanymi pomiarami (przy tej samej liczebności i tych samych czynnikach zakłócających):", "opts": [{"t": "zwiększa zdolność do wykrywania słabych zależności", "c": true}, {"t": "zmniejsza tę zdolność", "c": false}, {"t": "nie ma wpływu na wrażliwość eksperymentu", "c": false}, {"t": "zmniejsza rzetelność eksperymentu", "c": false}], "exp": "Plan z powtarzanym pomiarem eliminuje wariancję międzyosobniczą z błędu, więc jest bardziej wrażliwy (łatwiej wykryć słabe efekty) niż plan grup niezależnych przy tej samej próbie."},
+  {"q": "Badanie w planie eksperymentalnym grup NIEZALEŻNYCH to inaczej badanie:", "opts": [{"t": "w planie międzygrupowym", "c": true}, {"t": "w planie z powtórzonym pomiarem", "c": false}, {"t": "w planie mieszanym", "c": false}, {"t": "w planie dwugrupowym", "c": false}], "exp": "Grupy niezależne = plan międzygrupowy (różne osoby w różnych warunkach). Powtórzony pomiar to grupy zależne; plan mieszany łączy oba; 'dwugrupowy' to tylko liczba grup, nie typ planu."},
+  {"q": "Badanie w planie eksperymentalnym grup ZALEŻNYCH to inaczej badanie:", "opts": [{"t": "w planie z powtórzonym pomiarem", "c": true}, {"t": "w planie międzygrupowym", "c": false}, {"t": "w planie mieszanym", "c": false}, {"t": "w planie dwugrupowym", "c": false}], "exp": "Grupy zależne = ten sam badany w wielu warunkach = plan z powtórzonym pomiarem (wewnątrzgrupowy). Międzygrupowy to grupy niezależne, mieszany łączy oba typy."},
+  {"q": "Pojawienie się efektu wprawy w eksperymentach wynika z:", "opts": [{"t": "wielokrotnego testowania osób w planie z powtórzonym pomiarem", "c": true}, {"t": "instrukcji odwołującej się do zdolności badanych", "c": false}, {"t": "przekazywania informacji o eksperymencie przez wcześniejszych uczestników", "c": false}, {"t": "wielokrotnego testowania w planie grup naturalnych", "c": false}], "exp": "Efekt wprawy bierze się z powtarzanego pomiaru tych samych osób (uczą się/wprawiają w zadaniu). Przekazywanie informacji to inny problem (kontaminacja/dyfuzja), a plan grup naturalnych nie zakłada wielokrotnego testowania tych samych osób."},
+  {"q": "Nieliniowy efekt wprawy przy planach z powtarzanymi pomiarami może wynikać z:", "opts": [{"t": "antycypacji", "c": true}, {"t": "wielkości próby", "c": false}, {"t": "liczby warunków badawczych", "c": false}, {"t": "liczby grup badawczych", "c": false}], "exp": "Antycypacja (przewidywanie kolejnych warunków przez badanego) powoduje, że efekt wprawy narasta nieliniowo. Wielkość/liczba grup czy warunków nie tłumaczy nieliniowości tego efektu."},
+  {"q": "W planie grup naturalnych podstawowe ograniczenie względem procedury eksperymentalnej dotyczy przede wszystkim:", "opts": [{"t": "manipulacji (jej braku)", "c": true}, {"t": "doboru próby", "c": false}, {"t": "stałych warunków", "c": false}, {"t": "możliwości mierzenia zmiennej zależnej", "c": false}], "exp": "W grupach naturalnych badacz NIE manipuluje zmienną niezależną (grupy już istnieją), co uniemożliwia wnioskowanie przyczynowe. Pomiar ZZ i dobór próby są nadal możliwe."},
+  {"q": "Badacz mierzy samoocenę pacjentów uczestniczących w terapii indywidualnej i grupowej po 1, 2, 3 i 4 tygodniu. Czy to eksperyment?", "opts": [{"t": "Tak — o ile to badacz przyporządkowywał uczestników do jednego z dwóch rodzajów terapii", "c": true}, {"t": "Nie — eksperymenty dotyczące terapii są nieetyczne", "c": false}, {"t": "Nie — przy upływie czasu nie da się ustalić kolejności warunków", "c": false}, {"t": "Tak — na pewno jest to eksperyment", "c": false}], "exp": "O eksperymencie decyduje manipulacja + losowe przyporządkowanie do warunków. Jeśli to badacz przydzielał osoby do rodzaju terapii — jest to eksperyment; w przeciwnym razie to badanie korelacyjne/quasi-eksperyment."},
+  {"q": "Randomizacja II stopnia to:", "opts": [{"t": "losowy dobór osób do warunków/grup badawczych", "c": true}, {"t": "losowy dobór osób z populacji do grupy kontrolnej", "c": false}, {"t": "losowy dobór osób z populacji do grupy eksperymentalnej", "c": false}, {"t": "losowy dobór zmiennych kontrolowanych", "c": false}], "exp": "Randomizacja I stopnia to losowy dobór próby z populacji, a II stopnia — losowe PRZYDZIELENIE osób do grup/warunków (to ona zapewnia równoważność grup). Dobór tylko do jednej grupy nie jest randomizacją II stopnia."},
+  {"q": "Równoważenie grup w planach eksperymentalnych z grupami zrandomizowanymi realizuje się poprzez:", "opts": [{"t": "losowy dobór (przydział) osób do grup badawczych", "c": true}, {"t": "pomiar jak największej liczby zmiennych niekontrolowanych", "c": false}, {"t": "tworzenie grup równolicznych", "c": false}, {"t": "losowy dobór próby z populacji", "c": false}], "exp": "To losowy PRZYDZIAŁ do grup wyrównuje je pod względem zmiennych zakłócających (znanych i nieznanych). Sam pomiar zmiennych ani równa liczebność nie gwarantują równoważności, a losowanie próby z populacji to inny etap."},
+  {"q": "Plan badawczy w schemacie 3×2 oznacza, że:", "opts": [{"t": "są dwie zmienne niezależne: jedna na trzech, druga na dwóch poziomach", "c": true}, {"t": "są trzy zmienne niezależne i dwie zmienne zależne", "c": false}, {"t": "są trzy zmienne zależne i dwie zmienne niezależne", "c": false}, {"t": "zmienna zależna ma trzy poziomy, a niezależna dwa", "c": false}], "exp": "Zapis a×b opisuje liczbę poziomów kolejnych zmiennych NIEZALEŻNYCH: 3×2 to dwie ZN (jedna 3-poziomowa, druga 2-poziomowa), dające 6 warunków. Liczby nie odnoszą się do zmiennych zależnych."},
+  {"q": "Eksperyment międzygrupowy z trzema zmiennymi niezależnymi, każda na dwóch poziomach, wymaga łącznie:", "opts": [{"t": "8 grup", "c": true}, {"t": "6 grup", "c": false}, {"t": "5 grup", "c": false}, {"t": "3 grup", "c": false}], "exp": "Liczba warunków = iloczyn poziomów: 2×2×2 = 8 grup. 6 wynikałoby z błędnego dodawania/mnożenia (np. 3×2)."},
+  {"q": "Ile efektów interakcyjnych można zidentyfikować w eksperymencie trójczynnikowym?", "opts": [{"t": "jedną interakcję potrójną i trzy interakcje podwójne", "c": true}, {"t": "dwie potrójne i trzy podwójne", "c": false}, {"t": "dwie potrójne i dwie podwójne", "c": false}, {"t": "jedną potrójną i dwie podwójne", "c": false}], "exp": "Dla czynników A, B, C są trzy interakcje dwuczynnikowe (AB, AC, BC) i jedna trójczynnikowa (ABC) — razem 1 potrójna + 3 podwójne."},
+  {"q": "Efekt główny w eksperymencie wieloczynnikowym to oszacowanie:", "opts": [{"t": "osobnego wpływu każdej zmiennej niezależnej na zmienną zależną", "c": true}, {"t": "łącznego wpływu kombinacji zmiennych niezależnych", "c": false}, {"t": "wpływu jednej ZN dla poszczególnych poziomów innej ZN", "c": false}, {"t": "wpływu najważniejszej (głównej) zmiennej niezależnej", "c": false}], "exp": "Efekt główny to wpływ pojedynczej ZN uśredniony po poziomach pozostałych. Łączny wpływ kombinacji to INTERAKCJA, a wpływ jednej ZN zależny od poziomu drugiej to efekty proste (w obrębie interakcji)."},
+  {"q": "Co oznacza podwójna (dwuczynnikowa) interakcja w eksperymencie?", "opts": [{"t": "że wpływ jednej zmiennej niezależnej na ZZ zmienia się w zależności od poziomu drugiej ZN", "c": true}, {"t": "że interakcja zmienia się w zależności od poziomu zmiennej zależnej", "c": false}, {"t": "że na pewno wystąpią istotne efekty proste", "c": false}, {"t": "że eksperyment prowadzono w planie grup niezależnych", "c": false}], "exp": "Interakcja oznacza, że efekt jednej ZN zależy od poziomu drugiej ZN. Nie definiuje się jej przez zmienną zależną ani przez typ planu; istotna interakcja dopiero skłania do analizy efektów prostych (nie gwarantuje ich istotności)."},
+  {"q": "W eksperymencie dwuczynnikowym interakcja dwóch ZN okazała się istotna. Co należy sprawdzić dalej?", "opts": [{"t": "czy istotne są efekty proste", "c": true}, {"t": "czy istotne są efekty główne", "c": false}, {"t": "czy istotna jest interakcja drugiego rzędu", "c": false}, {"t": "nic — analizę można zakończyć", "c": false}], "exp": "Po istotnej interakcji analizuje się efekty proste (wpływ jednej ZN na poszczególnych poziomach drugiej), bo to one wyjaśniają wzorzec interakcji. Efekty główne stają się wtórne, a interakcji wyższego rzędu nie ma w planie dwuczynnikowym."},
+  {"q": "Aby plan eksperymentalny miał zadowalającą trafność WEWNĘTRZNĄ:", "opts": [{"t": "powinna być efektywna manipulacja zmienną niezależną", "c": true}, {"t": "powinna być efektywna manipulacja zmienną zależną", "c": false}, {"t": "powinna być efektywna manipulacja zmiennymi kontrolowanymi", "c": false}, {"t": "należy zminimalizować wariancję zmiennej zależnej", "c": false}], "exp": "Trafność wewnętrzna (pewność wnioskowania przyczynowego) wymaga skutecznej manipulacji ZN i kontroli zmiennych zakłócających. Zmiennej ZALEŻNEJ się nie manipuluje (się ją mierzy), a sztuczne ograniczanie jej wariancji szkodzi czułości."},
+  {"q": "Trafność ZEWNĘTRZNA planu eksperymentalnego:", "opts": [{"t": "dotyczy zakresu uogólniania wyników badania", "c": true}, {"t": "dotyczy wielkości uzyskanego efektu", "c": false}, {"t": "dotyczy tego, czy ZN rzeczywiście zadziałała na ZZ", "c": false}, {"t": "powinna być adekwatna do hipotezy", "c": false}], "exp": "Trafność zewnętrzna to możliwość uogólnienia wyników na inne osoby, sytuacje i czasy. To, czy ZN faktycznie wpłynęła na ZZ, dotyczy trafności WEWNĘTRZNEJ."},
+  {"q": "Rozszerzenie modelu jednoczynnikowego o czynniki socjodemograficzne (np. płeć, miejsce zamieszkania) traktujemy przede wszystkim jako:", "opts": [{"t": "sprawdzenie trafności zewnętrznej pierwotnego badania", "c": true}, {"t": "sprawdzenie trafności wewnętrznej pierwotnego badania", "c": false}, {"t": "ocenę, czy nie wystąpił efekt sufitu/podłogi", "c": false}, {"t": "działanie bezsensowne", "c": false}], "exp": "Sprawdzając, czy efekt utrzymuje się w różnych podgrupach, testujemy możliwość uogólnienia — czyli trafność zewnętrzną. Nie dotyczy to wnioskowania przyczynowego (wewnętrznej) ani efektu sufitu/podłogi."},
+  {"q": "Efekt 'sufitu' i 'podłogi' w kontekście interakcji polega na:", "opts": [{"t": "ustaleniu POZORNEJ interakcji, wynikającej z ograniczeń zmienności zmiennej zależnej", "c": true}, {"t": "uzyskaniu nowych informacji o interakcyjnym działaniu zmiennych", "c": false}, {"t": "ustaleniu trafności zewnętrznej dla różnych podpopulacji", "c": false}, {"t": "wyjaśnieniu sprzecznych wyników różnych badań", "c": false}], "exp": "Gdy skala 'dochodzi do sufitu/podłogi', zmienność ZZ jest sztucznie ograniczona, co może wytworzyć pozorną interakcję (artefakt pomiaru), a nie realny efekt. To zagrożenie trafności, nie źródło nowej wiedzy."},
+  {"q": "Moderator to:", "opts": [{"t": "jakościowa lub ilościowa zmienna, która wpływa na siłę lub/i kierunek związku między ZN a ZZ", "c": true}, {"t": "proces lub stan pośredniczący między ZN a ZZ", "c": false}, {"t": "zmienna wpływająca na wartość interkorelacji", "c": false}, {"t": "inaczej zmienna egzogeniczna (wyjaśniająca)", "c": false}], "exp": "Moderator zmienia siłę/kierunek związku ZN–ZZ (odpowiada na pytanie 'kiedy/dla kogo'). Zmienna POŚREDNICZĄCA to mediator (mechanizm 'dlaczego'), więc opis 'pośredniczący' jest definicją mediatora."},
+  {"q": "Na jakie pytanie odpowiada analiza moderacji?", "opts": [{"t": "w jakich warunkach (dla kogo) występuje dany efekt", "c": true}, {"t": "jaki mechanizm psychologiczny wyjaśnia efekt", "c": false}, {"t": "czy zmienna pośredniczy w relacji ZN–ZZ", "c": false}, {"t": "jaka jest wielkość efektu w populacji", "c": false}], "exp": "Moderacja mówi, KIEDY/DLA KOGO efekt jest silniejszy lub słabszy. Pytanie o MECHANIZM ('dlaczego') i pośredniczenie dotyczy mediacji, a nie moderacji."},
+  {"q": "Badano, czy nastrój (pozytywny vs neutralny) wpływa na zapamiętywanie bodźców. Dodatkowo zmierzony neurotyzm jest dla tej zależności:", "opts": [{"t": "moderatorem", "c": true}, {"t": "mediatorem", "c": false}, {"t": "seryjnym mediatorem", "c": false}, {"t": "seryjnym moderatorem", "c": false}], "exp": "Neurotyzm (cecha, której nie manipulowano) może wzmacniać/osłabiać wpływ nastroju na pamięć — działa więc jako moderator. Mediator musiałby być ogniwem w łańcuchu przyczynowym nastrój→pamięć, a nim neurotyzm tu nie jest."},
+  {"q": "Do podstawowych ZALET badań prowadzonych w planie z powtarzanymi pomiarami należy zaliczyć:", "opts": [{"t": "wysoką wrażliwość (czułość) na efekty", "c": true}, {"t": "niską wrażliwość", "c": false}, {"t": "dużą wariancję błędu", "c": false}, {"t": "efekt wprawy", "c": false}], "exp": "Plan z powtarzanym pomiarem usuwa różnice międzyosobnicze z wariancji błędu, dzięki czemu jest bardzo wrażliwy na efekty. Efekt wprawy i duża wariancja błędu to WADY (a nie zalety), a niska wrażliwość jest cechą planu grup niezależnych."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#1e40af'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#2563eb'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#3b82f6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
