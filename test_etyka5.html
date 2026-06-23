@@ -311,40 +311,40 @@ const ALL_QUESTIONS = [
   {
     q: "Pod jaką sygnaturą Trybunał Konstytucyjny sformułował katalog 7 cech zawodu zaufania publicznego?",
     opts: [
-      { t: "K 41/05 (orzeczenie z 2007 r.)", c: true },
-      { t: "K 17/97", c: false },
-      { t: "P 12/01", c: false },
-      { t: "SK 7/06", c: false },
+      { t: "K 41/05 (z 2007 r.)", c: true },
+      { t: "K 17/97 (z 1997 r.)", c: false },
+      { t: "P 12/01 (z 2001 r.)", c: false },
+      { t: "SK 7/06 (z 2006 r.)", c: false },
     ],
     exp: "Katalog 7 cech zawodu zaufania publicznego pochodzi z orzeczenia Trybunału Konstytucyjnego o sygnaturze K 41/05 (2007 r.)."
   },
   {
     q: "Z którym artykułem Konstytucji RP (1997) wiąże się pojęcie zawodu zaufania publicznego?",
     opts: [
-      { t: "Art. 17 – jest to specyficznie polski twór, niefunkcjonujący w innych krajach europejskich", c: true },
-      { t: "Art. 47", c: false },
-      { t: "Art. 32", c: false },
-      { t: "Art. 68", c: false },
+      { t: "Art. 17 Konstytucji RP", c: true },
+      { t: "Art. 47 Konstytucji RP (życie prywatne)", c: false },
+      { t: "Art. 32 Konstytucji RP (równość wobec prawa)", c: false },
+      { t: "Art. 68 Konstytucji RP (ochrona zdrowia)", c: false },
     ],
     exp: "Pojęcie zawodu zaufania publicznego wiąże się z Art. 17 Konstytucji RP (1997) i jest specyficznie polskim tworem – nie funkcjonuje w innych krajach europejskich."
   },
   {
     q: "Kiedy Nowa Ustawa o zawodzie psychologa (2026) została ogłoszona w Dzienniku Ustaw?",
     opts: [
-      { t: "18 lutego 2026 (poz. 127)", c: true },
-      { t: "23 stycznia 2026", c: false },
-      { t: "8 czerwca 2001", c: false },
-      { t: "1 maja 2028", c: false },
+      { t: "18 lutego 2026 r.", c: true },
+      { t: "23 stycznia 2026 r. (data uchwalenia)", c: false },
+      { t: "8 czerwca 2001 r. (poprzednia ustawa)", c: false },
+      { t: "1 maja 2028 r. (pełne wejście w życie)", c: false },
     ],
     exp: "Nowa Ustawa została ogłoszona w Dzienniku Ustaw 18 lutego 2026 r. (poz. 127). 23 stycznia 2026 to data uchwalenia ustawy."
   },
   {
     q: "Kiedy Nowa Ustawa 2026 wchodzi w pełni w życie i traci moc Ustawa z 2001 r.?",
     opts: [
-      { t: "W maju 2028 r. – 2 lata i 3 miesiące od ogłoszenia", c: true },
-      { t: "Natychmiast po ogłoszeniu, w lutym 2026 r.", c: false },
-      { t: "W styczniu 2027 r.", c: false },
-      { t: "Dopiero w 2030 r.", c: false },
+      { t: "W maju 2028 r. (2 lata i 3 mies. od ogłoszenia)", c: true },
+      { t: "Natychmiast po ogłoszeniu, już w lutym 2026 r.", c: false },
+      { t: "W styczniu 2027 r., rok po uchwaleniu ustawy", c: false },
+      { t: "Dopiero w 2030 r., po dłuższym okresie przejściowym", c: false },
     ],
     exp: "Pełne wejście w życie następuje w maju 2028 r. (2 lata i 3 miesiące od ogłoszenia z 18.02.2026); wtedy Ustawa z 2001 r. traci moc."
   },
@@ -354,36 +354,36 @@ const ALL_QUESTIONS = [
       { t: "Że zawód psychologa jest zawodem zaufania publicznego", c: true },
       { t: "Że tytuł „psycholog” nie podlega ochronie", c: false },
       { t: "Że samorząd zawodowy jest fakultatywny", c: false },
-      { t: "Że psycholog może uchylić tajemnicę na życzenie klienta", c: false },
+      { t: "Że psycholog może uchylić tajemnicę klienta", c: false },
     ],
     exp: "Art. 3 ust. 1 Nowej Ustawy 2026 wprost stanowi, że zawód psychologa jest zawodem zaufania publicznego – czego brakowało w Ustawie 2001."
   },
   {
     q: "Jaką sankcję przewiduje Art. 126 Nowej Ustawy 2026?",
     opts: [
-      { t: "Karę grzywny za posługiwanie się tytułem „psycholog” bez prawa wykonywania zawodu", c: true },
-      { t: "Karę pozbawienia wolności do lat 3 za naruszenie tajemnicy", c: false },
-      { t: "Odebranie dyplomu magistra psychologii", c: false },
-      { t: "Obowiązkowy staż u opiekuna przez 5 lat", c: false },
+      { t: "Grzywnę za bezprawne posługiwanie się tytułem „psycholog”", c: true },
+      { t: "Karę pozbawienia wolności do lat 3 za naruszenie tajemnicy zawodowej", c: false },
+      { t: "Odebranie dyplomu ukończenia studiów magisterskich", c: false },
+      { t: "Obowiązkowy staż u opiekuna psychologa przez 5 lat", c: false },
     ],
     exp: "Art. 126 Nowej Ustawy 2026 przewiduje karę grzywny za posługiwanie się chronionym tytułem „psycholog” bez prawa wykonywania zawodu."
   },
   {
     q: "Jaki jest wymiar stażu pod kierunkiem opiekuna psychologa (Nowa Ustawa 2026, Art. 17–20)?",
     opts: [
-      { t: "150 godzin łącznie (min. 75 h stacjonarnie), w okresie 9–24 miesięcy", c: true },
-      { t: "300 godzin łącznie w okresie 5 lat", c: false },
-      { t: "75 godzin łącznie w okresie 6 miesięcy", c: false },
-      { t: "1000 godzin łącznie w okresie 3 lat", c: false },
+      { t: "150 h łącznie (min. 75 h stacjonarnie), w 9–24 mies.", c: true },
+      { t: "300 godzin łącznie, realizowane w okresie pełnych 5 lat", c: false },
+      { t: "75 godzin łącznie, realizowane w okresie 6 miesięcy", c: false },
+      { t: "1000 godzin łącznie, realizowane w okresie 3 lat", c: false },
     ],
     exp: "Staż u opiekuna obejmuje 150 godzin łącznie (min. 75 h stacjonarnie) i trwa 9–24 miesięcy od wskazania opiekuna przez regionalną radę."
   },
   {
     q: "W jakim terminie rozpatrywany jest wniosek o wpis do Rejestru psychologów (Art. 6 Nowej Ustawy)?",
     opts: [
-      { t: "W 30 dni; opłata za wpis maks. 10% przeciętnego wynagrodzenia, a zaświadczenie o wpisie kosztuje 50 zł", c: true },
-      { t: "W 7 dni; wpis jest bezpłatny", c: false },
-      { t: "W 90 dni; opłata wynosi 500 zł", c: false },
+      { t: "W 30 dni; opłata maks. 10% przeciętnego wynagrodzenia", c: true },
+      { t: "W 7 dni; wpis do rejestru jest całkowicie bezpłatny", c: false },
+      { t: "W 90 dni; opłata za wpis wynosi równe 500 zł", c: false },
       { t: "W 14 dni; opłata to równowartość przeciętnego wynagrodzenia", c: false },
     ],
     exp: "Wniosek o wpis rozpatrywany jest w 30 dni; opłata to maks. 10% przeciętnego wynagrodzenia, a zaświadczenie o wpisie – 50 zł."
@@ -393,88 +393,88 @@ const ALL_QUESTIONS = [
     opts: [
       { t: "Od ⅓ do 4-krotności przeciętnego wynagrodzenia", c: true },
       { t: "Od 1000 do 5000 zł", c: false },
-      { t: "Maksymalnie 10% przeciętnego wynagrodzenia", c: false },
-      { t: "Dokładnie jednokrotność przeciętnego wynagrodzenia", c: false },
+      { t: "Maksymalnie 10% wynagrodzenia", c: false },
+      { t: "Dokładnie jednokrotność wynagrodzenia", c: false },
     ],
     exp: "Kara pieniężna (Art. 94) mieści się w przedziale od ⅓ do 4-krotności przeciętnego wynagrodzenia. Katalog obejmuje też m.in. zawieszenie prawa wykonywania zawodu na 1–5 lat."
   },
   {
     q: "Czego dotyczy Art. 47 Konstytucji RP (1997)?",
     opts: [
-      { t: "Prawa do ochrony życia prywatnego, rodzinnego, czci i dobrego imienia oraz decydowania o swoim życiu", c: true },
-      { t: "Równości wobec prawa i zakazu dyskryminacji", c: false },
-      { t: "Wolności sumienia i religii", c: false },
-      { t: "Pojęcia zawodu zaufania publicznego", c: false },
+      { t: "Ochrony życia prywatnego, czci i dobrego imienia", c: true },
+      { t: "Równości wobec prawa i zakazu wszelkiej dyskryminacji", c: false },
+      { t: "Wolności sumienia, wyznania i praktyk religijnych", c: false },
+      { t: "Pojęcia i statusu zawodu zaufania publicznego", c: false },
     ],
     exp: "Art. 47 Konstytucji RP gwarantuje prawo do ochrony życia prywatnego, rodzinnego, czci i dobrego imienia oraz decydowania o swoim życiu – to konstytucyjna podstawa tajemnicy zawodowej."
   },
   {
     q: "Jaką karę przewiduje Art. 266 §1 Kodeksu karnego za bezprawne ujawnienie informacji uzyskanych w związku z pracą?",
     opts: [
-      { t: "Grzywnę, ograniczenie wolności albo pozbawienie wolności do lat 2; ściganie następuje na wniosek pokrzywdzonego", c: true },
-      { t: "Wyłącznie grzywnę, ścigane z urzędu", c: false },
-      { t: "Pozbawienie wolności do lat 5", c: false },
-      { t: "Karę dyscyplinarną w postaci nagany", c: false },
+      { t: "Grzywnę, ograniczenie lub pozbawienie wolności do lat 2", c: true },
+      { t: "Wyłącznie samą grzywnę, a przestępstwo ścigane jest z urzędu", c: false },
+      { t: "Pozbawienie wolności do lat 5, bez możliwości grzywny", c: false },
+      { t: "Karę dyscyplinarną w postaci nagany lub upomnienia", c: false },
     ],
     exp: "Art. 266 §1 KK: za ujawnienie/wykorzystanie informacji wbrew przepisom lub zobowiązaniu grozi grzywna, ograniczenie wolności albo pozbawienie wolności do lat 2; ściganie na wniosek pokrzywdzonego (§3)."
   },
   {
     q: "Co stanowi Art. 14 Ustawy o zawodzie psychologa z 2001 r. w sprawie tajemnicy?",
     opts: [
-      { t: "Obowiązek zachowania w tajemnicy informacji o kliencie, nieograniczony w czasie; wyjątki to zagrożenie zdrowia/życia lub przepisy prawa", c: true },
-      { t: "Że tajemnica wygasa po zakończeniu relacji z klientem", c: false },
-      { t: "Że psycholog może uchylić tajemnicę na życzenie klienta", c: false },
-      { t: "Że tajemnica nie obejmuje dokumentacji", c: false },
+      { t: "Obowiązek tajemnicy nieograniczony w czasie, z ustawowymi wyjątkami", c: true },
+      { t: "Że tajemnica zawodowa wygasa po zakończeniu relacji z klientem", c: false },
+      { t: "Że psycholog może uchylić tajemnicę na samo życzenie klienta", c: false },
+      { t: "Że tajemnica zawodowa nie obejmuje dokumentacji psychologicznej", c: false },
     ],
     exp: "Art. 14 Ustawy 2001 nakłada obowiązek zachowania tajemnicy informacji o kliencie, nieograniczony w czasie; wyjątki: zagrożenie zdrowia/życia lub przepisy prawa."
   },
   {
     q: "Do której kategorii tajemnic z art. 180 KPK należy tajemnica psychologa?",
     opts: [
-      { t: "Do §1 (tajemnica „zwykła”); §2 obejmuje tajemnice kwalifikowane: adwokacką, radcy prawnego, doradcy podatkowego, lekarską, notarialną i dziennikarską", c: true },
-      { t: "Do §2 – na równi z tajemnicą adwokacką i lekarską", c: false },
+      { t: "Do §1 KPK – tajemnica zawodowa „zwykła”", c: true },
+      { t: "Do §2 KPK (adwokacka, lekarska)", c: false },
       { t: "Do tajemnicy państwowej", c: false },
-      { t: "Do żadnej – psychologa nie można w ogóle przesłuchać", c: false },
+      { t: "Do żadnej – nie można przesłuchać", c: false },
     ],
     exp: "Tajemnica psychologa należy do art. 180 §1 KPK (zwykła). §2 obejmuje tajemnice kwalifikowane (adwokacka, radcy prawnego, doradcy podatkowego, lekarska, notarialna, dziennikarska), zwalniane wyłącznie przez sąd; środowisko psychologów postuluje objęcie ich §2."
   },
   {
     q: "Co reguluje Art. 199 KPK w odniesieniu do badania przez biegłego?",
     opts: [
-      { t: "Oświadczenia oskarżonego co do zarzucanego czynu, złożone wobec biegłego podczas opiniowania, nie mogą stanowić dowodu (zakaz dowodowy)", c: true },
-      { t: "Biegły ma obowiązek przekazać te oświadczenia prokuraturze", c: false },
-      { t: "Oświadczenia oskarżonego stają się głównym dowodem", c: false },
-      { t: "Oświadczenia można wykorzystać za zgodą biegłego", c: false },
+      { t: "Oświadczenia oskarżonego wobec biegłego nie mogą być dowodem", c: true },
+      { t: "Biegły ma obowiązek niezwłocznie przekazać te oświadczenia prokuraturze", c: false },
+      { t: "Oświadczenia oskarżonego stają się głównym dowodem w sprawie", c: false },
+      { t: "Oświadczenia można wykorzystać jako dowód za zgodą biegłego", c: false },
     ],
     exp: "Art. 199 KPK ustanawia zakaz dowodowy: oświadczenia oskarżonego dotyczące zarzucanego czynu, złożone wobec biegłego (lekarza/psychologa) podczas wydawania opinii, nie mogą stanowić dowodu – chroni to szczerość relacji badawczej."
   },
   {
     q: "Jaką sankcję przewiduje Art. 240 §1 KK za niedopełnienie prawnego obowiązku denuncjacji?",
     opts: [
-      { t: "Karę pozbawienia wolności do lat 3 (dotyczy zamkniętego katalogu najcięższych przestępstw)", c: true },
-      { t: "Wyłącznie grzywnę", c: false },
-      { t: "Karę dyscyplinarną w postaci zawieszenia", c: false },
-      { t: "Brak sankcji – obowiązek jest jedynie społeczny", c: false },
+      { t: "Karę pozbawienia wolności do lat 3", c: true },
+      { t: "Wyłącznie grzywnę nakładaną przez sąd", c: false },
+      { t: "Karę dyscyplinarną w postaci zawieszenia w prawach", c: false },
+      { t: "Brak sankcji – obowiązek ma charakter jedynie społeczny", c: false },
     ],
     exp: "Art. 240 §1 KK: niezawiadomienie organów ścigania o przestępstwie z zamkniętego katalogu najcięższych czynów jest zagrożone karą pozbawienia wolności do lat 3."
   },
   {
     q: "Czego dotyczy Art. 304 §1 KPK?",
     opts: [
-      { t: "Społecznego (niesankcjonowanego) obowiązku zawiadomienia o przestępstwie ściganym z urzędu – z którego psycholog-profesjonalista jest zwolniony", c: true },
+      { t: "Społecznego obowiązku zawiadomienia o przestępstwie z urzędu", c: true },
       { t: "Prawnego, sankcjonowanego obowiązku denuncjacji najcięższych przestępstw", c: false },
-      { t: "Zakazu dowodowego wobec oświadczeń oskarżonego", c: false },
-      { t: "Zasad zwalniania z tajemnicy zawodowej przez sąd", c: false },
+      { t: "Zakazu dowodowego wobec oświadczeń składanych przez oskarżonego", c: false },
+      { t: "Zasad zwalniania z tajemnicy zawodowej przez sąd procesowy", c: false },
     ],
     exp: "Art. 304 §1 KPK ustanawia społeczny (niesankcjonowany) obowiązek zawiadamiania o przestępstwie ściganym z urzędu. Psycholog, który dowiedział się o czynie jako profesjonalista, jest z tego obowiązku zwolniony (chroni go tajemnica)."
   },
   {
     q: "Tryb nagły przyjęcia bez zgody (Art. 23 ustawy o ochronie zdrowia psychicznego) – kto decyduje i jakie są terminy kontroli?",
     opts: [
-      { t: "Decyduje lekarz; przyjęcie zatwierdza ordynator w 48 h, a sąd opiekuńczy zawiadamia się w 72 h", c: true },
+      { t: "Decyduje lekarz; ordynator zatwierdza w 48 h, sąd w 72 h", c: true },
       { t: "Decyduje psycholog; sąd zatwierdza w 7 dni", c: false },
-      { t: "Decyduje sąd opiekuńczy z góry, na wniosek rodziny", c: false },
-      { t: "Decyduje dyrektor szpitala; bez obowiązku zawiadamiania sądu", c: false },
+      { t: "Decyduje sąd opiekuńczy na wniosek rodziny", c: false },
+      { t: "Decyduje dyrektor szpitala, bez sądu", c: false },
     ],
     exp: "W trybie nagłym (art. 23 u.o.z.p.) decyzję podejmuje lekarz (osoba chora psychicznie zagrażająca bezpośrednio życiu/zdrowiu). Przyjęcie zatwierdza ordynator w 48 h, a sąd opiekuńczy zawiadamia się w 72 h."
   },
@@ -491,7 +491,7 @@ const ALL_QUESTIONS = [
   {
     q: "Kto decyduje o przyjęciu bez zgody w trybie wnioskowym (Art. 29 ustawy o ochronie zdrowia psychicznego)?",
     opts: [
-      { t: "Sąd opiekuńczy – na wniosek (m.in. małżonka, krewnych, opiekuna, organu pomocy społecznej)", c: true },
+      { t: "Sąd opiekuńczy – na wniosek uprawnionych osób", c: true },
       { t: "Lekarz samodzielnie, w trybie nagłym", c: false },
       { t: "Ordynator oddziału psychiatrycznego", c: false },
       { t: "Psycholog prowadzący diagnozę", c: false },
@@ -501,30 +501,30 @@ const ALL_QUESTIONS = [
   {
     q: "Czego dotyczy Art. 18 ustawy o ochronie zdrowia psychicznego?",
     opts: [
-      { t: "Przymusu bezpośredniego – przytrzymania, przymusowego podania leków, unieruchomienia lub izolacji, tylko w sytuacjach określonych w ustawie", c: true },
-      { t: "Trybu wnioskowego przyjęcia do szpitala", c: false },
-      { t: "Obowiązku prowadzenia dokumentacji psychologicznej", c: false },
-      { t: "Zasad uzyskiwania świadomej zgody na terapię", c: false },
+      { t: "Przymusu bezpośredniego (przytrzymanie, izolacja, unieruchomienie)", c: true },
+      { t: "Trybu wnioskowego przyjęcia do szpitala psychiatrycznego", c: false },
+      { t: "Obowiązku prowadzenia dokumentacji psychologicznej pacjenta", c: false },
+      { t: "Zasad uzyskiwania świadomej zgody na proponowaną terapię", c: false },
     ],
     exp: "Art. 18 u.o.z.p. reguluje przymus bezpośredni (przytrzymanie, przymusowe podanie leków, unieruchomienie, izolacja) – dopuszczalny tylko w sytuacjach określonych w ustawie, z kontrolą i dokumentowaniem."
   },
   {
     q: "Z którego roku pochodzi ustawa o ochronie zdrowia psychicznego (u.o.z.p.) i jaką zasadę wyraża jej art. 22?",
     opts: [
-      { t: "Z 1994 r. (19.08.1994); art. 22 wyraża zasadę leczenia i świadczenia za świadomą zgodą", c: true },
+      { t: "Z 1994 r.; art. 22 to zasada świadczenia za świadomą zgodą", c: true },
       { t: "Z 2001 r.; art. 22 wprowadza przymus bezpośredni jako regułę", c: false },
-      { t: "Z 2010 r.; art. 22 dotyczy równego traktowania", c: false },
-      { t: "Z 1997 r.; art. 22 to przepis konstytucyjny", c: false },
+      { t: "Z 2010 r.; art. 22 dotyczy zasady równego traktowania", c: false },
+      { t: "Z 1997 r.; art. 22 jest przepisem rangi konstytucyjnej", c: false },
     ],
     exp: "Ustawa o ochronie zdrowia psychicznego pochodzi z 19.08.1994 r. Jej art. 22 wyraża zasadę, że leczenie i świadczenie odbywa się za świadomą zgodą; przymus jest ściśle reglamentowanym wyjątkiem."
   },
   {
     q: "Czego dotyczy Art. 32 Konstytucji RP (1997)?",
     opts: [
-      { t: "Równości wobec prawa i zakazu dyskryminacji z jakiejkolwiek przyczyny", c: true },
-      { t: "Ochrony życia prywatnego i dobrego imienia", c: false },
-      { t: "Pojęcia zawodu zaufania publicznego", c: false },
-      { t: "Wolności sumienia i religii", c: false },
+      { t: "Równości wobec prawa i zakazu dyskryminacji", c: true },
+      { t: "Ochrony życia prywatnego, czci i dobrego imienia", c: false },
+      { t: "Pojęcia i statusu zawodu zaufania publicznego", c: false },
+      { t: "Wolności sumienia, wyznania i praktyk religijnych", c: false },
     ],
     exp: "Art. 32 Konstytucji RP stanowi, że wszyscy są wobec prawa równi i nikt nie może być dyskryminowany z jakiejkolwiek przyczyny. (Życie prywatne to art. 47, zawód zaufania publicznego – art. 17.)"
   },
@@ -541,20 +541,20 @@ const ALL_QUESTIONS = [
   {
     q: "Od którego wieku stosuje się wzorzec „zgody kumulatywnej” (pacjent + rodzic) zaczerpnięty z medycyny?",
     opts: [
-      { t: "Od 16 lat (poniżej 13 lat – całkowita niezdolność do czynności prawnych; od 18 lat – pełnoletność)", c: true },
-      { t: "Od 13 lat", c: false },
-      { t: "Od 7 lat", c: false },
-      { t: "Od 18 lat", c: false },
+      { t: "Od 16 lat", c: true },
+      { t: "Od 13 lat (próg ograniczonej zdolności)", c: false },
+      { t: "Od 7 lat (początek wieku szkolnego)", c: false },
+      { t: "Od 18 lat (pełna pełnoletność)", c: false },
     ],
     exp: "Zgoda kumulatywna (pacjent + rodzic) to wzorzec stosowany od 16. roku życia. Poniżej 13 lat – całkowita niezdolność do czynności prawnych; od 18 lat – pełna zdolność (pełnoletność)."
   },
   {
     q: "Których zagadnień dotyczą standardy APA o numeracji 3.05 i 9.01?",
     opts: [
-      { t: "3.05 – role wielokrotne (relacje); 9.01 – podstawy diagnozy (assessment)", c: true },
-      { t: "3.05 – podstawy diagnozy; 9.01 – reklama usług", c: false },
-      { t: "3.05 – minimalizacja wtargnięcia; 9.01 – terapia", c: false },
-      { t: "3.05 – tajemnica zawodowa; 9.01 – kształcenie", c: false },
+      { t: "3.05 – role wielokrotne; 9.01 – podstawy diagnozy", c: true },
+      { t: "3.05 – diagnoza; 9.01 – reklama", c: false },
+      { t: "3.05 – wtargnięcie; 9.01 – terapia", c: false },
+      { t: "3.05 – tajemnica; 9.01 – kształcenie", c: false },
     ],
     exp: "W numeracji standardów APA 3.05 dotyczy ról wielokrotnych (grupa 3 – Human Relations), a 9.01 – podstaw diagnozy (grupa 9 – Assessment). Dla porównania 4.02 to minimalizacja wtargnięcia, a 1.03 – konflikt etyki z wymogami organizacji."
   },

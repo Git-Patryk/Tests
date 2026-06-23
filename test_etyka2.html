@@ -313,18 +313,18 @@ const ALL_QUESTIONS = [
   {
     q: "Co należy zrobić, gdy dwie zasady ogólne Kodeksu APA stoją ze sobą w konflikcie?",
     opts: [
-      { t: "Zawsze wybrać zasadę wymienioną wcześniej w kodeksie (A przed B itd.)", c: false },
-      { t: "Dokonać refleksji i uzasadnić wybór – kodeks nie daje gotowej recepty", c: true },
-      { t: "Taki konflikt nigdy nie występuje", c: false },
-      { t: "Przekazać rozstrzygnięcie sądowi dyscyplinarnemu", c: false }
+      { t: "Zawsze wybrać zasadę wymienioną wcześniej w kodeksie (A przed B)", c: false },
+      { t: "Dokonać refleksji i samodzielnie uzasadnić dokonany wybór", c: true },
+      { t: "Taki konflikt zasad ogólnych w praktyce nigdy nie występuje", c: false },
+      { t: "Przekazać rozstrzygnięcie sprawy sądowi dyscyplinarnemu samorządu", c: false }
     ],
     exp: "Zasady ogólne APA są aspiracyjne. Gdy się ze sobą zderzają, kodeks nie podaje gotowej odpowiedzi – psycholog musi dokonać refleksji i uzasadnić swój wybór. Etyka nie dostarcza gotowych rozwiązań."
   },
   {
     q: "Jaka jest relacja między prawem a standardami etyki zawodowej psychologa?",
     opts: [
-      { t: "Prawo i etyka zawodowa to dokładnie to samo", c: false },
-      { t: "Prawo wyznacza minimum, a standardy etyki zawodowej mogą wymagać więcej niż prawo", c: true },
+      { t: "Prawo i etyka zawodowa to dokładnie to samo pojęcie", c: false },
+      { t: "Prawo wyznacza minimum, a standardy etyki mogą wymagać więcej", c: true },
       { t: "Etyka zawodowa nigdy nie może wykraczać poza obowiązujące prawo", c: false },
       { t: "Standardy etyczne obowiązują tylko wtedy, gdy brak jest przepisu prawnego", c: false }
     ],
@@ -335,20 +335,20 @@ const ALL_QUESTIONS = [
   {
     q: "Jaka była praktyczna konsekwencja braku działającego samorządu zawodowego psychologów?",
     opts: [
-      { t: "Gabinet porad psychologicznych mógł otworzyć praktycznie każdy – brak barier wejścia i brak odpowiedzialności dyscyplinarnej", c: true },
-      { t: "Psychologów obowiązywały surowsze kary niż innych zawodów", c: false },
-      { t: "Tytuł „psycholog” był skutecznie chroniony przed nadużyciami", c: false },
-      { t: "Każdy psycholog miał formalnie nadane prawo wykonywania zawodu", c: false }
+      { t: "Gabinet porad mógł otworzyć praktycznie każdy, bez barier wejścia", c: true },
+      { t: "Psychologów obowiązywały surowsze kary dyscyplinarne niż inne zawody", c: false },
+      { t: "Tytuł „psycholog” był skutecznie chroniony prawnie przed nadużyciami", c: false },
+      { t: "Każdy psycholog miał formalnie nadane i potwierdzone prawo do zawodu", c: false }
     ],
     exp: "Bez działającego samorządu nie było barier wejścia (gabinet mógł otworzyć każdy, nawet bez wykształcenia) ani odpowiedzialności zawodowej. Klient nie miał realnej drogi do ukarania nierzetelnego psychologa."
   },
   {
     q: "Jaki jest cel instytucji „opiekuna psychologa” wprowadzonej w Nowej Ustawie o zawodzie psychologa?",
     opts: [
-      { t: "Kontrola dyscyplinarna i karanie młodych psychologów", c: false },
-      { t: "Wsparcie psychologa rozpoczynającego zawód – wzmacnianie kompetencji i wprowadzenie w praktyczne aspekty etyki zawodowej", c: true },
-      { t: "Zastąpienie studiów psychologicznych", c: false },
-      { t: "Reprezentowanie psychologa przed sądem dyscyplinarnym", c: false }
+      { t: "Kontrola dyscyplinarna i systematyczne karanie młodych psychologów", c: false },
+      { t: "Wsparcie i wzmacnianie kompetencji psychologa rozpoczynającego zawód", c: true },
+      { t: "Zastąpienie studiów psychologicznych skróconym szkoleniem zawodowym", c: false },
+      { t: "Reprezentowanie psychologa przed sądem dyscyplinarnym samorządu", c: false }
     ],
     exp: "Opiekun psychologa wspiera osobę rozpoczynającą zawód: wzmacnia jej kompetencje i wprowadza w praktyczne aspekty etyki zawodowej. Staż pod jego kierunkiem jest warunkiem pełnej samodzielności zawodowej."
   },
@@ -357,8 +357,8 @@ const ALL_QUESTIONS = [
     opts: [
       { t: "Z upomnieniem, zawieszeniem lub wykluczeniem z samorządu", c: false },
       { t: "Z obowiązkiem zapłaty odszkodowania lub zadośćuczynienia", c: true },
-      { t: "Z karą pozbawienia wolności", c: false },
-      { t: "Ze skreśleniem z listy studentów", c: false }
+      { t: "Z karą pozbawienia lub ograniczenia wolności", c: false },
+      { t: "Ze skreśleniem z listy członków samorządu", c: false }
     ],
     exp: "Odpowiedzialność cywilna (Kodeks Cywilny) skutkuje odszkodowaniem lub zadośćuczynieniem. Dyscyplinarna oznacza upomnienie/zawieszenie/wykluczenie, a karna – grzywnę, ograniczenie lub pozbawienie wolności."
   },
@@ -379,7 +379,7 @@ const ALL_QUESTIONS = [
     opts: [
       { t: "„schizofrenik”, „cukrzyk”, „autystyk”", c: false },
       { t: "„osoba chora na schizofrenię”, „osoba z cukrzycą”", c: true },
-      { t: "Unikanie jakichkolwiek wzmianek o zaburzeniach", c: false },
+      { t: "Unikanie jakichkolwiek wzmianek o zaburzeniach w przekazie", c: false },
       { t: "Stosowanie określeń potocznych, by łatwiej trafić do odbiorcy", c: false }
     ],
     exp: "Język bez stygmatyzacji oddziela osobę od choroby: „osoba chora na schizofrenię”, a nie „schizofrenik”. Sposób wypowiadania się wzmacnia lub osłabia prestiż całej profesji."
@@ -387,10 +387,10 @@ const ALL_QUESTIONS = [
   {
     q: "Jak wygląda kwestia autoryzacji wypowiedzi psychologa udzielanej mediom?",
     opts: [
-      { t: "Psycholog nie ma prawa do autoryzacji – o ostatecznym kształcie decyduje redakcja", c: false },
-      { t: "Psycholog powinien zastrzec sobie prawo do autoryzacji wypowiedzi; sam montaż nagranego materiału nie podlega autoryzacji", c: true },
-      { t: "Autoryzacji podlega wyłącznie montaż nagrania", c: false },
-      { t: "Wypowiedzi pisemne można publikować bez zgody psychologa", c: false }
+      { t: "Psycholog nie ma prawa do autoryzacji – decyduje o niej wyłącznie redakcja", c: false },
+      { t: "Psycholog może zastrzec sobie prawo do autoryzacji wypowiedzi", c: true },
+      { t: "Autoryzacji podlega wyłącznie końcowy montaż nagranego materiału", c: false },
+      { t: "Wypowiedzi pisemne wolno publikować bez zgody i wiedzy psychologa", c: false }
     ],
     exp: "Przed wywiadem psycholog ustala m.in. czy program jest na żywo i zastrzega sobie prawo do autoryzacji wypowiedzi (artykułu). Sam montaż nagranego materiału nie podlega autoryzacji."
   },
@@ -399,10 +399,10 @@ const ALL_QUESTIONS = [
   {
     q: "Wykonując diagnozę pracownika na zlecenie pracodawcy, jakie informacje psycholog ujawnia zleceniodawcy?",
     opts: [
-      { t: "Pełną dokumentację i cały przebieg badania", c: false },
-      { t: "Wyłącznie informacje niezbędne, wynikające z kontraktu – po uprzednim omówieniu zakresu z odbiorcą i zleceniodawcą", c: true },
-      { t: "Wszystko, czego zażąda pracodawca", c: false },
-      { t: "Nic – wynik jest objęty pełną tajemnicą wobec zleceniodawcy", c: false }
+      { t: "Pełną dokumentację oraz cały szczegółowy przebieg badania", c: false },
+      { t: "Wyłącznie informacje niezbędne, wynikające z zawartego kontraktu", c: true },
+      { t: "Wszystko, czego tylko zażąda zlecający badanie pracodawca", c: false },
+      { t: "Nic – pełny wynik jest objęty tajemnicą wobec zleceniodawcy", c: false }
     ],
     exp: "Przy zleceniu strony trzeciej poufność jest ograniczona, ale zleceniodawcy ujawnia się wyłącznie informacje niezbędne, wynikające z kontraktu. Zakres musi być omówiony z odbiorcą i zleceniodawcą na początku relacji."
   },
@@ -410,19 +410,19 @@ const ALL_QUESTIONS = [
     q: "Z kim psycholog może zawrzeć kontrakt psychologiczny (kto może być klientem)?",
     opts: [
       { t: "Ze szkołą, dyrektorem lub systemem edukacji jako instytucją", c: false },
-      { t: "Wyłącznie z osobą – kontraktu nie zawiera się z instytucją", c: true },
-      { t: "Z dowolną instytucją zlecającą usługę", c: false },
-      { t: "Tylko z osobą pełnoletnią", c: false }
+      { t: "Wyłącznie z osobą – nigdy z instytucją zlecającą usługę", c: true },
+      { t: "Z dowolną instytucją, która zleca wykonanie usługi", c: false },
+      { t: "Tylko z osobą pełnoletnią, posiadającą pełną zdolność", c: false }
     ],
     exp: "Kontrakt psychologiczny można zawrzeć wyłącznie z osobą, nigdy z instytucją. Nauczyciel, dyrektor, szkoła czy system edukacji nie są klientem – klientem jest dziecko (odbiorca), a rodzice pełnią rolę zleceniodawców."
   },
   {
     q: "Co psycholog przekazuje rodzicom po pracy diagnostycznej z dzieckiem?",
     opts: [
-      { t: "Wszystkie intymne zwierzenia dziecka, słowo w słowo", c: false },
-      { t: "Wnioski z diagnozy lub interwencji, chroniąc intymne treści powierzone przez dziecko", c: true },
-      { t: "Nic – rodzice nie mają prawa do żadnych informacji", c: false },
-      { t: "Wyłącznie ocenę zachowania dziecka w szkole", c: false }
+      { t: "Wszystkie intymne zwierzenia dziecka, powtórzone wiernie słowo w słowo", c: false },
+      { t: "Wnioski z diagnozy lub interwencji, chroniąc intymne treści dziecka", c: true },
+      { t: "Nic – rodzice nie mają prawa do żadnych informacji o dziecku", c: false },
+      { t: "Wyłącznie ogólną ocenę zachowania dziecka w szkole", c: false }
     ],
     exp: "Dziecko ma prawo do swoich sekretów. Psycholog przekazuje rodzicom wnioski z diagnozy/interwencji, ale nie intymne zwierzenia (np. dotyczące używek czy seksualności), które mogłyby zaszkodzić dziecku."
   },
@@ -430,19 +430,19 @@ const ALL_QUESTIONS = [
     q: "Jakie rodzaje świadczeń wyróżnia klasyfikacja według stopnia dobrowolności?",
     opts: [
       { t: "Dobrowolne, pod presją, wymuszone i przymusowe", c: true },
-      { t: "Wyłącznie dobrowolne i przymusowe", c: false },
-      { t: "Płatne, bezpłatne i refundowane", c: false },
-      { t: "Indywidualne, grupowe i rodzinne", c: false }
+      { t: "Wyłącznie dobrowolne, odpłatne i przymusowe", c: false },
+      { t: "Płatne, bezpłatne, refundowane i ryczałtowe", c: false },
+      { t: "Indywidualne, grupowe, rodzinne i instytucjonalne", c: false }
     ],
     exp: "Cztery rodzaje: dobrowolne (pełna świadoma zgoda), pod presją (przyzwolenie/akceptacja), wymuszone (np. diagnoza do rekrutacji – brak zgody = rezygnacja z ubiegania się) oraz przymusowe (bez zgody, na podstawie przepisów prawa)."
   },
   {
     q: "Kto podejmuje decyzję o przyjęciu do szpitala psychiatrycznego bez zgody w sytuacji bezpośredniego zagrożenia życia lub zdrowia?",
     opts: [
-      { t: "Psycholog prowadzący badanie", c: false },
-      { t: "Lekarz – psycholog uczestniczy w diagnozie i pracy zespołu leczącego, ale nie decyduje o przyjęciu", c: true },
-      { t: "Rodzina pacjenta", c: false },
-      { t: "Pracodawca pacjenta", c: false }
+      { t: "Psycholog prowadzący badanie diagnostyczne pacjenta", c: false },
+      { t: "Lekarz – psycholog uczestniczy w diagnozie, ale nie decyduje", c: true },
+      { t: "Najbliższa rodzina lub opiekun prawny pacjenta", c: false },
+      { t: "Dotychczasowy pracodawca lub przełożony pacjenta", c: false }
     ],
     exp: "W trybie nagłym decyzję o przyjęciu bez zgody podejmuje lekarz. Psycholog nie decyduje o przyjęciu – uczestniczy w diagnozie i pracy zespołu leczącego; obowiązuje poszanowanie godności i informowanie pacjenta o jego sytuacji."
   },
@@ -451,9 +451,9 @@ const ALL_QUESTIONS = [
   {
     q: "Czy zatrudnienie psychologa przez instytucję (szkołę, szpital, firmę) ogranicza jego tajemnicę zawodową wobec pracodawcy?",
     opts: [
-      { t: "Tak – pracodawca ma pełny wgląd w informacje o kliencie", c: false },
-      { t: "Nie – fakt zatrudnienia nie ogranicza tajemnicy; psycholog z góry informuje pracodawcę, że nie będzie miał wglądu w informacje poufne", c: true },
-      { t: "Tak – przełożony może żądać dokumentacji klienta", c: false },
+      { t: "Tak – pracodawca uzyskuje pełny wgląd we wszystkie informacje o kliencie", c: false },
+      { t: "Nie – sam fakt zatrudnienia nie ogranicza tajemnicy zawodowej", c: true },
+      { t: "Tak – bezpośredni przełożony może żądać pełnej dokumentacji klienta", c: false },
       { t: "Tylko w szkole pracodawca ma wgląd w informacje o uczniu", c: false }
     ],
     exp: "Fakt zatrudnienia przez instytucję nie ogranicza tajemnicy zawodowej. Psycholog z góry informuje pracodawcę, że na podstawie kontraktu z klientem nie będzie on miał wglądu w informacje objęte tajemnicą."
@@ -461,9 +461,9 @@ const ALL_QUESTIONS = [
   {
     q: "Jak należy uregulować poufność między partnerami w terapii par?",
     opts: [
-      { t: "Psycholog samodzielnie decyduje, co ujawnić każdej ze stron", c: false },
-      { t: "Zasady poufności między partnerami należy ustalić na początku, w kontrakcie", c: true },
-      { t: "W terapii par nie obowiązuje żadna poufność", c: false },
+      { t: "Psycholog samodzielnie decyduje, co i komu ujawnić", c: false },
+      { t: "Zasady poufności między partnerami ustala się na początku, w kontrakcie", c: true },
+      { t: "W terapii par nie obowiązuje żadna poufność między stronami", c: false },
       { t: "Wszystkie informacje od jednego partnera psycholog przekazuje drugiemu", c: false }
     ],
     exp: "W terapii par zasady poufności między partnerami trzeba ustalić na starcie kontraktu. W terapii grupowej psycholog dodatkowo apeluje o zachowanie tajemnicy, ale nie może jej zagwarantować."
@@ -471,9 +471,9 @@ const ALL_QUESTIONS = [
   {
     q: "Która okoliczność uzasadnia ujawnienie informacji objętych tajemnicą zawodową?",
     opts: [
-      { t: "Ciekawość mediów i ogólny interes publiczny", c: false },
-      { t: "Bezpośrednie zagrożenie życia (ryzyko samobójstwa lub zabójstwa) albo dobro dziecka (podejrzenie przemocy)", c: true },
-      { t: "Prośba pracodawcy o szczegóły terapii", c: false },
+      { t: "Zwykła ciekawość mediów i bliżej nieokreślony interes publiczny", c: false },
+      { t: "Bezpośrednie zagrożenie życia lub dobro dziecka (podejrzenie przemocy)", c: true },
+      { t: "Prośba pracodawcy o ujawnienie szczegółów przebiegu terapii", c: false },
       { t: "Chęć obrony dobrego imienia psychologa w sporze o honorarium", c: false }
     ],
     exp: "Tajemnicę można/trzeba uchylić m.in. przy bezpośrednim zagrożeniu życia lub zdrowia oraz dla dobra dziecka (przemoc/zaniedbanie). Zagrożenie mniej ważnych wartości (dobre imię, dobra materialne) nie uzasadnia odstąpienia od tajemnicy."
@@ -481,10 +481,10 @@ const ALL_QUESTIONS = [
   {
     q: "Czy psycholog, który dowiedział się o przestępstwie w trakcie świadczenia zawodowego, ma społeczny obowiązek zawiadomienia organów ścigania?",
     opts: [
-      { t: "Tak, zawsze i bezwzględnie", c: false },
-      { t: "Nie – jako profesjonalista jest zwolniony z obowiązku społecznego, bo tajemnica zawodowa go wyklucza; inaczej, gdyby dowiedział się jako osoba prywatna", c: true },
-      { t: "Tak, ale tylko gdy przestępstwo dotyczy dziecka", c: false },
-      { t: "Nie, ponieważ w Polsce nie istnieje żaden obowiązek zawiadamiania o przestępstwie", c: false }
+      { t: "Tak, zawsze i w każdej sytuacji, bezwzględnie", c: false },
+      { t: "Nie – jako profesjonalistę chroni go tajemnica zawodowa", c: true },
+      { t: "Tak, ale wyłącznie wtedy, gdy przestępstwo dotyczy dziecka", c: false },
+      { t: "Nie, ponieważ w Polsce nie istnieje żaden obowiązek zawiadamiania", c: false }
     ],
     exp: "Społeczny (niesankcjonowany) obowiązek zawiadomienia o przestępstwie ściganym z urzędu nie obejmuje psychologa-profesjonalisty – tajemnica zawodowa go zwalnia. Inaczej, gdy dowiedział się jako osoba prywatna. Odrębny, sankcjonowany obowiązek prawny dotyczy zamkniętego katalogu najcięższych przestępstw."
   },
@@ -494,8 +494,8 @@ const ALL_QUESTIONS = [
     q: "O czym psycholog-biegły ma obowiązek poinformować osobę badaną na zlecenie sądu?",
     opts: [
       { t: "Że badanie jest formą pomocy psychologicznej objętej tajemnicą", c: false },
-      { t: "O celu badania, swojej roli biegłego oraz o braku poufności (że to nie jest pomoc psychologiczna)", c: true },
-      { t: "Że wynik badania zależy wyłącznie od woli badanego", c: false },
+      { t: "O celu badania, swojej roli biegłego oraz o braku poufności", c: true },
+      { t: "Że końcowy wynik badania zależy wyłącznie od woli badanego", c: false },
       { t: "Że może odmówić udziału bez żadnych konsekwencji procesowych", c: false }
     ],
     exp: "Biegły informuje badanego o celu badania, swojej roli i o braku poufności – badany musi mieć świadomość, że to nie jest pomoc psychologiczna, lecz ocena na potrzeby sądu."
@@ -503,20 +503,20 @@ const ALL_QUESTIONS = [
   {
     q: "Gdy psycholog zatrudniony w instytucji (np. zakład karny, OZSS) staje wobec konfliktu między interesem instytucji a dobrem badanego, powinien:",
     opts: [
-      { t: "Zawsze przedłożyć interes instytucji nad zasady zawodu", c: false },
-      { t: "Kierować się prymatem zasad etycznych zawodu nad lojalnością instytucjonalną", c: true },
+      { t: "Zawsze przedkładać interes instytucji ponad zasady zawodu", c: false },
+      { t: "Kierować się prymatem zasad etycznych nad lojalnością instytucji", c: true },
       { t: "Realizować „zamówioną” treść opinii zgodnie z oczekiwaniem przełożonych", c: false },
-      { t: "Ukryć przed badanym, komu trafią wyniki", c: false }
+      { t: "Ukryć przed badanym, komu ostatecznie trafią wyniki", c: false }
     ],
     exp: "Przy „podwójnej lojalności” pierwszeństwo mają zasady etyczne zawodu. Psycholog jasno określa, kto jest klientem i komu trafią wyniki, informuje o ograniczonej poufności i nie ulega presji na „zamówioną” opinię."
   },
   {
     q: "Co dzieje się z oświadczeniami oskarżonego o zarzucanym czynie, złożonymi wobec biegłego podczas badania?",
     opts: [
-      { t: "Stają się głównym dowodem w sprawie", c: false },
-      { t: "Nie mogą stanowić dowodu – obowiązuje zakaz dowodowy chroniący relację badawczą", c: true },
+      { t: "Automatycznie stają się głównym dowodem w prowadzonej sprawie", c: false },
+      { t: "Nie mogą stanowić dowodu (obowiązuje zakaz dowodowy)", c: true },
       { t: "Biegły ma obowiązek niezwłocznie przekazać je prokuraturze", c: false },
-      { t: "Mogą być dowodem tylko za zgodą oskarżonego", c: false }
+      { t: "Mogą być dowodem wyłącznie za wyraźną zgodą oskarżonego", c: false }
     ],
     exp: "Obowiązuje zakaz dowodowy: oświadczenia oskarżonego dotyczące zarzucanego czynu, złożone wobec biegłego w trakcie opiniowania, nie mogą stanowić dowodu. Chroni to szczerość relacji badawczej."
   },
@@ -525,50 +525,50 @@ const ALL_QUESTIONS = [
   {
     q: "Kiedy odmowa świadczenia z powodu uprzedzeń psychologa jest etyczna?",
     opts: [
-      { t: "Zawsze, gdy psycholog czuje silną niechęć do klienta", c: false },
-      { t: "Tylko gdy spełnione są wszystkie warunki: świadomość uprzedzeń, niepozostawienie odbiorcy bez pomocy, praca nad zmianą postawy i jednorazowość odmowy", c: true },
-      { t: "Gdy odmowa obejmuje całą grupę odbiorców o danej cesze", c: false },
-      { t: "Gdy psycholog powoła się na klauzulę sumienia", c: false }
+      { t: "Zawsze wtedy, gdy psycholog czuje wobec klienta silną niechęć", c: false },
+      { t: "Tylko gdy spełnione są łącznie wszystkie warunki etycznej odmowy", c: true },
+      { t: "Gdy odmowa systemowo obejmuje całą grupę odbiorców o danej cesze", c: false },
+      { t: "Gdy psycholog skutecznie powoła się na klauzulę sumienia", c: false }
     ],
     exp: "Odmowa przy uprzedzeniach jest etyczna wyłącznie przy spełnieniu wszystkich warunków: świadomość, że uprzedzenia uniemożliwiają profesjonalizm, niepozostawienie odbiorcy bez pomocy, praca nad zmianą postawy i jednorazowość. Systemowe odmawianie całej grupie jest nieetyczne."
   },
   {
     q: "Na czym polega dyskryminacja pośrednia?",
     opts: [
-      { t: "Na wprost gorszym traktowaniu osoby ze względu na cechę chronioną", c: false },
-      { t: "Na pozornie neutralnym kryterium lub działaniu, które powoduje niekorzystne dysproporcje dla osób z cechą chronioną", c: true },
-      { t: "Wyłącznie na molestowaniu lub molestowaniu seksualnym", c: false },
-      { t: "Na każdej różnicy w traktowaniu dwóch klientów", c: false }
+      { t: "Na wprost gorszym, bezpośrednim traktowaniu osoby z cechą chronioną", c: false },
+      { t: "Na pozornie neutralnym kryterium dającym niekorzystne dysproporcje", c: true },
+      { t: "Wyłącznie na molestowaniu lub molestowaniu seksualnym odbiorcy", c: false },
+      { t: "Na każdej dostrzeżonej różnicy w traktowaniu dwóch klientów", c: false }
     ],
     exp: "Dyskryminacja pośrednia to pozornie neutralne kryterium lub działanie, które stawia osoby z cechą chronioną w niekorzystnym położeniu (chyba że jest to obiektywnie uzasadnione). Dyskryminacja bezpośrednia to wprost mniej korzystne traktowanie."
   },
   {
     q: "Czym jest tzw. „zdrowa paranoja” w kontekście pracy z osobami z grup mniejszościowych?",
     opts: [
-      { t: "Objaw zaburzenia wymagający diagnozy", c: false },
-      { t: "Uzasadniona nieufność klientów z mniejszości wobec psychologów, wynikająca z wiedzy o możliwych uprzedzeniach profesjonalistów", c: true },
-      { t: "Nadmierna podejrzliwość psychologa wobec klienta", c: false },
-      { t: "Lęk klienta przed samą diagnozą", c: false }
+      { t: "Objaw zaburzenia psychicznego wymagający pilnej diagnozy", c: false },
+      { t: "Uzasadniona nieufność klientów z mniejszości wobec psychologów", c: true },
+      { t: "Nadmierna, irracjonalna podejrzliwość psychologa wobec klienta", c: false },
+      { t: "Lęk klienta przed samą sytuacją diagnozy psychologicznej", c: false }
     ],
     exp: "„Zdrowa paranoja” to racjonalna, uzasadniona nieufność klientów z mniejszości wobec psychologów – wynika ze świadomości możliwych uprzedzeń profesjonalistów, a nie z zaburzenia."
   },
   {
     q: "Postrzeganie klienta wyłącznie przez pryzmat grupy, do której należy (np. „cukrzyk”, „osoba z mniejszości”), to przejaw:",
     opts: [
-      { t: "Wrażliwości kulturowej", c: false },
-      { t: "Niezróżnicowanego postrzegania – formy dyskryminacji; profesjonalista bada indywidualny sposób udziału osoby w procesach grupy", c: true },
-      { t: "Trafnej diagnozy grupowej", c: false },
-      { t: "Zasady minimalizacji wtargnięcia", c: false }
+      { t: "Pogłębionej wrażliwości kulturowej psychologa", c: false },
+      { t: "Niezróżnicowanego postrzegania – formy dyskryminacji", c: true },
+      { t: "Trafnej, rzetelnej diagnozy grupowej odbiorcy", c: false },
+      { t: "Zasady minimalizacji wtargnięcia w prywatność", c: false }
     ],
     exp: "Niezróżnicowane postrzeganie to przejaw dyskryminacji – sprowadzanie osoby do grupy. Profesjonalista bada indywidualny stopień i sposób partycypacji jednostki w procesach grupowych, zamiast przypisywać jej cechy całej grupy."
   },
   {
     q: "Jak psycholog powinien postępować z własnymi uprzedzeniami, które mogą obniżać jego profesjonalizm?",
     opts: [
-      { t: "Ignorować je, zakładając, że nie wpływają na pracę", c: false },
-      { t: "Monitorować je i dążyć do ich eliminacji – przez superwizję, konsultacje, trening lub własną psychoterapię", c: true },
-      { t: "Ujawniać je publicznie wszystkim klientom", c: false },
-      { t: "Odmawiać pracy z każdym, kogo dotyczą", c: false }
+      { t: "Ignorować je, zakładając, że nie wpływają na jakość pracy", c: false },
+      { t: "Monitorować je i dążyć do ich eliminacji (superwizja, trening)", c: true },
+      { t: "Otwarcie ujawniać je publicznie wszystkim swoim klientom", c: false },
+      { t: "Odmawiać pracy z każdym odbiorcą, którego dotyczą", c: false }
     ],
     exp: "Obowiązkiem psychologa jest monitorowanie własnych poglądów i uczuć w poszukiwaniu uprzedzeń oraz praca nad ich eliminacją – przez superwizję, konsultacje, trening lub własną psychoterapię. Dotyczy to relacji ze wszystkimi: odbiorcami, studentami i współpracownikami."
   }

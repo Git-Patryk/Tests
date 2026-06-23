@@ -313,7 +313,7 @@ const ALL_QUESTIONS = [
   {
     q: "Co jest podstawą etyki zawodowej psychologa według Kodeksu Etycznego PTP (2018)?",
     opts: [
-      { t: "Dobro człowieka i zasada „przede wszystkim nie szkodzić” (primum non nocere)", c: true },
+      { t: "Dobro człowieka i zasada „przede wszystkim nie szkodzić”", c: true },
       { t: "Skuteczność stosowanych metod terapeutycznych", c: false },
       { t: "Lojalność wobec pracodawcy lub zleceniodawcy", c: false },
       { t: "Maksymalizacja zysku z prowadzonej praktyki", c: false }
@@ -333,20 +333,20 @@ const ALL_QUESTIONS = [
   {
     q: "Ile zasad ogólnych (General Principles) wyróżnia Kodeks Etyczny APA?",
     opts: [
-      { t: "3 zasady", c: false },
+      { t: "3 zasady (I–III)", c: false },
       { t: "5 zasad (A–E)", c: true },
-      { t: "7 zasad", c: false },
-      { t: "10 zasad", c: false }
+      { t: "7 zasad (A–G)", c: false },
+      { t: "10 zasad (1–10)", c: false }
     ],
     exp: "APA wyróżnia 5 zasad ogólnych (A–E): Beneficence and Nonmaleficence, Fidelity and Responsibility, Integrity, Justice oraz Respect for People's Rights and Dignity. Są one aspiracyjne (kierunkują postawy)."
   },
   {
     q: "Które elementy Kodeksu APA są wiążące (egzekwowalne)?",
     opts: [
-      { t: "Zasady ogólne (A–E)", c: false },
+      { t: "Zasady ogólne (A–E), wyznaczające pożądane postawy", c: false },
       { t: "Szczegółowe standardy etyczne (grupy 1–10)", c: true },
-      { t: "Wyłącznie preambuła kodeksu", c: false },
-      { t: "Żadne – cały kodeks ma charakter wyłącznie zaleceń", c: false }
+      { t: "Wyłącznie preambuła oraz wstęp do kodeksu", c: false },
+      { t: "Żadne – cały kodeks ma charakter zaleceń", c: false }
     ],
     exp: "Egzekwowalne są szczegółowe standardy etyczne (10 grup, np. 3.05 role wielokrotne, 9.01 podstawy diagnozy). Zasady ogólne A–E są jedynie aspiracyjne – wyznaczają pożądane postawy, ale nie podlegają egzekwowaniu."
   },
@@ -354,7 +354,7 @@ const ALL_QUESTIONS = [
     q: "Zasada „Dbałość o dobro odbiorcy” (Art. 5 PTP) oznacza, że zobowiązanie psychologa do troski o dobro klienta:",
     opts: [
       { t: "Wygasa, gdy zleceniodawcą jest inna osoba lub instytucja", c: false },
-      { t: "Utrzymuje się nawet wtedy, gdy zleceniodawcą jest inna osoba lub instytucja", c: true },
+      { t: "Utrzymuje się także, gdy zleceniodawcą jest inna osoba lub instytucja niż odbiorca", c: true },
       { t: "Dotyczy tylko klientów, którzy zgłosili się dobrowolnie", c: false },
       { t: "Obowiązuje wyłącznie w trakcie trwania terapii", c: false }
     ],
@@ -375,20 +375,20 @@ const ALL_QUESTIONS = [
   {
     q: "Co charakteryzuje zawód zaufania publicznego w relacji psycholog–klient?",
     opts: [
-      { t: "Symetria wiedzy i równość pozycji obu stron", c: false },
-      { t: "Asymetria wiedzy i władzy – klient ujawnia informacje intymne i jest zależny od eksperta", c: true },
-      { t: "Brak jakichkolwiek obowiązków zachowania tajemnicy", c: false },
-      { t: "Pełna swoboda klienta w ocenie kompetencji psychologa", c: false }
+      { t: "Symetria wiedzy i równość pozycji obu negocjujących stron", c: false },
+      { t: "Asymetria wiedzy i władzy – klient jest zależny od eksperta", c: true },
+      { t: "Brak obowiązku tajemnicy i pełna jawność przebiegu współpracy", c: false },
+      { t: "Pełna swoboda klienta w bieżącej ocenie kompetencji psychologa", c: false }
     ],
     exp: "Zawód zaufania publicznego cechuje asymetria wiedzy i władzy: klient ujawnia informacje intymne i jest zależny od psychologa jako eksperta. Skutkuje to obowiązkiem tajemnicy, podwyższonym standardem staranności i nadzorem samorządu."
   },
   {
     q: "Dlaczego ustawa o zawodzie psychologa z 2001 roku bywa nazywana „martwą”?",
     opts: [
-      { t: "Bo została uchylona już po roku obowiązywania", c: false },
+      { t: "Bo została uchylona już po roku obowiązywania na mocy nowelizacji", c: false },
       { t: "Bo przewidziany w niej samorząd zawodowy nigdy nie powstał", c: true },
       { t: "Bo Trybunał Konstytucyjny uznał ją w całości za niezgodną z Konstytucją", c: false },
-      { t: "Bo dotyczyła wyłącznie psychologów wojskowych", c: false }
+      { t: "Bo dotyczyła wyłącznie psychologów wojskowych i więziennictwa", c: false }
     ],
     exp: "Ustawa z 2001 r. przewidywała samorząd zawodowy (Art. 5), ale ten nigdy nie powstał. W efekcie nie było realnej odpowiedzialności dyscyplinarnej ani formalnego prawa do zawodu – ustawa była de facto martwa."
   },
@@ -396,7 +396,7 @@ const ALL_QUESTIONS = [
     q: "Co wprowadza Nowa Ustawa o zawodzie psychologa (2026) w odniesieniu do statusu zawodu?",
     opts: [
       { t: "Znosi obowiązek zachowania tajemnicy zawodowej", c: false },
-      { t: "Wprost nazywa zawód psychologa zawodem zaufania publicznego i wprowadza ochronę tytułu", c: true },
+      { t: "Wprost określa zawód psychologa jako zawód zaufania publicznego i chroni tytuł", c: true },
       { t: "Likwiduje wymóg posiadania tytułu magistra psychologii", c: false },
       { t: "Pozostawia kwestię samorządu nieuregulowaną", c: false }
     ],
@@ -405,10 +405,10 @@ const ALL_QUESTIONS = [
   {
     q: "Jak rozumiane jest „prawo psychologa do błędu”?",
     opts: [
-      { t: "Psycholog nigdy nie odpowiada za skutki swoich działań", c: false },
-      { t: "Błąd popełniony w dobrej wierze przy zachowaniu aktualnych standardów nie jest naruszeniem etycznym", c: true },
-      { t: "Psycholog może świadomie stosować metody niesprawdzone", c: false },
-      { t: "Prawo do błędu zwalnia z obowiązku doskonalenia zawodowego", c: false }
+      { t: "Psycholog nigdy nie odpowiada za negatywne skutki swoich działań", c: false },
+      { t: "Błąd w dobrej wierze przy zachowaniu standardów nie jest naruszeniem", c: true },
+      { t: "Psycholog może świadomie stosować metody niesprawdzone i niezweryfikowane", c: false },
+      { t: "Prawo do błędu zwalnia psychologa z obowiązku doskonalenia zawodowego", c: false }
     ],
     exp: "Prawo do błędu oznacza, że błąd w dobrej wierze, przy dochowaniu należytej staranności i oparciu praktyki na aktualnej wiedzy naukowej, nie stanowi naruszenia etycznego. Nie zwalnia to z odpowiedzialności za rażące zaniedbania."
   },
@@ -419,8 +419,8 @@ const ALL_QUESTIONS = [
     opts: [
       { t: "Terapeutyczną – tworzy relację pomocy z widzem lub słuchaczem", c: false },
       { t: "Edukacyjną i popularyzatorską, a nie terapeutyczną", c: true },
-      { t: "Diagnostyczną wobec komentowanych osób publicznych", c: false },
-      { t: "Reklamową – promuje własne usługi i produkty", c: false }
+      { t: "Diagnostyczną wobec publicznie komentowanych osób znanych", c: false },
+      { t: "Reklamową – promuje własne usługi, produkty i szkolenia", c: false }
     ],
     exp: "W mediach psycholog pełni rolę edukacyjną i popularyzatorską (prostowanie mitów, promocja zdrowia), a nie terapeutyczną. Wystąpienie medialne nie tworzy relacji pomocy ani nie zastępuje diagnozy czy terapii."
   },
@@ -428,29 +428,29 @@ const ALL_QUESTIONS = [
     q: "Publiczne diagnozowanie konkretnych, identyfikowalnych osób (np. polityków, celebrytów) przez psychologa jest:",
     opts: [
       { t: "Dozwolone, jeśli opiera się na obserwacji medialnej", c: false },
-      { t: "Zakazane – nie wolno formułować twierdzeń o psychice osoby bez badania i jej zgody", c: true },
+      { t: "Zakazane bez profesjonalnego badania i wyraźnej zgody danej osoby", c: true },
       { t: "Dozwolone wobec osób pełniących funkcje publiczne", c: false },
-      { t: "Dozwolone, jeśli psycholog zastrzeże, że to tylko opinia", c: false }
+      { t: "Dozwolone, gdy psycholog zastrzeże, że to opinia", c: false }
     ],
     exp: "Obowiązuje zakaz publicznego diagnozowania i stygmatyzowania identyfikowalnych osób. Psycholog nie może interpretować zachowania ani formułować twierdzeń o psychice konkretnej osoby bez profesjonalnej diagnozy i jej zgody."
   },
   {
     q: "Czy psycholog może komentować w mediach przypadki własnych klientów?",
     opts: [
-      { t: "Tak, jeśli klient wyrazi na to zgodę", c: false },
-      { t: "Tak, jeśli zmieni imię klienta", c: false },
+      { t: "Tak, jeśli klient wyrazi na to dobrowolną zgodę", c: false },
+      { t: "Tak, pod warunkiem zmiany imienia klienta", c: false },
       { t: "Nie – jest to absolutnie zakazane, nawet za zgodą lub na prośbę klienta", c: true },
-      { t: "Tak, o ile chodzi o zakończoną już terapię", c: false }
+      { t: "Tak, o ile dotyczy zakończonej już terapii", c: false }
     ],
     exp: "Komentowanie przypadków własnych klientów w mediach jest absolutnie zakazane – nawet za zgodą lub na prośbę klienta. Nie jest to żadna z kategorii uzasadniających uchylenie poufności."
   },
   {
     q: "Zgodnie ze standardami APA, reklama usług psychologicznych:",
     opts: [
-      { t: "Może zawierać dane o skuteczności stosowanych metod", c: false },
+      { t: "Może zawierać dane o udokumentowanej skuteczności stosowanych metod", c: false },
       { t: "Nie może zawierać informacji o skuteczności stosowanych metod", c: true },
-      { t: "Może obiecywać konkretne efekty terapii", c: false },
-      { t: "Jest całkowicie zakazana w każdej formie", c: false }
+      { t: "Może obiecywać konkretne, mierzalne efekty prowadzonej terapii", c: false },
+      { t: "Jest całkowicie zakazana w każdej formie i każdym medium", c: false }
     ],
     exp: "Wśród trzech standardów APA dot. reklamy: rzetelna informacja o kompetencjach, ostrożność przy wyborze miejsca reklamy oraz zakaz zamieszczania danych o skuteczności stosowanych metod."
   },
@@ -460,39 +460,39 @@ const ALL_QUESTIONS = [
     q: "Które elementy składają się na świadomą zgodę (informed consent)?",
     opts: [
       { t: "Informacja, zrozumienie, dobrowolność i kompetencja decyzyjna", c: true },
-      { t: "Pisemna forma, opłata, termin i podpis świadka", c: false },
-      { t: "Diagnoza, terapia, rokowanie i wynagrodzenie", c: false },
-      { t: "Zgoda rodzica, zgoda sądu i zgoda pracodawcy", c: false }
+      { t: "Pisemna forma, opłata, wyznaczony termin i podpis świadka", c: false },
+      { t: "Diagnoza, terapia, rokowanie oraz ustalone wynagrodzenie", c: false },
+      { t: "Zgoda rodzica, zgoda sądu i zgoda pracodawcy odbiorcy", c: false }
     ],
     exp: "Świadoma zgoda obejmuje 4 elementy: informację (cel, metody, ryzyko, alternatywy), zrozumienie (przekaz dostosowany do klienta), dobrowolność (bez przymusu, z możliwością wycofania) oraz kompetencję decyzyjną (zdolność do podjęcia decyzji)."
   },
   {
     q: "W jakim wieku osoba uzyskuje pełną zdolność do czynności prawnych i może samodzielnie decydować o korzystaniu z usługi psychologicznej?",
     opts: [
-      { t: "W wieku 13 lat", c: false },
-      { t: "W wieku 16 lat", c: false },
+      { t: "W wieku 13 lat (próg ograniczonej zdolności)", c: false },
+      { t: "W wieku 16 lat (wzorzec zgody kumulatywnej)", c: false },
       { t: "W wieku 18 lat (pełnoletność)", c: true },
-      { t: "W wieku 15 lat", c: false }
+      { t: "W wieku 15 lat (koniec szkoły podstawowej)", c: false }
     ],
     exp: "Pełnoletność (18 lat) oznacza pełną zdolność do czynności prawnych i samodzielną decyzję. Wcześniej wymagana jest zgoda przedstawiciela ustawowego; rodzice osoby pełnoletniej nie mają dostępu do informacji bez jej zgody."
   },
   {
     q: "Jakie jest podstawowe podejście do udziału dziecka w kontakcie z psychologiem?",
     opts: [
-      { t: "Dziecko można zmusić do kontaktu, jeśli rodzic wyraził zgodę", c: false },
+      { t: "Dziecko można zmusić do kontaktu, jeśli rodzic wyraził pisemną zgodę", c: false },
       { t: "Dziecko może być jedynie zachęcane, nigdy zmuszane do kontaktu", c: true },
-      { t: "Zdanie dziecka nie ma znaczenia do 18. roku życia", c: false },
-      { t: "Wystarczy zgoda dyrektora szkoły", c: false }
+      { t: "Zdanie dziecka nie ma znaczenia prawnego aż do 18. roku życia", c: false },
+      { t: "Do rozpoczęcia kontaktu wystarczy zgoda dyrektora szkoły lub wychowawcy", c: false }
     ],
     exp: "Dziecko może być wyłącznie zachęcane, nigdy zmuszane. Niezależnie od wieku i zgody rodziców psycholog ubiega się o przyzwolenie dziecka – każda osoba ma prawo do podmiotowego traktowania."
   },
   {
     q: "Gdy psycholog wykonuje usługę na zlecenie strony trzeciej (np. pracodawcy), ma obowiązek:",
     opts: [
-      { t: "Ukryć przed klientem fakt zlecenia", c: false },
-      { t: "Poinformować klienta na początku o ograniczonej poufności i o tym, co trafi do zleceniodawcy", c: true },
-      { t: "Przekazać zleceniodawcy pełną dokumentację badania", c: false },
-      { t: "Odmówić wykonania jakiejkolwiek usługi", c: false }
+      { t: "Ukryć przed klientem fakt, że usługa jest realizowana na zlecenie", c: false },
+      { t: "Na początku poinformować klienta o ograniczonej poufności kontaktu", c: true },
+      { t: "Przekazać zleceniodawcy pełną dokumentację i surowe wyniki badania", c: false },
+      { t: "Odmówić wykonania jakiejkolwiek usługi w takiej konfiguracji ról", c: false }
     ],
     exp: "Przy zleceniu strony trzeciej psycholog ma obowiązek poinformować odbiorcę na początku kontaktu o ograniczonej poufności. Zleceniodawcy ujawnia wyłącznie informacje niezbędne, wynikające z kontraktu."
   },
@@ -501,30 +501,30 @@ const ALL_QUESTIONS = [
   {
     q: "Jak długo obowiązuje psychologa tajemnica zawodowa?",
     opts: [
-      { t: "Do zakończenia terapii", c: false },
-      { t: "Bezterminowo – także po zakończeniu relacji, a nawet po śmierci klienta", c: true },
-      { t: "Przez 5 lat od ostatniej wizyty", c: false },
-      { t: "Do momentu, gdy klient ujawni informacje sam", c: false }
+      { t: "Do formalnego zakończenia terapii i wydania końcowej opinii", c: false },
+      { t: "Bezterminowo – także po zakończeniu relacji i po śmierci klienta", c: true },
+      { t: "Przez 5 lat liczonych od ostatniej wizyty klienta w gabinecie", c: false },
+      { t: "Do chwili, gdy klient sam publicznie ujawni te informacje", c: false }
     ],
     exp: "Tajemnica zawodowa jest nieograniczona w czasie: obowiązuje po zakończeniu relacji, a nawet po śmierci klienta (wyjątek: pisemna zgoda osoby bliskiej). Obejmuje też wszystkich, którym powierzono informacje."
   },
   {
     q: "Kto może zwolnić psychologa z obowiązku zachowania tajemnicy zawodowej w postępowaniu sądowym?",
     opts: [
-      { t: "Sam psycholog według własnego uznania", c: false },
-      { t: "Klient ustnie, w trakcie sesji", c: false },
-      { t: "Sąd (organ procesowy) – nie psycholog ani klient", c: true },
-      { t: "Pracodawca psychologa", c: false }
+      { t: "Sam psycholog, według własnego uznania", c: false },
+      { t: "Klient, ustnie, w trakcie trwającej sesji", c: false },
+      { t: "Sąd (organ procesowy) prowadzący dane postępowanie", c: true },
+      { t: "Pracodawca lub przełożony psychologa", c: false }
     ],
     exp: "O zwolnieniu z tajemnicy decyduje organ procesowy (w postępowaniu sądowym – sąd), a nie psycholog czy klient. Psycholog nie ujawnia informacji z własnej inicjatywy – powołuje się na tajemnicę i pozostawia decyzję organowi."
   },
   {
     q: "Jak wygląda kwestia poufności w terapii grupowej?",
     opts: [
-      { t: "Psycholog gwarantuje pełną tajemnicę wszystkich uczestników", c: false },
+      { t: "Psycholog gwarantuje pełną i bezwarunkową tajemnicę wszystkich uczestników", c: false },
       { t: "Psycholog apeluje o zachowanie tajemnicy, ale nie może jej zagwarantować", c: true },
-      { t: "W terapii grupowej tajemnica nie obowiązuje wcale", c: false },
-      { t: "Tajemnica obowiązuje tylko psychologa, nie uczestników", c: false }
+      { t: "W terapii grupowej tajemnica zawodowa nie obowiązuje nikogo z uczestników", c: false },
+      { t: "Tajemnica obowiązuje wyłącznie psychologa, a nie pozostałych uczestników", c: false }
     ],
     exp: "W terapii grupowej wszyscy uczestnicy są zobowiązani do tajemnicy, ale psycholog może jedynie apelować o jej zachowanie – nie jest w stanie jej zagwarantować, bo zależy ona od postawy pozostałych uczestników."
   },
@@ -533,20 +533,20 @@ const ALL_QUESTIONS = [
   {
     q: "Czy ta sama osoba może być jednocześnie terapeutą i biegłym sądowym wobec tego samego klienta?",
     opts: [
-      { t: "Tak, jeśli zna klienta od dawna", c: false },
-      { t: "Nie – łączenie tych ról jest zakazane ze względu na konflikt celów (pomoc vs ocena)", c: true },
-      { t: "Tak, o ile sąd wyrazi na to zgodę", c: false },
-      { t: "Tak, jeśli klient sobie tego życzy", c: false }
+      { t: "Tak, jeśli zna klienta od dawna i dobrze rozumie jego sytuację", c: false },
+      { t: "Nie – łączenie tych ról jest zakazane z powodu konfliktu celów", c: true },
+      { t: "Tak, o ile sąd prowadzący sprawę wyrazi na to wyraźną zgodę", c: false },
+      { t: "Tak, jeśli sam klient sobie tego życzy i o to wnioskuje", c: false }
     ],
     exp: "Obowiązuje zakaz łączenia ról: terapeuta i biegły nie mogą być tą samą osobą wobec tego samego klienta. Występuje tu konflikt celów – pomoc (terapia) kontra bezstronna ocena (opinia dla sądu)."
   },
   {
     q: "W jakim zakresie wypowiada się psycholog jako biegły sądowy?",
     opts: [
-      { t: "Ustala odpowiedzialność karną badanego", c: false },
-      { t: "Odpowiada wyłącznie na pytania sądu (tezę dowodową), zachowując bezstronność", c: true },
-      { t: "Reprezentuje interes strony, która go powołała", c: false },
-      { t: "Wydaje wyrok w sprawie", c: false }
+      { t: "Samodzielnie ustala odpowiedzialność karną osoby badanej", c: false },
+      { t: "Odpowiada wyłącznie na pytania sądu, zachowując bezstronność", c: true },
+      { t: "Reprezentuje interes tej strony postępowania, która go powołała", c: false },
+      { t: "Wydaje wiążące rozstrzygnięcie co do winy w prowadzonej sprawie", c: false }
     ],
     exp: "Biegły działa na zlecenie sądu, nie stron. Odpowiada wyłącznie na pytania sądu, nie wykracza poza tezę dowodową i zachowuje obiektywizm. Nie ustala odpowiedzialności za czyny – to rola sądu."
   },
@@ -555,20 +555,20 @@ const ALL_QUESTIONS = [
   {
     q: "Czy psycholog może odmówić świadczenia z powodu niechęci do pracy z określoną grupą osób (np. ze względu na orientację seksualną)?",
     opts: [
-      { t: "Tak, jeśli wynika to z jego światopoglądu", c: false },
-      { t: "Nie – odmowa nie może wynikać z niechęci do określonej grupy; systemowe odmawianie całej grupie jest nieetyczne", c: true },
-      { t: "Tak, jeśli skieruje klienta do innego specjalisty", c: false },
-      { t: "Tak, ponieważ psycholog ma pełną swobodę wyboru klientów", c: false }
+      { t: "Tak, jeśli taka odmowa wynika wprost z jego światopoglądu i przekonań", c: false },
+      { t: "Nie – odmowa nie może wynikać z niechęci do całej grupy odbiorców", c: true },
+      { t: "Tak, pod warunkiem skierowania klienta do innego dostępnego specjalisty", c: false },
+      { t: "Tak, ponieważ psycholog ma pełną swobodę doboru swoich klientów", c: false }
     ],
     exp: "Odmowa świadczenia w żadnym wypadku nie może wynikać z niechęci do pracy z określoną grupą. Systemowe odmawianie całej grupie odbiorców (np. ze względu na orientację seksualną) jest jednoznacznie nieetyczne."
   },
   {
     q: "Czy w zawodach związanych z pomocą psychologiczną w Polsce obowiązuje klauzula sumienia?",
     opts: [
-      { t: "Tak, na takich samych zasadach jak u lekarzy", c: false },
-      { t: "Nie – klauzula sumienia nie obowiązuje w zawodach pomocy psychologicznej", c: true },
-      { t: "Tak, ale tylko wobec dorosłych klientów", c: false },
-      { t: "Tak, jeśli psycholog powoła się na przekonania religijne", c: false }
+      { t: "Tak, na dokładnie takich samych zasadach jak w przypadku lekarzy", c: false },
+      { t: "Nie – klauzula sumienia nie obowiązuje w pomocy psychologicznej", c: true },
+      { t: "Tak, ale wyłącznie w odniesieniu do klientów pełnoletnich", c: false },
+      { t: "Tak, jeśli psycholog powoła się na swoje przekonania religijne", c: false }
     ],
     exp: "Klauzula sumienia nie obowiązuje w zawodach związanych z pomocą psychologiczną w Polsce. APA i stanowe organizacje zawodowe w USA stanowczo sprzeciwiają się jej wprowadzeniu."
   }
