@@ -19,6 +19,8 @@
     --c3g:    rgba(52,211,153,.10);
     --c4:     #f59e0b;
     --c4g:    rgba(245,158,11,.10);
+    --c5:     #6366f1;
+    --c5g:    rgba(99,102,241,.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -98,6 +100,7 @@
   .subject-card.c2 { --nc: var(--c2); --ng: var(--c2g); }
   .subject-card.c3 { --nc: var(--c3); --ng: var(--c3g); }
   .subject-card.c4 { --nc: var(--c4); --ng: var(--c4g); }
+  .subject-card.c5 { --nc: var(--c5); --ng: var(--c5g); }
 
   .subject-card::before { background: var(--ng); }
   .subject-card::after  { background: radial-gradient(circle, color-mix(in srgb, var(--nc) 20%, transparent), transparent 70%); }
@@ -201,6 +204,18 @@
       </div>
       <div class="card-footer">
         <span class="card-badge">1 test</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="subject-card c5" href="zarzadzanie.html">
+      <div class="card-icon">📊</div>
+      <div class="card-body">
+        <div class="card-title">Zarządzanie</div>
+        <div class="card-desc">Rynek kapitałowy (giełda, akcje, obligacje), zarządzanie projektami unijnymi metodą PCM oraz zarządzanie w zdrowiu publicznym (LFA, planowanie, jakość)</div>
+      </div>
+      <div class="card-footer">
+        <span class="card-badge">11 testów</span>
         <span class="card-arrow">→</span>
       </div>
     </a>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarządzanie – Projekty unijne (PCM) – StudyZone</title>
+<style>
+  :root {
+    --in1:    #3730a3;
+    --in2:    #6366f1;
+    --in3:    #a5b4fc;
+    --in4:    #e0e7ff;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f8fafc;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ff;
+    color: #1e1b2e;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--in1) 0%, var(--in2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem;
+  }
+  .start-card {
+    background: #fff; border-radius: 16px; padding: 2.5rem;
+    text-align: center; box-shadow: 0 4px 24px rgba(49,46,129,.10);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem; color: var(--in1); margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem; margin: 1.5rem 0 2rem;
+  }
+  .info-box { background: var(--in4); border-radius: 10px; padding: 1rem .8rem; }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--in1); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  .btn {
+    display: inline-block; padding: .85rem 2.2rem; border: none; border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s; text-decoration: none;
+  }
+  .btn-primary { background: var(--in2); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,.35); }
+  .btn-primary:hover { background: var(--in1); transform: translateY(-2px); }
+
+  .progress-bar-wrap { background: var(--border); border-radius: 50px; height: 8px; margin-bottom: 1.5rem; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--in2), var(--in3)); border-radius: 50px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .82rem; color: var(--gray); margin-bottom: .4rem; }
+
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(49,46,129,.08); margin-bottom: 1rem; }
+  .q-meta { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--in2); margin-bottom: .6rem; }
+  .q-text { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; line-height: 1.65; color: #1a1a2e; margin-bottom: 1.5rem; }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex; align-items: flex-start; gap: .9rem; padding: .9rem 1.1rem;
+    border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+    transition: all .15s; background: #fff; text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--in3); background: #f5f3ff; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--in2); background: var(--in4); }
+  .option.wrong   { border-color: var(--red);  background: var(--red2); }
+  .option-letter {
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem; transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--in2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red); color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  .explanation {
+    border-left: 4px solid var(--in2); background: #f5f3ff; border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem; font-size: .9rem; line-height: 1.6; color: var(--gray); margin-top: 1rem; display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--in1); }
+
+  .nav-area { display: flex; justify-content: flex-end; margin-top: 1rem; }
+
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(49,46,129,.10); text-align: center; margin-bottom: 1.5rem; }
+  .score-circle { width: 140px; height: 140px; border-radius: 50%; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--in1); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; }
+  .review-item.ok   { background: var(--in4); border-left: 3px solid var(--in2); }
+  .review-item.fail { background: var(--red2); border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Zarządzanie</h1>
+  <p>Projekty unijne (PCM) · Wykład II · 24 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście!</h2>
+    <p>Test oparty na wykładzie II „Ludzie i procedury”: PCM jako kręgosłup i zespół jako serce, role w projekcie (PC, PM, IM, NM, eksperci, interesariusze), cechy i obszary kompetencji kierownika projektu, składowe zarządzania projektem, zespół i ZZL, komunikacja i metody doboru personelu oraz klasyczne modele struktur zespołów (chirurgiczna, ekspercka, izomorficzna, kolektywna).</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>24</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>6</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 24</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--in1);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "topic": "I. PCM i zespół",
+    "q": "Jak wykład obrazowo opisuje relację PCM i zespołu?",
+    "opts": [
+      "PCM zastępuje całkowicie pracę zespołu",
+      "PCM jest sercem, a zespół jest zbędnym dodatkiem",
+      "PCM jest „kręgosłupem” (struktura i ramy), a zespół „sercem” (energia i rozwiązywanie problemów)",
+      "Zespół jest formalnością, a liczą się tylko formularze"
+    ],
+    "ans": 2,
+    "exp": "PCM to <strong>„kręgosłup”</strong> dający strukturę, stabilność i ramy prawne, a zespół to <strong>„serce”</strong>, które pompuje energię, reaguje na zmiany i rozwiązuje nieprzewidziane problemy."
+  },
+  {
+    "topic": "I. PCM i zespół",
+    "q": "W efektywnym zarządzaniu procedury PCM powinny być:",
+    "opts": [
+      "całkowicie pomijane w realizacji",
+      "„bezpiecznikiem” dla kreatywności i sprawczości zespołu, a nie „klatką”",
+      "jedynym celem projektu",
+      "ustalane wyłącznie przez beneficjentów"
+    ],
+    "ans": 1,
+    "exp": "Sukces leży w punkcie styku — procedury mają być <strong>„bezpiecznikiem” dla kreatywności i sprawczości zespołu, a nie „klatką”</strong>."
+  },
+  {
+    "topic": "I. PCM i zespół",
+    "q": "„Kult procedury” w projekcie prowadzi do tego, że:",
+    "opts": [
+      "rośnie zaangażowanie i kreatywność zespołu",
+      "zespół czuje się jak trybiki w maszynie, co obniża motywację i inicjatywę",
+      "projekt automatycznie spełnia wszystkie cele",
+      "znikają wymogi sprawozdawczości"
+    ],
+    "ans": 1,
+    "exp": "„Kult procedury” to skupienie wyłącznie na wskaźnikach i sprawozdawczości — <strong>zespół czuje się jak trybiki w maszynie</strong>, co prowadzi do spadku motywacji i braku inicjatywy."
+  },
+  {
+    "topic": "I. PCM i zespół",
+    "q": "Skutkiem „chaosu relacyjnego” (dobra atmosfera, ale brak dyscypliny PCM) mogą być:",
+    "opts": [
+      "problemy z kwalifikowalnością wydatków i ryzyko zwrotu dotacji",
+      "automatyczne zwiększenie dofinansowania",
+      "skrócenie czasu realizacji o połowę",
+      "brak jakichkolwiek konsekwencji"
+    ],
+    "ans": 0,
+    "exp": "„Chaos relacyjny” — energia bez dyscypliny metodologii PCM — grozi <strong>problemami z kwalifikowalnością wydatków i ryzykiem zwrotu dotacji</strong>."
+  },
+  {
+    "topic": "II. Role w projekcie",
+    "q": "Koordynator Projektu (PC – Project Coordinator) w standardach UE:",
+    "opts": [
+      "często stoi na szczycie hierarchii i ma ostateczną władzę decyzyjną przy braku konsensusu",
+      "jest najmniej ważnym członkiem zespołu",
+      "odpowiada wyłącznie za sprzątanie biura",
+      "nie ma żadnego wpływu na kierunek projektu"
+    ],
+    "ans": 0,
+    "exp": "Koordynator Projektu (PC) <strong>często stoi na szczycie hierarchii i ma ostateczną władzę decyzyjną w przypadku braku konsensusu</strong>; nadzoruje ogólny kierunek."
+  },
+  {
+    "topic": "II. Role w projekcie",
+    "q": "Za planowanie, organizację, zarządzanie czasem, kosztami, zakresem i jakością oraz motywowanie zespołu odpowiada:",
+    "opts": [
+      "dostawca sprzętu",
+      "interesariusz zewnętrzny",
+      "audytor zewnętrzny",
+      "Kierownik Projektu (PM – Project Manager)"
+    ],
+    "ans": 3,
+    "exp": "<strong>Kierownik Projektu (PM)</strong> odpowiada za planowanie, organizację, zarządzanie czasem, kosztami, zakresem i jakością oraz motywowanie zespołu i zgodność z założeniami."
+  },
+  {
+    "topic": "II. Role w projekcie",
+    "q": "Kierownik Sieci (NM – Network Manager) w zespole projektowym odpowiada za:",
+    "opts": [
+      "budowanie i zarządzanie siecią partnerów/interesariuszy",
+      "wyłącznie księgowość projektu",
+      "fizyczną budowę infrastruktury IT",
+      "audyt finansowy beneficjenta"
+    ],
+    "ans": 0,
+    "exp": "Kierownik Sieci (NM) <strong>odpowiada za budowanie i zarządzanie siecią partnerów/interesariuszy</strong>; Kierownik Innowacji (IM) skupia się na wdrażaniu innowacji."
+  },
+  {
+    "topic": "II. Role w projekcie",
+    "q": "Interesariusze (stakeholders) projektu to:",
+    "opts": [
+      "tylko instytucja finansująca",
+      "wyłącznie pracownicy księgowości",
+      "wszelkie osoby, grupy lub organizacje zainteresowane projektem, zaangażowane w definiowanie problemu i rozwiązań",
+      "wyłącznie zewnętrzni audytorzy"
+    ],
+    "ans": 2,
+    "exp": "Interesariusze to <strong>wszelkie osoby, grupy lub organizacje zainteresowane projektem</strong>, zaangażowane w definiowanie problemu i rozwiązań."
+  },
+  {
+    "topic": "III. Kierownik projektu",
+    "q": "Najważniejsza cecha dobrego kierownika projektu to:",
+    "opts": [
+      "ignorowanie harmonogramu",
+      "unikanie kontaktu z zespołem",
+      "dążenie do zrealizowania przedsięwzięcia zgodnie z zakresem oraz ograniczeniami czasowymi i kosztowymi",
+      "pomijanie celów projektu"
+    ],
+    "ans": 2,
+    "exp": "Najważniejszą cechą kierownika jest <strong>dążenie do zrealizowania przedsięwzięcia zgodnie z wyznaczonym zakresem oraz ograniczeniami czasowymi i kosztowymi</strong>."
+  },
+  {
+    "topic": "III. Kierownik projektu",
+    "q": "„Wiarygodność” kierownika projektu obejmuje dwa wymiary:",
+    "opts": [
+      "artystyczny i sportowy",
+      "marketingowy i sprzedażowy",
+      "podatkowy i celny",
+      "techniczny (doświadczenie i wiedza) oraz administracyjny (skuteczny menedżer)"
+    ],
+    "ans": 3,
+    "exp": "Wiarygodność kierownika ma wymiar <strong>techniczny</strong> (osoba doświadczona, z szeroką wiedzą) i <strong>administracyjny</strong> (skuteczny menedżer)."
+  },
+  {
+    "topic": "III. Kierownik projektu",
+    "q": "Częsty błąd przy obsadzaniu roli kierownika projektu to:",
+    "opts": [
+      "wybór doświadczonego menedżera z autorytetem",
+      "powierzanie jej przypadkowym osobom bez wiedzy o zarządzaniu projektem",
+      "zapewnienie kierownikowi wsparcia administracyjnego",
+      "kształtowanie w sobie kompetencji zarządczych"
+    ],
+    "ans": 1,
+    "exp": "Częsty błąd to <strong>powierzanie roli kierownika przypadkowym ludziom bez wiedzy o zarządzaniu projektem</strong> — to już na starcie skazuje projekt na porażkę."
+  },
+  {
+    "topic": "III. Kierownik projektu",
+    "q": "Które elementy składają się na zarządzanie projektem według wykładu?",
+    "opts": [
+      "Tylko zarządzanie kosztami i podatkami",
+      "Wyłącznie zarządzanie czasem",
+      "Zarządzanie czasem, kosztami, jakością, zasobami ludzkimi, komunikacją i ryzykiem",
+      "Wyłącznie zarządzanie nieruchomościami"
+    ],
+    "ans": 2,
+    "exp": "Na zarządzanie projektem składa się zarządzanie: <strong>czasem, kosztami, jakością, zasobami ludzkimi, komunikacją oraz ryzykiem</strong>."
+  },
+  {
+    "topic": "IV. Zespół i ZZL",
+    "q": "Kiedy powoływany jest zespół zarządzający projektem?",
+    "opts": [
+      "Dopiero po zakończeniu projektu",
+      "Jeszcze przed ustanowieniem samego projektu",
+      "Wyłącznie w fazie audytu",
+      "Nigdy — projekt prowadzi jedna osoba"
+    ],
+    "ans": 1,
+    "exp": "Zespół projektowy jest <strong>powoływany jeszcze przed ustanowieniem samego projektu</strong> — od początku podejmuje istotne decyzje, zapewniając kontrolę i bezpieczeństwo stronom."
+  },
+  {
+    "topic": "IV. Zespół i ZZL",
+    "q": "Dlaczego warto, by członkowie zespołu znali cel swojej pracy?",
+    "opts": [
+      "Bo zwalnia ich z odpowiedzialności",
+      "Poczucie udziału w większym przedsięwzięciu podnosi morale, entuzjazm i zaangażowanie",
+      "Bo pozwala pominąć podział obowiązków",
+      "Bo obniża jakość pracy"
+    ],
+    "ans": 1,
+    "exp": "Członkowie inaczej angażują się, gdy poznają cel pracy — <strong>poczucie, że praca jest częścią większego przedsięwzięcia, podnosi morale i entuzjazm</strong>; traktowanie „masz to zrobić, ale nie musisz wiedzieć po co” zniechęca."
+  },
+  {
+    "topic": "IV. Zespół i ZZL",
+    "q": "Trzy cele, którym służy zarządzanie personelem w projektach, to:",
+    "opts": [
+      "wyłącznie obniżanie wynagrodzeń",
+      "zwolnienie wszystkich pracowników, zatrudnienie nowych i ponowne zwolnienie",
+      "maksymalizacja liczby spotkań, raportów i e-maili",
+      "stworzenie systemu zarządzania personelem, utrzymanie jego działania i doskonalenie go"
+    ],
+    "ans": 3,
+    "exp": "Zarządzanie personelem służy trzem celom: <strong>stworzeniu systemu zarządzania personelem, utrzymaniu jego działania oraz doskonaleniu systemu</strong>."
+  },
+  {
+    "topic": "IV. Zespół i ZZL",
+    "q": "Kapitał ludzki jest fundamentem gospodarki XXI wieku określanej mianem:",
+    "opts": [
+      "gospodarki barterowej",
+      "gospodarki naturalnej",
+      "gospodarki centralnie planowanej",
+      "Gospodarki Opartej na Wiedzy"
+    ],
+    "ans": 3,
+    "exp": "Kapitał ludzki jest fundamentem gospodarki XXI wieku określanej mianem <strong>Gospodarki Opartej na Wiedzy</strong>."
+  },
+  {
+    "topic": "V. Komunikacja i dobór",
+    "q": "Która zasada należy do zasad skutecznej komunikacji w zespole projektowym?",
+    "opts": [
+      "Spójność między komunikacją werbalną i niewerbalną oraz stosowanie formy ustnej i pisemnej",
+      "Komunikowanie wyłącznie w sposób niezrozumiały dla odbiorcy",
+      "Reagowanie głównie emocjonalnie",
+      "Unikanie jakiejkolwiek krytyki, także konstruktywnej"
+    ],
+    "ans": 0,
+    "exp": "Zasady skutecznej komunikacji to m.in. <strong>spójność komunikacji werbalnej i niewerbalnej, stosowanie formy ustnej i pisemnej</strong>, zrozumiałość przekazu, unikanie reakcji emocjonalnych i konstruktywna krytyka."
+  },
+  {
+    "topic": "V. Komunikacja i dobór",
+    "q": "Które narzędzie należy do metod doboru personelu wymienionych w wykładzie?",
+    "opts": [
+      "Test sprawności fizycznej na bieżni",
+      "Loteria pracownicza",
+      "Assessment Center oraz kwestionariusze osobowości Hogana (HPI)",
+      "Konkurs kulinarny"
+    ],
+    "ans": 2,
+    "exp": "Przykładowe metody doboru to: <strong>Assessment Center, metoda Thomas International, OPQ (Occupational Personality Questionnaire) oraz kwestionariusze osobowości Hogana (HPI)</strong>."
+  },
+  {
+    "topic": "V. Komunikacja i dobór",
+    "q": "Optymalny zakres kontroli (liczebność zespołu nadzorowana przez kierownika) wynosi:",
+    "opts": [
+      "od 30 do 50 członków",
+      "od 3 do 10 członków",
+      "dokładnie 1 osobę",
+      "powyżej 100 osób"
+    ],
+    "ans": 1,
+    "exp": "Optymalny zakres kontroli kierownika wynosi <strong>od 3 do 10 członków</strong>; początkowy wzrost liczby osób skraca czas realizacji, ale zależność ta dąży do wartości stałej."
+  },
+  {
+    "topic": "VI. Modele struktur",
+    "q": "Struktura chirurgiczna zespołu projektowego (koncepcja zespołu naczelnego programisty z IBM) opiera się na tym, że:",
+    "opts": [
+      "każdy odpowiada za niezależny komponent produktu",
+      "decyzje podejmowane są wyłącznie przez konsensus bez lidera",
+      "szef zespołu jest najważniejszą częścią, a pozostali zapewniają mu warunki pracy",
+      "eksperci są przypisywani do zadań ad hoc"
+    ],
+    "ans": 2,
+    "exp": "W strukturze chirurgicznej (oparta na schemacie IBM, koncepcja naczelnego programisty) <strong>szef zespołu jest najważniejszą jego częścią, a pozostali członkowie zapewniają mu warunki pracy</strong>."
+  },
+  {
+    "topic": "VI. Modele struktur",
+    "q": "Struktura ekspercka zespołu projektowego charakteryzuje się tym, że:",
+    "opts": [
+      "całkowicie eliminuje rolę kierownika projektu",
+      "opiera się na braku lidera i decyzjach konsensusem",
+      "odzwierciedla dokładnie budowę produktu końcowego",
+      "ma charakter macierzowy — specjaliści są przypisywani do zadań ad hoc i współdzieleni między projektami"
+    ],
+    "ans": 3,
+    "exp": "Struktura ekspercka to model <strong>macierzowy — specjaliści przypisywani do zadań ad hoc na podstawie kompetencji, współdzieleni między projektami</strong>, z dużą samodzielnością i rozproszoną odpowiedzialnością."
+  },
+  {
+    "topic": "VI. Modele struktur",
+    "q": "Struktura izomorficzna zespołu projektowego:",
+    "opts": [
+      "odzwierciedla budowę produktu końcowego — członkowie odpowiadają za konkretne, niezależne komponenty",
+      "opiera się wyłącznie na pracy jednego eksperta",
+      "nie wyznacza żadnego podziału zadań",
+      "zakłada brak menedżera koordynującego"
+    ],
+    "ans": 0,
+    "exp": "Struktura izomorficzna <strong>odzwierciedla budowę produktu końcowego</strong> — poszczególni członkowie odpowiadają za konkretne, niezależne komponenty, a menedżer koordynuje całość i integrację."
+  },
+  {
+    "topic": "VI. Modele struktur",
+    "q": "Struktura kolektywna zespołu projektowego opiera się na:",
+    "opts": [
+      "przypisaniu ekspertów ad hoc do projektów",
+      "jednoosobowej, sztywnej hierarchii dowodzenia",
+      "odwzorowaniu modułów produktu",
+      "braku formalnego lidera i podejmowaniu decyzji grupowo (konsensus) przy płaskiej hierarchii"
+    ],
+    "ans": 3,
+    "exp": "Struktura kolektywna opiera się na <strong>braku formalnego lidera, decyzjach podejmowanych grupowo (konsensus), płaskiej hierarchii i intensywnej komunikacji</strong>, co sprzyja innowacyjności w małych zespołach."
+  },
+  {
+    "topic": "VI. Modele struktur",
+    "q": "Które stwierdzenie najlepiej oddaje wniosek wykładu o strukturach zespołów?",
+    "opts": [
+      "Nie istnieje struktura idealna — model trzeba dobrać do typu projektu i kwalifikacji członków zespołu",
+      "Struktura chirurgiczna sprawdza się zawsze i wszędzie",
+      "Wielkość i typ projektu nie mają znaczenia dla wyboru struktury",
+      "Słaba struktura gwarantuje sukces"
+    ],
+    "ans": 0,
+    "exp": "Wykład podkreśla: <strong>nie istnieje struktura idealna</strong> — model spełniający rolę w jednym projekcie może zawieść w innym; strukturę dobiera się do typu projektu i kwalifikacji członków zespołu."
+  }
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0; score = 0; answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) renderQuestion();
+  else showResults();
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) { grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.'; bg = '#e0e7ff'; color = '#3730a3'; }
+  else if (pct >= 75) { grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.'; bg = '#ede9fe'; color = '#5b21b6'; }
+  else if (pct >= 60) { grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.'; bg = '#fff9c4'; color = '#f9a825'; }
+  else if (pct >= 50) { grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.'; bg = '#fff3e0'; color = '#e65100'; }
+  else { grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.'; bg = '#fde8e9'; color = '#c1121f'; }
+  circle.style.background = bg; circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() { startQuiz(); window.scrollTo(0, 0); }
+
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>

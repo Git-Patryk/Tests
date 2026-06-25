@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarządzanie – Projekty unijne (PCM) – StudyZone</title>
+<style>
+  :root {
+    --in1:    #3730a3;
+    --in2:    #6366f1;
+    --in3:    #a5b4fc;
+    --in4:    #e0e7ff;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f8fafc;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ff;
+    color: #1e1b2e;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--in1) 0%, var(--in2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem;
+  }
+  .start-card {
+    background: #fff; border-radius: 16px; padding: 2.5rem;
+    text-align: center; box-shadow: 0 4px 24px rgba(49,46,129,.10);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem; color: var(--in1); margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem; margin: 1.5rem 0 2rem;
+  }
+  .info-box { background: var(--in4); border-radius: 10px; padding: 1rem .8rem; }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--in1); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  .btn {
+    display: inline-block; padding: .85rem 2.2rem; border: none; border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s; text-decoration: none;
+  }
+  .btn-primary { background: var(--in2); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,.35); }
+  .btn-primary:hover { background: var(--in1); transform: translateY(-2px); }
+
+  .progress-bar-wrap { background: var(--border); border-radius: 50px; height: 8px; margin-bottom: 1.5rem; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--in2), var(--in3)); border-radius: 50px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .82rem; color: var(--gray); margin-bottom: .4rem; }
+
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(49,46,129,.08); margin-bottom: 1rem; }
+  .q-meta { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--in2); margin-bottom: .6rem; }
+  .q-text { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; line-height: 1.65; color: #1a1a2e; margin-bottom: 1.5rem; }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex; align-items: flex-start; gap: .9rem; padding: .9rem 1.1rem;
+    border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+    transition: all .15s; background: #fff; text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--in3); background: #f5f3ff; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--in2); background: var(--in4); }
+  .option.wrong   { border-color: var(--red);  background: var(--red2); }
+  .option-letter {
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem; transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--in2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red); color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  .explanation {
+    border-left: 4px solid var(--in2); background: #f5f3ff; border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem; font-size: .9rem; line-height: 1.6; color: var(--gray); margin-top: 1rem; display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--in1); }
+
+  .nav-area { display: flex; justify-content: flex-end; margin-top: 1rem; }
+
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(49,46,129,.10); text-align: center; margin-bottom: 1.5rem; }
+  .score-circle { width: 140px; height: 140px; border-radius: 50%; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--in1); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; }
+  .review-item.ok   { background: var(--in4); border-left: 3px solid var(--in2); }
+  .review-item.fail { background: var(--red2); border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Zarządzanie</h1>
+  <p>Projekty unijne (PCM) · Wykład III · 24 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście!</h2>
+    <p>Test oparty na wykładzie III o wsparciu zdrowia publicznego z funduszy UE: art. 168 TFUE i rola UE, agencje ECDC i EMA, Program UE dla zdrowia 2021–2027 (EU4Health, Rozporządzenie 2021/522, cele, budżet i jego podział, HaDEA), działania kwalifikowalne i wskaźniki oceny oraz krajowe wsparcie z programu FEnIKS (POZ, AOS, psychiatria, ratownictwo).</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>24</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>5</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 24</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--in1);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "topic": "I. UE a zdrowie",
+    "q": "Działania UE w dziedzinie zdrowia opierają się m.in. na:",
+    "opts": [
+      "ustawie o NFZ z 2004 r.",
+      "art. 168 Traktatu o funkcjonowaniu Unii Europejskiej (TFUE)",
+      "Konstytucji RP",
+      "rozporządzeniu o ochronie danych RODO"
+    ],
+    "ans": 1,
+    "exp": "UE zmierza do lepszej ochrony zdrowotnej w ramach wszystkich polityk zgodnie z <strong>art. 168 TFUE</strong> (Traktatu o funkcjonowaniu Unii Europejskiej)."
+  },
+  {
+    "topic": "I. UE a zdrowie",
+    "q": "Jaka jest rola UE wobec krajowych polityk zdrowotnych?",
+    "opts": [
+      "UE samodzielnie organizuje świadczenie usług medycznych w państwach członkowskich",
+      "UE w pełni zastępuje krajowe systemy ochrony zdrowia",
+      "UE nie określa polityk zdrowotnych ani organizacji usług — uzupełnia polityki krajowe i wspiera władze lokalne",
+      "UE zakazuje państwom prowadzenia własnej polityki zdrowotnej"
+    ],
+    "ans": 2,
+    "exp": "UE <strong>nie określa polityk zdrowotnych ani organizacji i świadczenia usług</strong> — uzupełnia krajowe polityki zdrowotne, wspierając władze lokalne w osiąganiu wspólnych celów."
+  },
+  {
+    "topic": "II. Agencje i EU4Health",
+    "q": "Która agencja UE ocenia i monitoruje pojawiające się zagrożenia chorobami w celu skoordynowanego reagowania?",
+    "opts": [
+      "Europejska Agencja Środowiska (EEA)",
+      "Europejska Agencja Leków (EMA)",
+      "Europejski Bank Inwestycyjny (EIB)",
+      "Europejskie Centrum ds. Zapobiegania i Kontroli Chorób (ECDC)"
+    ],
+    "ans": 3,
+    "exp": "<strong>Europejskie Centrum ds. Zapobiegania i Kontroli Chorób (ECDC)</strong> ocenia i monitoruje pojawiające się zagrożenia chorobami; EMA zarządza naukową oceną leków."
+  },
+  {
+    "topic": "II. Agencje i EU4Health",
+    "q": "Europejska Agencja Leków (EMA) zarządza:",
+    "opts": [
+      "budżetem Europejskiego Funduszu Społecznego",
+      "monitorowaniem epidemii chorób zakaźnych",
+      "naukową oceną jakości, bezpieczeństwa i skuteczności produktów leczniczych w UE",
+      "siecią szkół wyższych w UE"
+    ],
+    "ans": 2,
+    "exp": "EMA <strong>zarządza naukową oceną jakości, bezpieczeństwa i skuteczności wszystkich produktów leczniczych w UE</strong>."
+  },
+  {
+    "topic": "II. Agencje i EU4Health",
+    "q": "Program UE dla zdrowia (EU4Health) na lata 2021–2027 został ustanowiony:",
+    "opts": [
+      "Rozporządzeniem (UE) 2021/522",
+      "Dyrektywą o czasie pracy",
+      "Konkordatem",
+      "ustawą krajową o zdrowiu publicznym"
+    ],
+    "ans": 0,
+    "exp": "Program UE dla zdrowia został ustanowiony <strong>Rozporządzeniem (UE) 2021/522</strong> i zapewnia finansowanie kwalifikującym się podmiotom oraz organizacjom ochrony zdrowia."
+  },
+  {
+    "topic": "II. Agencje i EU4Health",
+    "q": "Program EU4Health torował drogę do utworzenia:",
+    "opts": [
+      "Europejskiej Unii Zdrowotnej",
+      "europejskiej armii medycznej",
+      "wspólnej waluty zdrowotnej",
+      "europejskiego NFZ zastępującego krajowe systemy"
+    ],
+    "ans": 0,
+    "exp": "EU4Health utoruje drogę do utworzenia <strong>Europejskiej Unii Zdrowotnej</strong> dzięki inwestycjom w pilne priorytety: reakcję na COVID-19, europejski plan walki z rakiem i strategię farmaceutyczną dla Europy."
+  },
+  {
+    "topic": "II. Agencje i EU4Health",
+    "q": "Ile celów ogólnych i szczegółowych wyznaczono w Programie UE dla zdrowia?",
+    "opts": [
+      "Dwadzieścia celów ogólnych",
+      "Jeden cel ogólny i jeden szczegółowy",
+      "Cztery cele ogólne i dziesięć celów szczegółowych",
+      "Brak jakichkolwiek celów"
+    ],
+    "ans": 2,
+    "exp": "W Programie wyznaczono <strong>cztery cele ogólne, w ramach których ustalono dziesięć celów szczegółowych</strong> (m.in. profilaktyka, zwalczanie transgranicznych zagrożeń, jakość produktów leczniczych, wzmocnienie systemów opieki)."
+  },
+  {
+    "topic": "III. Budżet i podmioty",
+    "q": "Który podmiot odpowiada za realizację Programu UE dla zdrowia?",
+    "opts": [
+      "Agencja Wykonawcza ds. Zdrowia i Cyfryzacji (HaDEA)",
+      "Narodowy Fundusz Zdrowia",
+      "Światowa Organizacja Handlu",
+      "Europejski Bank Centralny"
+    ],
+    "ans": 0,
+    "exp": "Realizację programu prowadzi <strong>Agencja Wykonawcza ds. Zdrowia i Cyfryzacji (HaDEA)</strong>; Komisja Europejska opracowuje i przyjmuje roczne programy prac."
+  },
+  {
+    "topic": "III. Budżet i podmioty",
+    "q": "Jaki minimalny udział środków Programu rezerwuje się na promocję zdrowia i profilaktykę chorób?",
+    "opts": [
+      "Najwyżej 5%",
+      "Co najmniej 20%",
+      "Dokładnie 50%",
+      "Co najmniej 80%"
+    ],
+    "ans": 1,
+    "exp": "Zgodnie z zasadami podziału, <strong>co najmniej 20% kwot rezerwuje się na promocję zdrowia i działania w zakresie profilaktyki chorób</strong>."
+  },
+  {
+    "topic": "III. Budżet i podmioty",
+    "q": "Jaki maksymalny udział środków Programu można przeznaczyć na wydatki administracyjne?",
+    "opts": [
+      "Co najmniej 25%",
+      "Najwyżej 40%",
+      "Najwyżej 8%",
+      "Dokładnie 50%"
+    ],
+    "ans": 2,
+    "exp": "Na pokrycie wydatków administracyjnych rezerwuje się <strong>najwyżej 8% kwot</strong>; po 12,5% przeznacza się m.in. na zamówienia uzupełniające krajowe zapasy oraz globalne inicjatywy zdrowotne."
+  },
+  {
+    "topic": "III. Budżet i podmioty",
+    "q": "Czy osoby fizyczne kwalifikują się do dotacji z Programu UE dla zdrowia?",
+    "opts": [
+      "Nie — osoby fizyczne nie kwalifikują się do dotacji z Programu",
+      "Tak — każda osoba fizyczna otrzymuje dotację automatycznie",
+      "Tak, ale wyłącznie obywatele spoza UE",
+      "Tak, bez żadnych warunków"
+    ],
+    "ans": 0,
+    "exp": "Kwalifikują się osoby prawne (oraz osoby fizyczne tylko w zakresie wymaganym przez charakter działania), natomiast <strong>osoby fizyczne nie kwalifikują się do dotacji z Programu</strong>."
+  },
+  {
+    "topic": "III. Budżet i podmioty",
+    "q": "Które podmioty współpracują przy realizacji EU4Health?",
+    "opts": [
+      "Wyłącznie organizacje spoza Europy",
+      "Wyłącznie prywatne firmy farmaceutyczne",
+      "Tylko jeden wybrany kraj członkowski",
+      "Kraje UE, zainteresowane strony, Parlament Europejski i Komisja Europejska"
+    ],
+    "ans": 3,
+    "exp": "Sukces programu wymaga współpracy wielu podmiotów: <strong>krajów UE (grupa sterująca), zainteresowanych stron (m.in. pacjenci, środowisko akademickie), Parlamentu Europejskiego i Komisji Europejskiej</strong>."
+  },
+  {
+    "topic": "IV. Działania i wskaźniki",
+    "q": "Działania Programu realizowane są w oparciu o roczne programy prac i dotyczą czterech kategorii:",
+    "opts": [
+      "rolnictwa, transportu, energetyki i obronności",
+      "profilaktyki chorób, gotowości kryzysowej, systemów opieki zdrowotnej i technologii cyfrowych",
+      "edukacji, kultury, sportu i turystyki",
+      "podatków, ceł, wiz i migracji"
+    ],
+    "ans": 1,
+    "exp": "Działania dotyczą czterech kategorii: <strong>profilaktyki chorób, gotowości na sytuacje kryzysowe, systemów opieki zdrowotnej i technologii cyfrowych</strong>, z przekrojowym ukierunkowaniem na choroby nowotworowe."
+  },
+  {
+    "topic": "IV. Działania i wskaźniki",
+    "q": "Z którym funduszem Program UE dla zdrowia współpracuje, by zapewnić lepszy dostęp do opieki grupom szczególnie wrażliwym?",
+    "opts": [
+      "Funduszem Gwarancji Rolnych",
+      "Funduszem Spójności Transportowej",
+      "Europejskim Funduszem Rybackim",
+      "Europejskim Funduszem Społecznym Plus (EFS+)"
+    ],
+    "ans": 3,
+    "exp": "Program współpracuje m.in. z <strong>Europejskim Funduszem Społecznym Plus (EFS+)</strong>, by zapewnić lepszy dostęp do opieki zdrowotnej grupom szczególnie wrażliwym; z innymi funduszami (EFRR, Horyzont Europa, rescEU, InvestEU) działa komplementarnie."
+  },
+  {
+    "topic": "IV. Działania i wskaźniki",
+    "q": "Skrót HTA, wymieniony wśród działań kwalifikowalnych, oznacza:",
+    "opts": [
+      "rejestr osób bezrobotnych",
+      "wysoki podatek od leków",
+      "test sprawności fizycznej",
+      "ocenę technologii medycznych (Health Technology Assessment)"
+    ],
+    "ans": 3,
+    "exp": "<strong>HTA — Health Technology Assessment (ocena technologii medycznych)</strong> należy do działań kwalifikowalnych, obok wzmacniania Europejskich Sieci Referencyjnych (ESR)."
+  },
+  {
+    "topic": "IV. Działania i wskaźniki",
+    "q": "Które choroby objęte są wskaźnikiem zasięgu badań przesiewowych wymienionym w ocenie Programu?",
+    "opts": [
+      "Wyłącznie złamania kości",
+      "Wyłącznie grypa sezonowa",
+      "Rak piersi, rak szyjki macicy i rak jelita grubego",
+      "Wyłącznie próchnica zębów"
+    ],
+    "ans": 2,
+    "exp": "Wskaźnik zasięgu badań przesiewowych dotyczy programów w kierunku <strong>raka piersi, szyjki macicy i jelita grubego</strong>."
+  },
+  {
+    "topic": "IV. Działania i wskaźniki",
+    "q": "Wśród wskaźników szczepień Program wymienia choroby, którym można zapobiec, takie jak:",
+    "opts": [
+      "cukrzyca i nadciśnienie",
+      "odra, grypa, HPV i COVID-19",
+      "astma i alergia",
+      "złamania i zwichnięcia"
+    ],
+    "ans": 1,
+    "exp": "Wskaźnik stanu zaszczepienia dotyczy chorób, którym można zapobiec dzięki szczepieniom, takich jak <strong>odra, grypa, HPV i COVID-19</strong>."
+  },
+  {
+    "topic": "V. FEnIKS i wsparcie krajowe",
+    "q": "W ramach programu FEnIKS wsparcie zdrowia ujęto w:",
+    "opts": [
+      "Priorytecie rolnictwa ekologicznego",
+      "Priorytecie dotyczącym transportu drogowego",
+      "Priorytecie energetyki jądrowej",
+      "Priorytecie VI: Zdrowie"
+    ],
+    "ans": 3,
+    "exp": "Wsparcie zdrowia w programie Fundusze Europejskie na Infrastrukturę, Klimat i Środowisko (FEnIKS) ujęto w <strong>Priorytecie VI: Zdrowie</strong> (cel szczegółowy 4.5)."
+  },
+  {
+    "topic": "V. FEnIKS i wsparcie krajowe",
+    "q": "Skróty POZ i AOS, kluczowe dla wsparcia z FEnIKS, oznaczają:",
+    "opts": [
+      "pogotowie ratunkowe oraz aptekę ogólnodostępną",
+      "podstawową opiekę zdrowotną oraz ambulatoryjną opiekę specjalistyczną",
+      "poradnię okulistyczną oraz aptekę szpitalną",
+      "Państwowy Ośrodek Zdrowia i Agencję Ochrony Sanitarnej"
+    ],
+    "ans": 1,
+    "exp": "<strong>POZ — podstawowa opieka zdrowotna</strong>, <strong>AOS — ambulatoryjna opieka specjalistyczna</strong>. Wsparcie obejmuje m.in. cyfryzację, telemedycynę i rozwój opieki „jednego dnia”."
+  },
+  {
+    "topic": "V. FEnIKS i wsparcie krajowe",
+    "q": "Wsparcie z FEnIKS dla POZ kierowane jest do podmiotów, które:",
+    "opts": [
+      "mają umowę z Narodowym Funduszem Zdrowia o udzielanie świadczeń w ramach POZ",
+      "działają wyłącznie komercyjnie bez umowy z NFZ",
+      "są zarejestrowane poza Polską",
+      "nie wykonują działalności leczniczej"
+    ],
+    "ans": 0,
+    "exp": "Wsparcie kierowane jest do podmiotów wykonujących działalność leczniczą, <strong>posiadających umowę z NFZ o udzielanie świadczeń w ramach POZ</strong>, z preferencjami dla obszarów słabiej rozwiniętych i wiejskich."
+  },
+  {
+    "topic": "V. FEnIKS i wsparcie krajowe",
+    "q": "Który obszar wymaga szczególnego wsparcia ze środków FEnIKS, m.in. przez tworzenie Centrów Zdrowia Psychicznego?",
+    "opts": [
+      "stomatologia estetyczna",
+      "chirurgia plastyczna",
+      "psychiatria dzieci, młodzieży i dorosłych",
+      "medycyna sportowa"
+    ],
+    "ans": 2,
+    "exp": "Szczególnego wsparcia wymaga <strong>psychiatria (dzieci, młodzieży i dorosłych)</strong> — m.in. wdrożenie modelu środowiskowej opieki psychiatrycznej i rozwój Centrów Zdrowia Psychicznego."
+  },
+  {
+    "topic": "V. FEnIKS i wsparcie krajowe",
+    "q": "Zgodnie z zasadami FEnIKS, inwestycje w infrastrukturę ochrony zdrowia:",
+    "opts": [
+      "mogą pokrywać się z inwestycjami KPO w tym samym podmiocie",
+      "muszą zwiększyć liczbę łóżek szpitalnych o co najmniej połowę",
+      "dotyczą wyłącznie budowy nowych szpitali jednoimiennych",
+      "nie będą prowadziły do zwiększenia ogólnej liczby łóżek szpitalnych w systemie"
+    ],
+    "ans": 3,
+    "exp": "Inwestycje <strong>nie będą prowadziły do zwiększenia ogólnej liczby łóżek szpitalnych</strong> (w tym w psychiatrii); skupiają się na robotach budowlanych i doposażeniu. Nie mogą też pokrywać się z zakresami objętymi KPO w danym podmiocie."
+  },
+  {
+    "topic": "V. FEnIKS i wsparcie krajowe",
+    "q": "Wsparcie ratownictwa medycznego z FEnIKS obejmuje m.in.:",
+    "opts": [
+      "budowę autostrad krajowych",
+      "doposażenie dyspozytorni medycznych oraz symulator lotów dla kadry Lotniczego Pogotowia Ratunkowego (LPR)",
+      "zakup taboru kolejowego",
+      "modernizację sieci energetycznej"
+    ],
+    "ans": 1,
+    "exp": "Wsparcie ratownictwa obejmuje m.in. <strong>doposażenie dyspozytorni medycznych oraz zakup i instalację pełnego symulatora lotów wraz z zapleczem szkoleniowym dla kadry LPR</strong> (personelu HEMS)."
+  },
+  {
+    "topic": "I. UE a zdrowie",
+    "q": "Profilaktyka chorób wspierana przez UE obejmuje m.in.:",
+    "opts": [
+      "szczepienia, zwalczanie oporności na środki przeciwdrobnoustrojowe i walkę z rakiem",
+      "wyłącznie budowę dróg lokalnych",
+      "regulację rynku walutowego",
+      "organizację imprez sportowych"
+    ],
+    "ans": 0,
+    "exp": "Profilaktyka chorób obejmuje wiele obszarów: <strong>szczepienia, zwalczanie oporności na środki przeciwdrobnoustrojowe, walkę z rakiem i odpowiedzialne znakowanie środków spożywczych</strong>."
+  }
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0; score = 0; answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) renderQuestion();
+  else showResults();
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) { grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.'; bg = '#e0e7ff'; color = '#3730a3'; }
+  else if (pct >= 75) { grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.'; bg = '#ede9fe'; color = '#5b21b6'; }
+  else if (pct >= 60) { grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.'; bg = '#fff9c4'; color = '#f9a825'; }
+  else if (pct >= 50) { grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.'; bg = '#fff3e0'; color = '#e65100'; }
+  else { grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.'; bg = '#fde8e9'; color = '#c1121f'; }
+  circle.style.background = bg; circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() { startQuiz(); window.scrollTo(0, 0); }
+
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>

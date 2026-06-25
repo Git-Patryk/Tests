@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarządzanie – Testy</title>
+<style>
+  :root {
+    --bg:     #0a0a0f;
+    --card:   #12121a;
+    --border: #1e1e2e;
+    --text:   #e8e8f0;
+    --muted:  #6b6b8a;
+    --nc:     #6366f1;
+    --ng:     rgba(99,102,241,.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(99,102,241,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  nav {
+    position: relative; z-index: 1;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: .6rem;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: .85rem; transition: color .2s; }
+  nav a:hover { color: var(--nc); }
+  nav .sep { color: var(--border); }
+  nav .current { color: var(--text); font-weight: 600; }
+
+  .page-header {
+    position: relative; z-index: 1;
+    padding: 3rem 1.5rem 2rem;
+    max-width: 860px; margin: 0 auto;
+  }
+  .subject-icon { font-size: 2.8rem; margin-bottom: 1rem; filter: drop-shadow(0 0 14px var(--nc)); }
+  .page-header h1 {
+    font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; line-height: 1.2; margin-bottom: .6rem;
+    background: linear-gradient(90deg, #fff 60%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .page-header p { color: var(--muted); font-size: .9rem; line-height: 1.6; max-width: 600px; }
+  .accent-line { width: 50px; height: 2px; background: var(--nc); box-shadow: 0 0 8px var(--nc); border-radius: 2px; margin: 1rem 0; }
+
+  .tests-section {
+    position: relative; z-index: 1;
+    max-width: 860px; margin: 0 auto;
+    padding: 0 1.5rem 1rem;
+  }
+  .tests-section.last { padding-bottom: 5rem; }
+  .section-label {
+    font-size: .7rem; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem;
+  }
+  .tests-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .test-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.5rem 1.8rem; display: flex; align-items: center; gap: 1.4rem;
+    text-decoration: none; color: inherit;
+    transition: border-color .2s, transform .15s, box-shadow .2s;
+    position: relative; overflow: hidden;
+  }
+  .test-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--ng); opacity: 0; transition: opacity .25s; border-radius: 14px;
+  }
+  .test-card:hover { border-color: var(--nc); transform: translateX(4px); box-shadow: 0 0 20px rgba(99,102,241,.15); }
+  .test-card:hover::before { opacity: 1; }
+
+  .test-num {
+    width: 50px; height: 50px; border-radius: 12px;
+    background: var(--ng); border: 1px solid color-mix(in srgb, var(--nc) 25%, transparent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 900; color: var(--nc); flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+  .test-info { flex: 1; position: relative; z-index: 1; }
+  .test-title { font-size: 1rem; font-weight: 700; margin-bottom: .25rem; }
+  .test-meta { font-size: .8rem; color: var(--muted); }
+  .test-arrow { color: var(--nc); font-size: 1.2rem; transition: transform .2s; position: relative; z-index: 1; }
+  .test-card:hover .test-arrow { transform: translateX(4px); }
+
+  footer {
+    position: relative; z-index: 1; text-align: center; padding: 2rem;
+    color: var(--muted); font-size: .75rem; border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 480px) {
+    .page-header { padding: 2rem 1rem 1.5rem; }
+    .tests-section { padding: 0 1rem 1rem; }
+    .test-card { padding: 1.1rem 1.2rem; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <a href="wum.html">WUM</a>
+  <span class="sep">/</span>
+  <span class="current">Zarządzanie</span>
+</nav>
+
+<div class="page-header">
+  <div class="subject-icon">📊</div>
+  <h1>Zarządzanie</h1>
+  <div class="accent-line"></div>
+  <p>Testy z trzech obszarów przedmiotu: rynek kapitałowy (giełda, akcje, obligacje), zarządzanie projektami unijnymi metodą PCM oraz zarządzanie w zdrowiu publicznym. Jeden test na każde źródło, pytania losowane przy każdym podejściu.</p>
+</div>
+
+<div class="tests-section">
+  <div class="section-label">Rynek kapitałowy</div>
+  <div class="tests-list">
+
+    <a class="test-card" href="test_zarz_1.html">
+      <div class="test-num">1</div>
+      <div class="test-info">
+        <div class="test-title">Wprowadzenie – rynek kapitałowy</div>
+        <div class="test-meta">22 pytania · przepływ kapitału, rynek finansowy, rynek pieniężny i kapitałowy, WIBOR/POLSTR, FX, instytucje (KNF, KDPW, GPW)</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+    <a class="test-card" href="test_zarz_2.html">
+      <div class="test-num">2</div>
+      <div class="test-info">
+        <div class="test-title">Obligacje</div>
+        <div class="test-meta">22 pytania · istota obligacji, emitenci i nabywcy, klasyfikacja (oprocentowanie, emisja, ryzyko), prawa obligatariusza, hierarchia w upadłości</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+    <a class="test-card" href="test_zarz_3.html">
+      <div class="test-num">3</div>
+      <div class="test-info">
+        <div class="test-title">Akcje</div>
+        <div class="test-meta">21 pytań · akcja i spółka akcyjna, WIG, trzy wartości i dematerializacja, prawa akcjonariusza, źródła zwrotu i ryzyko</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+    <a class="test-card" href="test_zarz_4.html">
+      <div class="test-num">4</div>
+      <div class="test-info">
+        <div class="test-title">Wizyta na Giełdzie (GPW)</div>
+        <div class="test-meta">20 pytań · zwiedzanie GPW: sala notowań, sala rady, tablica wyników sesji, strefy czasowe, sesja i edukacyjna rola giełdy</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+    <a class="test-card" href="test_zarz_5.html">
+      <div class="test-num">5</div>
+      <div class="test-info">
+        <div class="test-title">Obrót giełdowy</div>
+        <div class="test-meta">24 pytania · funkcje giełdy, instrumenty, uczestnicy, zlecenia (limit/rynek), księga zleceń, BID/ASK i spread, fazy sesji, koszty i T+2</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+  </div>
+</div>
+
+<div class="tests-section">
+  <div class="section-label">Zarządzanie projektami unijnymi (PCM)</div>
+  <div class="tests-list">
+
+    <a class="test-card" href="test_zarz_6.html">
+      <div class="test-num">6</div>
+      <div class="test-info">
+        <div class="test-title">Wykład I – Metoda PCM</div>
+        <div class="test-meta">24 pytania · istota i geneza PCM, 5 faz, Macierz Logiczna, cele SMART, cykl życia projektu, etapy, metody oceny i audyt</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+    <a class="test-card" href="test_zarz_7.html">
+      <div class="test-num">7</div>
+      <div class="test-info">
+        <div class="test-title">Wykład II – Ludzie i zespół w PCM</div>
+        <div class="test-meta">24 pytania · role (PC, PM, IM, NM), kierownik projektu, ZZL i komunikacja, metody doboru, modele struktur (chirurgiczna, ekspercka, izomorficzna, kolektywna)</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+    <a class="test-card" href="test_zarz_8.html">
+      <div class="test-num">8</div>
+      <div class="test-info">
+        <div class="test-title">Wykład III – Fundusze UE dla zdrowia</div>
+        <div class="test-meta">24 pytania · art. 168 TFUE, ECDC i EMA, EU4Health 2021–2027 (cele, budżet, HaDEA), wskaźniki oraz program FEnIKS (POZ, AOS, psychiatria)</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+  </div>
+</div>
+
+<div class="tests-section last">
+  <div class="section-label">Zarządzanie w zdrowiu publicznym</div>
+  <div class="tests-list">
+
+    <a class="test-card" href="test_zarz_9.html">
+      <div class="test-num">9</div>
+      <div class="test-info">
+        <div class="test-title">Funkcje zarządzania i projekt medyczny</div>
+        <div class="test-meta">22 pytania · cechy projektów, dwuzręczność (run/change-the-business), ISO 21500, podejście LFA, drzewo problemu i celów, analiza strategii</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+    <a class="test-card" href="test_zarz_10.html">
+      <div class="test-num">10</div>
+      <div class="test-info">
+        <div class="test-title">Planowanie projektu</div>
+        <div class="test-meta">23 pytania · po co planować, zakres planowania, WBS, technika sieciowa CPM/MPM (ES, EF, LS, LF, rezerwa), ścieżka krytyczna, wykres Gantta</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+    <a class="test-card" href="test_zarz_11.html">
+      <div class="test-num">11</div>
+      <div class="test-info">
+        <div class="test-title">Jakość i model uczenia</div>
+        <div class="test-meta">20 pytań · model ALAPA/ONAPA, zadowolenie klienta, wymiary jakości, akredytacja/certyfikacja ISO 9000/EFQM, cykl PDCA, cele SMART</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+  </div>
+</div>
+
+<footer>StudyZone &mdash; materiały pomocnicze do nauki</footer>
+</body>
+</html>

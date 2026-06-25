@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarządzanie – Zdrowie publiczne – StudyZone</title>
+<style>
+  :root {
+    --in1:    #3730a3;
+    --in2:    #6366f1;
+    --in3:    #a5b4fc;
+    --in4:    #e0e7ff;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f8fafc;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ff;
+    color: #1e1b2e;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--in1) 0%, var(--in2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem;
+  }
+  .start-card {
+    background: #fff; border-radius: 16px; padding: 2.5rem;
+    text-align: center; box-shadow: 0 4px 24px rgba(49,46,129,.10);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem; color: var(--in1); margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem; margin: 1.5rem 0 2rem;
+  }
+  .info-box { background: var(--in4); border-radius: 10px; padding: 1rem .8rem; }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--in1); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  .btn {
+    display: inline-block; padding: .85rem 2.2rem; border: none; border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s; text-decoration: none;
+  }
+  .btn-primary { background: var(--in2); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,.35); }
+  .btn-primary:hover { background: var(--in1); transform: translateY(-2px); }
+
+  .progress-bar-wrap { background: var(--border); border-radius: 50px; height: 8px; margin-bottom: 1.5rem; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--in2), var(--in3)); border-radius: 50px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .82rem; color: var(--gray); margin-bottom: .4rem; }
+
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(49,46,129,.08); margin-bottom: 1rem; }
+  .q-meta { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--in2); margin-bottom: .6rem; }
+  .q-text { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; line-height: 1.65; color: #1a1a2e; margin-bottom: 1.5rem; }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex; align-items: flex-start; gap: .9rem; padding: .9rem 1.1rem;
+    border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+    transition: all .15s; background: #fff; text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--in3); background: #f5f3ff; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--in2); background: var(--in4); }
+  .option.wrong   { border-color: var(--red);  background: var(--red2); }
+  .option-letter {
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem; transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--in2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red); color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  .explanation {
+    border-left: 4px solid var(--in2); background: #f5f3ff; border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem; font-size: .9rem; line-height: 1.6; color: var(--gray); margin-top: 1rem; display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--in1); }
+
+  .nav-area { display: flex; justify-content: flex-end; margin-top: 1rem; }
+
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(49,46,129,.10); text-align: center; margin-bottom: 1.5rem; }
+  .score-circle { width: 140px; height: 140px; border-radius: 50%; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--in1); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; }
+  .review-item.ok   { background: var(--in4); border-left: 3px solid var(--in2); }
+  .review-item.fail { background: var(--red2); border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Zarządzanie</h1>
+  <p>Zdrowie publiczne · Jakość i model uczenia · 20 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście!</h2>
+    <p>Test oparty na wykładzie I z „Zarządzania w zdrowiu publicznym”: model organizowania procesu nauki ALAPA/ONAPA (Ocena, Nauka, Analiza, Praktyka, Zastosowanie), zadowolenie klienta oraz potrzeby i oczekiwania, wymiary jakości, koncepcje zapewniania jakości (akredytacja, certyfikacja ISO 9000, nagroda jakości EFQM), cykl PDCA Deminga, cele SMART oraz organizacja zajęć i zaliczenia.</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>20</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>4</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 20</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--in1);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "topic": "I. Model ALAPA",
+    "q": "Etap ASSESSMENT (Ocena) w modelu organizowania procesu nauki (ALAPA/ONAPA) służy do:",
+    "opts": [
+      "wyboru wykładowcy prowadzącego zajęcia",
+      "wystawienia oceny końcowej z egzaminu",
+      "rozliczenia kosztów szkolenia",
+      "określenia obecnego poziomu umiejętności i znajomości danej kompetencji"
+    ],
+    "ans": 3,
+    "exp": "Etap Assessment (Ocena) pomaga <strong>określić obecny poziom umiejętności i znajomości danej kompetencji</strong>; wykorzystuje narzędzia takie jak ankieta, scenki czy dyskusja w grupach."
+  },
+  {
+    "topic": "I. Model ALAPA",
+    "q": "Które narzędzia wykorzystuje się na etapie ASSESSMENT (Ocena)?",
+    "opts": [
+      "tylko analizę sprawozdań finansowych",
+      "wyłącznie egzamin pisemny",
+      "ankietę, scenki lub dyskusję w grupach",
+      "wyłącznie obserwację kamerą przemysłową"
+    ],
+    "ans": 2,
+    "exp": "Na etapie oceny można wykorzystać różne narzędzia, takie jak <strong>ankieta, scenki lub dyskusja w grupach</strong>."
+  },
+  {
+    "topic": "I. Model ALAPA",
+    "q": "Etap LEARNING (Nauka) wiąże się przede wszystkim z:",
+    "opts": [
+      "praktycznym wykonywaniem zabiegów medycznych",
+      "lekturą i uzyskiwaniem informacji przy użyciu wykładów oraz materiałów drukowanych",
+      "oceną zachowań innych osób",
+      "podejmowaniem decyzji inwestycyjnych"
+    ],
+    "ans": 1,
+    "exp": "Etap Learning (Nauka) <strong>wiąże się z lekturą i uzyskiwaniem informacji przy wykorzystaniu tradycyjnych narzędzi, takich jak wykłady czy materiały drukowane</strong>."
+  },
+  {
+    "topic": "I. Model ALAPA",
+    "q": "Etap ANALYSIS (Analiza) polega na:",
+    "opts": [
+      "wyłącznie czytaniu podręczników",
+      "rozpatrywaniu odpowiednich i nieodpowiednich zachowań na podstawie studiów przypadków, scenek i filmów",
+      "rozliczaniu budżetu projektu",
+      "rekrutacji nowych pracowników"
+    ],
+    "ans": 1,
+    "exp": "Etap Analysis (Analiza) polega na <strong>rozpatrywaniu odpowiednich i nieodpowiednich zachowań poprzez badanie, jak inni zachowują się w danej sytuacji</strong> — z wykorzystaniem studiów przypadków, scenek oraz filmów czy powieści."
+  },
+  {
+    "topic": "I. Model ALAPA",
+    "q": "Etap PRACTICE (Praktyka) stwarza możliwość:",
+    "opts": [
+      "pominięcia oceny kompetencji",
+      "wyłącznie biernego słuchania wykładu",
+      "rezygnacji z ćwiczeń i symulacji",
+      "zastosowania danej kompetencji w sytuacji przypominającej rzeczywistą i uzyskania informacji zwrotnych"
+    ],
+    "ans": 3,
+    "exp": "Etap Practice (Praktyka) <strong>stwarza możliwość zastosowania kompetencji do sytuacji przypominającej rzeczywistą</strong> — to okazja do eksperymentowania i uzyskiwania informacji zwrotnych przez ćwiczenia, symulacje i scenki."
+  },
+  {
+    "topic": "II. Jakość i klient",
+    "q": "Zadowolenie klienta to:",
+    "opts": [
+      "liczba transakcji zawartych w ciągu roku",
+      "opinia klienta o stopniu, w jakim transakcja spełnia jego potrzeby lub oczekiwania",
+      "wysokość ceny zapłaconej za usługę",
+      "liczba pracowników obsługujących klienta"
+    ],
+    "ans": 1,
+    "exp": "Zadowolenie klienta to <strong>opinia klienta o stopniu, w jakim transakcja spełnia jego potrzeby lub oczekiwania</strong>. Wykład podkreśla, że potrzeby to jedno, a oczekiwania to drugie."
+  },
+  {
+    "topic": "II. Jakość i klient",
+    "q": "Wymiar TECHNICZNY jakości polega na:",
+    "opts": [
+      "zastosowaniu nauki i techniki do rozwiązania problemu (czym dysponujemy)",
+      "ocenie wyłącznie estetyki opakowania",
+      "pomiarze satysfakcji finansowej akcjonariuszy",
+      "liczbie reklamacji klientów"
+    ],
+    "ans": 0,
+    "exp": "Wymiar techniczny jakości to <strong>zastosowanie nauki i techniki do rozwiązania problemu</strong> — w tym wymiarze odpowiadamy na pytanie, czym dysponujemy."
+  },
+  {
+    "topic": "II. Jakość i klient",
+    "q": "Wykład odróżnia dwa pojęcia istotne dla jakości usługi:",
+    "opts": [
+      "potrzeby i oczekiwania",
+      "przychody i koszty",
+      "akcje i obligacje",
+      "harmonogram i budżet"
+    ],
+    "ans": 0,
+    "exp": "Wykład wyraźnie rozróżnia: <strong>POTRZEBY to jedno, OCZEKIWANIA to drugie</strong> — oba pojęcia mają znaczenie dla oceny zadowolenia klienta i jakości usługi."
+  },
+  {
+    "topic": "III. Zapewnianie jakości",
+    "q": "Z jakimi normami związana jest CERTYFIKACJA jako sposób zapewniania jakości usług?",
+    "opts": [
+      "z normą ISO 21500",
+      "z modelem EFQM",
+      "ze standardami programu akredytacji",
+      "z normami ISO serii 9000"
+    ],
+    "ans": 3,
+    "exp": "Według zestawienia z wykładu certyfikacja opiera się na <strong>normach ISO serii 9000</strong> i jest uznawana w krajach na całym świecie; akredytacja opiera się na standardach programu akredytacji, a nagroda jakości na elementach modelu EFQM."
+  },
+  {
+    "topic": "III. Zapewnianie jakości",
+    "q": "Z którą koncepcją zapewniania jakości związany jest model EFQM?",
+    "opts": [
+      "z audytem podatkowym",
+      "z akredytacją",
+      "z certyfikacją ISO 9000",
+      "z nagrodą jakości"
+    ],
+    "ans": 3,
+    "exp": "Model <strong>EFQM</strong> stanowi podstawę <strong>nagrody jakości</strong>, której uznanie ma zasięg regionalny, krajowy, europejski lub światowy."
+  },
+  {
+    "topic": "III. Zapewnianie jakości",
+    "q": "Akredytacja jako sposób zapewniania jakości usług:",
+    "opts": [
+      "jest tożsama z nagrodą jakości EFQM",
+      "opiera się na normach ISO serii 9000 uznawanych na całym świecie",
+      "opiera się na standardach programu akredytacji i jest uznawana w danym kraju",
+      "nie ma żadnych standardów odniesienia"
+    ],
+    "ans": 2,
+    "exp": "Akredytacja <strong>opiera się na standardach programu akredytacji i jest uznawana w danym kraju</strong> — w odróżnieniu od certyfikacji (ISO 9000, zasięg światowy) i nagrody jakości (EFQM)."
+  },
+  {
+    "topic": "III. Zapewnianie jakości",
+    "q": "Cykl PDCA Deminga obejmuje fazy:",
+    "opts": [
+      "Analiza – Synteza – Ocena – Audyt",
+      "Start – Stop – Reset – End",
+      "Plan – Do – Check – Act (Planuj – Wykonaj – Sprawdź – Działaj)",
+      "Wejście – Proces – Wyjście – Kontrola"
+    ],
+    "ans": 2,
+    "exp": "Cykl PDCA Deminga to <strong>Plan – Do – Check – Act (Planuj – Wykonaj – Sprawdź – Działaj)</strong> — jak zauważono w notatkach, „pętla nie jest zawiła, jedno pociąga drugie na logikę”."
+  },
+  {
+    "topic": "III. Zapewnianie jakości",
+    "q": "Cykl PDCA jest narzędziem służącym przede wszystkim:",
+    "opts": [
+      "ciągłemu doskonaleniu jakości",
+      "obliczaniu podatku dochodowego",
+      "rekrutacji pracowników",
+      "wyznaczaniu kursu walutowego"
+    ],
+    "ans": 0,
+    "exp": "PDCA (cykl Deminga) to narzędzie <strong>ciągłego doskonalenia jakości</strong> — kolejne fazy logicznie wynikają jedna z drugiej i powtarzają się w pętli."
+  },
+  {
+    "topic": "IV. Cele i organizacja",
+    "q": "W akronimie SMART litera „A” (achievable) oznacza, że cel powinien być:",
+    "opts": [
+      "automatyczny",
+      "abstrakcyjny",
+      "anonimowy",
+      "osiągalny"
+    ],
+    "ans": 3,
+    "exp": "W SMART litera <strong>A (achievable) oznacza „osiągalny”</strong>; wykład podkreśla, że cele muszą być doprecyzowane."
+  },
+  {
+    "topic": "IV. Cele i organizacja",
+    "q": "Przypowieść o czterech osobach — „Każdy, Ktoś, Ktokolwiek i Nikt” — ilustruje:",
+    "opts": [
+      "sposób obliczania ścieżki krytycznej",
+      "problem odpowiedzialności i pełnienia funkcji w zespole",
+      "zasady emisji obligacji",
+      "budowę wykresu Gantta"
+    ],
+    "ans": 1,
+    "exp": "Historia „Każdy, Ktoś, Ktokolwiek i Nikt” ilustruje <strong>problem odpowiedzialności i pełnienia funkcji w zespole</strong> — gdy odpowiedzialność jest rozmyta, ważne zadanie może pozostać niewykonane."
+  },
+  {
+    "topic": "IV. Cele i organizacja",
+    "q": "Egzamin z przedmiotu „Zarządzanie w zdrowiu publicznym” ma formę:",
+    "opts": [
+      "egzaminu ustnego przed komisją",
+      "rozprawki pisemnej",
+      "testu jednokrotnego wyboru",
+      "obrony pracy dyplomowej"
+    ],
+    "ans": 2,
+    "exp": "Egzamin z przedmiotu „Zarządzanie w zdrowiu publicznym” to <strong>test jednokrotnego wyboru</strong> (zgodnie z wytycznymi organizacyjnymi przedmiotu)."
+  },
+  {
+    "topic": "IV. Cele i organizacja",
+    "q": "Warunkiem zaliczenia przedmiotu (obok obecności i aktywności) jest:",
+    "opts": [
+      "przedstawienie efektów pracy grupowej nad projektem w postaci prezentacji",
+      "samodzielne napisanie podręcznika",
+      "odbycie stażu zagranicznego",
+      "zdanie egzaminu z języka obcego"
+    ],
+    "ans": 0,
+    "exp": "Zaliczenie wymaga, by efekty pracy grupowej nad projektem zostały <strong>przedstawione w postaci prezentacji</strong>, która stanowi podstawę dyskusji w grupie (obok obecności i aktywności)."
+  },
+  {
+    "topic": "I. Model ALAPA",
+    "q": "Piąty etap modelu (Application, „Step 5”) oznacza:",
+    "opts": [
+      "rezygnację z dalszej nauki",
+      "ponowną ocenę wstępną poziomu wiedzy",
+      "zastosowanie nabytej kompetencji w realnej sytuacji",
+      "wyłącznie czytanie literatury"
+    ],
+    "ans": 2,
+    "exp": "Etap Application („Step 5”) to <strong>zastosowanie nabytej kompetencji w realnej sytuacji</strong> — domyka cykl rozwoju kompetencji: Ocena → Nauka → Analiza → Praktyka → Zastosowanie."
+  },
+  {
+    "topic": "II. Jakość i klient",
+    "q": "„Imperatyw jakości” i „pętla jakości usług” w wykładzie odnoszą się do:",
+    "opts": [
+      "obowiązku obniżania cen usług",
+      "stałego, świadomego dbania o jakość w organizacji i usługach",
+      "zakazu mierzenia satysfakcji klienta",
+      "maksymalizacji liczby pracowników"
+    ],
+    "ans": 1,
+    "exp": "„Imperatyw jakości” i „pętla jakości usług” podkreślają <strong>stałe, świadome dbanie o jakość w organizacji i świadczonych usługach</strong> (m.in. poprzez cykl doskonalenia)."
+  },
+  {
+    "topic": "III. Zapewnianie jakości",
+    "q": "Które trzy koncepcje zapewniania poziomu jakości usług zestawiono w wykładzie?",
+    "opts": [
+      "akredytację, certyfikację i nagrodę jakości",
+      "audyt, kontrolę i windykację",
+      "rekrutację, selekcję i szkolenie",
+      "emisję, notowanie i wykup"
+    ],
+    "ans": 0,
+    "exp": "Wykład zestawia trzy koncepcje: <strong>akredytację (standardy programu akredytacji), certyfikację (ISO 9000) oraz nagrodę jakości (model EFQM)</strong>, różniące się podstawą i zasięgiem uznania."
+  }
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0; score = 0; answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) renderQuestion();
+  else showResults();
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) { grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.'; bg = '#e0e7ff'; color = '#3730a3'; }
+  else if (pct >= 75) { grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.'; bg = '#ede9fe'; color = '#5b21b6'; }
+  else if (pct >= 60) { grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.'; bg = '#fff9c4'; color = '#f9a825'; }
+  else if (pct >= 50) { grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.'; bg = '#fff3e0'; color = '#e65100'; }
+  else { grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.'; bg = '#fde8e9'; color = '#c1121f'; }
+  circle.style.background = bg; circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() { startQuiz(); window.scrollTo(0, 0); }
+
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>

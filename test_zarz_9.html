@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarządzanie – Zdrowie publiczne – StudyZone</title>
+<style>
+  :root {
+    --in1:    #3730a3;
+    --in2:    #6366f1;
+    --in3:    #a5b4fc;
+    --in4:    #e0e7ff;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f8fafc;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ff;
+    color: #1e1b2e;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--in1) 0%, var(--in2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem;
+  }
+  .start-card {
+    background: #fff; border-radius: 16px; padding: 2.5rem;
+    text-align: center; box-shadow: 0 4px 24px rgba(49,46,129,.10);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem; color: var(--in1); margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem; margin: 1.5rem 0 2rem;
+  }
+  .info-box { background: var(--in4); border-radius: 10px; padding: 1rem .8rem; }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--in1); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  .btn {
+    display: inline-block; padding: .85rem 2.2rem; border: none; border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s; text-decoration: none;
+  }
+  .btn-primary { background: var(--in2); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,.35); }
+  .btn-primary:hover { background: var(--in1); transform: translateY(-2px); }
+
+  .progress-bar-wrap { background: var(--border); border-radius: 50px; height: 8px; margin-bottom: 1.5rem; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--in2), var(--in3)); border-radius: 50px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .82rem; color: var(--gray); margin-bottom: .4rem; }
+
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(49,46,129,.08); margin-bottom: 1rem; }
+  .q-meta { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--in2); margin-bottom: .6rem; }
+  .q-text { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; line-height: 1.65; color: #1a1a2e; margin-bottom: 1.5rem; }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex; align-items: flex-start; gap: .9rem; padding: .9rem 1.1rem;
+    border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+    transition: all .15s; background: #fff; text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--in3); background: #f5f3ff; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--in2); background: var(--in4); }
+  .option.wrong   { border-color: var(--red);  background: var(--red2); }
+  .option-letter {
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem; transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--in2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red); color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  .explanation {
+    border-left: 4px solid var(--in2); background: #f5f3ff; border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem; font-size: .9rem; line-height: 1.6; color: var(--gray); margin-top: 1rem; display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--in1); }
+
+  .nav-area { display: flex; justify-content: flex-end; margin-top: 1rem; }
+
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(49,46,129,.10); text-align: center; margin-bottom: 1.5rem; }
+  .score-circle { width: 140px; height: 140px; border-radius: 50%; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--in1); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; }
+  .review-item.ok   { background: var(--in4); border-left: 3px solid var(--in2); }
+  .review-item.fail { background: var(--red2); border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Zarządzanie</h1>
+  <p>Zdrowie publiczne · Funkcje zarządzania i projekt medyczny · 22 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście!</h2>
+    <p>Test oparty na e-learningu dr A. Wyrozębskiej o funkcjach zarządzania i zarządzaniu projektem medycznym: definicja i cechy projektów, dwuzręczność organizacji (run/change-the-business), ISO 21500, etapy realizacji projektu, podejście matrycy logicznej (LFA) i jego geneza, faza analizy (interesariusze, problem, cele, strategia), drzewo problemu i drzewo celów oraz przykłady projektów (robot da Vinci, drony AED).</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>22</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>5</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 22</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--in1);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "topic": "I. Czym jest projekt",
+    "q": "Zgodnie z definicją z wykładu, projekty to przedsięwzięcia, które są m.in.:",
+    "opts": [
+      "pozbawione jakiegokolwiek ryzyka",
+      "rutynowe i powtarzane codziennie bez zmian",
+      "niepowtarzalne, o wysokiej złożoności, z wyróżnionym początkiem i końcem",
+      "realizowane bez żadnych ograniczeń zasobowych"
+    ],
+    "ans": 2,
+    "exp": "Projekty to <strong>niepowtarzalne przedsięwzięcia o wysokiej złożoności, określone co do okresu realizacji (z wyróżnionym początkiem i końcem)</strong>, angażujące znaczne, lecz limitowane środki i wiążące się z wysokim ryzykiem."
+  },
+  {
+    "topic": "I. Czym jest projekt",
+    "q": "Realizacja projektów ma charakter:",
+    "opts": [
+      "wyłącznie jednoosobowy",
+      "zespołowy i interdyscyplinarny (wysokokwalifikowani wykonawcy różnych dziedzin)",
+      "całkowicie przypadkowy",
+      "ograniczony do jednej wąskiej specjalności"
+    ],
+    "ans": 1,
+    "exp": "Projekty są <strong>realizowane zespołowo przez wysokokwalifikowanych wykonawców różnych dziedzin (interdyscyplinarne)</strong> i wymagają specjalnych metod przygotowania oraz realizacji."
+  },
+  {
+    "topic": "I. Czym jest projekt",
+    "q": "Z jakim rodzajem ryzyka — według wykładu — wiążą się projekty?",
+    "opts": [
+      "wyłącznie wizerunkowym",
+      "wyłącznie pogodowym",
+      "technicznym, organizacyjnym i ekonomicznym",
+      "żadnym — projekty są bezpieczne"
+    ],
+    "ans": 2,
+    "exp": "Projekty są <strong>związane z wysokim ryzykiem technicznym, organizacyjnym i ekonomicznym</strong>, co wymaga zastosowania specjalnych metod ich przygotowania i realizacji."
+  },
+  {
+    "topic": "I. Czym jest projekt",
+    "q": "Zgodnie z cytowaną definicją S.M. Younga, projekt to:",
+    "opts": [
+      "zadanie wykonywane wyłącznie przez jedną osobę w ciągu godziny",
+      "każde zlecenie lub zadanie, którego nie można załatwić w trakcie jednej rozmowy telefonicznej",
+      "rutynowa czynność powtarzana codziennie",
+      "wyłącznie inwestycja budowlana"
+    ],
+    "ans": 1,
+    "exp": "Według S.M. Younga (senatora z Ohio w latach 60.) projekt to <strong>każde zlecenie lub zadanie, którego nie można załatwić w trakcie jednej rozmowy telefonicznej</strong>."
+  },
+  {
+    "topic": "II. Dwuzręczność i etapy",
+    "q": "„Dwuzręczność” (ambidexterity) organizacji to konieczność połączenia:",
+    "opts": [
+      "rekrutacji i zwolnień",
+      "marketingu i sprzedaży",
+      "produkcji i magazynowania",
+      "działalności operacyjnej (run-the-business) i projektowej/rozwojowej (change-the-business)"
+    ],
+    "ans": 3,
+    "exp": "Dwuzręczność to połączenie <strong>działalności operacyjnej/bieżącej (run-the-business — pokrycie kosztów i zysk) oraz projektowej/rozwojowej/eksploracyjnej (change-the-business — tworzenie nowych możliwości biznesowych)</strong>."
+  },
+  {
+    "topic": "II. Dwuzręczność i etapy",
+    "q": "Działalność typu „run-the-business” służy przede wszystkim:",
+    "opts": [
+      "eksploracji nieznanych rynków",
+      "tworzeniu zupełnie nowych modeli biznesowych",
+      "pokryciu kosztów bieżącej działalności i wypracowaniu zysków",
+      "likwidacji organizacji"
+    ],
+    "ans": 2,
+    "exp": "„Run-the-business” (działalność operacyjna/eksploatacyjna) służy <strong>pokryciu kosztów działalności i wypracowaniu zysków</strong>, podczas gdy „change-the-business” tworzy nowe możliwości biznesowe."
+  },
+  {
+    "topic": "II. Dwuzręczność i etapy",
+    "q": "Które są etapy realizacji projektu według wykładu?",
+    "opts": [
+      "Diagnoza → Operacja → Rehabilitacja → Wypis",
+      "Reklama → Sprzedaż → Serwis → Reklamacja",
+      "Inicjowanie i definiowanie → Planowanie → Wykonanie planu → Zamknięcie",
+      "Zakup → Magazyn → Transport → Dostawa"
+    ],
+    "ans": 2,
+    "exp": "Etapy realizacji projektu to: <strong>inicjowanie i definiowanie projektu, planowanie projektu, wykonanie planu projektu oraz zamknięcie projektu</strong>."
+  },
+  {
+    "topic": "II. Dwuzręczność i etapy",
+    "q": "Standard ISO 21500:2021 dotyczy:",
+    "opts": [
+      "zarządzania projektami, programami i portfelami (project, programme and portfolio management)",
+      "bezpieczeństwa żywności",
+      "systemów zarządzania środowiskowego",
+      "ochrony danych osobowych"
+    ],
+    "ans": 0,
+    "exp": "Norma <strong>ISO 21500:2021 dotyczy zarządzania projektami, programami i portfelami</strong> (kontekst i koncepcje)."
+  },
+  {
+    "topic": "III. Podejście LFA",
+    "q": "Podejście matrycy logicznej (LFA – Logical Framework Approach) jest:",
+    "opts": [
+      "narzędziem do projektowania budynków",
+      "techniką księgowania kosztów projektu",
+      "metodą rekrutacji pracowników",
+      "metodą definiowania projektów wchodzącą w skład metodyki PCM"
+    ],
+    "ans": 3,
+    "exp": "LFA to <strong>metoda definiowania projektów wchodząca w skład metodyki zarządzania cyklem projektu (PCM)</strong>; jest zalecana do planowania i kontroli projektów europejskich."
+  },
+  {
+    "topic": "III. Podejście LFA",
+    "q": "Kto i kiedy opracował podejście LFA?",
+    "opts": [
+      "Komisja Europejska w 2021 roku",
+      "Amerykańska Agencja do spraw Rozwoju Międzynarodowego (USAID) pod koniec lat 60. XX wieku",
+      "Bank Światowy w latach 90.",
+      "Polski rząd po 2004 roku"
+    ],
+    "ans": 1,
+    "exp": "Podejście LFA opracowała pod koniec lat 60. XX wieku <strong>Amerykańska Agencja do spraw Rozwoju Międzynarodowego (US Agency of International Development)</strong>, a następnie zastosowano je do zarządzania projektami rozwojowymi."
+  },
+  {
+    "topic": "III. Podejście LFA",
+    "q": "Do pełnego zdefiniowania projektu w podejściu LFA prowadzą dwie fazy:",
+    "opts": [
+      "faza sprzedaży i faza serwisu",
+      "faza analizy i faza planowania",
+      "faza produkcji i faza dystrybucji",
+      "faza rekrutacji i faza zwolnień"
+    ],
+    "ans": 1,
+    "exp": "Zgodnie z LFA do pełnego zdefiniowania projektu prowadzą dwie fazy: <strong>analizy</strong> (interesariuszy, problemu, celów, strategii) oraz <strong>planowania</strong> (sporządzenie matrycy logicznej)."
+  },
+  {
+    "topic": "III. Podejście LFA",
+    "q": "Które elementy wchodzą w skład fazy ANALIZY w podejściu LFA?",
+    "opts": [
+      "analiza interesariuszy, analiza problemu, analiza celów i analiza strategii",
+      "analiza sprzedaży, marketingu, logistyki i HR",
+      "analiza podatkowa, celna, walutowa i kredytowa",
+      "analiza pogody, ruchu i hałasu"
+    ],
+    "ans": 0,
+    "exp": "Faza analizy obejmuje: <strong>analizę interesariuszy, analizę problemu, analizę celów oraz analizę strategii</strong>; faza planowania kończy się sporządzeniem matrycy logicznej."
+  },
+  {
+    "topic": "IV. Problem i cele",
+    "q": "Czym jest „problem” w analizie problemu (LFA)?",
+    "opts": [
+      "harmonogramem prac projektowych",
+      "dowolnym pomysłem na nowy produkt",
+      "listą zadań do wykonania",
+      "uświadomionym odchyleniem stanu pożądanego od istniejącego, wymagającym likwidacji"
+    ],
+    "ans": 3,
+    "exp": "Problem to <strong>uświadomione odchylenie stanu pożądanego od istniejącego, wymagające likwidacji</strong>. Analizę problemu wykonuje się za pomocą drzewa problemu."
+  },
+  {
+    "topic": "IV. Problem i cele",
+    "q": "Narzędziem graficznym stosowanym w analizie problemu jest:",
+    "opts": [
+      "diagram Venna",
+      "wykres kołowy zysków",
+      "tablica Kanban",
+      "drzewo problemu"
+    ],
+    "ans": 3,
+    "exp": "Analiza problemu wykonywana jest za pomocą <strong>drzewa problemu</strong> — zwięzłego, graficznego przedstawienia istniejącej negatywnej sytuacji."
+  },
+  {
+    "topic": "IV. Problem i cele",
+    "q": "Które etapy obejmuje analiza problemu?",
+    "opts": [
+      "wyłącznie obliczenie budżetu",
+      "analizę istniejącej sytuacji, identyfikację kluczowych problemów i wskazanie zależności przyczynowo-skutkowych",
+      "rekrutację zespołu i zakup sprzętu",
+      "wybór dostawcy i podpisanie umowy"
+    ],
+    "ans": 1,
+    "exp": "Analiza problemu obejmuje: <strong>analizę istniejącej sytuacji, identyfikację kluczowych problemów oraz wskazanie zależności przyczynowo-skutkowych</strong>."
+  },
+  {
+    "topic": "IV. Problem i cele",
+    "q": "Przejście od analizy problemów do analizy celów polega na:",
+    "opts": [
+      "usunięciu wszystkich celów z projektu",
+      "przekształceniu negatywnych zjawisk w postulat (cel) pozytywnego działania",
+      "zamianie celów na koszty",
+      "rezygnacji z planowania"
+    ],
+    "ans": 1,
+    "exp": "Przejście od problemów do celów ma za zadanie <strong>przekształcenie negatywnych zjawisk w postulat (cel) pozytywnego działania</strong> — problem (istniejąca niekorzystna sytuacja) zamieniany jest na cel (obraz pożądanej sytuacji w przyszłości)."
+  },
+  {
+    "topic": "IV. Problem i cele",
+    "q": "Czym są „cele” w analizie celów?",
+    "opts": [
+      "przyszłymi stanami, które zamierzamy osiągnąć dzięki naszemu działaniu",
+      "kosztami poniesionymi w przeszłości",
+      "listą ryzyk projektu",
+      "nazwiskami interesariuszy"
+    ],
+    "ans": 0,
+    "exp": "Cele to <strong>przyszłe stany, które zamierzamy osiągnąć dzięki naszemu działaniu</strong>. Analizę celów wykonuje się najczęściej za pomocą drzewa celów."
+  },
+  {
+    "topic": "IV. Problem i cele",
+    "q": "Analiza celów obejmuje m.in.:",
+    "opts": [
+      "emisję obligacji komunalnych",
+      "wyłącznie wyliczenie podatków",
+      "rejestrację spółki w KRS",
+      "opis przyszłej, pożądanej sytuacji oraz zamianę aspektów negatywnych w pozytywne"
+    ],
+    "ans": 3,
+    "exp": "Analiza celów obejmuje: <strong>opis przyszłej, pożądanej sytuacji, identyfikację potencjalnych rozwiązań oraz zamianę aspektów negatywnych w pozytywne</strong>."
+  },
+  {
+    "topic": "V. Analiza strategii",
+    "q": "Na czym polega analiza strategii w podejściu LFA?",
+    "opts": [
+      "na ocenie i wyborze wariantów osiągnięcia celów w oparciu o uwarunkowania zewnętrzne i wewnętrzne",
+      "na losowym wyborze dowolnego działania",
+      "wyłącznie na obliczeniu kosztów wynagrodzeń",
+      "na rezygnacji z realizacji projektu"
+    ],
+    "ans": 0,
+    "exp": "Analiza strategii to <strong>ocena i wybór wariantów osiągnięcia celów</strong> w oparciu o uwarunkowania zewnętrzne (czas, budżet, zasoby, akceptacja społeczna) i wewnętrzne (zdolności organizacyjne, doświadczenie, know-how)."
+  },
+  {
+    "topic": "V. Analiza strategii",
+    "q": "Przykładem uwarunkowania WEWNĘTRZNEGO wpływającego na wybór strategii jest:",
+    "opts": [
+      "ogólny poziom inflacji w kraju",
+      "akceptacja społeczna projektu",
+      "doświadczenie i know-how organizacji",
+      "pogoda w regionie realizacji"
+    ],
+    "ans": 2,
+    "exp": "Uwarunkowania wewnętrzne to np. <strong>zdolności organizacyjne, doświadczenie i know-how</strong>; zewnętrzne to m.in. czas, budżet, zasoby i akceptacja społeczna."
+  },
+  {
+    "topic": "I. Czym jest projekt",
+    "q": "Robot da Vinci, przywołany jako przykład projektu w ochronie zdrowia, umożliwia:",
+    "opts": [
+      "wizualizację pola operacyjnego w obrazie trójwymiarowym i dziesięciokrotnym powiększeniu",
+      "automatyczne wypisywanie recept bez udziału lekarza",
+      "transport pacjentów między szpitalami",
+      "produkcję leków generycznych"
+    ],
+    "ans": 0,
+    "exp": "Robot da Vinci <strong>umożliwia wizualizację pola operacyjnego w obrazie trójwymiarowym, w dziesięciokrotnym powiększeniu</strong>; w Polsce większość zabiegów finansuje NFZ."
+  },
+  {
+    "topic": "I. Czym jest projekt",
+    "q": "Projekt SemPulse, przywołany w wykładzie, dotyczy:",
+    "opts": [
+      "dronów dostarczających defibrylatory AED na miejsce zdarzenia",
+      "robotów sprzątających szpitale",
+      "aplikacji do rozliczania składek",
+      "produkcji szczepionek"
+    ],
+    "ans": 0,
+    "exp": "Projekt SemPulse (badania Karolinska Institutet) dotyczy <strong>dronów dostarczających defibrylatory AED na miejsce zdarzenia</strong>; podobnie TOPR od 2021 r. używa dronów transportowych (np. DJI FlyCart 30)."
+  }
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0; score = 0; answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) renderQuestion();
+  else showResults();
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) { grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.'; bg = '#e0e7ff'; color = '#3730a3'; }
+  else if (pct >= 75) { grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.'; bg = '#ede9fe'; color = '#5b21b6'; }
+  else if (pct >= 60) { grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.'; bg = '#fff9c4'; color = '#f9a825'; }
+  else if (pct >= 50) { grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.'; bg = '#fff3e0'; color = '#e65100'; }
+  else { grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.'; bg = '#fde8e9'; color = '#c1121f'; }
+  circle.style.background = bg; circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() { startQuiz(); window.scrollTo(0, 0); }
+
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>

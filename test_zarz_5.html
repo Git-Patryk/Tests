@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarządzanie – Rynek kapitałowy – StudyZone</title>
+<style>
+  :root {
+    --in1:    #3730a3;
+    --in2:    #6366f1;
+    --in3:    #a5b4fc;
+    --in4:    #e0e7ff;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f8fafc;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ff;
+    color: #1e1b2e;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--in1) 0%, var(--in2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem;
+  }
+  .start-card {
+    background: #fff; border-radius: 16px; padding: 2.5rem;
+    text-align: center; box-shadow: 0 4px 24px rgba(49,46,129,.10);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem; color: var(--in1); margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem; margin: 1.5rem 0 2rem;
+  }
+  .info-box { background: var(--in4); border-radius: 10px; padding: 1rem .8rem; }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--in1); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  .btn {
+    display: inline-block; padding: .85rem 2.2rem; border: none; border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s; text-decoration: none;
+  }
+  .btn-primary { background: var(--in2); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,.35); }
+  .btn-primary:hover { background: var(--in1); transform: translateY(-2px); }
+
+  .progress-bar-wrap { background: var(--border); border-radius: 50px; height: 8px; margin-bottom: 1.5rem; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--in2), var(--in3)); border-radius: 50px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .82rem; color: var(--gray); margin-bottom: .4rem; }
+
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(49,46,129,.08); margin-bottom: 1rem; }
+  .q-meta { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--in2); margin-bottom: .6rem; }
+  .q-text { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; line-height: 1.65; color: #1a1a2e; margin-bottom: 1.5rem; }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex; align-items: flex-start; gap: .9rem; padding: .9rem 1.1rem;
+    border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+    transition: all .15s; background: #fff; text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--in3); background: #f5f3ff; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--in2); background: var(--in4); }
+  .option.wrong   { border-color: var(--red);  background: var(--red2); }
+  .option-letter {
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem; transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--in2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red); color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  .explanation {
+    border-left: 4px solid var(--in2); background: #f5f3ff; border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem; font-size: .9rem; line-height: 1.6; color: var(--gray); margin-top: 1rem; display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--in1); }
+
+  .nav-area { display: flex; justify-content: flex-end; margin-top: 1rem; }
+
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(49,46,129,.10); text-align: center; margin-bottom: 1.5rem; }
+  .score-circle { width: 140px; height: 140px; border-radius: 50%; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--in1); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; }
+  .review-item.ok   { background: var(--in4); border-left: 3px solid var(--in2); }
+  .review-item.fail { background: var(--red2); border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Zarządzanie</h1>
+  <p>Rynek kapitałowy · Obrót giełdowy · 24 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście!</h2>
+    <p>Test oparty na wykładzie o obrocie giełdowym: funkcje giełdy i system notowań, instrumenty (akcje, ETF, obligacje, kontrakty i opcje), uczestnicy rynku (inwestorzy, domy maklerskie, animatorzy, depozyt i izba rozliczeniowa), zlecenia (limit, rynek), księga zleceń, BID/ASK i spread, fazy sesji (fixingi, notowania ciągłe) oraz koszty i rozrachunek T+2.</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>24</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>6</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 24</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--in1);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "topic": "I. Funkcja giełdy",
+    "q": "Co zapewnia giełda papierów wartościowych na rynku finansowym?",
+    "opts": [
+      "Przejrzystość cen, równość dostępu i bezpieczeństwo rozliczeń",
+      "Gwarancję zysku każdemu inwestorowi",
+      "Stałe ceny instrumentów niezależne od popytu",
+      "Zwolnienie z podatku od zysków kapitałowych"
+    ],
+    "ans": 0,
+    "exp": "Giełda zapewnia <strong>przejrzystość cen, równość dostępu dla uczestników oraz bezpieczeństwo rozliczeń</strong>. Jej fundamentem jest mechanizm popytu i podaży."
+  },
+  {
+    "topic": "I. Funkcja giełdy",
+    "q": "Elektroniczny system handlu na giełdzie dopasowuje zlecenia według zasady:",
+    "opts": [
+      "pierwszeństwa ceny i czasu",
+      "kolejności alfabetycznej nazwisk inwestorów",
+      "wielkości rachunku maklerskiego",
+      "losowania"
+    ],
+    "ans": 0,
+    "exp": "System gromadzi zlecenia w księdze ofert i dopasowuje je według <strong>zasady pierwszeństwa ceny i czasu</strong> — lepsze cenowo i wcześniej złożone realizowane są wcześniej."
+  },
+  {
+    "topic": "I. Funkcja giełdy",
+    "q": "Co stanowi połączenie inwestora z rynkiem giełdowym?",
+    "opts": [
+      "Rachunek maklerski",
+      "Dowód osobisty",
+      "Konto w banku centralnym",
+      "Polisa ubezpieczeniowa"
+    ],
+    "ans": 0,
+    "exp": "Aby zawierać transakcje, inwestor korzysta z <strong>rachunku maklerskiego</strong>, który stanowi jego połączenie z rynkiem."
+  },
+  {
+    "topic": "I. Funkcja giełdy",
+    "q": "Rynkową wartość instrumentów finansowych na giełdzie ustala:",
+    "opts": [
+      "stała tabela urzędowa",
+      "decyzja prezesa giełdy",
+      "mechanizm popytu i podaży",
+      "kurs walutowy banku centralnego"
+    ],
+    "ans": 2,
+    "exp": "Fundamentem działania giełdy jest <strong>mechanizm popytu i podaży</strong>, który w naturalny sposób ustala rynkową wartość instrumentów na każdym etapie handlu."
+  },
+  {
+    "topic": "II. Instrumenty",
+    "q": "Fundusze ETF na giełdzie:",
+    "opts": [
+      "są dostępne wyłącznie dla banków centralnych",
+      "gwarantują stały kupon jak obligacje",
+      "dają prawo głosu na walnym zgromadzeniu emitenta",
+      "odwzorowują indeksy lub sektory i umożliwiają szeroką dywersyfikację już przy niewielkim kapitale"
+    ],
+    "ans": 3,
+    "exp": "Fundusze ETF <strong>odwzorowują wyniki indeksów lub sektorów</strong>, pozwalając na szeroką dywersyfikację już przy niewielkim kapitale."
+  },
+  {
+    "topic": "II. Instrumenty",
+    "q": "Kontrakty terminowe i opcje wykorzystywane są przede wszystkim do:",
+    "opts": [
+      "obliczania podatku VAT",
+      "wypłaty dywidendy",
+      "rejestracji spółki w KRS",
+      "spekulacji oraz zabezpieczania portfela"
+    ],
+    "ans": 3,
+    "exp": "Kontrakty terminowe i opcje to zaawansowane instrumenty wykorzystywane zarówno do <strong>spekulacji, jak i zabezpieczenia (hedgingu) portfela</strong>."
+  },
+  {
+    "topic": "II. Instrumenty",
+    "q": "Które instrumenty mają zwykle mniejsze ryzyko niż akcje, choć ich płynność zależy od emitenta i rynku?",
+    "opts": [
+      "Kontrakty terminowe lewarowane",
+      "Opcje egzotyczne",
+      "Obligacje skarbowe i korporacyjne",
+      "Akcje spółek wzrostowych"
+    ],
+    "ans": 2,
+    "exp": "<strong>Obligacje skarbowe i korporacyjne</strong> to dłużne papiery wartościowe oferujące zwykle mniejsze ryzyko niż akcje, choć ich płynność zależy od emitenta i rynku."
+  },
+  {
+    "topic": "III. Uczestnicy",
+    "q": "Animatorzy rynku (market makers) pełnią rolę polegającą na:",
+    "opts": [
+      "przechowywaniu papierów wartościowych w depozycie",
+      "nadzorze nad legalnością obrotu",
+      "utrzymywaniu płynności przez jednoczesne wystawianie ofert kupna i sprzedaży",
+      "ustalaniu stóp procentowych"
+    ],
+    "ans": 2,
+    "exp": "Animatorzy rynku <strong>utrzymują płynność, wystawiając jednocześnie oferty kupna i sprzedaży</strong>, dzięki czemu inwestorzy szybciej realizują transakcje po przewidywalnych cenach."
+  },
+  {
+    "topic": "III. Uczestnicy",
+    "q": "Inwestorzy instytucjonalni (fundusze emerytalne, inwestycyjne, banki) charakteryzują się tym, że:",
+    "opts": [
+      "handlują wyłącznie pojedynczymi akcjami na własny rachunek prywatny",
+      "obracają dużymi wolumenami i mają znaczący wpływ na płynność rynku",
+      "nie mogą uczestniczyć w obrocie giełdowym",
+      "zajmują się wyłącznie nadzorem rynku"
+    ],
+    "ans": 1,
+    "exp": "Inwestorzy instytucjonalni <strong>obracają dużymi wolumenami i mają znaczący wpływ na płynność rynku</strong>, w odróżnieniu od inwestorów indywidualnych."
+  },
+  {
+    "topic": "III. Uczestnicy",
+    "q": "Domy maklerskie pełnią na rynku przede wszystkim funkcję:",
+    "opts": [
+      "izby rozliczeniowej gwarantującej transakcje",
+      "emitentów obligacji skarbowych",
+      "pośredników dostarczających platformy transakcyjne, doradztwo i analizy",
+      "organu nadzoru nad giełdą"
+    ],
+    "ans": 2,
+    "exp": "Domy maklerskie to <strong>pośrednicy</strong> — to przez ich platformy inwestorzy składają zlecenia; zapewniają też doradztwo, analizy i narzędzia handlowe."
+  },
+  {
+    "topic": "III. Uczestnicy",
+    "q": "Za przechowywanie aktywów oraz finalizację (rozliczenie) transakcji odpowiadają:",
+    "opts": [
+      "dziennikarze finansowi",
+      "inwestorzy indywidualni",
+      "animatorzy rynku",
+      "depozyt papierów wartościowych oraz izba rozliczeniowa"
+    ],
+    "ans": 3,
+    "exp": "<strong>Depozyt papierów wartościowych oraz izba rozliczeniowa</strong> odpowiadają za przechowywanie aktywów i finalizację transakcji, minimalizując ryzyko niewywiązania się stron."
+  },
+  {
+    "topic": "IV. Zlecenia",
+    "q": "Które parametry musi zawierać każde zlecenie giełdowe?",
+    "opts": [
+      "Wyłącznie numer rachunku bankowego",
+      "Wyłącznie nazwisko inwestora",
+      "Tylko datę urodzenia inwestora",
+      "Nazwę instrumentu, kierunek, wolumen i typ ceny"
+    ],
+    "ans": 3,
+    "exp": "Każde zlecenie musi zawierać podstawowe parametry: <strong>nazwę instrumentu, kierunek (kupno/sprzedaż), wolumen oraz typ ceny</strong>."
+  },
+  {
+    "topic": "IV. Zlecenia",
+    "q": "Zlecenie z limitem ceny (limit order):",
+    "opts": [
+      "jest zawsze realizowane natychmiast po dowolnej cenie",
+      "pozwala określić maksymalną cenę zakupu lub minimalną cenę sprzedaży, ale nie gwarantuje wykonania",
+      "nie pozwala kontrolować ceny transakcji",
+      "może złożyć wyłącznie animator rynku"
+    ],
+    "ans": 1,
+    "exp": "Zlecenie z limitem ceny <strong>pozwala określić maksymalną cenę zakupu lub minimalną cenę sprzedaży</strong>, dając kontrolę nad poziomem realizacji, lecz nie gwarantuje wykonania transakcji."
+  },
+  {
+    "topic": "IV. Zlecenia",
+    "q": "Zlecenie rynkowe (market order):",
+    "opts": [
+      "jest realizowane natychmiast po najlepszych dostępnych ofertach, ale może powodować poślizg cenowy",
+      "gwarantuje najlepszą możliwą cenę bez żadnego ryzyka",
+      "nigdy nie jest realizowane w trakcie sesji",
+      "może być złożone tylko poza godzinami sesji"
+    ],
+    "ans": 0,
+    "exp": "Zlecenie rynkowe jest <strong>realizowane natychmiast po najlepszych dostępnych ofertach</strong>, co zapewnia szybkość, ale może skutkować niekorzystnym poślizgiem cenowym, zwłaszcza przy niskiej płynności."
+  },
+  {
+    "topic": "V. Księga i spread",
+    "q": "Księga zleceń (order book) to:",
+    "opts": [
+      "rejestr akcjonariuszy spółki",
+      "uporządkowana lista ofert kupna i sprzedaży według ceny i czasu",
+      "wykaz prowizji domów maklerskich",
+      "lista dni wolnych od sesji"
+    ],
+    "ans": 1,
+    "exp": "Księga zleceń to <strong>uporządkowana lista ofert kupna i sprzedaży według ceny i czasu</strong> — centralny element działania giełdy."
+  },
+  {
+    "topic": "V. Księga i spread",
+    "q": "Spread to:",
+    "opts": [
+      "podatek od zysków kapitałowych",
+      "łączna prowizja maklerska i giełdowa",
+      "różnica między najlepszą ofertą kupna (BID) a najlepszą ofertą sprzedaży (ASK)",
+      "liczba instrumentów w obrocie"
+    ],
+    "ans": 2,
+    "exp": "Spread to <strong>różnica między najlepszą ofertą kupna (BID) a najlepszą ofertą sprzedaży (ASK)</strong>; stanowi koszt wejścia w pozycję."
+  },
+  {
+    "topic": "V. Księga i spread",
+    "q": "Jaki jest związek między płynnością a spreadem?",
+    "opts": [
+      "Im wyższa płynność, tym spread jest zwykle mniejszy",
+      "Im wyższa płynność, tym spread jest zawsze większy",
+      "Płynność nie ma żadnego wpływu na spread",
+      "Spread jest stały i niezależny od rynku"
+    ],
+    "ans": 0,
+    "exp": "<strong>Im większa płynność instrumentu, tym spread jest zwykle mniejszy</strong>, co ułatwia szybkie zawieranie transakcji bez istotnego wpływu na cenę."
+  },
+  {
+    "topic": "V. Księga i spread",
+    "q": "Głębokość rynku pokazuje:",
+    "opts": [
+      "wartość kapitału zakładowego emitenta",
+      "ile sztuk instrumentu jest dostępnych na kolejnych poziomach cenowych",
+      "wysokość podatku od transakcji",
+      "liczbę pracowników domu maklerskiego"
+    ],
+    "ans": 1,
+    "exp": "Głębokość rynku pokazuje, <strong>ile sztuk instrumentu jest dostępnych na kolejnych poziomach cenowych</strong> — duża głębokość pozwala realizować większe zlecenia bez gwałtownych zmian kursu."
+  },
+  {
+    "topic": "VI. Fazy sesji i koszty",
+    "q": "W fazie przed otwarciem sesji inwestorzy:",
+    "opts": [
+      "nie mają dostępu do systemu",
+      "realizują transakcje po cenie zamknięcia",
+      "składają i modyfikują zlecenia, ale bez ich realizacji",
+      "otrzymują automatycznie dywidendy"
+    ],
+    "ans": 2,
+    "exp": "W fazie przed otwarciem inwestorzy <strong>składają i modyfikują zlecenia bez ich realizacji</strong> — rynek przygotowuje się do ustalenia kursu równowagi."
+  },
+  {
+    "topic": "VI. Fazy sesji i koszty",
+    "q": "Fixing otwarcia (aukcja otwarcia) polega na tym, że:",
+    "opts": [
+      "sesja zostaje zamknięta na resztę dnia",
+      "każde zlecenie jest realizowane po innej, indywidualnej cenie",
+      "transakcje zawierane są na bieżąco bez ustalania kursu wspólnego",
+      "system wyznacza cenę maksymalizującą wolumen, a wszystkie zlecenia realizowane są po tej samej cenie"
+    ],
+    "ans": 3,
+    "exp": "Podczas fixingu otwarcia system <strong>wyznacza cenę maksymalizującą wolumen transakcji, a wszystkie zlecenia realizowane są jednocześnie po tej samej cenie</strong>."
+  },
+  {
+    "topic": "VI. Fazy sesji i koszty",
+    "q": "W trakcie notowań ciągłych:",
+    "opts": [
+      "wszystkie transakcje realizowane są po jednej cenie raz dziennie",
+      "transakcje zawierane są na bieżąco, a ceny reagują dynamicznie na napływające zlecenia",
+      "nie można składać nowych zleceń",
+      "kursy są zamrożone do końca sesji"
+    ],
+    "ans": 1,
+    "exp": "W notowaniach ciągłych <strong>transakcje zawierane są na bieżąco, a ceny dynamicznie reagują na napływające zlecenia</strong>."
+  },
+  {
+    "topic": "VI. Fazy sesji i koszty",
+    "q": "Rozrachunek w cyklu T+2 oznacza, że:",
+    "opts": [
+      "środki i papiery wartościowe zmieniają właściciela dwa dni robocze po zawarciu transakcji",
+      "transakcja jest rozliczana natychmiast w tej samej sekundzie",
+      "rozliczenie następuje po dwóch miesiącach",
+      "papiery nigdy nie zmieniają właściciela"
+    ],
+    "ans": 0,
+    "exp": "Rozrachunek T+2 oznacza, że <strong>środki oraz instrumenty finansowe zmieniają właściciela dwa dni robocze po zawarciu transakcji</strong>."
+  },
+  {
+    "topic": "VI. Fazy sesji i koszty",
+    "q": "Które koszty transakcyjne są często mniej widoczne, ale istotne przy instrumentach o niskiej płynności?",
+    "opts": [
+      "Opłata za założenie rachunku bankowego",
+      "Koszty wynikające ze spreadu i poślizgu cenowego",
+      "Podatek od nieruchomości",
+      "Składka zdrowotna inwestora"
+    ],
+    "ans": 1,
+    "exp": "Obok prowizji maklerskich i opłat giełdowych istotne, choć mniej widoczne, są <strong>koszty wynikające ze spreadu i poślizgu cenowego</strong> — szczególnie przy niskiej płynności."
+  },
+  {
+    "topic": "VI. Fazy sesji i koszty",
+    "q": "Jaką rolę pełni izba rozliczeniowa w procesie rozrachunku?",
+    "opts": [
+      "Prowadzi marketing domów maklerskich",
+      "Ustala wysokość dywidend spółek",
+      "Wydaje zezwolenia na emisję akcji",
+      "Pełni funkcję gwaranta i minimalizuje ryzyko niewywiązania się którejś ze stron"
+    ],
+    "ans": 3,
+    "exp": "Izba rozliczeniowa <strong>pełni funkcję gwaranta i minimalizuje ryzyko niewywiązania się którejś ze stron</strong> transakcji, wraz z depozytem papierów wartościowych."
+  }
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0; score = 0; answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) renderQuestion();
+  else showResults();
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) { grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.'; bg = '#e0e7ff'; color = '#3730a3'; }
+  else if (pct >= 75) { grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.'; bg = '#ede9fe'; color = '#5b21b6'; }
+  else if (pct >= 60) { grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.'; bg = '#fff9c4'; color = '#f9a825'; }
+  else if (pct >= 50) { grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.'; bg = '#fff3e0'; color = '#e65100'; }
+  else { grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.'; bg = '#fde8e9'; color = '#c1121f'; }
+  circle.style.background = bg; circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() { startQuiz(); window.scrollTo(0, 0); }
+
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>
