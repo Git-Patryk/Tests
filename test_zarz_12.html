@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zarządzanie – Zdrowie publiczne – StudyZone</title>
+<style>
+  :root {
+    --in1:    #3730a3;
+    --in2:    #6366f1;
+    --in3:    #a5b4fc;
+    --in4:    #e0e7ff;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f8fafc;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ff;
+    color: #1e1b2e;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--in1) 0%, var(--in2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .9; font-size: .95rem; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px; margin: 2rem auto; padding: 0 1rem 3rem;
+  }
+  .start-card {
+    background: #fff; border-radius: 16px; padding: 2.5rem;
+    text-align: center; box-shadow: 0 4px 24px rgba(49,46,129,.10);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem; color: var(--in1); margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem; margin: 1.5rem 0 2rem;
+  }
+  .info-box { background: var(--in4); border-radius: 10px; padding: 1rem .8rem; }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--in1); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  .btn {
+    display: inline-block; padding: .85rem 2.2rem; border: none; border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s; text-decoration: none;
+  }
+  .btn-primary { background: var(--in2); color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,.35); }
+  .btn-primary:hover { background: var(--in1); transform: translateY(-2px); }
+
+  .progress-bar-wrap { background: var(--border); border-radius: 50px; height: 8px; margin-bottom: 1.5rem; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--in2), var(--in3)); border-radius: 50px; transition: width .4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: .82rem; color: var(--gray); margin-bottom: .4rem; }
+
+  .question-card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(49,46,129,.08); margin-bottom: 1rem; }
+  .q-meta { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--in2); margin-bottom: .6rem; }
+  .q-text { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; line-height: 1.65; color: #1a1a2e; margin-bottom: 1.5rem; }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex; align-items: flex-start; gap: .9rem; padding: .9rem 1.1rem;
+    border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+    transition: all .15s; background: #fff; text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--in3); background: #f5f3ff; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--in2); background: var(--in4); }
+  .option.wrong   { border-color: var(--red);  background: var(--red2); }
+  .option-letter {
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem; transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--in2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red); color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  .explanation {
+    border-left: 4px solid var(--in2); background: #f5f3ff; border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem; font-size: .9rem; line-height: 1.6; color: var(--gray); margin-top: 1rem; display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--in1); }
+
+  .nav-area { display: flex; justify-content: flex-end; margin-top: 1rem; }
+
+  .result-card { background: #fff; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(49,46,129,.10); text-align: center; margin-bottom: 1.5rem; }
+  .score-circle { width: 140px; height: 140px; border-radius: 50%; margin: 1rem auto; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--in1); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item { padding: .8rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .88rem; line-height: 1.5; }
+  .review-item.ok   { background: var(--in4); border-left: 3px solid var(--in2); }
+  .review-item.fail { background: var(--red2); border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Zarządzanie</h1>
+  <p>Zdrowie publiczne · Teoria ograniczeń (TOC) · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście!</h2>
+    <p>Test oparty na wykładzie dr A. Wyrozębskiej „Teoria ograniczeń w zarządzaniu w ochronie zdrowia”: istota i geneza TOC (Goldratt), powiązania z Lean i Six Sigma, kluczowe pojęcia (ograniczenie, przepustowość), pięć kroków TOC (cykl FOCUS) i korzyści, wąskie gardła w ochronie zdrowia, dane o niedoborze kadr medycznych (WHO, UE, OECD, Polska) oraz zastosowanie TOC wobec niedoboru personelu.</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>25</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>5</strong><span>bloków tematycznych</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 25</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--in1);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "topic": "I. Istota TOC",
+    "q": "Teoria ograniczeń (TOC) to metoda zarządzania nastawiona na:",
+    "opts": [
+      "maksymalne ograniczenie zatrudnienia",
+      "równomierne usprawnianie wszystkich elementów systemu naraz",
+      "osiąganie długotrwałych zysków poprzez odpowiednie zarządzanie istniejącymi w organizacji ograniczeniami („wąskimi gardłami”)",
+      "całkowite wyeliminowanie planowania"
+    ],
+    "ans": 2,
+    "exp": "TOC (Theory of Constraints) to metoda nastawiona na <strong>długotrwałe zyski poprzez zarządzanie istniejącymi ograniczeniami — „wąskimi gardłami”</strong> w systemach zarządzania, procesach wytwarzania lub dystrybucji."
+  },
+  {
+    "topic": "I. Istota TOC",
+    "q": "Kto stworzył Teorię ograniczeń (TOC)?",
+    "opts": [
+      "Karol Adamiecki — polski inżynier",
+      "Henry Gantt — amerykański inżynier",
+      "dr Eliyahu M. Goldratt — izraelski fizyk i specjalista od zarządzania",
+      "W. Edwards Deming — twórca cyklu PDCA"
+    ],
+    "ans": 2,
+    "exp": "TOC została stworzona przez <strong>dr. Eliyahu M. Goldratta</strong>, izraelskiego fizyka i specjalistę od zarządzania, jako metoda systemowego podejścia do zarządzania organizacjami."
+  },
+  {
+    "topic": "I. Istota TOC",
+    "q": "Główne założenie TOC mówi, że:",
+    "opts": [
+      "w każdym systemie istnieje przynajmniej jedno ograniczenie, które determinuje jego maksymalną wydajność",
+      "żaden system nie posiada ograniczeń",
+      "ograniczenia można całkowicie zignorować",
+      "wydajność zależy wyłącznie od liczby pracowników"
+    ],
+    "ans": 0,
+    "exp": "Założenie TOC: <strong>w każdym systemie istnieje przynajmniej jedno ograniczenie (wąskie gardło), które determinuje jego maksymalną wydajność</strong> — niezależnie od złożoności systemu."
+  },
+  {
+    "topic": "I. Istota TOC",
+    "q": "Celem TOC jest:",
+    "opts": [
+      "równoczesne usprawnianie wszystkich elementów bez priorytetów",
+      "zwiększenie liczby procedur administracyjnych",
+      "optymalizacja systemu poprzez skupienie się na ograniczeniu",
+      "obniżenie jakości w celu redukcji kosztów"
+    ],
+    "ans": 2,
+    "exp": "Cel TOC to <strong>optymalizacja systemu poprzez skupienie się na ograniczeniu</strong> — identyfikacja i eliminacja wąskich gardeł w celu maksymalizacji efektywności."
+  },
+  {
+    "topic": "I. Istota TOC",
+    "q": "Czym TOC różni się od Lean Management i Six Sigma?",
+    "opts": [
+      "nie zajmuje się ograniczeniami systemu",
+      "całkowicie rezygnuje z pomiaru efektywności",
+      "dotyczy wyłącznie produkcji przemysłowej, nie usług",
+      "skupia się na maksymalnym wykorzystaniu ograniczenia, zamiast równomiernie usprawniać wszystkie elementy systemu"
+    ],
+    "ans": 3,
+    "exp": "TOC różni się tym, że <strong>skupia się na maksymalnym wykorzystaniu ograniczenia, zamiast dążyć do równomiernego usprawnienia wszystkich elementów systemu</strong>."
+  },
+  {
+    "topic": "I. Istota TOC",
+    "q": "Z czym kojarzona jest koncepcja Lean Management przywołana obok TOC?",
+    "opts": [
+      "z kontrolą jakości i minimalizacją odchyleń",
+      "z redukcją marnotrawstwa i koncentracją na dostarczaniu wartości",
+      "z identyfikacją pojedynczego wąskiego gardła",
+      "z rekrutacją cudzoziemców"
+    ],
+    "ans": 1,
+    "exp": "Lean Management koncentruje się na <strong>redukcji marnotrawstwa i dostarczaniu wartości</strong>; Six Sigma na kontroli jakości i minimalizacji odchyleń w procesach."
+  },
+  {
+    "topic": "I. Istota TOC",
+    "q": "Six Sigma — przywołana obok TOC — koncentruje się na:",
+    "opts": [
+      "wydłużaniu czasu oczekiwania pacjentów",
+      "redukcji marnotrawstwa i dostarczaniu wartości",
+      "rekrutacji lekarzy cudzoziemców",
+      "kontroli jakości i minimalizacji odchyleń w procesach"
+    ],
+    "ans": 3,
+    "exp": "Six Sigma skupia się na <strong>kontroli jakości i minimalizacji odchyleń w procesach</strong>, podczas gdy Lean Management — na redukcji marnotrawstwa."
+  },
+  {
+    "topic": "II. Pojęcia i kroki FOCUS",
+    "q": "Pojęcie „ograniczenie” (Constraint) w TOC oznacza:",
+    "opts": [
+      "liczbę pracowników administracji",
+      "tempo dostarczania wartościowych usług",
+      "całkowity koszt funkcjonowania szpitala",
+      "element systemu, który ogranicza jego zdolność do osiągania celów"
+    ],
+    "ans": 3,
+    "exp": "Ograniczenie (Constraint) to <strong>element systemu, który ogranicza jego zdolność do osiągania celów</strong> — czyli wąskie gardło."
+  },
+  {
+    "topic": "II. Pojęcia i kroki FOCUS",
+    "q": "Pojęcie „przepustowość” (Throughput) w TOC oznacza:",
+    "opts": [
+      "liczbę ograniczeń w systemie",
+      "tempo, w jakim system dostarcza wartościowe usługi (np. liczbę przyjętych pacjentów)",
+      "wartość rynkową organizacji",
+      "liczbę procedur administracyjnych"
+    ],
+    "ans": 1,
+    "exp": "Przepustowość (Throughput) to <strong>tempo, w jakim system dostarcza wartościowe usługi</strong> — np. liczba przyjętych pacjentów."
+  },
+  {
+    "topic": "II. Pojęcia i kroki FOCUS",
+    "q": "Jaka jest prawidłowa kolejność pięciu kroków TOC (cyklu FOCUS)?",
+    "opts": [
+      "podporządkowanie → powtórzenie → identyfikacja → wykorzystanie → zwiększenie",
+      "powtórzenie → wykorzystanie → identyfikacja → podporządkowanie → zwiększenie",
+      "zwiększenie przepustowości → identyfikacja → powtórzenie → wykorzystanie → podporządkowanie",
+      "identyfikacja → wykorzystanie → podporządkowanie → zwiększenie przepustowości → powtórzenie"
+    ],
+    "ans": 3,
+    "exp": "Pięć kroków TOC (cykl FOCUS): <strong>1. identyfikacja ograniczenia, 2. wykorzystanie ograniczenia, 3. podporządkowanie wszystkiego ograniczeniu, 4. zwiększenie przepustowości ograniczenia, 5. powtórzenie procesu</strong>."
+  },
+  {
+    "topic": "II. Pojęcia i kroki FOCUS",
+    "q": "Krok 1 (identyfikacja ograniczenia) realizuje się m.in. poprzez:",
+    "opts": [
+      "analizę danych operacyjnych, obserwację procesów i rozmowy z personelem",
+      "natychmiastowe zwolnienie najsłabszych pracowników",
+      "zakup nowego budynku szpitala",
+      "rezygnację z monitorowania procesów"
+    ],
+    "ans": 0,
+    "exp": "Identyfikacja ograniczenia opiera się na <strong>analizie danych operacyjnych (czas oczekiwania, przestoje), obserwacji procesów oraz rozmowach z personelem</strong>."
+  },
+  {
+    "topic": "II. Pojęcia i kroki FOCUS",
+    "q": "Na czym polega krok 2 — wykorzystanie ograniczenia?",
+    "opts": [
+      "na maksymalnym wykorzystaniu dostępnych zasobów ograniczenia bez wprowadzania kosztownych zmian",
+      "na natychmiastowych dużych inwestycjach w infrastrukturę",
+      "na całkowitym zamknięciu wąskiego gardła",
+      "na zignorowaniu ograniczenia"
+    ],
+    "ans": 0,
+    "exp": "Krok 2 to <strong>maksymalne wykorzystanie dostępnych zasobów ograniczenia bez kosztownych zmian</strong> — m.in. eliminacja przestojów i usunięcie zbędnych zadań z wąskiego gardła."
+  },
+  {
+    "topic": "II. Pojęcia i kroki FOCUS",
+    "q": "Krok 3 — podporządkowanie wszystkiego ograniczeniu — oznacza:",
+    "opts": [
+      "podporządkowanie ograniczenia pozostałym procesom",
+      "dostosowanie wszystkich działań i procesów do wydajności ograniczenia",
+      "rezygnację z synchronizacji pracy zespołu",
+      "zwiększenie zapasów na każdym etapie"
+    ],
+    "ans": 1,
+    "exp": "Krok 3 to <strong>dostosowanie wszystkich działań i procesów organizacji do wydajności ograniczenia</strong> — m.in. eliminacja nadmiernych zapasów i synchronizacja tempa pracy z ograniczeniem."
+  },
+  {
+    "topic": "II. Pojęcia i kroki FOCUS",
+    "q": "Krok 4 — zwiększenie przepustowości ograniczenia — obejmuje:",
+    "opts": [
+      "obniżenie wynagrodzeń personelu",
+      "wyłącznie obserwację, bez żadnych działań",
+      "inwestycje w infrastrukturę lub zasoby ludzkie, automatyzację procesów i szkolenia",
+      "likwidację wąskiego gardła bez zastąpienia go"
+    ],
+    "ans": 2,
+    "exp": "Krok 4 polega na zwiększeniu zdolności ograniczenia poprzez <strong>inwestycje w infrastrukturę lub zasoby ludzkie, automatyzację procesów oraz szkolenia pracowników</strong>."
+  },
+  {
+    "topic": "II. Pojęcia i kroki FOCUS",
+    "q": "Na czym polega krok 5 cyklu FOCUS?",
+    "opts": [
+      "trwałe zakończenie doskonalenia po pierwszym ograniczeniu",
+      "po rozwiązaniu jednego ograniczenia — zidentyfikowanie kolejnego i ponowne przejście przez proces",
+      "powrót do stanu sprzed wdrożenia TOC",
+      "rezygnacja z analizy danych systemowych"
+    ],
+    "ans": 1,
+    "exp": "Krok 5 to <strong>powtórzenie cyklu — po rozwiązaniu jednego ograniczenia identyfikuje się kolejne i ponownie przechodzi proces</strong>, co zapewnia ciągłe doskonalenie."
+  },
+  {
+    "topic": "II. Pojęcia i kroki FOCUS",
+    "q": "Którą korzyść wymieniono jako efekt stosowania cyklu FOCUS?",
+    "opts": [
+      "poprawę efektywności systemu, skrócenie czasu realizacji procesów oraz zwiększenie satysfakcji pacjentów i personelu",
+      "wzrost liczby wąskich gardeł",
+      "wydłużenie czasu oczekiwania pacjentów",
+      "obniżenie jakości świadczonych usług"
+    ],
+    "ans": 0,
+    "exp": "Korzyści cyklu FOCUS to m.in. <strong>poprawa efektywności systemu, skrócenie czasu realizacji procesów, zwiększenie satysfakcji pacjentów i personelu oraz ciągłe doskonalenie</strong>."
+  },
+  {
+    "topic": "III. Wąskie gardła w ochronie zdrowia",
+    "q": "Który z poniższych jest przykładem wąskiego gardła w ochronie zdrowia podanym w wykładzie?",
+    "opts": [
+      "niedobór personelu medycznego oraz ograniczona liczba łóżek lub sal operacyjnych",
+      "nadmiar wykwalifikowanych lekarzy w każdym oddziale",
+      "zbyt krótki czas oczekiwania na diagnostykę",
+      "nadmiar funduszy i sprzętu medycznego"
+    ],
+    "ans": 0,
+    "exp": "Przykłady wąskich gardeł to m.in. <strong>niedobór personelu medycznego, ograniczona liczba łóżek lub sal operacyjnych, długi czas oczekiwania, skomplikowane procesy administracyjne oraz braki w lekach, sprzęcie i funduszach</strong>."
+  },
+  {
+    "topic": "IV. Niedobór kadr — dane",
+    "q": "Według WHO, globalne braki kadr medycznych w 2030 r. mają wynieść około:",
+    "opts": [
+      "230 tys. pracowników medycznych",
+      "1 mln pracowników medycznych",
+      "18 mln pracowników medycznych",
+      "100 tys. pracowników medycznych"
+    ],
+    "ans": 2,
+    "exp": "Według WHO globalne braki kadr medycznych w 2030 r. wyniosą <strong>ok. 18 mln pracowników medycznych</strong>; szacunki UE mówią o ponad 1 mln braków już w 2024 r."
+  },
+  {
+    "topic": "IV. Niedobór kadr — dane",
+    "q": "W szacunkach UE (ponad 1 mln braków w 2024 r.) największą grupę niedoborów stanowią:",
+    "opts": [
+      "lekarze — ok. 590 tys.",
+      "pielęgniarki (w tym położne) — ok. 590 tys.",
+      "dentyści — ok. 590 tys.",
+      "farmaceuci — ok. 590 tys."
+    ],
+    "ans": 1,
+    "exp": "Według szacunków UE braki to m.in. <strong>590 tys. pielęgniarek (w tym położnych)</strong>, 230 tys. lekarzy oraz 150 tys. dentystów, farmaceutów i fizjoterapeutów."
+  },
+  {
+    "topic": "IV. Niedobór kadr — dane",
+    "q": "Skutki deficytu kadr medycznych rozważa się na trzech płaszczyznach:",
+    "opts": [
+      "konsekwencji dla pacjentów, dla pracowników oraz dla całego systemu opieki zdrowotnej",
+      "konsekwencji dla giełdy, banków i funduszy",
+      "konsekwencji dla turystyki, sportu i kultury",
+      "konsekwencji wyłącznie finansowych dla NFZ"
+    ],
+    "ans": 0,
+    "exp": "Skutki deficytu kadr rozważa się na 3 płaszczyznach: <strong>konsekwencji dla pacjentów, dla pracowników oraz dla całego systemu opieki zdrowotnej</strong>."
+  },
+  {
+    "topic": "IV. Niedobór kadr — dane",
+    "q": "Które zjawisko wskazano jako konsekwencję deficytu kadr DLA PRACOWNIKÓW?",
+    "opts": [
+      "wzrost stabilności funkcjonowania placówek",
+      "skrócenie czasu oczekiwania pacjentów na świadczenia",
+      "nadmierne obciążenie pracą i zagrożenie wypaleniem zawodowym",
+      "spadek kosztów funkcjonowania systemu"
+    ],
+    "ans": 2,
+    "exp": "Konsekwencje dla pracowników to m.in. <strong>nadmierne obciążenie pracą, pogorszenie warunków pracy, obniżenie satysfakcji zawodowej i zagrożenie wypaleniem zawodowym</strong>."
+  },
+  {
+    "topic": "IV. Niedobór kadr — dane",
+    "q": "Wskaźnik liczby lekarzy na 1000 mieszkańców w Polsce w 2023 r. (wg OECD) wyniósł:",
+    "opts": [
+      "8,7 — najwyżej w OECD",
+      "5,7 — powyżej średniej OECD",
+      "2,5 — najniżej w OECD",
+      "3,4 — przy średniej OECD wynoszącej 3,7"
+    ],
+    "ans": 3,
+    "exp": "W 2023 r. wskaźnik liczby lekarzy na 1000 mieszkańców w Polsce wyniósł <strong>3,4, przy średniej OECD 3,7</strong> (najwyższe: Grecja, Austria, Portugalia >5; najniższy: Turcja 2,5)."
+  },
+  {
+    "topic": "IV. Niedobór kadr — dane",
+    "q": "Wskaźnik liczby pielęgniarek na 1000 mieszkańców w Polsce w porównaniu ze średnią OECD:",
+    "opts": [
+      "jest znacznie niższy (Polska ok. 5,7 wobec średniej OECD 8,7)",
+      "jest znacznie wyższy (Polska 8,7 wobec OECD 5,7)",
+      "jest dokładnie równy średniej OECD",
+      "jest najwyższy w całym OECD"
+    ],
+    "ans": 0,
+    "exp": "Wskaźnik dla pielęgniarek w Polsce to obecnie ok. <strong>5,7 na 1000 mieszkańców, przy średniej OECD 8,7</strong> — jest więc wyraźnie niższy."
+  },
+  {
+    "topic": "V. TOC wobec niedoboru kadr",
+    "q": "W zastosowaniu kroku 2 TOC (wykorzystanie ograniczenia) wobec niedoboru personelu proponuje się m.in.:",
+    "opts": [
+      "natychmiastowe zamknięcie wszystkich oddziałów",
+      "priorytetyzację zadań klinicznych i delegowanie części obowiązków na mniej wykwalifikowany personel lub automatyzację",
+      "rezygnację z planowania harmonogramów pracy",
+      "zwiększenie liczby procedur administracyjnych"
+    ],
+    "ans": 1,
+    "exp": "W kroku 2 (wykorzystanie ograniczenia) proponuje się m.in. <strong>priorytetyzację najważniejszych zadań klinicznych, delegowanie obowiązków na mniej wykwalifikowany personel lub automatyzację prostych zadań oraz usprawnienie harmonogramów</strong>."
+  },
+  {
+    "topic": "V. TOC wobec niedoboru kadr",
+    "q": "W kroku 4 TOC (zwiększenie przepustowości) wobec niedoboru personelu medycznego proponuje się m.in.:",
+    "opts": [
+      "całkowite wstrzymanie kształcenia nowych kadr",
+      "obniżenie wynagrodzeń i wydłużenie czasu pracy bez zmian",
+      "rezygnację z technologii i pracy zdalnej",
+      "inwestycje w szkolenia, wdrożenie telemedycyny oraz lepsze wynagrodzenie i warunki pracy zatrzymujące personel"
+    ],
+    "ans": 3,
+    "exp": "W kroku 4 proponuje się m.in. <strong>inwestycje w szkolenia i rozwój, wdrożenie telemedycyny oraz lepsze wynagrodzenie i warunki pracy</strong>, by zatrzymać obecny personel i ograniczyć wypalenie zawodowe."
+  }
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0; score = 0; answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) renderQuestion();
+  else showResults();
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) { grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.'; bg = '#e0e7ff'; color = '#3730a3'; }
+  else if (pct >= 75) { grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.'; bg = '#ede9fe'; color = '#5b21b6'; }
+  else if (pct >= 60) { grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.'; bg = '#fff9c4'; color = '#f9a825'; }
+  else if (pct >= 50) { grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.'; bg = '#fff3e0'; color = '#e65100'; }
+  else { grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.'; bg = '#fde8e9'; color = '#c1121f'; }
+  circle.style.background = bg; circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() { startQuiz(); window.scrollTo(0, 0); }
+
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>
