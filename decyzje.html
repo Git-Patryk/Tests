@@ -328,6 +328,15 @@
   </div>
 
   <div class="toc-group">
+    <div class="toc-group-label">🧩 Blok egzaminacyjny</div>
+    <a href="#S9">9 · Sądy probabilistyczne i błędy logiczne</a>
+    <a href="#S10">10 · Podobieństwo i kategoryzacja</a>
+    <a href="#S11">11 · Wymiary naturalne, prototyp, afekt</a>
+    <a href="#S12">12 · Modele ryzyka i pomiar postaw</a>
+    <a href="#S13">13 · Decyzje grupowe i inne mechanizmy</a>
+  </div>
+
+  <div class="toc-group">
     <div class="toc-group-label">📚 Literatura</div>
     <a href="#lit">Zestawienie</a>
   </div>
@@ -823,7 +832,233 @@
         <li><strong>Style</strong> — maksymalizacja (lepsze wyniki, mniej satysfakcji) vs satysfakcja</li>
         <li><strong>Komunikacja ryzyka</strong> — ryzyko bezwzględne > względne; framing; manipulacje (cherry picking, oś Y)</li>
         <li><strong>Interwencje</strong> — nudging (Thaler/Sunstein) vs boosting (Hertwig/Gigerenzer); model EAST; PPK/Save More Tomorrow</li>
+        <li><strong>Błędy probabilistyczne</strong> — koniunkcja (Linda, Detroit, pan F), addytywność (Tversky-Koehler), belief bias, Laplace, ratio bias (Epstein)</li>
+        <li><strong>Podobieństwo i pojęcia</strong> — model kontrastu Tversky'ego (asymetria, cechy wspólne/różne), Rosch (poziom podstawowy), klipec/Lewicki (strategia ostrożna)</li>
+        <li><strong>Prototyp i afekt</strong> — wymiary naturalne (Kahneman/Frederick), zaniedbywanie wielkości, dominacja proporcji (Slovic), nastrój jako informacja (Schwarz/Clore)</li>
+        <li><strong>Modele ryzyka</strong> — Coombs (dążenie-unikanie), Markowitz (portfele), Lopes (SPA), Ellsberg (dwuznaczność), SIRI; miary dynamiczne (BART, CCT, Holt-Laury) vs statyczne (DOSPERT, SSS)</li>
+        <li><strong>Decyzje grupowe</strong> — reguła Condorceta, metoda Bordy, model Steinera, grupa nominalna; efekt dysjunkcji</li>
       </ul>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK EGZAMINACYJNY ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-cwiczenia">🧩 Klasyczny blok poznawczy i modele ryzyka</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <div class="callout exam">
+    <span class="ci">📝</span><div>Ten blok pokrywa pytania z <strong>oryginalnych egzaminów</strong> (zdjęcia + relacje studentów dziennych), których nie obejmowały sekcje 1–8. Materiał wg T. Tyszki „Decyzje. Perspektywa psychologiczna i ekonomiczna" oraz prac Tversky'ego, Rosch, Epsteina, Coombsa, Markowitza i Lopes.</div>
+  </div>
+
+  <!-- S9 -->
+  <section id="S9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-header-text">
+        <h2>Sądy o prawdopodobieństwie i błędy logiczne</h2>
+        <div class="src-tag">Źródło: <span>Tversky &amp; Kahneman; Tversky &amp; Koehler (1994); Revlin i in. (1980); Epstein</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🔗 Błąd koniunkcji</h3>
+      <p>Zasada koniunkcji: prawdopodobieństwo wystąpienia <strong>dwóch zdarzeń naraz</strong> (A i B) nigdy nie może być wyższe niż prawdopodobieństwo jednego z nich (A). Ludzie ją łamią, bo opis bardziej <span class="term">pasuje do stereotypu</span> — działa <span class="term">heurystyka reprezentatywności</span>.</p>
+      <ul class="alist">
+        <li><strong>Problem Lindy</strong> — opis 31-letniej, elokwentnej aktywistki; badani oceniają „kasjerka <em>i</em> feministka” jako bardziej prawdopodobne niż samą „kasjerkę”. To niemożliwe logicznie</li>
+        <li><strong>Pan F</strong> — „miał zawał <em>i</em> ma ponad 55 lat” oceniane wyżej niż „miał zawał”; 58% badanych się myli (starszy pan = reprezentatywny zawałowiec)</li>
+        <li><strong>Detroit vs Michigan</strong> — liczba morderstw w Detroit (200) oceniana wyżej niż w całym stanie Michigan (100), choć Detroit leży w Michigan; podzbiór &gt; zbiór nadrzędny = łamanie koniunkcji przez <span class="term">heurystykę prototypową</span></li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>➕ Zasada addytywności i prawo małych liczb</h3>
+      <ul class="alist">
+        <li><strong>Addytywność (zdarzenia komplementarne):</strong> suma prawdopodobieństw wszystkich wykluczających się opcji = <strong>100%</strong></li>
+        <li><strong>Tversky i Koehler (1994):</strong> oceniając prawdopodobieństwo winy każdego z 4 podejrzanych <em>z osobna</em>, badani sumują znacznie ponad 100% — bo każdego oceniają przez reprezentatywność, ignorując ramy całości (<em>support theory</em>)</li>
+        <li><strong>Prawo małych liczb:</strong> błędne oczekiwanie, że mała próba wiernie odzwierciedla populację (przecenianie reprezentatywności krótkich serii)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🧮 Belief bias, zasada Laplace'a i ratio bias</h3>
+      <ul class="alist">
+        <li><strong>Błąd przekonań (belief bias)</strong> — Revlin i in. (1980): badani oceniają poprawność wniosku nie wg logiki przesłanek, lecz wg zgodności z <span class="term">własną wiedzą o świecie</span></li>
+        <li><strong>Zasada Laplace'a</strong> (obojętności / niewystarczającej racji) — jeśli nie ma podstaw, by uznać jedno zdarzenie za bardziej prawdopodobne, zakładamy, że <span class="term">każde możliwe zdarzenie jest tak samo prawdopodobne</span> (orzeł/reszka 50/50)</li>
+        <li><strong>Ratio bias / zaniedbywanie mianownika</strong> — Epstein: badani wolą urnę z 10 wygrywającymi kulami na 100 niż z 1 na 10 (proporcja ta sama, 10%). Efekt <span class="term">najsilniejszy przy reprezentacji graficznej i rzeczywistych urnach</span> (aktywują System 1), słabszy przy suchym opisie słownym</li>
+      </ul>
+      <div class="callout exam"><span class="ci">📝</span><div>Na egzaminie: koniunkcja = „A i B nie może być &gt; A” (Linda, pan F); addytywność = „suma wykluczających się = 100%” (4 podejrzanych); Detroit = prototyp łamiący koniunkcję; Revlin = belief bias; Epstein = ratio bias przy rysunku/realnych urnach.</div></div>
+    </div>
+  </section>
+
+  <!-- S10 -->
+  <section id="S10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-header-text">
+        <h2>Podobieństwo, kategoryzacja i tworzenie pojęć</h2>
+        <div class="src-tag">Źródło: <span>Tversky (model kontrastu); Rosch (kategoryzacja naturalna); Lewicki (klipiec)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>⚖️ Model kontrastu Tversky'ego</h3>
+      <p>Podobieństwo to funkcja <strong>cech wspólnych</strong> (zwiększają) i <strong>cech różnych</strong> (zmniejszają) — nie jest prostą „odległością”.</p>
+      <ul class="alist">
+        <li><strong>Brak symetrii</strong> — „Wojownik odważny jak lew” brzmi naturalniej niż „Lew odważny jak wojownik”; porównujemy wariant do <span class="term">prototypu</span> (lew = prototyp odwagi). W zdaniu „a jest jak b” prototyp powinien stać w <span class="term">pozycji b</span></li>
+        <li><strong>Cechy wspólne</strong> mają wyższe wagi przy ocenie <span class="term">podobieństwa</span>; cechy różne — przy ocenie różnicy</li>
+        <li><strong>Obiekty bogate w cechy</strong> (np. USA i ZSRR) mogą być jednocześnie oceniane jako bardziej podobne <em>i</em> bardziej różne</li>
+        <li><strong>Coca/Pepsi + 7UP</strong> — dodanie kontrastowego obiektu (7UP) podnosi ocenę podobieństwa Coli i Pepsi (uwaga skupia się na cechach wspólnych)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🗂️ Kategoryzacja naturalna (Eleanor Rosch)</h3>
+      <p>Tworząc pojęcia, ludzie działają niezgodnie z logiką — stosują dwie zasady:</p>
+      <table class="ltable">
+        <tr><th>Zasada</th><th>Wymiar</th><th>Czemu służy</th></tr>
+        <tr><td><strong>Oszczędność wysiłku poznawczego</strong></td><td>Pionowy (poziom abstrakcji)</td><td>Wybór optymalnego poziomu ogólności — maksimum informacji przy minimum wysiłku</td></tr>
+        <tr><td><strong>Odwzorowanie struktury świata</strong></td><td>Poziomy (kategorie tego samego poziomu)</td><td>Cechy w naturze tworzą skorelowane wiązki (skrzydła+pióra) → odróżnianie kotów od psów</td></tr>
+      </table>
+      <ul class="alist">
+        <li><strong>Poziom podstawowy (basic level)</strong> — przy kategoryzacji pionowej faworyzowany jest poziom <span class="term">średni</span> (pies, krzesło), nie najogólniejszy (zwierzę, mebel) ani najszczegółowszy (jamnik, krzesło kuchenne)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🃏 Eksperyment Lewickiego — pojęcie „klipiec”</h3>
+      <p>Badany ustala treść sztucznego pojęcia, pokazując karty z figurami (wie, że desygnatem jest karta 1).</p>
+      <ul class="alist">
+        <li><strong>Strategia ostrożna</strong> (conservative focusing) — zmiana tylko <span class="term">jednej cechy</span> względem wzorca; precyzyjnie ustala, co jest istotne, bez obciążania pamięci</li>
+        <li><strong>Strategia ryzykowna</strong> — zmiana <span class="term">wielu cech naraz</span>; szybsza, ale niejednoznaczna i obciążająca pamięć</li>
+      </ul>
+      <div class="callout exam"><span class="ci">📝</span><div>Egzamin: „wojownik jak lew” = brak symetrii podobieństwa; cechy wspólne → ocena podobieństwa; basic level = poziom średni; pokazanie karty różniącej się o jedną cechę = strategia ostrożna.</div></div>
+    </div>
+  </section>
+
+  <!-- S11 -->
+  <section id="S11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div class="section-header-text">
+        <h2>Wymiary naturalne, heurystyka prototypu i afektu</h2>
+        <div class="src-tag">Źródło: <span>Kahneman &amp; Frederick (zastępowanie atrybutów); Slovic; Schwarz &amp; Clore (1983)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🌡️ Zastępowanie atrybutów i wymiary naturalne</h3>
+      <p>Gdy pytanie jest trudne (np. o prawdopodobieństwo), System 1 podstawia <span class="term">łatwiejszy, „naturalny” wymiar</span> i odpowiada na nie.</p>
+      <ul class="alist">
+        <li><strong>Wymiary naturalne (Kahneman i Frederick):</strong> <span class="term">wielkość, odległość, głośność, podobieństwo, afekt</span> — oceniane automatycznie i bez wysiłku przez System 1</li>
+        <li>Prawdopodobieństwo i liczby rzeczywiste <em>nie</em> są naturalne — wymagają świadomego liczenia (System 2)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🐦 Heurystyka prototypu i dominacja proporcji</h3>
+      <ul class="alist">
+        <li><strong>Zaniedbywanie wielkości (extension neglect)</strong> — gotowość zapłaty za uratowanie 2 tys., 20 tys. i 200 tys. ptaków: 80$, 78$, 88$. Badani reagują na <span class="term">wyobrażony prototyp</span> (jeden cierpiący ptak), nie na liczbę</li>
+        <li><strong>Dominacja proporcji (Slovic)</strong> — „uratuje 98% ze 150 osób” oceniane jako atrakcyjniejsze niż „uratuje 150 osób”; wysoka proporcja brzmi jak pewny sukces i wywołuje silny <span class="term">afekt</span></li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>❤️ Heurystyka afektu, nastrój jako informacja, interferencja</h3>
+      <ul class="alist">
+        <li><strong>Heurystyka afektu</strong> — psychometrycznym przejawem jest <span class="term">odwrotna zależność między oceną zysków a oceną ryzyka</span>: co lubimy, ma „same korzyści i małe ryzyko” (w rzeczywistości zysk i ryzyko są skorelowane dodatnio)</li>
+        <li><strong>Nastrój jako informacja (Schwarz i Clore, 1983)</strong> — deszczowa pogoda obniża ocenę satysfakcji z życia; efekt <span class="term">znika, gdy skieruje się uwagę badanych na pogodę</span> (poprawna atrybucja źródła nastroju)</li>
+        <li><strong>CRT a test Stroopa</strong> — korelują, bo oba mierzą <span class="term">hamowanie reakcji automatycznej</span> (włączenie Systemu 2); najdłuższy czas reakcji dla planszy niezgodnej (interferencja poznawcza)</li>
+      </ul>
+      <div class="callout exam"><span class="ci">📝</span><div>Egzamin: wymiary naturalne = wielkość/odległość/głośność/podobieństwo/afekt; ptaki = prototyp/extension neglect; Slovic 98% = dominacja proporcji; afekt = odwrotna zależność zysk–ryzyko; Schwarz-Clore = nastrój jako informacja; CRT~Stroop = kontrola reakcji automatycznej.</div></div>
+    </div>
+  </section>
+
+  <!-- S12 -->
+  <section id="S12">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div class="section-header-text">
+        <h2>Modele wyboru ryzykownego i pomiar postaw</h2>
+        <div class="src-tag">Źródło: <span>Coombs (Ryzyko-Wartość); Markowitz; Lopes (SPA); Ellsberg (1961); Zaleśkiewicz (SIRI)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>🎯 Postawa wobec ryzyka a wartość oczekiwana</h3>
+      <p>Punktem odniesienia jest <strong>wartość oczekiwana (EV)</strong> loterii. Dla loterii „100 zł z p=½ albo 0 zł z p=½” EV = 50 zł.</p>
+      <ul class="alist">
+        <li><strong>Awersja do ryzyka</strong> — woli pewne 50 zł nad loterię o EV = 50 zł (a tym bardziej: loterię o EV 50 nad pewne 60)</li>
+        <li><strong>Neutralność</strong> — ocenia pewne 50 zł i loterię o EV = 50 zł <span class="term">tak samo</span></li>
+        <li><strong>Skłonność do ryzyka</strong> — woli loterię (EV = 50 zł) nad pewne 50, a nawet nad pewne 60 zł</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>📐 Cztery modele wyboru ryzykownego</h3>
+      <table class="ltable">
+        <tr><th>Model</th><th>Istota</th><th>Różnice indywidualne</th></tr>
+        <tr><td><strong>Teoria perspektywy</strong> (Kahneman, Tversky)</td><td>Stosunek do ryzyka wynika z kształtu <span class="term">funkcji wartości</span> i <span class="term">funkcji wag decyzyjnych</span></td><td><span class="strata">Małe</span> — zniekształcenia uniwersalne dla większości ludzi</td></tr>
+        <tr><td><strong>Ryzyko-Wartość</strong> (Coombs)</td><td>Wybór = konflikt typu <span class="term">dążenie-unikanie</span> (dążymy do wartości, unikamy ryzyka)</td><td><span class="zysk">Duże</span> — indywidualny „punkt idealny ryzyka”</td></tr>
+        <tr><td><strong>Portfelowy</strong> (Markowitz)</td><td>Krzywa efektywna; portfel skrajnie prawy = max zysk + max ryzyko</td><td><span class="zysk">Duże</span> — indywidualna tolerancja ryzyka</td></tr>
+        <tr><td><strong>SPA</strong> (Lopes)</td><td>Bezpieczeństwo/Potencjał (dyspozycja) + Aspiracje (sytuacja)</td><td><span class="zysk">Duże</span> — dyspozycyjne nastawienie</td></tr>
+      </table>
+      <ul class="alist">
+        <li><strong>Portfel Markowitza</strong> — wybór portfela najdalej na prawo na krzywej efektywnej = <span class="term">skłonność do ryzyka</span>; portfel poniżej krzywej = nieefektywny</li>
+        <li><strong>Paradoks Ellsberga (1961)</strong> — wolimy opcję o znanym prawdopodobieństwie od opcji o nieznanym → <span class="term">awersja do niepewności / dwuznaczności</span></li>
+        <li><strong>SIRI</strong> — ryzyko <span class="term">instrumentalne</span> (dla celu/zysku) vs <span class="term">stymulacyjne</span> (dla emocji, pobudzenia, samego doświadczenia)</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>📊 Pomiar postaw: miary dynamiczne vs statyczne</h3>
+      <table class="ltable">
+        <tr><th>Typ</th><th>Charakter</th><th>Przykłady</th></tr>
+        <tr><td><strong>Dynamiczne</strong></td><td>Poziom ryzyka zmienia się w trakcie zadania (behawioralne)</td><td>BART (balon), Columbia Card Task „gorąca”, Holt-Laury (wielokrotna wycena)</td></tr>
+        <tr><td><strong>Statyczne / psychometryczne</strong></td><td>Samoopis, stały zestaw pozycji</td><td>DOSPERT, SSS Zuckermana, REI Epsteina</td></tr>
+      </table>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>DOSPERT</strong> mierzy skłonność do ryzyka <span class="term">domenowo specyficzną</span> — dlatego rozbieżne wyniki tej samej osoby między metodami (kwestionariusz, loterie, zadanie behawioralne) są <em>sensowne</em>, a nie sprzeczne: różne metody aktywują różne aspekty ryzyka.</div></div>
+    </div>
+  </section>
+
+  <!-- S13 -->
+  <section id="S13">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <div class="section-header-text">
+        <h2>Decyzje grupowe i inne mechanizmy</h2>
+        <div class="src-tag">Źródło: <span>Condorcet, Borda; Steiner; Shafir &amp; Tversky (dysjunkcja); Isen (afekt)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>👥 Decyzje grupowe</h3>
+      <ul class="alist">
+        <li><strong>Reguła Condorceta</strong> — wybiera opcję, która <span class="term">wygrywa we wszystkich porównaniach parami</span> z innymi (zwycięzca Condorceta; bywa, że nie istnieje — paradoks Condorceta)</li>
+        <li><strong>Metoda Bordy</strong> — punktuje <span class="term">cały ranking</span>, nie tylko pierwsze miejsca → faworyzuje opcje kompromisowe (wysoko cenione przez wszystkich)</li>
+        <li><strong>Model Steinera</strong> — wynik grupy = <span class="term">zasoby członków − straty procesualne + zyski procesualne</span></li>
+        <li><strong>Grupa nominalna</strong> (praca najpierw osobno) generuje więcej pomysłów niż burza mózgów, bo znika <span class="term">blokowanie produkcji</span>, lęk przed oceną i dominacja aktywnych członków</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>🧩 Strategie i struktura decyzji wieloatrybutowej</h3>
+      <ul class="alist">
+        <li><strong>Strategie kompensacyjne</strong> — słabość jednej cechy może być zrównoważona mocnymi wynikami na innych; np. <span class="term">reguła Franklina / MAU</span> (suma ważonych ocen)</li>
+        <li><strong>Strategie niekompensacyjne</strong> (koniunkcyjna, leksykograficzna) — zwykle <span class="term">upraszczają</span> decyzję (progi, eliminacja), nie wymagają więcej obliczeń</li>
+        <li><strong>Macierz „alternatywy × atrybuty”</strong> — porządkuje opcje i kryteria przed zastosowaniem strategii wyboru</li>
+        <li><strong>Dominacja</strong> — opcja dominuje inną, gdy jest <span class="term">nie gorsza na wszystkich atrybutach i lepsza na co najmniej jednym</span>; opcji zdominowanej nie wybieramy</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>⏳ Dysjunkcja, ostrożny optymizm i zakotwiczenie</h3>
+      <ul class="alist">
+        <li><strong>Efekt dysjunkcji (Shafir i Tversky)</strong> — <span class="term">odkładanie decyzji</span> do poznania wyniku, mimo że byłaby ona ta sama niezależnie od scenariusza (naruszenie zasady rzeczy pewnej)</li>
+        <li><strong>Ostrożny optymizm</strong> (pozytywny afekt, Isen) — dobry nastrój zwiększa optymizm co do wygranych, ale jednocześnie skłania do <span class="term">ostrożności</span>: ludzie ryzykują mniej, by chronić nastrój</li>
+        <li><strong>Zakotwiczenie</strong> — to samo wino z ceną 20$ vs 50$ oceniane jako lepsze przy wyższej cenie (cena = <span class="term">kotwica jakości</span>, marketingowy efekt placebo); analityk „kotwiczy” prognozę na liczbie podanej przez dyrektora</li>
+      </ul>
+      <div class="callout exam"><span class="ci">📝</span><div>Egzamin: Condorcet = zwycięstwo parami; Borda = pełny ranking, opcja kompromisowa; Steiner = zasoby − straty + zyski procesualne; grupa nominalna = brak blokowania; dysjunkcja = zwłoka mimo tej samej decyzji; dominacja = nie gorsza wszędzie + lepsza gdzieś.</div></div>
     </div>
   </section>
 
