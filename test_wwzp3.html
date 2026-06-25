@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 3 – Współczesne Wyzwania Zdrowia Publicznego (egzamin)</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #6a1ba0 0%, var(--purple2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #e9d8fd;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--purple2); }
+  .start-card .note {
+    text-align: left;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-left: 4px solid #f59e0b;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 1.2rem 0;
+    font-size: .84rem; line-height: 1.6; color: #7c4a03;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #6a1ba0; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #6a1ba0; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a1ba0, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #6a1ba0; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="wwzp.html">← Wróć do listy testów</a>
+  <h1>Współczesne Wyzwania Zdrowia Publicznego</h1>
+  <p>Test 3 – Oryginalne pytania egzaminacyjne · 41 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w Teście!</h2>
+    <p>Ten test odtwarza <strong>oryginalne pytania egzaminacyjne</strong> (część 1–41) — dokładnie te same pytania i odpowiedzi co na arkuszu.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Polityka zdrowotna · Poziomy profilaktyki · Promocja i edukacja zdrowotna · Health literacy · Poczucie koherencji · Narodowy Program Zdrowia · Uwarunkowania zdrowia · Modele zachowań zdrowotnych · Rozwój poznawczy · Metody aktywizujące · Żywienie i aktywność fizyczna · Model biopsychospołeczny</p>
+    </div>
+    <div class="note">
+      <strong style="display:block;margin-bottom:.3rem">Uwaga:</strong>
+      Pytania i odpowiedzi przepisane są wiernie z arkusza. Poprawne odpowiedzi i wyjaśnienia zostały ustalone na podstawie wiedzy przedmiotowej — przy pytaniach oznaczonych <strong>⚠️</strong> warto zweryfikować klucz z materiałami wykładowymi.
+    </div>
+    <p>Kolejność pytań jest losowana; kolejność odpowiedzi (A–D) jest stała, bo niektóre pytania odwołują się do „powyższych" / „b i c".</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 41</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/41</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+// Pytania przepisane wiernie z arkusza egzaminacyjnego (1-41).
+// Kolejność odpowiedzi (A-D) NIE jest losowana, bo część pytań odwołuje się do pozycji
+// ("wszystkie powyższe", "poprawne odpowiedzi b i c", "żaden z powyższych").
+// "c: true" oznacza odpowiedź ustaloną jako poprawna. ⚠️ = odpowiedź sporna / do weryfikacji.
+const ALL_QUESTIONS = [
+
+  // 1
+  {
+    q: "Lokalna polityka zdrowotna to:",
+    opts: [
+      { t: "realizowanie programów promocji zdrowia przez samorządy", c: false },
+      { t: "ogół działań z zakresu szeroko rozumianego zdrowia, które mają na celu wywarcie określonego wpływu, osiągnięcie określonego stanu zdrowotności całości społeczeństwa", c: true },
+      { t: "proces umożliwiający jednostkom i grupom społecznym zwiększenie kontroli nad uwarunkowaniami zdrowia", c: false },
+      { t: "zaplanowany proces oparty na dowodach naukowych mający na celu edukację zdrowotną społeczności lokalnych", c: false }
+    ],
+    exp: "⚠️ Polityka zdrowotna to ogół działań nakierowanych na osiągnięcie określonego stanu zdrowotności społeczeństwa (odp. B). Odp. C to definicja promocji zdrowia (Karta Ottawska). Pytanie sporne — zweryfikuj z wykładem."
+  },
+  // 2
+  {
+    q: "Samobadanie jąder to:",
+    opts: [
+      { t: "profilaktyka I poziomu", c: false },
+      { t: "profilaktyka II poziomu", c: true },
+      { t: "profilaktyka III poziomu", c: false },
+      { t: "profilaktyka IV poziomu", c: false }
+    ],
+    exp: "Samobadanie to wczesne wykrywanie choroby u osoby bez objawów = profilaktyka wtórna (II poziomu)."
+  },
+  // 3
+  {
+    q: "Wykonanie testu w kierunku HIV to:",
+    opts: [
+      { t: "profilaktyka I poziomu", c: false },
+      { t: "profilaktyka II poziomu", c: true },
+      { t: "profilaktyka III poziomu", c: false },
+      { t: "profilaktyka IV poziomu", c: false }
+    ],
+    exp: "Test diagnostyczny wykrywający zakażenie u osoby bezobjawowej to wczesne wykrywanie = profilaktyka II poziomu (wtórna)."
+  },
+  // 4
+  {
+    q: "Fizjoterapia to:",
+    opts: [
+      { t: "profilaktyka I poziomu", c: false },
+      { t: "profilaktyka II poziomu", c: false },
+      { t: "profilaktyka III poziomu", c: true },
+      { t: "profilaktyka IV poziomu", c: false }
+    ],
+    exp: "Rehabilitacja/fizjoterapia ogranicza skutki i powikłania choroby już istniejącej = profilaktyka III poziomu (trzeciorzędowa)."
+  },
+  // 5
+  {
+    q: "Szczepienia przeciwko grypie to:",
+    opts: [
+      { t: "profilaktyka I poziomu", c: true },
+      { t: "profilaktyka II poziomu", c: false },
+      { t: "profilaktyka III poziomu", c: false },
+      { t: "profilaktyka IV poziomu", c: false }
+    ],
+    exp: "Szczepienie zapobiega zachorowaniu u osoby zdrowej = profilaktyka I poziomu (pierwotna)."
+  },
+  // 6
+  {
+    q: "Termin health literacy oznacza:",
+    opts: [
+      { t: "zbiór publikacji na temat zdrowia", c: false },
+      { t: "kompetencje zdrowotne", c: true },
+      { t: "uwarunkowania zdrowia", c: false },
+      { t: "zbiór publikacji dotyczących chorób cywilizacyjnych", c: false }
+    ],
+    exp: "Health literacy to kompetencje (umiejętności) zdrowotne — zdolność wyszukiwania, rozumienia i wykorzystywania informacji o zdrowiu."
+  },
+  // 7
+  {
+    q: "Poczucie koherencji:",
+    opts: [
+      { t: "zostało zdefiniowane przez Marca Lalonde'a", c: false },
+      { t: "składa się z poczucia zrozumiałości, poczucia zaradności i poczucia sensowności", c: true },
+      { t: "nie jest możliwe do oszacowania przy pomocy kwestionariusza ankiety", c: false },
+      { t: "wszystkie odpowiedzi są poprawne", c: false }
+    ],
+    exp: "Poczucie koherencji (Aaron Antonovsky, a nie Lalonde) to: zrozumiałość, zaradność i sensowność; mierzone kwestionariuszem SOC."
+  },
+  // 8
+  {
+    q: "Głównym założeniem nowoczesnej edukacji zdrowotnej jest:",
+    opts: [
+      { t: "dostarczenie społeczeństwu jak największej ilości informacji o charakterze evidence based", c: false },
+      { t: "ograniczenie źródeł informacji, niemających charakteru evidence based", c: false },
+      { t: "stworzenie jednostkom i grupom społecznym warunków do samodzielnej zmiany negatywnych zachowań zdrowotnych", c: true },
+      { t: "budowanie w społeczeństwie tolerancji wobec grup ze specjalnymi potrzebami zdrowotnymi", c: false }
+    ],
+    exp: "Nowoczesna edukacja zdrowotna to empowerment — tworzenie warunków do samodzielnej zmiany zachowań, a nie samo przekazywanie informacji."
+  },
+  // 9
+  {
+    q: "Społeczeństwo informacyjne:",
+    opts: [
+      { t: "nie może wystąpić w populacji mniejszej niż 20 mln", c: false },
+      { t: "charakteryzuje się mniejszym odsetkiem zachorowań na nowotwory", c: false },
+      { t: "wykazuje wysoki poziom umiejętności korzystania z technologii mobilnych", c: true },
+      { t: "charakteryzuje się bardzo dobrym poziomem przyswajania informacji na drodze kampanii społecznych", c: false }
+    ],
+    exp: "Społeczeństwo informacyjne cechuje wysoki poziom umiejętności korzystania z technologii informacyjno-komunikacyjnych (w tym mobilnych)."
+  },
+  // 10
+  {
+    q: "Przedział czasowy obecnie realizowanego Narodowego Programu Zdrowia obejmuje lata:",
+    opts: [
+      { t: "2020–2030", c: false },
+      { t: "2021–2026", c: true },
+      { t: "2024–2030", c: false },
+      { t: "2022–2028", c: false }
+    ],
+    exp: "⚠️ Narodowy Program Zdrowia był realizowany na lata 2021–2025; w arkuszu brak tej opcji, najbliższa to 2021–2026. Koniecznie zweryfikuj klucz — możliwa różnica w roczniku."
+  },
+  // 11
+  {
+    q: "Przy tworzeniu programów promocji zdrowia w środowisku lokalnym, biorąc pod uwagę środowisko fizyczne oceniamy:",
+    opts: [
+      { t: "jakość wody i powietrza", c: false },
+      { t: "tereny zielone", c: false },
+      { t: "jakość żywności", c: false },
+      { t: "wszystkie odpowiedzi są prawidłowe", c: true }
+    ],
+    exp: "Ocena środowiska fizycznego obejmuje jakość wody i powietrza, tereny zielone oraz jakość żywności — wszystkie odpowiedzi są prawidłowe."
+  },
+  // 12
+  {
+    q: "Do podstawowych środowisk wspierających zdrowie zaliczamy:",
+    opts: [
+      { t: "środowisko społeczne", c: false },
+      { t: "środowisko polityczne", c: false },
+      { t: "środowisko fizyczne", c: false },
+      { t: "wszystkie odpowiedzi są prawidłowe", c: true }
+    ],
+    exp: "⚠️ Najczęściej wskazywaną odpowiedzią jest „wszystkie” (społeczne, polityczne i fizyczne jako środowiska wspierające zdrowie). Sprawdź, czy wykład nie wyłącza środowiska politycznego."
+  },
+  // 13
+  {
+    q: "Do kulturowych uwarunkowań zdrowia nie zaliczamy:",
+    opts: [
+      { t: "tradycji", c: false },
+      { t: "wykształcenia", c: false },
+      { t: "dochodów", c: true },
+      { t: "rozrywki", c: false }
+    ],
+    exp: "Dochody to uwarunkowanie ekonomiczne, a nie kulturowe — pozostałe (tradycja, wykształcenie, rozrywka) należą do uwarunkowań kulturowych."
+  },
+  // 14
+  {
+    q: "1 stycznia 2025 rozpoczęła się polska prezydencja w:",
+    opts: [
+      { t: "Radzie Europy", c: false },
+      { t: "Radzie Unii Europejskiej", c: true },
+      { t: "Radzie Europejskiej", c: false },
+      { t: "Parlamencie Europejskim", c: false }
+    ],
+    exp: "Polska objęła rotacyjną prezydencję w Radzie Unii Europejskiej (1 stycznia – 30 czerwca 2025)."
+  },
+  // 15
+  {
+    q: "Za opracowanie podstawy programowej przedmiotu „wychowanie zdrowotne” odpowiada:",
+    opts: [
+      { t: "Ministerstwo Zdrowia", c: false },
+      { t: "międzyresortowy zespół działający przy Ministerstwie Edukacji Narodowej", c: true },
+      { t: "prezes Rady Ministrów", c: false },
+      { t: "Kuratorium Oświaty", c: false }
+    ],
+    exp: "⚠️ Podstawę programową nowego przedmiotu przygotował zespół ekspertów działający przy MEN. Zweryfikuj dokładne sformułowanie z wykładu."
+  },
+  // 16
+  {
+    q: "Model edukacji zdrowotnej może być zorientowany na:",
+    opts: [
+      { t: "chorobę", c: false },
+      { t: "zdrowie", c: false },
+      { t: "czynniki ryzyka", c: false },
+      { t: "wszystkie odpowiedzi są poprawne", c: true }
+    ],
+    exp: "Modele edukacji zdrowotnej mogą być zorientowane na chorobę, na zdrowie lub na czynniki ryzyka — wszystkie odpowiedzi są poprawne."
+  },
+  // 17
+  {
+    q: "Głównym dokumentem, wskazującym cele polityki zdrowia publicznego w Polsce jest:",
+    opts: [
+      { t: "Ustawa o publicznej służbie krwi", c: false },
+      { t: "Konstytucja", c: false },
+      { t: "Narodowy Program Zdrowia", c: true },
+      { t: "żaden z powyższych", c: false }
+    ],
+    exp: "Cele polityki zdrowia publicznego w Polsce wyznacza Narodowy Program Zdrowia (na podstawie ustawy o zdrowiu publicznym)."
+  },
+  // 18
+  {
+    q: "Osobniczym czynnikiem ryzyka nie jest:",
+    opts: [
+      { t: "palenie tytoniu", c: false },
+      { t: "aktywność fizyczna", c: false },
+      { t: "dostęp do opieki zdrowotnej", c: true },
+      { t: "brak umiejętności radzenia sobie ze stresem", c: false }
+    ],
+    exp: "Dostęp do opieki zdrowotnej to czynnik systemowy/środowiskowy, a nie osobniczy (indywidualny) czynnik ryzyka."
+  },
+  // 19
+  {
+    q: "Nierówności w zdrowiu:",
+    opts: [
+      { t: "najtrudniej niwelować w skali lokalnej", c: false },
+      { t: "nie są możliwe do zlikwidowania w skali globalnej", c: true },
+      { t: "w skali globalnej wynikają z uwarunkowań genetycznych", c: false },
+      { t: "w skali krajowej są możliwe do zlikwidowania", c: false }
+    ],
+    exp: "⚠️ Nierówności zdrowotne wynikają z uwarunkowań społeczno-ekonomicznych (nie genetycznych) i w skali globalnej nie da się ich całkowicie zlikwidować. Zweryfikuj z wykładem."
+  },
+  // 20
+  {
+    q: "Głównym celem polityki senioralnej jest:",
+    opts: [
+      { t: "zapewnienie osobom w wieku podeszłym stałej opieki ambulatoryjnej", c: false },
+      { t: "zwiększenie odsetka osób starszych zaszczepionych przeciwko krztuścowi", c: false },
+      { t: "zwiększenie samowystarczalności osób starszych", c: true },
+      { t: "poprawne odpowiedzi b i c", c: false }
+    ],
+    exp: "⚠️ Głównym celem polityki senioralnej jest wspieranie samodzielności/samowystarczalności i aktywnego starzenia się. Sprawdź, czy klucz nie wskazuje „b i c”."
+  },
+  // 21
+  {
+    q: "Istnieje jedna uniwersalna definicja edukacji zdrowotnej.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — edukacja zdrowotna ma wiele definicji, nie istnieje jedna uniwersalna."
+  },
+  // 22
+  {
+    q: "Jedną z cech współczesnego podejścia do edukacji zdrowotnej jest koncentracja na uczeniu się – aktywności, zaangażowaniu i działaniu uczących się.",
+    opts: [
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
+    ],
+    exp: "Prawda — współczesna edukacja zdrowotna jest skoncentrowana na aktywności i zaangażowaniu uczących się."
+  },
+  // 23
+  {
+    q: "Najważniejszym okresem dla kształtowania zachowań zdrowotnych jest dzieciństwo i młodość.",
+    opts: [
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
+    ],
+    exp: "Prawda — to okres największej plastyczności i trwałości kształtowanych nawyków zdrowotnych."
+  },
+  // 24
+  {
+    q: "Model przekonań zdrowotnych jest uniwersalną podstawą planowania programów edukacji zdrowotnej.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — model przekonań zdrowotnych (HBM) to jeden z wielu modeli, nie uniwersalna podstawa planowania."
+  },
+  // 25
+  {
+    q: "W transteoretycznym modelu zmian zachowań zdrowotnych pierwszym etapem jest etap gotowości do zmiany.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — pierwszym etapem jest prekontemplacja (brak zamiaru zmiany), a nie gotowość/przygotowanie do zmiany."
+  },
+  // 26
+  {
+    q: "W okresie przedszkolnym dominuje myślenie konkretno-wyobrażeniowe. Dziecko zadaje wiele pytań. Następuje rozwój zabaw tematycznych, konstrukcyjnych, gier, w których dziecko staje się zdolne do rozumienia i przestrzegania określonych reguł. Doskonali się sprawność ruchowa, wzrasta samodzielność.",
+    opts: [
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
+    ],
+    exp: "⚠️ Opis pasuje do charakterystyki wieku przedszkolnego (myślenie konkretno-wyobrażeniowe, zabawy tematyczne, rozwój samodzielności) — zaznaczono Prawda. Zweryfikuj z wykładem."
+  },
+  // 27
+  {
+    q: "Okres w rozwoju myślenia przypadający od narodzin do 2 lat określany jest jako stadium myślenia przedoperacyjnego.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — okres od narodzin do ok. 2 lat to stadium sensoryczno-motoryczne (Piaget); myślenie przedoperacyjne to ok. 2–7 lat."
+  },
+  // 28
+  {
+    q: "„Zamykające się drzwi” to krzywa charakterystyczna dla średniej dorosłości.",
+    opts: [
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
+    ],
+    exp: "⚠️ Metafora „zamykających się drzwi” (poczucie kurczących się możliwości/czasu) wiązana jest ze średnią dorosłością — zaznaczono Prawda. Zweryfikuj z wykładem."
+  },
+  // 29
+  {
+    q: "Cechą współczesnego nauczania powinna być dominacja metod podających.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — współczesne nauczanie powinno opierać się na metodach aktywizujących, a nie podających."
+  },
+  // 30
+  {
+    q: "Etapy cyklu uczenia się przez doświadczanie ułożone we właściwej kolejności: konkretne doświadczanie, abstrakcyjna konceptualizacja, refleksyjna obserwacja, aktywne eksperymentowanie.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — w cyklu Kolba kolejność to: konkretne doświadczanie → refleksyjna obserwacja → abstrakcyjna konceptualizacja → aktywne eksperymentowanie (w pytaniu zamieniono obserwację z konceptualizacją)."
+  },
+  // 31
+  {
+    q: "Dokonując wyboru metod i technik nauczania-uczenia się, należy kierować się przede wszystkim doświadczeniami, przekonaniami i preferencjami uczestników.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "⚠️ Wybór metod powinien wynikać przede wszystkim z celów edukacyjnych i tematu (z uwzględnieniem uczestników), a nie wyłącznie z ich preferencji — zaznaczono Fałsz. Zweryfikuj z wykładem."
+  },
+  // 32
+  {
+    q: "Jednoznacznie rozstrzygnięto, jaki wpływ na zmianę zachowań ludzi ma odwoływanie się do strachu, czyli stosowanie technik „straszenia”.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — wpływ odwoływania się do strachu na zmianę zachowań nie jest jednoznacznie rozstrzygnięty (wyniki badań są niespójne)."
+  },
+  // 33
+  {
+    q: "Pierwszym etapem planowania w edukacji zdrowotnej jest badanie (diagnoza) potrzeb.",
+    opts: [
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
+    ],
+    exp: "Prawda — planowanie zaczyna się od diagnozy (rozpoznania) potrzeb zdrowotnych odbiorców."
+  },
+  // 34
+  {
+    q: "Ewaluacja procesu to sprawdzanie, czy i w jakim stopniu osiągnęliśmy ustalone cele programu edukacji zdrowotnej.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — to opis ewaluacji wyników. Ewaluacja procesu dotyczy tego, JAK program był realizowany (przebieg, jakość wdrożenia)."
+  },
+  // 35
+  {
+    q: "Według teorii społecznego uczenia się proces przejmowania przez obserwatora nowych zachowań jest wymuszony, nie wynika z atrakcyjności modela.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — wg teorii społecznego uczenia się (Bandura) modelowanie zależy m.in. od atrakcyjności modela i nie jest wymuszone."
+  },
+  // 36
+  {
+    q: "W Polsce nie istnieje obecnie powszechnie obowiązujący kodeks etyki edukatora zdrowotnego.",
+    opts: [
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
+    ],
+    exp: "⚠️ Brak jednego powszechnie obowiązującego kodeksu etyki edukatora zdrowotnego — zaznaczono Prawda. Zweryfikuj z wykładem."
+  },
+  // 37
+  {
+    q: "We współczesnej edukacji zdrowotnej nauczający/edukator powinien być przewodnikiem (doradcą, liderem, facylitatorem, animatorem) uczących się.",
+    opts: [
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
+    ],
+    exp: "Prawda — edukator pełni rolę przewodnika/facylitatora, a nie wyłącznie przekaziciela wiedzy."
+  },
+  // 38
+  {
+    q: "Aktualnym polskim modelem graficznym przedstawiającym zasady prawidłowego żywienia jest piramida.",
+    opts: [
+      { t: "Prawda", c: false },
+      { t: "Fałsz", c: true }
+    ],
+    exp: "Fałsz — aktualnym modelem (NIZP PZH, od 2020 r.) jest „Talerz zdrowego żywienia”, a nie piramida."
+  },
+  // 39
+  {
+    q: "Według wytycznych WHO dorośli powinni podejmować w tygodniu co najmniej 150–300 minut aerobowej aktywności fizycznej o umiarkowanej intensywności lub co najmniej 75–150 minut aerobowej aktywności fizycznej o dużej intensywności lub równoważne połączenie aktywności o umiarkowanej lub dużej intensywności.",
+    opts: [
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
+    ],
+    exp: "Prawda — to zgodne z wytycznymi WHO (2020): 150–300 min umiarkowanej lub 75–150 min intensywnej aktywności tygodniowo (lub równoważne połączenie)."
+  },
+  // 40
+  {
+    q: "Puzzle i metaplan to techniki należące do różnych metod aktywizujących nauczania-uczenia się.",
+    opts: [
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
+    ],
+    exp: "⚠️ Puzzle (układanka) i metaplan to różne techniki aktywizujące (współpracy / dyskusyjno-graficzna) — zaznaczono Prawda. Zweryfikuj z wykładem."
+  },
+  // 41
+  {
+    q: "Model biopsychospołeczny zdrowia opiera się na założeniu, że:",
+    opts: [
+      { t: "w rozpatrywaniu chorób należy brać pod uwagę różnice społeczne ludności", c: false },
+      { t: "choroba ma podłoże psychospołeczne i do pacjenta należy podchodzić całościowo (np. w psychiatrii)", c: true },
+      { t: "najważniejsza jest teoria rozwoju człowieka i wpływ jakości środowiska na zdrowie", c: false },
+      { t: "podstawą są zasady nauk biologicznych i choroba rozpatrywana niezależnie od zachowania", c: false }
+    ],
+    exp: "Model biopsychospołeczny zakłada, że choroba ma podłoże biologiczne, psychiczne i społeczne, a pacjenta traktuje się całościowo. Odp. D opisuje model biomedyczny (przeciwny)."
+  }
+
+];
+
+// ---- SHUFFLE (tylko kolejność pytań; odpowiedzi A-D pozostają w oryginalnej kolejności) ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  // Odpowiedzi w oryginalnej kolejności (bez losowania)
+  const orderedOpts = q.opts.map((o, i) => ({ ...o, origIdx: i }));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  orderedOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, orderedOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6a1ba0'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#9b35e8'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#d18bff'; }
+  else if (pct >= 50) { grade = 'Dostatecznie';    col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

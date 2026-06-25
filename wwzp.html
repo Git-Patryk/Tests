@@ -109,6 +109,13 @@
   }
   .test-info { flex: 1; position: relative; z-index: 1; }
   .test-title { font-size: 1rem; font-weight: 700; margin-bottom: .25rem; }
+  .test-tag {
+    display: inline-block; vertical-align: middle;
+    font-family: sans-serif; font-size: .6rem; font-weight: 800;
+    letter-spacing: .08em; padding: .12rem .45rem; margin-left: .4rem;
+    border-radius: 5px; color: var(--nc);
+    background: var(--ng); border: 1px solid color-mix(in srgb, var(--nc) 35%, transparent);
+  }
   .test-meta { font-size: .8rem; color: var(--muted); }
   .test-arrow { color: var(--nc); font-size: 1.2rem; transition: transform .2s; position: relative; z-index: 1; }
   .test-card:hover .test-arrow { transform: translateX(4px); }
@@ -162,6 +169,15 @@
       <div class="test-info">
         <div class="test-title">Test 2 – Wersja zaawansowana</div>
         <div class="test-meta">48 pytań · dane statystyczne, mechanizmy biologiczne, szczegóły prawne i ekonomika zdrowia</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+    <a class="test-card" href="test_wwzp3.html">
+      <div class="test-num">3</div>
+      <div class="test-info">
+        <div class="test-title">Test 3 – Pytania egzaminacyjne <span class="test-tag">EGZAMIN</span></div>
+        <div class="test-meta">41 pytań · oryginalne pytania z arkusza egzaminacyjnego (cz. 1–41) · poziomy profilaktyki, promocja i edukacja zdrowotna, health literacy, NPZ, modele zachowań zdrowotnych, model biopsychospołeczny</div>
       </div>
       <span class="test-arrow">→</span>
     </a>
