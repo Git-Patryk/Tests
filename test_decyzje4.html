@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 4 (EGZAMIN) – Decyzje i ryzyko</title>
+<style>
+  :root {
+    --teal:   #14b8a6;
+    --teal2:  #0d9488;
+    --teal3:  #5eead4;
+    --teal4:  #ccfbf1;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f4faf9;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #effdfa;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #115e59 0%, var(--teal2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--teal2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #ecfdf8;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #c7f0e6;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--teal2); }
+
+  .level-badge {
+    display: inline-block;
+    background: #b45309;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #115e59; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal2), var(--teal3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--teal2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal3); background: #ecfdf8; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--teal2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--teal4); border-color: var(--teal2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #115e59; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--teal4); border-left: 4px solid var(--teal2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--teal2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #115e59, var(--teal2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(13,148,136,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #115e59; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--teal4); border-left: 3px solid var(--teal2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="decyzje-testy.html">← Wróć do listy testów</a>
+  <h1>Decyzje i ryzyko</h1>
+  <p>Test 4 · EGZAMIN · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN — ORYGINALNE PYTANIA</div>
+    <h2>Test 4 — pytania z prawdziwego egzaminu</h2>
+    <p>Pytania pochodzą z <strong>autentycznych egzaminów</strong> z przedmiotu „Decyzje i ryzyko” (zdjęcia egzaminów + relacje studentów). Ten zestaw obejmuje blok <strong>dualizmu poznania, postaw wobec ryzyka, decyzji grupowych i interwencji behawioralnych</strong>.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>paradygmat technokratyczny vs psychologiczny · ryzyko vs niepewność (Knight) · IGT · CRT · Holt i Laury · Ellsberg · reguła Condorceta i metoda Bordy · model Steinera (straty/zyski procesualne) · strategie kompensacyjne vs niekompensacyjne · dominacja · DOSPERT i SIRI · nudge / EAST / Save More Tomorrow · efekt dysjunkcji · nastrój jako informacja · ostrożny optymizm · grupa nominalna · zakotwiczenie · nudging vs boosting</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  {
+    q: "Które twierdzenia poprawnie opisują różnicę między technokratycznym a psychologicznym paradygmatem ryzyka? I. W paradygmacie technokratycznym ryzyko jest traktowane jako obiektywny fakt (prawdopodobieństwo × skutek). II. W paradygmacie psychologicznym ważne są też czynniki jakościowe: poczucie kontroli, lęk, zaufanie, sprawiedliwość. III. Paradygmat psychologiczny zakłada, że liczby są ZAWSZE mniej użyteczne niż reakcje afektywne.",
+    opts: [
+      { t: "Tylko I i II są poprawne", c: true },
+      { t: "Tylko I jest poprawne", c: false },
+      { t: "Tylko II i III są poprawne", c: false },
+      { t: "I, II i III są poprawne", c: false }
+    ],
+    exp: "I i II trafnie opisują oba paradygmaty. III jest fałszywe — paradygmat psychologiczny nie twierdzi, że liczby są ZAWSZE mniej użyteczne; podkreśla, że obok danych liczbowych liczą się też czynniki jakościowe."
+  },
+  {
+    q: "Które rozróżnienie między ryzykiem a niepewnością jest najtrafniejsze w sensie Knightowskim?",
+    opts: [
+      { t: "Ryzyko dotyczy sytuacji o znanych (lub szacowalnych) wynikach i prawdopodobieństwach; niepewność — sytuacji, gdy nie znamy w pełni wyników lub rozkładu prawdopodobieństw", c: true },
+      { t: "Ryzyko oznacza subiektywny lęk przed nieznanym prawdopodobieństwem zdarzeń, a niepewność to w pełni obiektywna, policzalna i dająca się oszacować wielkość statystyczna o znanym rozkładzie", c: false },
+      { t: "Ryzyko występuje tylko w decyzjach finansowych, a niepewność tylko w zdrowotnych i życiowych", c: false },
+      { t: "Ryzyko jest wtedy, gdy decydent zna swoje preferencje, a niepewność — gdy ich nie zna", c: false }
+    ],
+    exp: "Według Franka Knighta ryzyko to sytuacja, w której znamy możliwe wyniki i ich prawdopodobieństwa, a niepewność — gdy rozkładu prawdopodobieństw nie da się określić."
+  },
+  {
+    q: "Iowa Gambling Task (IGT) to gra w karty ze zmieniającymi się w czasie wypłatami. Jak zachowują się pacjenci z uszkodzeniem kory przedczołowej w porównaniu z osobami zdrowymi?",
+    opts: [
+      { t: "Nie potrafią zmienić decyzji, gdy talia początkowo dochodowa zaczyna przynosić straty", c: true },
+      { t: "Całkowicie odmawiają dalszej gry, gdy tylko pojawi się pierwsza większa strata finansowa", c: false },
+      { t: "Uczą się zasad szybciej, bo nie rozpraszają ich emocje związane ze stratami", c: false },
+      { t: "Wybierają talie korzystne, bo ich organizm reaguje paniką na każdą stratę", c: false }
+    ],
+    exp: "Pacjenci z uszkodzeniem kory przedczołowej (brzuszno-przyśrodkowej) nie wytwarzają wyprzedzających sygnałów emocjonalnych (markerów somatycznych) i perseweracyjnie trzymają się talii, która przestała się opłacać."
+  },
+  {
+    q: "W zadaniu CRT student najpierw podaje intuicyjną, błędną odpowiedź, po chwili zatrzymuje się, sprawdza relacje między liczbami i poprawia ją. Co najlepiej opisuje tę sytuację?",
+    opts: [
+      { t: "Przejście od odpowiedzi automatycznej do refleksyjnego monitorowania i hamowania intuicji", c: true },
+      { t: "Heurystykę dostępności, ponieważ poprawna jest zawsze ta odpowiedź, którą najłatwiej i najszybciej sobie przypomnieć", c: false },
+      { t: "Awersję do strat, bo student unika utraty punktów", c: false },
+      { t: "Dowód, że CRT mierzy wyłącznie wiedzę matematyczną, a nie styl przetwarzania", c: false }
+    ],
+    exp: "To istota CRT: zahamowanie spontanicznej odpowiedzi Systemu 1 i uruchomienie kontrolnego Systemu 2, który monitoruje i koryguje intuicję."
+  },
+  {
+    q: "W zadaniu Holt i Laury'ego osoba przez wiele wierszy wybiera bezpieczniejszą opcję A i dopiero późno przechodzi na bardziej ryzykowną opcję B. Która interpretacja jest najbardziej prawdopodobna?",
+    opts: [
+      { t: "Taki wzorzec zwykle wskazuje na większą awersję do ryzyka niż u osoby przełączającej się wcześniej", c: true },
+      { t: "Taki wzorzec wskazuje na większą skłonność do ryzyka, ponieważ osoba długo i wnikliwie analizuje kolejne loterie przed wyborem", c: false },
+      { t: "Moment przełączenia nie ma znaczenia, bo zadanie nie mierzy preferencji", c: false },
+      { t: "Późne przełączenie oznacza wyłącznie brak zrozumienia instrukcji", c: false }
+    ],
+    exp: "Im później badany przechodzi na opcję ryzykowną (o wyższej wartości oczekiwanej), tym silniejsza jego awersja do ryzyka."
+  },
+  {
+    q: "Zespół wybiera spośród strategii A, B i C. W głosowaniach parami większość woli A od B, większość woli A od C oraz większość woli B od C. Co wynika z reguły Condorceta?",
+    opts: [
+      { t: "Należy wybrać A, ponieważ wygrywa w porównaniach parami z każdą inną opcją", c: true },
+      { t: "Nie można wybrać żadnej opcji, bo reguła działa tylko przy identycznych preferencjach wszystkich", c: false },
+      { t: "Należy wybrać C, bo przegrywa parami i jest najmniej konfliktowa", c: false },
+      { t: "Należy wybrać B, bo zajmuje środkową pozycję między A i C", c: false }
+    ],
+    exp: "Zwycięzca Condorceta to opcja, która w bezpośrednich porównaniach parami pokonuje każdą inną — tutaj jest nią A."
+  },
+  {
+    q: "Pacjent słyszy „prawdopodobieństwo wynosi 10–15%”, ale nie wie, czy chodzi o wszystkich pacjentów, osoby w jego wieku, osoby z podobnymi chorobami czy przypadki z badań. Jaki problem komunikacyjny jest tu najważniejszy?",
+    opts: [
+      { t: "Brak jasnej klasy referencyjnej — informacji, do jakiej grupy odnosi się prawdopodobieństwo", c: true },
+      { t: "Użycie zakresu liczbowego, bo każde prawdopodobieństwo powinno być jedną dokładną liczbą", c: false },
+      { t: "Brak informacji o preferencjach pacjenta, bo bez nich prawdopodobieństwo nic nie znaczy", c: false },
+      { t: "Użycie procentów, bo są mniej zrozumiałe niż słowa typu „często” czy „rzadko”", c: false }
+    ],
+    exp: "Liczba prawdopodobieństwa jest bezużyteczna bez klasy referencyjnej — odbiorca musi wiedzieć, do jakiej populacji się odnosi."
+  },
+  {
+    q: "Inwestor mówi: „Ta spółka rosła sześć miesięcy z rzędu, więc teraz spadek jest już prawie pewny”. Jaki błąd poznawczy jest najbliższy tej interpretacji?",
+    opts: [
+      { t: "Pułapka (złudzenie) gracza", c: true },
+      { t: "Heurystyka dostępności", c: false },
+      { t: "Efekt framingu", c: false },
+      { t: "Efekt zakotwiczenia", c: false }
+    ],
+    exp: "To złudzenie gracza — błędne przekonanie, że po serii jednakowych wyników „musi” nastąpić odwrócenie, mimo że zdarzenia są niezależne."
+  },
+  {
+    q: "Który zestaw twierdzeń poprawnie odróżnia strategie kompensacyjne od niekompensacyjnych? I. W kompensacyjnych słabość jednej cechy może być zrównoważona mocnymi wynikami na innych. II. Reguła Franklina / MAU to podejścia kompensacyjne, bo używają sumy ważonych ocen. III. Strategie niekompensacyjne NIGDY nie upraszczają decyzji, bo wymagają więcej obliczeń.",
+    opts: [
+      { t: "Tylko I i II są poprawne", c: true },
+      { t: "Tylko I jest poprawne", c: false },
+      { t: "Tylko II i III są poprawne", c: false },
+      { t: "I, II i III są poprawne", c: false }
+    ],
+    exp: "I i II są trafne. III jest fałszywe — strategie niekompensacyjne (np. koniunkcyjna, leksykograficzna) zwykle UPRASZCZAJĄ decyzję, a nie komplikują."
+  },
+  {
+    q: "W paradoksie Ellsberga (1961) badany wybiera kulę z urny: 30 kul czerwonych i 60 czarnych/żółtych w nieznanej proporcji. Na czym polega psychologiczne sedno tego paradoksu?",
+    opts: [
+      { t: "Ludzie wolą opcję o znanym prawdopodobieństwie (czerwona) niż o nieznanym (czarna), co ujawnia awersję do niepewności/dwuznaczności", c: true },
+      { t: "Badani pod wpływem silnych emocji z góry zakładają, że w urnie nie znajduje się ani jedna kula czarna, dlatego konsekwentnie wybierają wyłącznie kule żółte", c: false },
+      { t: "Podbicie stawki wygranej sprawia, że ludzie stają się bardziej ryzykowni", c: false },
+      { t: "Decydenci z potrzeby unikalności celowo wybierają opcję, której prawdopodobieństwa nie da się obliczyć", c: false }
+    ],
+    exp: "Paradoks Ellsberga ujawnia awersję do dwuznaczności (ambiguity aversion): ludzie wolą znane ryzyko od nieznanego, nawet gdy szanse są takie same."
+  },
+  {
+    q: "Które równanie najlepiej oddaje logikę wydajności decyzji grupowych (model Steinera)?",
+    opts: [
+      { t: "Wynik grupy = zasoby członków − straty procesualne + zyski procesualne", c: true },
+      { t: "Wynik grupy = liczba członków × średni poziom pewności siebie", c: false },
+      { t: "Wynik grupy = opinia lidera + liczba osób, które się z nią zgadzają", c: false },
+      { t: "Wynik grupy = liczba pomysłów − liczba konfliktów interpersonalnych", c: false }
+    ],
+    exp: "Wg modelu Steinera realna wydajność grupy = potencjalna wydajność (zasoby) pomniejszona o straty procesualne i powiększona o ewentualne zyski procesualne."
+  },
+  {
+    q: "Badacz dostaje sprzeczne wyniki dla jednej osoby z trzech miar ryzyka: kwestionariusza (DOSPERT), wyborów w loteriach i zadania behawioralnego. Który wniosek jest najtrafniejszy?",
+    opts: [
+      { t: "Niespójność jest sensowna — skłonność do ryzyka bywa domenowo specyficzna, a różne metody aktywują różne aspekty ryzyka", c: true },
+      { t: "Niespójność jest niemożliwa, jeśli osoba ma stabilną osobowość", c: false },
+      { t: "Najlepszą miarą musi być samoopis, bo osoba najlepiej zna własną skłonność", c: false },
+      { t: "Najlepszą i jedyną wiarygodną miarą musi być zadanie behawioralne, ponieważ obserwacja realnego zachowania nie zawiera żadnego błędu pomiaru", c: false }
+    ],
+    exp: "Skłonność do ryzyka jest wielowymiarowa i kontekstowa — deklaracje, wybory loteryjne i zachowanie pod presją mogą aktywować różne mechanizmy, stąd rozbieżności."
+  },
+  {
+    q: "Firma chce ograniczyć wyrzucanie niedopałków przed wejściem. Który komunikat będzie najskuteczniejszy zgodnie z badaniami nad nudge'em wykorzystującym normę społeczną?",
+    opts: [
+      { t: "„Większość pracowników (9/10) utrzymuje okolice wejścia w czystości”", c: true },
+      { t: "„Dziękujemy za wyrzucanie niedopałków do pojemnika”", c: false },
+      { t: "„Czyste wejście zaczyna się właśnie tutaj — wszystkim nam zależy na czystym i reprezentacyjnym wejściu do budynku”", c: false },
+      { t: "„Codziennie 1/10 osób rzuca tutaj niedopałki”", c: false }
+    ],
+    exp: "Skuteczny nudge oparty na normie społecznej podkreśla POŻĄDANE zachowanie większości („9/10 utrzymuje czystość”), a nie wyjątki łamiące normę."
+  },
+  {
+    q: "Zespół wybiera spośród A, B i C. A ma najwięcej pierwszych miejsc, ale wielu stawia ją też na ostatnim. B rzadko jest pierwsza, lecz prawie wszyscy stawiają ją wysoko. Które stwierdzenie jest najtrafniejsze?",
+    opts: [
+      { t: "Metoda Bordy może faworyzować B jako opcję kompromisową, bo wykorzystuje pełny ranking, a nie tylko pierwsze miejsca", c: true },
+      { t: "Zwykłe głosowanie większościowe i metoda Bordy muszą zawsze dać dokładnie ten sam wynik, ponieważ obie procedury mierzą te same preferencje całej grupy", c: false },
+      { t: "Reguła Condorceta zawsze wybiera opcję z największą liczbą pierwszych miejsc", c: false },
+      { t: "Skoro A ma najwięcej pierwszych miejsc, każda racjonalna procedura musi wybrać A", c: false }
+    ],
+    exp: "Metoda Bordy punktuje wszystkie pozycje w rankingu, więc premiuje opcje akceptowalne dla wszystkich (kompromisowe) — tutaj B."
+  },
+  {
+    q: "Które dopasowanie przykładu do elementu modelu EAST jest NIEPOPRAWNE?",
+    opts: [
+      { t: "Komunikat „większość osób w twoim dziale już zapisała się na szkolenie” jako przykład reguły „Timely”", c: true },
+      { t: "Opcja opt-out jako przykład reguły „Easy”", c: false },
+      { t: "Przypomnienie wysłane tuż przed terminem jako przykład reguły „Timely”", c: false },
+      { t: "Fortepianowe schody jako przykład reguły „Attractive”", c: false }
+    ],
+    exp: "Odwołanie do zachowania większości to reguła „Social”, a nie „Timely” — dlatego to dopasowanie jest błędne (EAST = Easy, Attractive, Social, Timely)."
+  },
+  {
+    q: "Czym charakteryzuje się efekt dysjunkcji (Shafir i Tversky)?",
+    opts: [
+      { t: "Odkładaniem decyzji w warunkach niepewności, mimo że ta sama decyzja zostałaby podjęta niezależnie od tego, który wynik się zrealizuje", c: true },
+      { t: "Skłonnością do podejmowania ryzyka tylko wówczas, gdy bezpośrednio wcześniejsze zdarzenie losowe zakończyło się wyraźnym sukcesem finansowym", c: false },
+      { t: "Wybieraniem działania po negatywnym wyniku jako formy rekompensaty", c: false },
+      { t: "Płaceniem za dodatkową informację tylko wtedy, gdy może ona zmienić decyzję", c: false }
+    ],
+    exp: "Efekt dysjunkcji: ludzie zwlekają z decyzją do poznania wyniku, mimo że wybraliby tak samo w KAŻDYM z możliwych scenariuszy — to naruszenie zasady „rzeczy pewnej”."
+  },
+  {
+    q: "Kiedy mówimy, że jedna opcja DOMINUJE drugą w decyzjach wieloatrybutowych?",
+    opts: [
+      { t: "Gdy jest co najmniej tak dobra na wszystkich rozważanych atrybutach i lepsza przynajmniej na jednym", c: true },
+      { t: "Gdy ma zdecydowanie najwyższy wynik na najważniejszym atrybucie, nawet jeśli wypada bardzo słabo na wszystkich pozostałych", c: false },
+      { t: "Gdy jako pierwsza przekroczy minimalny próg akceptacji", c: false },
+      { t: "Gdy uzyska najwyższą sumę ważoną, niezależnie od porównania atrybut po atrybucie", c: false }
+    ],
+    exp: "Dominacja: opcja jest nie gorsza na żadnym atrybucie i lepsza na co najmniej jednym. Opcji zdominowanej racjonalnie nigdy nie powinno się wybierać."
+  },
+  {
+    q: "Na czym polega zjawisko „nastroju jako informacji” w ocenianiu i podejmowaniu decyzji?",
+    opts: [
+      { t: "Bieżący nastrój bywa używany jako wskazówka przy ocenie, nawet gdy nie dotyczy ocenianego obiektu", c: true },
+      { t: "Bieżące emocje pojawiają się dopiero po podjęciu w pełni racjonalnej, przemyślanej decyzji i nie mają na nią żadnego wpływu", c: false },
+      { t: "Negatywny nastrój zawsze prowadzi do bardziej ryzykownych decyzji", c: false },
+      { t: "Ludzie zawsze poprawnie rozpoznają źródło swojego nastroju", c: false }
+    ],
+    exp: "Hipoteza „mood as information” (Schwarz i Clore): pytamy siebie „jak się z tym czuję?” i mylnie przypisujemy ogólny nastrój ocenianemu obiektowi."
+  },
+  {
+    q: "Które dopasowanie najlepiej odróżnia ryzyko instrumentalne od stymulacyjnego w modelu SIRI?",
+    opts: [
+      { t: "Instrumentalne to ryzyko dla możliwego celu lub zysku, a stymulacyjne — dla emocji, pobudzenia lub samego doświadczenia", c: true },
+      { t: "Ryzyko instrumentalne to ryzyko podejmowane wyłącznie pod wpływem nagłego impulsu, a stymulacyjne to chłodna, racjonalna kalkulacja kosztów i korzyści", c: false },
+      { t: "Instrumentalne jest zawsze irracjonalne, a stymulacyjne zawsze adaptacyjne", c: false },
+      { t: "Instrumentalne dotyczy wyłącznie zdrowia, a stymulacyjne wyłącznie finansów", c: false }
+    ],
+    exp: "W SIRI ryzyko instrumentalne podejmuje się dla celu/zysku, a stymulacyjne — dla samych emocji i pobudzenia (dreszczyku)."
+  },
+  {
+    q: "Na czym polega hipoteza ostrożnego optymizmu wywołanego pozytywnym afektem?",
+    opts: [
+      { t: "Osoby w dobrym nastroju są optymistyczne (im większa wygrana, tym więcej skłonne zapłacić), ale jednocześnie ostrożne i ryzykują mniej niż osoby w nastroju neutralnym", c: true },
+      { t: "Pozytywny nastrój całkowicie wyłącza lęk przed porażką, przez co ludzie w dobrym humorze podejmują maksymalne i zupełnie nieprzemyślane ryzyko w każdej sytuacji rynkowej i życiowej", c: false },
+      { t: "Osoby w pozytywnym nastroju stają się nieufne i odmawiają udziału w zakładach, dopóki nagroda nie jest pewna", c: false },
+      { t: "Optymizm rośnie wyłącznie wraz z porannym poziomem kortyzolu", c: false }
+    ],
+    exp: "Pozytywny afekt zwiększa optymizm co do wygranych, ale by go „chronić”, ludzie unikają dużych strat — stąd paradoks: optymizm + ostrożność jednocześnie."
+  },
+  {
+    q: "Który zestaw mechanizmów najlepiej opisuje Save More Tomorrow / PPK jako interwencję behawioralną?",
+    opts: [
+      { t: "Opcja domyślna z możliwością opt-out, odsunięcie odkładania w czasie i zwiększanie składek przy podwyżkach", c: true },
+      { t: "Obowiązkowy udział bez rezygnacji, natychmiastowe obniżenie pensji i kara za brak oszczędzania", c: false },
+      { t: "Losowe przypisanie do funduszu, szczegółowy feedback i celowe utrudnienie wypisania się", c: false },
+      { t: "Wyłącznie edukacja finansowa, bez zmiany architektury wyboru i bez wykorzystania inercji", c: false }
+    ],
+    exp: "Save More Tomorrow (Thaler i Benartzi) i PPK łączą: zapis domyślny z opcją wyjścia, odroczenie startu oszczędzania oraz automatyczny wzrost składki przy podwyżkach — wykorzystują inercję na korzyść oszczędzającego."
+  },
+  {
+    q: "W eksperymencie Schwarza i Clore'a (1983) nad satysfakcją z życia, jak zniwelowano negatywny wpływ deszczowej pogody na oceny badanych?",
+    opts: [
+      { t: "Przez bezpośrednie lub pośrednie skierowanie uwagi badanych na pogodę na początku rozmowy", c: true },
+      { t: "Przez wręczenie wszystkim badanym drobnego upominku (np. cukierków) tuż przed rozpoczęciem wywiadu telefonicznego", c: false },
+      { t: "Przez prowadzenie wywiadów wyłącznie rano, gdy nastrój jest stabilny", c: false },
+      { t: "Przez zakaz rozmawiania o pogodzie, by badani zapomnieli o deszczu", c: false }
+    ],
+    exp: "Gdy badanym uświadomiono źródło ich nastroju (pogodę), przestawali błędnie przypisywać go ocenie życia — efekt nastroju jako informacji znikał."
+  },
+  {
+    q: "Które twierdzenia poprawnie opisują relację między nudgingiem a boostingiem? I. Nudging zmienia architekturę wyboru, by promować zachowanie bez zakazywania alternatyw. II. Boosting wzmacnia kompetencje decydenta (prosta reguła, umiejętność interpretacji informacji). III. Oba są skuteczne tylko wtedy, gdy korzystają z nietransparentności.",
+    opts: [
+      { t: "Tylko I i II są poprawne", c: true },
+      { t: "Tylko I jest poprawne", c: false },
+      { t: "Tylko I i III są poprawne", c: false },
+      { t: "I, II i III są poprawne", c: false }
+    ],
+    exp: "I i II trafnie opisują obie interwencje. III jest fałszywe — boosting z założenia jest transparentny (uczy kompetencji), a wiele nudge'y również działa jawnie."
+  },
+  {
+    q: "Analityk ma oszacować koszt wdrożenia systemu. Przed własną analizą słyszy od dyrektora: „pewnie wyjdzie około 2 miliony”. Jego późniejsza prognoza jest bliska tej liczbie, choć dyrektor nie miał danych. Najlepsze wyjaśnienie to:",
+    opts: [
+      { t: "Efekt zakotwiczenia", c: true },
+      { t: "Heurystyka dostępności", c: false },
+      { t: "Efekt Peltzmana", c: false },
+      { t: "Ryzyko instrumentalne", c: false }
+    ],
+    exp: "Podana liczba (2 mln) stała się kotwicą, wokół której analityk niedostatecznie skorygował swoje oszacowanie — to klasyczne zakotwiczenie."
+  },
+  {
+    q: "Dlaczego grupa nominalna (osoby pracujące najpierw osobno) może wygenerować więcej pomysłów niż klasyczna grupa dyskusyjna?",
+    opts: [
+      { t: "Bo osoby pracujące osobno nie doświadczają blokowania wypowiedzi, dominacji aktywnych członków i presji natychmiastowej oceny w takim stopniu jak grupa dyskutująca", c: true },
+      { t: "Bo praca w grupie nominalnej całkowicie eliminuje wszelkie błędy poznawcze uczestników, podczas gdy klasyczna dyskusja grupowa dodatkowo je wzmacnia i utrwala", c: false },
+      { t: "Bo obecność innych zawsze obniża wykonanie każdego zadania", c: false },
+      { t: "Bo burza mózgów zakłada, że krytyka powinna poprzedzać generowanie pomysłów", c: false }
+    ],
+    exp: "W grupie nominalnej znikają główne straty procesualne klasycznej burzy mózgów: blokowanie produkcji, lęk przed oceną i dominacja kilku osób."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#0f766e'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#0d9488'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#14b8a6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

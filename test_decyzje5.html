@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 5 (EGZAMIN) – Decyzje i ryzyko</title>
+<style>
+  :root {
+    --teal:   #14b8a6;
+    --teal2:  #0d9488;
+    --teal3:  #5eead4;
+    --teal4:  #ccfbf1;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f4faf9;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #effdfa;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #115e59 0%, var(--teal2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--teal2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #ecfdf8;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #c7f0e6;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--teal2); }
+
+  .level-badge {
+    display: inline-block;
+    background: #b45309;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #115e59; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal2), var(--teal3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--teal2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal3); background: #ecfdf8; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--teal2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--teal4); border-color: var(--teal2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #115e59; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--teal4); border-left: 4px solid var(--teal2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--teal2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #115e59, var(--teal2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(13,148,136,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #115e59; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--teal4); border-left: 3px solid var(--teal2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="decyzje-testy.html">← Wróć do listy testów</a>
+  <h1>Decyzje i ryzyko</h1>
+  <p>Test 5 · EGZAMIN · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN — ORYGINALNE PYTANIA</div>
+    <h2>Test 5 — pytania z prawdziwego egzaminu</h2>
+    <p>Pytania pochodzą z <strong>autentycznych egzaminów</strong> z przedmiotu „Decyzje i ryzyko” (zdjęcia egzaminów + relacje studentów). Ten zestaw obejmuje klasyczny blok <strong>poznawczy: kategoryzacja, podobieństwo, błędy probabilistyczne i modele ryzyka</strong>.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>ratio bias (Epstein) · BART i miary dynamiczne · kategoryzacja Rosch (poziom podstawowy) · efekt zakotwiczenia (wino, cena) · model kontrastu Tversky'ego (asymetria podobieństwa) · teoria perspektywy · portfel Markowitza · CRT i test Stroopa · zaniedbywanie wielkości (extension neglect) · efekt dysjunkcji (lotnisko) · błąd koniunkcji (Linda, Detroit) · wymiary naturalne · model Ryzyko-Wartość Coombsa · postawy wobec ryzyka w loteriach · belief bias · dominacja proporcji (Slovic) · heurystyka afektu · strategie poznawcze (klipec) · zasada Laplace'a</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  {
+    q: "W eksperymencie Epsteina badani wybierali losowanie kuli czerwonej z urny z 9 żółtymi i 1 czerwoną albo z urny z 90 żółtymi i 10 czerwonymi (szansa identyczna — 10%). Większość wolała urnę z 10 czerwonymi (na 100):",
+    opts: [
+      { t: "Przy reprezentacji graficznej (rysunek) i przy rzeczywistych urnach", c: true },
+      { t: "Przy opisie czysto werbalnym", c: false },
+      { t: "Zawsze, niezależnie od formy prezentacji", c: false },
+      { t: "Nieprawda — większość respondentów twierdziła, że wybór konkretnej urny nie ma żadnego znaczenia", c: false }
+    ],
+    exp: "To zjawisko ratio bias (zaniedbywanie mianownika). Ujawnia się najsilniej przy doświadczeniu wizualnym/fizycznym, które aktywuje intuicyjny System 1; przy suchym opisie słownym efekt słabnie."
+  },
+  {
+    q: "Technika BART (Balloon Analogue Risk Task) służąca do pomiaru postaw wobec ryzyka to metoda:",
+    opts: [
+      { t: "Dynamiczna", c: true },
+      { t: "Psychometryczna (kwestionariuszowa)", c: false },
+      { t: "Psychometryczna i dynamiczna jednocześnie", c: false },
+      { t: "Psychoanalityczna", c: false }
+    ],
+    exp: "BART to behawioralne zadanie dynamiczne — ryzyko rośnie z każdym kolejnym napompowaniem balonu, w przeciwieństwie do statycznych kwestionariuszy samoopisowych (jak DOSPERT)."
+  },
+  {
+    q: "Według Eleanor Rosch przy tworzeniu pojęć stosujemy zasadę oszczędności wysiłku poznawczego oraz zasadę odwzorowania struktury świata. Czemu służy ta druga zasada?",
+    opts: [
+      { t: "Kategoryzacji poziomej (np. koty i psy; samochody dostawcze i autobusy)", c: true },
+      { t: "Kategoryzacji pionowej (np. ssak → pies → jamnik)", c: false },
+      { t: "Zarówno kategoryzacji pionowej, jak i poziomej", c: false },
+      { t: "Tworzeniu sztywnych definicji pojedynczych, indywidualnych obiektów oraz ich unikatowych cech", c: false }
+    ],
+    exp: "Cechy w naturze występują w skorelowanych wiązkach (np. skrzydła i pióra), co pozwala odróżniać kategorie na tym samym poziomie ogólności — to wymiar poziomy kategoryzacji."
+  },
+  {
+    q: "Który poziom ogólności kategorii jest faworyzowany w kategoryzacji pionowej według teorii Rosch?",
+    opts: [
+      { t: "Średni — poziom podstawowy (np. krzesło, pies)", c: true },
+      { t: "Najbardziej ogólny (np. mebel, zwierzę)", c: false },
+      { t: "Bardzo szczegółowy (np. krzesło kuchenne, jamnik)", c: false },
+      { t: "Albo bardzo ogólny, albo bardzo szczegółowy", c: false }
+    ],
+    exp: "Poziom podstawowy (basic level) jest optymalny — nie za ogólny i nie za szczegółowy. To naturalny poziom operacyjny umysłu, dający maksimum informacji przy minimum wysiłku."
+  },
+  {
+    q: "Badani próbowali to samo wino z dwóch butelek z przypisaną ceną 20$ albo 50$ (nie wiedząc, że wino jest identyczne) i ocenili droższe jako lepsze. Zjawisko to ilustruje:",
+    opts: [
+      { t: "Efekt zakotwiczenia", c: true },
+      { t: "Efekt utopionych kosztów", c: false },
+      { t: "Wyłącznie wpływ emocji na ocenę", c: false },
+      { t: "Skrzywienie cenowe", c: false }
+    ],
+    exp: "Wysoka cena działa jako kotwica kształtująca oczekiwania co do jakości, a w efekcie wpływa na subiektywne odczucie smaku (marketingowy efekt placebo)."
+  },
+  {
+    q: "Tversky stwierdził, że zdanie „Wojownik odważny jak lew” brzmi bardziej naturalnie niż „Lew odważny jak wojownik”. Ilustruje to:",
+    opts: [
+      { t: "Brak symetrii w sądach o podobieństwie", c: true },
+      { t: "Nieprzechodniość sądów o podobieństwie", c: false },
+      { t: "Oszczędność wysiłku poznawczego przy kategoryzacji poziomej", c: false },
+      { t: "Brak prawidłowej odpowiedzi", c: false }
+    ],
+    exp: "Wg modelu kontrastu Tversky'ego porównujemy obiekt do wyrazistego prototypu (lew = prototyp odwagi). Zamiana miejscami podmiotu i prototypu brzmi nienaturalnie — sądy o podobieństwie nie są symetryczne."
+  },
+  {
+    q: "Zgodnie z teorią perspektywy stosunek człowieka do ryzyka wynika z:",
+    opts: [
+      { t: "Kształtu funkcji użyteczności (wartości) ORAZ kształtu funkcji wag decyzyjnych", c: true },
+      { t: "Wyłącznie kształtu funkcji użyteczności", c: false },
+      { t: "Wyłącznie kształtu funkcji wag decyzyjnych", c: false },
+      { t: "Przede wszystkim z trwałych różnic indywidualnych w osobowości i temperamencie poszczególnych ludzi", c: false }
+    ],
+    exp: "Na decyzje wpływają dwa elementy: jak wartościujemy zyski i straty (funkcja wartości — awersja do strat) oraz jak zniekształcamy prawdopodobieństwa (funkcja wag — np. przecenianie małych szans)."
+  },
+  {
+    q: "Na wykresie portfeli inwestycyjnych Markowitza pan Kowalski wybrał portfel W, leżący najdalej na prawo na krzywej efektywnej (maks. zysk i maks. ryzyko). Oznacza to, że:",
+    opts: [
+      { t: "Ma skłonność do ryzyka", c: true },
+      { t: "Ma awersję do ryzyka", c: false },
+      { t: "Ma neutralny stosunek do ryzyka", c: false },
+      { t: "Wybrał portfel nieefektywny", c: false }
+    ],
+    exp: "Portfel W na krańcu krzywej efektywnej to maksymalny oczekiwany zysk przy maksymalnej wariancji. Wybór tego punktu świadczy o wysokiej tolerancji i skłonności do ryzyka."
+  },
+  {
+    q: "Dlaczego wyniki w teście CRT korelują z wynikami testu Stroopa?",
+    opts: [
+      { t: "Oba sprawdzają zdolność kontrolowania (hamowania) reakcji automatycznej", c: true },
+      { t: "Oba wymagają wiedzy matematycznej", c: false },
+      { t: "Oba mierzą iloraz inteligencji (IQ)", c: false },
+      { t: "Nieprawda — wyniki obu tych testów nie są ze sobą w żaden sposób skorelowane", c: false }
+    ],
+    exp: "Oba zadania mierzą zdolność zahamowania szybkiej, automatycznej odpowiedzi Systemu 1 na rzecz odpowiedzi kontrolowanej (włączenia Systemu 2)."
+  },
+  {
+    q: "Badanych pytano, ile zapłaciliby za uratowanie 2 tys., 20 tys. i 200 tys. ptaków ginących w ropie. Średnie kwoty wyniosły 80$, 78$ i 88$. Tę niewrażliwość na liczebność (lekceważenie wielkości dóbr) tłumaczy:",
+    opts: [
+      { t: "Heurystyka prototypu (wyobrażenie pojedynczego cierpiącego ptaka)", c: true },
+      { t: "Heurystyka zakotwiczenia na pierwszej usłyszanej liczbie zagrożonych ptaków", c: false },
+      { t: "Łamanie zasady koniunkcji", c: false },
+      { t: "Prawo małych liczb", c: false }
+    ],
+    exp: "To zaniedbywanie wielkości (extension neglect): badani reagują emocjonalnie na wyobrażony prototyp (jeden ptak), więc obiektywna liczba ptaków przestaje wpływać na gotowość zapłaty."
+  },
+  {
+    q: "Spóźniony na lotnisko pasażer dowiaduje się, że samolot odleciał albo punktualnie, albo przed chwilą; ludzie czują większą złość w drugim przypadku. Epstein dodał 3 pytania. Przy którym większość uznała, że to nie ma znaczenia?",
+    opts: [
+      { t: "Przy pytaniu, jak zareagowałaby osoba racjonalna", c: true },
+      { t: "Przy pytaniu, jak zareagowałaby większość ludzi", c: false },
+      { t: "Przy pytaniu o własną reakcję na podstawie przeszłych doświadczeń", c: false },
+      { t: "Zawsze odpowiadali tak jak w oryginalnym badaniu Tversky'ego i Kahnemana", c: false }
+    ],
+    exp: "Dopiero pytanie o „osobę racjonalną” uruchamia System 2, który chłodno stwierdza, że wynik obu sytuacji jest identyczny (samolot odleciał) — odwołanie do uczuć aktywuje myślenie kontrfaktyczne i frustrację."
+  },
+  {
+    q: "W którym modelu wyboru ryzykownego różnice indywidualne mają bardzo niewielkie znaczenie dla stosunku do ryzyka?",
+    opts: [
+      { t: "W teorii perspektywy", c: true },
+      { t: "W modelu Coombsa", c: false },
+      { t: "W modelu Ryzyko-Wartość Markowitza", c: false },
+      { t: "W modelu Lopes (Bezpieczeństwo/Okazja vs Aspiracje, SPA)", c: false }
+    ],
+    exp: "Teoria perspektywy zakłada uniwersalne dla większości ludzi zniekształcenia (stały kształt funkcji wartości i wag). Modele Coombsa, Markowitza i Lopes silnie opierają się na różnicach indywidualnych (np. indywidualny punkt idealny ryzyka)."
+  },
+  {
+    q: "W badaniu Tversky'ego i Koehlera (1994) badani oceniali prawdopodobieństwo popełnienia przestępstwa przez każdego z 4 podejrzanych, a sumy znacznie przekraczały 100%. Z którą zasadą jest to niezgodne?",
+    opts: [
+      { t: "Z zasadą addytywności dla zdarzeń komplementarnych (wykluczających się)", c: true },
+      { t: "Z zasadą koniunkcji", c: false },
+      { t: "Z prawem wielkich liczb", c: false },
+      { t: "Z zasadą reprezentatywności i sądami opartymi na podobieństwie do prototypu", c: false }
+    ],
+    exp: "Suma prawdopodobieństw wszystkich wykluczających się opcji powinna wynosić 100%. Oceniając każdego z osobna przez pryzmat reprezentatywności, badani łamią zasadę addytywności."
+  },
+  {
+    q: "Badani uznawali za bardziej prawdopodobne, że Linda jest „feministką i kasjerką w banku” niż że jest „kasjerką w banku”. Ich przewidywania są niezgodne z:",
+    opts: [
+      { t: "Zasadą koniunkcji", c: true },
+      { t: "Zasadą addytywności dla zdarzeń komplementarnych", c: false },
+      { t: "Prawem wielkich liczb", c: false },
+      { t: "Prawem małych liczb", c: false }
+    ],
+    exp: "Prawdopodobieństwo zdarzenia złożonego (kasjerka I feministka) nie może być większe niż jednego z jego składników (kasjerka). Opis pasuje do stereotypu feministki, więc reprezentatywność prowadzi do błędu koniunkcji."
+  },
+  {
+    q: "Studenci oceniali liczbę morderstw rocznie: w Detroit (200) dwa razy wyżej niż w całym stanie Michigan (100), choć Detroit leży w Michigan. To przykład:",
+    opts: [
+      { t: "Heurystyki prototypowej prowadzącej do łamania zasady koniunkcji", c: true },
+      { t: "Heurystyki prototypowej prowadzącej do łamania zasady addytywności", c: false },
+      { t: "Zastępowania wymiarów właściwych wymiarami naturalnymi", c: false },
+      { t: "Zastępowania wymiarów, co prowadzi do złudzenia gracza", c: false }
+    ],
+    exp: "Stan Michigan zawiera morderstwa z Detroit plus resztę — nie może mieć ich mniej. Detroit jako „prototyp” przestępczości oceniono wyżej niż nadrzędny zbiór, co łamie zasadę koniunkcji."
+  },
+  {
+    q: "Które wymiary są, zdaniem Kahnemana i Fredericka, traktowane przez ludzi jako wymiary naturalne (oceniane automatycznie przez System 1)?",
+    opts: [
+      { t: "Wielkość, odległość, głośność, podobieństwo, afekt", c: true },
+      { t: "Prawdopodobieństwo, liczby rzeczywiste, wielkość", c: false },
+      { t: "Wyłącznie prawdopodobieństwo i afekt", c: false },
+      { t: "Wyłącznie wielkość i liczby rzeczywiste", c: false }
+    ],
+    exp: "Wymiary naturalne (wielkość, odległość, głośność, podobieństwo, afekt) System 1 ocenia natychmiast i bez wysiłku, w odróżnieniu od prawdopodobieństwa i liczb, które wymagają Systemu 2."
+  },
+  {
+    q: "Techniki marketingowe takie jak gry, skojarzenia słowne czy pomiar afektu odwołują się do:",
+    opts: [
+      { t: "Systemu 1", c: true },
+      { t: "Systemu 2", c: false },
+      { t: "Zarówno Systemu 1, jak i Systemu 2", c: false },
+      { t: "Żadnego z tych systemów", c: false }
+    ],
+    exp: "Marketing opiera się na emocjach, szybkich skojarzeniach i impulsach — ma ominąć analityczny filtr Systemu 2 i trafić wprost w automatyczny System 1."
+  },
+  {
+    q: "Zgodnie z modelem Ryzyko-Wartość wprowadzonym do psychologii przez Coombsa, wybór w sytuacji ryzykownej to:",
+    opts: [
+      { t: "Konflikt typu dążenie-unikanie", c: true },
+      { t: "Konflikt typu dążenie-dążenie", c: false },
+      { t: "Konflikt typu unikanie-unikanie", c: false },
+      { t: "Kierowanie się wyłącznie maksymalizacją zysku", c: false }
+    ],
+    exp: "Wg Coombsa mamy sprzeczne motywacje: dążymy do zysku (wartości oczekiwanej), ale chcemy uniknąć ryzyka (wariancji/straty). Wybór to kompromis między chciwością a strachem."
+  },
+  {
+    q: "Osoba ocenia tak samo otrzymanie 50 zł na pewno i loterię, w której wygra 100 zł z prawdopodobieństwem 1/2 lub 0 zł z prawdopodobieństwem 1/2. Charakteryzuje się ona:",
+    opts: [
+      { t: "Neutralnym stosunkiem do ryzyka", c: true },
+      { t: "Awersją do ryzyka", c: false },
+      { t: "Skłonnością do ryzyka", c: false },
+      { t: "Bardzo niską potrzebą poszukiwania doznań", c: false }
+    ],
+    exp: "Wartość oczekiwana loterii (0,5 × 100 zł) to dokładnie 50 zł. Skoro osoba ceni opcję pewną i loterię tak samo, decyduje matematycznie neutralnie."
+  },
+  {
+    q: "Osoba woli loterię, w której wygra 100 zł z prawdopodobieństwem 1/2 lub 0 zł z prawdopodobieństwem 1/2, od pewnego otrzymania 60 zł. Charakteryzuje się ona:",
+    opts: [
+      { t: "Skłonnością do ryzyka", c: true },
+      { t: "Awersją do ryzyka", c: false },
+      { t: "Neutralnym stosunkiem do ryzyka", c: false },
+      { t: "Brakiem zrozumienia warunków loterii", c: false }
+    ],
+    exp: "Wartość oczekiwana loterii to 50 zł. Wybór jej zamiast pewnych 60 zł oznacza gotowość do zaryzykowania mimo niższej wartości oczekiwanej — to skłonność do ryzyka."
+  },
+  {
+    q: "W eksperymencie Revlina i in. (1980) wielu badanych akceptowało wniosek niezgodny logicznie z przesłankami, bo zgadzał się z ich wiedzą o świecie. Jak nazwano ten błąd?",
+    opts: [
+      { t: "Błąd przekonań (belief bias)", c: true },
+      { t: "Błąd zakotwiczenia", c: false },
+      { t: "Lekceważenie prawdopodobieństw a priori", c: false },
+      { t: "Unikanie straty", c: false }
+    ],
+    exp: "Belief bias: ludzie oceniają poprawność wniosku nie na podstawie logiki wynikającej z przesłanek, lecz tego, czy zgadza się on z ich ogólną wiedzą i doświadczeniem."
+  },
+  {
+    q: "Paul Slovic pytał o atrakcyjność sprzętu ratującego życie: „ocali 150 osób” vs „ocali 98% spośród 150 osób”. Wyższe oceny dla wariantu procentowego ilustrują:",
+    opts: [
+      { t: "Dominację proporcji", c: true },
+      { t: "Asymetryczną dominację", c: false },
+      { t: "Unikanie opcji skrajnych", c: false },
+      { t: "Efekt zakotwiczenia", c: false }
+    ],
+    exp: "Proporcja 98% brzmi jak niemal pewny sukces i wywołuje silne pozytywne emocje (heurystyka afektu), które „dominują” nad suchą liczbą 150 uratowanych osób."
+  },
+  {
+    q: "Przejawem heurystyki afektu, obserwowanym w badaniach psychometrycznych nad ryzykiem, jest:",
+    opts: [
+      { t: "Odwrotna zależność między oceną zysków a oceną ryzyka danej aktywności", c: true },
+      { t: "Efekt posiadania (endowment) i przecenianie rzeczy, które już do nas należą", c: false },
+      { t: "Efekt utopionych kosztów", c: false },
+      { t: "Unikanie straty", c: false }
+    ],
+    exp: "Gdy coś lubimy (pozytywny afekt), oceniamy zyski jako wysokie, a ryzyko jako niskie — i odwrotnie. To psychologiczne odwrócenie realnej (dodatniej) zależności zysk–ryzyko."
+  },
+  {
+    q: "W eksperymencie Lewickiego badani odgadywali sztuczne pojęcie „klipiec”, wiedząc, że desygnatem jest karta 1. Pokazanie karty różniącej się tylko jedną cechą oznacza zastosowanie strategii:",
+    opts: [
+      { t: "Ostrożnej (zmiana jednej cechy naraz)", c: true },
+      { t: "Ryzykownej", c: false },
+      { t: "Bezpiecznej", c: false },
+      { t: "Brak prawidłowej odpowiedzi", c: false }
+    ],
+    exp: "Strategia ostrożna (conservative focusing) polega na zmianie tylko jednej cechy względem wzorca — pozwala precyzyjnie ustalić, co jest istotne, bez obciążania pamięci."
+  },
+  {
+    q: "Zgodnie z klasyczną definicją prawdopodobieństwa i zasadą Laplace'a (np. orzeł 1 do 2), przyjmuje się, że:",
+    opts: [
+      { t: "Każde możliwe zdarzenie jest tak samo prawdopodobne (przy braku podstaw, by sądzić inaczej)", c: true },
+      { t: "Suma szans wszystkich możliwych zdarzeń jest zawsze dokładnie równa 100%, niezależnie od warunków", c: false },
+      { t: "Prawdopodobieństwo orła rośnie z każdym kolejnym rzutem", c: false },
+      { t: "Prawdopodobieństwo zależy od liczby dotychczasowych prób", c: false }
+    ],
+    exp: "Zasada Laplace'a (obojętności / niewystarczającej racji): jeśli nie ma powodu, by uznać jedno zdarzenie za bardziej prawdopodobne, zakładamy równe szanse (orzeł i reszka = 50/50)."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#0f766e'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#0d9488'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#14b8a6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
