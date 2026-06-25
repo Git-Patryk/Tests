@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Współczesne Wyzwania Zdrowia Publicznego – Testy</title>
+<title>Edukacja zdrowotna – Testy</title>
 <style>
   :root {
     --bg:     #0a0a0f;
@@ -11,8 +11,8 @@
     --border: #1e1e2e;
     --text:   #e8e8f0;
     --muted:  #6b6b8a;
-    --nc:     #00e5ff;
-    --ng:     rgba(0,229,255,.10);
+    --nc:     #f59e0b;
+    --ng:     rgba(245,158,11,.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -25,8 +25,8 @@
     content: '';
     position: fixed; inset: 0;
     background-image:
-      linear-gradient(rgba(0,229,255,.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,255,.025) 1px, transparent 1px);
+      linear-gradient(rgba(245,158,11,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,158,11,.025) 1px, transparent 1px);
     background-size: 40px 40px;
     pointer-events: none; z-index: 0;
   }
@@ -97,7 +97,7 @@
     background: var(--ng); opacity: 0; transition: opacity .25s;
     border-radius: 14px;
   }
-  .test-card:hover { border-color: var(--nc); transform: translateX(4px); box-shadow: 0 0 20px rgba(0,229,255,.15); }
+  .test-card:hover { border-color: var(--nc); transform: translateX(4px); box-shadow: 0 0 20px rgba(245,158,11,.15); }
   .test-card:hover::before { opacity: 1; }
 
   .test-num {
@@ -109,6 +109,13 @@
   }
   .test-info { flex: 1; position: relative; z-index: 1; }
   .test-title { font-size: 1rem; font-weight: 700; margin-bottom: .25rem; }
+  .test-tag {
+    display: inline-block; vertical-align: middle;
+    font-family: sans-serif; font-size: .6rem; font-weight: 800;
+    letter-spacing: .08em; padding: .12rem .45rem; margin-left: .4rem;
+    border-radius: 5px; color: var(--nc);
+    background: var(--ng); border: 1px solid color-mix(in srgb, var(--nc) 35%, transparent);
+  }
   .test-meta { font-size: .8rem; color: var(--muted); }
   .test-arrow { color: var(--nc); font-size: 1.2rem; transition: transform .2s; position: relative; z-index: 1; }
   .test-card:hover .test-arrow { transform: translateX(4px); }
@@ -134,34 +141,25 @@
   <span class="sep">/</span>
   <a href="wum.html">WUM</a>
   <span class="sep">/</span>
-  <span class="current">Współczesne Wyzwania Zdrowia Publicznego</span>
+  <span class="current">Edukacja zdrowotna</span>
 </nav>
 
 <div class="page-header">
-  <div class="subject-icon">🏥</div>
-  <h1>Współczesne Wyzwania Zdrowia Publicznego</h1>
+  <div class="subject-icon">🍎</div>
+  <h1>Edukacja zdrowotna</h1>
   <div class="accent-line"></div>
-  <p>Promocja zdrowia, profilaktyka, systemy ochrony zdrowia, demografia, polityka zdrowotna, organizacje międzynarodowe i cele zrównoważonego rozwoju.</p>
+  <p>Promocja i edukacja zdrowotna, poziomy profilaktyki, health literacy, poczucie koherencji, modele zachowań zdrowotnych, polityka zdrowotna i Narodowy Program Zdrowia, rozwój poznawczy oraz metody aktywizujące.</p>
 </div>
 
 <div class="tests-section">
   <div class="section-label">Dostępne testy</div>
   <div class="tests-list">
 
-    <a class="test-card" href="test_wwzp.html">
+    <a class="test-card" href="test_edukacja.html">
       <div class="test-num">1</div>
       <div class="test-info">
-        <div class="test-title">Test 1 – Pełny zakres materiału</div>
-        <div class="test-meta">50 pytań · wszystkie 13 bloków tematycznych, promocja zdrowia, epidemiologia, systemy ochrony zdrowia</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test_wwzp2.html">
-      <div class="test-num">2</div>
-      <div class="test-info">
-        <div class="test-title">Test 2 – Wersja zaawansowana</div>
-        <div class="test-meta">48 pytań · dane statystyczne, mechanizmy biologiczne, szczegóły prawne i ekonomika zdrowia</div>
+        <div class="test-title">Test 1 – Pytania egzaminacyjne <span class="test-tag">EGZAMIN</span></div>
+        <div class="test-meta">41 pytań · oryginalne pytania z arkusza egzaminacyjnego (cz. 1–41) · poziomy profilaktyki, promocja i edukacja zdrowotna, health literacy, NPZ, modele zachowań zdrowotnych, model biopsychospołeczny</div>
       </div>
       <span class="test-arrow">→</span>
     </a>
@@ -169,6 +167,6 @@
   </div>
 </div>
 
-<footer>MedQuiz &mdash; materiały pomocnicze do nauki</footer>
+<footer>StudyZone &mdash; materiały pomocnicze do nauki</footer>
 </body>
 </html>

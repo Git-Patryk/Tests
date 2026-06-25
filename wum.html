@@ -17,6 +17,8 @@
     --c2g:    rgba(180,79,255,.10);
     --c3:     #34d399;
     --c3g:    rgba(52,211,153,.10);
+    --c4:     #f59e0b;
+    --c4g:    rgba(245,158,11,.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -95,6 +97,7 @@
   .subject-card.c1 { --nc: var(--c1); --ng: var(--c1g); }
   .subject-card.c2 { --nc: var(--c2); --ng: var(--c2g); }
   .subject-card.c3 { --nc: var(--c3); --ng: var(--c3g); }
+  .subject-card.c4 { --nc: var(--c4); --ng: var(--c4g); }
 
   .subject-card::before { background: var(--ng); }
   .subject-card::after  { background: radial-gradient(circle, color-mix(in srgb, var(--nc) 20%, transparent), transparent 70%); }
@@ -173,7 +176,7 @@
         <div class="card-desc">Promocja zdrowia, profilaktyka, systemy ochrony zdrowia, demografia, polityka zdrowotna</div>
       </div>
       <div class="card-footer">
-        <span class="card-badge">3 testy</span>
+        <span class="card-badge">2 testy</span>
         <span class="card-arrow">→</span>
       </div>
     </a>
@@ -186,6 +189,18 @@
       </div>
       <div class="card-footer">
         <span class="card-badge">4 testy</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="subject-card c4" href="edukacja-zdrowotna.html">
+      <div class="card-icon">🍎</div>
+      <div class="card-body">
+        <div class="card-title">Edukacja zdrowotna</div>
+        <div class="card-desc">Promocja i edukacja zdrowotna, poziomy profilaktyki, health literacy, poczucie koherencji, modele zachowań zdrowotnych, polityka zdrowotna, NPZ</div>
+      </div>
+      <div class="card-footer">
+        <span class="card-badge">1 test</span>
         <span class="card-arrow">→</span>
       </div>
     </a>
