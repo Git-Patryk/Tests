@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 10 – Etyka w zastosowaniach psychologii</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #6a1ba0 0%, var(--purple2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #e9d8fd;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--purple2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #6a1ba0; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #6a1ba0; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a1ba0, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #6a1ba0; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="etyka-testy.html">← Wróć do listy testów</a>
+  <h1>Etyka w zastosowaniach psychologii</h1>
+  <p>Test 10 · Pytania egzaminacyjne · 23 pytania</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN</div>
+    <h2>Test 10 — oryginalne pytania egzaminacyjne</h2>
+    <p>Zestaw <strong>autentycznych pytań z egzaminu</strong> „Etyka w zastosowaniach psychologii” (arkusz PA.NJ4.T12). Praktyka psychologa: relacje, role, świadoma zgoda, dziecko i szkoła oraz tajemnica i denuncjacja.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Przemoc domowa i wykorzystanie nieletnich a tajemnica · minimalizacja wtargnięcia · złożoność vs konflikt ról · wymiana barterowa · reagowanie na nieetycznego kolegę · metody niewiarygodne · opór dziecka i dobrowolność · denuncjacja społeczna · biegły i sąd · związek intymny · ryzyko samobójcze · ochrona testów · klient szkolny i ADHD</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>23 pytania</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 23</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/23</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Psycholog dowiaduje się, że jego klient, osoba ze zdiagnozowanym zaburzeniem psychicznym, jest sprawcą przemocy domowej. W tej sytuacji psycholog:", "opts": [{"t": "powinien niezwłocznie powiadomić organy ścigania, np. policję", "c": false}, {"t": "powinien skonsultować się np. z superwizorem, zanim złamie tajemnicę zawodową", "c": true}, {"t": "nie może złamać tajemnicy zawodowej ze względu na ustawę o ochronie zdrowia psychicznego", "c": false}, {"t": "powinien niezwłocznie powiadomić ofiary", "c": false}], "exp": "Przemoc domowa (bez bezpośredniego zagrożenia życia) nie należy do przestępstw objętych prawnym obowiązkiem denuncjacji, a klient z zaburzeniem psychicznym podlega szczególnej ochronie — decyzji o uchyleniu tajemnicy nie podejmuje się pochopnie. Najpierw należy skonsultować sytuację (superwizja) i rozważyć działania ochronne (np. Niebieska Karta). Tajemnica nie jest jednak bezwzględna, gdy pojawi się zagrożenie zdrowia lub życia."},
+  {"q": "Zasada minimalizacji wtargnięcia dotyczy:", "opts": [{"t": "minimalizowania krzywdy klienta", "c": false}, {"t": "minimalizowania przekazywania informacji o kliencie instytucji zlecającej usługę psychologiczną", "c": false}, {"t": "zadawania klientowi pytań jedynie zleconych przez instytucję", "c": false}, {"t": "zadawania klientowi pytań jedynie związanych z celami pomocy psychologicznej", "c": true}], "exp": "Zasada minimalizacji wtargnięcia chroni prywatność: psycholog wnika w sprawy osoby tylko w zakresie koniecznym do realizacji celu pomocy, zadając wyłącznie pytania z nim związane. Ograniczanie przekazu informacji zleceniodawcy to odrębna zasada (minimalizacji ujawniania), a pytania „zlecone przez instytucję” mogą wykraczać poza cel pomocy."},
+  {"q": "Przez odpowiedzialne postępowanie w sytuacji złożoności ról rozumiemy:", "opts": [{"t": "niepodejmowanie dodatkowych zadań w przypadku wielości podejmowanych przez psychologa ról w miejscu pracy", "c": true}, {"t": "niepodejmowanie usługi psychologicznej w sytuacji, gdy psycholog jest z klientem w relacji zawodowej i jednocześnie relacji przyjacielskiej", "c": false}, {"t": "niepodejmowanie zadań, które są niezgodne z zawodem psychologa", "c": false}, {"t": "niepodejmowanie zadań, które wykraczają poza kompetencje psychologa", "c": false}], "exp": "Złożoność ról to pełnienie wielu ról zawodowych jednocześnie; odpowiedzialne postępowanie polega na niepodejmowaniu kolejnych zadań, gdy grozi to przeciążeniem rolami. Relacja zawodowa + przyjacielska to konflikt ról (inne pojęcie), a zadania niezgodne z zawodem lub przekraczające kompetencje dotyczą odrębnych zasad."},
+  {"q": "Wymiana barterowa oznacza:", "opts": [{"t": "bezgotówkowe oferowanie usługi psychologicznej w zamian za inną usługę lub dobro", "c": true}, {"t": "świadczenie usługi psychologicznej bez pobierania za to gotówki", "c": false}, {"t": "bezgotówkowe oferowanie usługi psychologicznej w ramach praktyki studenckiej", "c": false}, {"t": "bezgotówkowe oferowanie usługi psychologicznej w ramach wzajemnej pomocy koleżeńskiej", "c": false}], "exp": "Wymiana barterowa to bezgotówkowa wymiana usługi psychologicznej za inną usługę lub dobro. Nie chodzi o świadczenie nieodpłatne ani o pomoc w ramach praktyki czy koleżeństwa — istotą jest wymiana świadczeń o wartości, która rodzi ryzyko konfliktu ról."},
+  {"q": "Jeśli psycholog zauważa, że inny psycholog postępuje niezgodnie z zasadami kodeksu etyki zawodowej:", "opts": [{"t": "powinien ostrzec o tym klienta owego psychologa", "c": false}, {"t": "powinien powiadomić pracodawcę tego psychologa", "c": false}, {"t": "powinien najpierw nieformalnie porozmawiać i upomnieć tego psychologa, a jeśli to nie skutkuje — skontaktować się z określoną komisją etyczną", "c": true}, {"t": "powinien złożyć skargę w Izbie Psychologów", "c": false}], "exp": "Reagowanie na naruszenia zaczyna się od bezpośredniej, nieformalnej rozmowy z danym psychologiem; dopiero gdy to nie skutkuje, sprawę kieruje się do komisji etycznej. Ostrzeganie klienta czy powiadamianie pracodawcy jest przedwczesne, a Izba Psychologów (samorząd) nie funkcjonuje."},
+  {"q": "Jeśli pracodawca zleca psychologowi diagnozowanie klientów określonymi metodami, które są powszechnie stosowane, ale nie są wiarygodne pod względem psychometrycznym:", "opts": [{"t": "psycholog odmawia stosowania takich metod", "c": true}, {"t": "psycholog przeprowadza badanie, uprzedzając klientów o wadach metody", "c": false}, {"t": "psycholog dostosowuje się do zaleceń swojego pracodawcy jako osoby odpowiedzialnej", "c": false}, {"t": "psycholog przeprowadza badanie, skoro metody są powszechnie stosowane", "c": false}], "exp": "Psycholog ma obowiązek stosować metody o potwierdzonej wartości naukowej; narzędzie niewiarygodne psychometrycznie prowadzi do błędnych wniosków, więc należy odmówić jego użycia. Popularność metody, uprzedzenie klienta o jej wadach ani polecenie pracodawcy nie usprawiedliwiają posłużenia się nierzetelnym narzędziem."},
+  {"q": "Psycholog, przeprowadzając diagnozę dziecka 8-letniego, zauważa, że nie chce ono współpracować i przejawia bierny opór. Biorąc pod uwagę jedynie aspekty etyczne zaistniałej sytuacji:", "opts": [{"t": "psycholog nie uzyskał przyzwolenia dziecka na badanie", "c": false}, {"t": "psycholog mógłby zaproponować inny, bardziej dogodny termin diagnozy", "c": false}, {"t": "być może psycholog nie zadbał o poczucie bezpieczeństwa dziecka", "c": false}, {"t": "wszystkie wymienione odpowiedzi są prawidłowe", "c": true}], "exp": "Opór dziecka to sygnał braku przyzwolenia oraz wskazówka, że być może nie zadbano o jego poczucie bezpieczeństwa — właściwą reakcją jest m.in. zaproponowanie innego terminu czy formy. Wszystkie wymienione aspekty etyczne są tu trafne."},
+  {"q": "Psycholog szkolny zasugerował rodzicom przeprowadzenie określonej diagnozy w placówce zewnętrznej oraz swoją pomoc w formie konsultacji. Rodzice nie podjęli proponowanych działań. Zachowanie rodziców:", "opts": [{"t": "jest wyrazem braku współpracy rodziców ze szkołą", "c": false}, {"t": "jest przejawem dobrowolności udziału w usługach psychologicznych", "c": true}, {"t": "świadczy o braku zainteresowania dzieckiem", "c": false}, {"t": "świadczy o braku kompetencji psychologa", "c": false}], "exp": "Udział w świadczeniach psychologicznych jest dobrowolny — rodzice mają prawo nie skorzystać z propozycji i należy to uszanować. Interpretowanie tego jako złej woli, braku troski o dziecko czy winy psychologa jest nieuprawnione."},
+  {"q": "Świadoma zgoda na udział w usłudze psychologicznej dotyczy poinformowania klienta o:", "opts": [{"t": "kompetencjach psychologa", "c": false}, {"t": "celu i sposobie realizacji usługi psychologicznej", "c": false}, {"t": "korzyściach i ewentualnym dyskomforcie związanym z przebiegiem usługi", "c": false}, {"t": "wszystkie wymienione odpowiedzi są prawidłowe", "c": true}], "exp": "Świadoma zgoda wymaga przekazania pełnego zestawu informacji: o kompetencjach psychologa, celu i sposobie realizacji usługi oraz o korzyściach i możliwym dyskomforcie — tylko wtedy decyzja klienta jest autonomiczna."},
+  {"q": "Społeczny obowiązek denuncjacji w odniesieniu do osoby nie-klienta oznacza, że psycholog:", "opts": [{"t": "ma obowiązek zawiadomienia odpowiednich służb, jeśli dowiaduje się o popełnieniu przestępstwa ściganego z urzędu przez osobę, z którą nie jest w relacji zawodowej, wcześniej odpowiednio analizując sytuację i kierując się dobrem osób mogących mieć związek ze sprawą", "c": true}, {"t": "ma obowiązek zawiadomienia odpowiednich służb, jeśli dowiaduje się o popełnieniu przestępstwa ściganego z urzędu przez swojego klienta", "c": false}, {"t": "ma obowiązek zawiadomienia odpowiednich służb, jeśli dowiaduje się o popełnieniu przestępstwa ściganego z urzędu przez kogokolwiek", "c": false}, {"t": "psycholog nie jest zwykłym obywatelem, nie zawiadamia nikogo", "c": false}], "exp": "Społeczny obowiązek denuncjacji odnosi się do osób spoza relacji zawodowej (nie-klientów) i wymaga uprzedniej analizy sytuacji oraz kierowania się dobrem osób związanych ze sprawą. Wobec własnego klienta pierwszeństwo ma tajemnica zawodowa, a obowiązek nie obejmuje bezrefleksyjnie „kogokolwiek”."},
+  {"q": "Psycholożka Zofia przez dwa lata prowadziła terapię pary, Tomka i Ewy. Dwa lata później para podejmuje decyzję o rozwodzie. Ewa powołuje Zofię na świadka w sądzie. Zofia w trakcie rozprawy przedstawia niekorzystne informacje na temat Tomka. W tej sytuacji psycholog:", "opts": [{"t": "musi stawić się w sądzie, ale powinna odmówić składania zeznań", "c": true}, {"t": "nie powinna stawić się w sądzie", "c": false}, {"t": "postąpiła dobrze, zgodnie ze swoim sumieniem", "c": false}, {"t": "postąpiła dobrze, Tomek i Ewa nie są już jej klientami", "c": false}], "exp": "Wezwana do sądu psycholożka musi się stawić, ale jest związana tajemnicą zawodową wobec obojga byłych klientów i co do okoliczności objętych tajemnicą powinna odmówić zeznań. Ujawnienie niekorzystnych informacji o Tomku było naruszeniem tajemnicy; zakończenie terapii nie znosi tego obowiązku."},
+  {"q": "Rodzic dziecka uczęszczającego do przedszkola dowiaduje się, że dziecko uczestniczy w grupowych zajęciach organizowanych przez psychologa z zewnątrz:", "opts": [{"t": "skoro rodzice podpisali na początku roku szkolnego zgodę na opiekę psychologiczno-pedagogiczną, wszystko jest w porządku", "c": false}, {"t": "rodzice powinni mieć możliwość odmowy uczestniczenia dziecka w tej konkretnej usłudze", "c": false}, {"t": "rodzice powinni zostać w pełni poinformowani o celach, metodach działania, kompetencjach psychologa i powinni mieć możliwość odmowy uczestniczenia dziecka w tej konkretnej usłudze", "c": true}, {"t": "placówka nie ma możliwości organizowania indywidualnej opieki dla danego dziecka, więc wszystkie dzieci uczestniczą w organizowanych przez psychologa zajęciach", "c": false}], "exp": "Ogólna zgoda na opiekę psychologiczno-pedagogiczną nie wystarcza — rodzice mają prawo do pełnej informacji o celach, metodach i kompetencjach prowadzącego oraz do odmowy udziału dziecka w konkretnej usłudze. To pełniejsza odpowiedź niż samo prawo do odmowy."},
+  {"q": "Ograniczenie dobrowolności udziału w usłudze psychologicznej:", "opts": [{"t": "dotyczy dzieci do 13. roku życia, osób wyrokiem sądu pozbawionych zdolności do czynności prawnych oraz osób o ograniczonej zdolności rozumienia i decydowania", "c": false}, {"t": "wiąże się z tym, że psycholog pomimo braku obowiązku uzyskania zgody i tak poszukuje przyzwolenia klienta", "c": false}, {"t": "wiąże się z tym, że psycholog musi mieć zgodę opiekuna prawnego", "c": false}, {"t": "wszystkie wymienione odpowiedzi są prawidłowe", "c": true}], "exp": "Ograniczenie dobrowolności dotyczy dzieci do 13. r.ż. oraz osób pozbawionych lub o ograniczonej zdolności do czynności prawnych; mimo to psycholog poszukuje przyzwolenia osoby i uzyskuje zgodę opiekuna prawnego — wszystkie wymienione stwierdzenia są prawdziwe."},
+  {"q": "Psycholog może wejść w związek intymny z osobą:", "opts": [{"t": "spokrewnioną z jego/jej klientem(tką)", "c": false}, {"t": "w przeszłości będącą jego/jej klientem(tką)", "c": false}, {"t": "aktualnie będącą jego/jej klientem(tką), o ile klient(ka) wyraża na to zgodę", "c": false}, {"t": "pracującą w tym samym miejscu pracy co klient(ka)", "c": true}], "exp": "Zakaz relacji intymnych dotyczy aktualnych klientów (nawet za ich zgodą), osób bliskich/spokrewnionych z klientem oraz — przez określony czas i z dużymi ograniczeniami — byłych klientów. Współpracownik klienta nie jest klientem psychologa, więc relacja z taką osobą nie jest zakazana."},
+  {"q": "Psycholog, którego klientem jest osoba 12-letnia, dowiaduje się, że klient myśli i planuje samobójstwo. W tej sytuacji psycholog:", "opts": [{"t": "ma obowiązek zawiadomienia prokuratury lub policji", "c": false}, {"t": "ma obowiązek zawiadomienia rodziców", "c": false}, {"t": "w żadnym wypadku nie łamie tajemnicy zawodowej", "c": false}, {"t": "zachowuje podmiotowość klienta, uprzedza go o planowanym zawiadomieniu osób trzecich", "c": true}], "exp": "Zagrożenie życia uzasadnia uchylenie tajemnicy, ale psycholog robi to z poszanowaniem podmiotowości dziecka — uprzedza je o zamiarze powiadomienia osób trzecich (opiekunów). Tajemnica nie jest tu bezwzględna, a samo zawiadomienie prokuratury/policji nie jest właściwą ścieżką w przypadku ryzyka samobójczego małoletniego."},
+  {"q": "Psycholog posługujący się testami psychologicznymi, np. w trakcie rekrutacji:", "opts": [{"t": "powinien przekazać informację zwrotną najpierw przełożonemu, a potem osobie badanej", "c": false}, {"t": "może przekazać informację o wynikach surowych osobie badanej", "c": false}, {"t": "może przekazać informację o wynikach surowych przełożonemu", "c": false}, {"t": "powinien przekazać informację zwrotną najpierw osobie badanej, a potem przełożonemu", "c": true}], "exp": "Osoba badana ma pierwszeństwo w otrzymaniu informacji zwrotnej o sobie. Wyniki surowe są danymi chronionymi i nie udostępnia się ich ani laikowi-badanemu, ani przełożonemu — przekazuje się odpowiednio zinterpretowaną informację zwrotną."},
+  {"q": "Przy całkowitej odmowie współpracy z psychologiem osoby pozbawionej zdolności do czynności prawnych psycholog w roli biegłego sądowego:", "opts": [{"t": "prowadzi badanie mimo wszystko", "c": false}, {"t": "informuje sąd o braku możliwości przygotowania opinii", "c": true}, {"t": "przygotowuje częściową opinię, bazując na obserwacji zachowania badanego", "c": false}, {"t": "przygotowuje częściową opinię, bazując na aktach sprawy i konsultacji z innym biegłym sądowym", "c": false}], "exp": "Nie wolno prowadzić badania wbrew woli osoby; gdy współpraca jest niemożliwa, rzetelnej opinii nie da się sporządzić, więc biegły informuje o tym sąd. Wymuszanie badania lub udawanie pełnej opinii bez realnego badania byłoby nierzetelne."},
+  {"q": "Klientem psychologa szkolnego jest:", "opts": [{"t": "dziecko i rodzic", "c": false}, {"t": "dziecko, rodzic, dyrektor szkoły i nauczyciele", "c": true}, {"t": "dyrektor szkoły", "c": false}, {"t": "jedynie dziecko", "c": false}], "exp": "Psycholog szkolny działa w sieci wielu stron — uczeń jako podmiot oddziaływań oraz rodzice, dyrekcja i nauczyciele jako zleceniodawcy/odbiorcy — wobec których ma zobowiązania. Zawężenie do jednej strony pomija pozostałe relacje."},
+  {"q": "Psycholog posługujący się testami psychologicznymi, np. w trakcie rekrutacji:", "opts": [{"t": "może wyszkolić swoich współpracowników w zakresie przeprowadzania badania danym testem, aby pomagali mu", "c": false}, {"t": "może przekazywać narzędzia psychologiczne nie-psychologom, aby jednokrotnie przeprowadzili badanie", "c": false}, {"t": "pozwala na przeprowadzanie badania jedynie odpowiednio przeszkolonym psychologom", "c": true}, {"t": "może przekazać narzędzia psychologiczne przełożonemu bez względu na jego wykształcenie", "c": false}], "exp": "Testy psychologiczne są narzędziami chronionymi i mogą być stosowane wyłącznie przez odpowiednio przeszkolonych psychologów — chroni to trafność i etyczność diagnozy. Przekazywanie narzędzi osobom bez kwalifikacji narusza zasady ochrony metod."},
+  {"q": "Dyrektor szkoły prosi psychologa szkolnego o rozmowę z dwójką chłopców, którzy się pobili:", "opts": [{"t": "rolą psychologa jest wskazanie dyrektorowi „sprawcy”", "c": false}, {"t": "rolą psychologa jest udzielenie wsparcia ofierze", "c": false}, {"t": "rolą psychologa jest działanie na rzecz przeciwdziałania przemocy i udzielanie wsparcia obu chłopcom", "c": true}, {"t": "rolą psychologa jest wezwanie rodziców na rozmowę", "c": false}], "exp": "Zadaniem psychologa jest przeciwdziałanie przemocy i wsparcie obu uczniów, a nie pełnienie roli „śledczego” wskazującego winnego ani ograniczanie pomocy do jednej strony. Wezwanie rodziców może być elementem działań, ale nie jest istotą roli psychologa."},
+  {"q": "Psycholog dowiaduje się, że jego klient, osoba ze zdiagnozowaną chorobą psychiczną, wykorzystuje seksualnie osoby nieletnie. W tej sytuacji psycholog:", "opts": [{"t": "powinien niezwłocznie powiadomić organy ścigania, np. policję", "c": true}, {"t": "powinien skonsultować się np. z superwizorem, zanim złamie tajemnicę zawodową", "c": false}, {"t": "nie może złamać tajemnicy zawodowej ze względu na ustawę o ochronie zdrowia psychicznego", "c": false}, {"t": "powinien niezwłocznie powiadomić superwizora", "c": false}], "exp": "Wykorzystywanie seksualne osób nieletnich należy do przestępstw objętych PRAWNYM obowiązkiem zawiadomienia (art. 240 KK) i wiąże się z bezpośrednim zagrożeniem dobra dzieci — obowiązek ten przeważa nad tajemnicą, nawet przy chorobie psychicznej klienta. Sama konsultacja z superwizorem nie wystarcza wobec trwającego zagrożenia."},
+  {"q": "Przez sytuację złożoności ról rozumiemy:", "opts": [{"t": "podejmowanie dodatkowych zadań w przypadku wielości podejmowanych przez psychologa ról w miejscu pracy", "c": true}, {"t": "podejmowanie usługi psychologicznej w sytuacji, gdy psycholog jest z klientem w relacji zawodowej i jednocześnie relacji przyjacielskiej", "c": false}, {"t": "podejmowanie zadań, które są niezgodne z zawodem psychologa", "c": false}, {"t": "podejmowanie zadań, które wykraczają poza kompetencje psychologa", "c": false}], "exp": "Złożoność ról to sytuacja pełnienia przez psychologa wielu ról zawodowych jednocześnie i podejmowania związanych z nimi dodatkowych zadań. Łączenie relacji zawodowej z przyjacielską to konflikt ról (pojęcie pokrewne, lecz węższe), a zadania niezgodne z zawodem lub wykraczające poza kompetencje dotyczą innych zasad."},
+  {"q": "Dyrektor prosi psychologa szkolnego o pomoc w sytuacji dziecka z diagnozą ADHD utrudniającego prowadzenie lekcji. Rolą psychologa jest:", "opts": [{"t": "wszystkie wymienione odpowiedzi są prawidłowe", "c": false}, {"t": "upomnienie dziecka", "c": false}, {"t": "wskazanie nauczycielom wskazówek odnośnie pracy z dzieckiem z diagnozą ADHD", "c": true}, {"t": "zaproszenie rodziców na rozmowę na temat trudnego zachowania dziecka", "c": false}], "exp": "Psycholog wspiera środowisko ucznia, dostarczając nauczycielom konkretnych strategii pracy z dzieckiem z ADHD — oddziałuje na przyczyny trudności. Upominanie dziecka czy sama rozmowa dyscyplinująca z rodzicami nie odpowiadają na potrzeby dziecka z ADHD i nie są istotą roli psychologa."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6a1ba0'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#9b35e8'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#d18bff'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

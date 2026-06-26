@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 8 – Etyka w zastosowaniach psychologii</title>
+<style>
+  :root {
+    --purple:  #b44fff;
+    --purple2: #9b35e8;
+    --purple3: #d18bff;
+    --purple4: #f0dbff;
+    --red:     #c1121f;
+    --red2:    #fde8e9;
+    --gray:    #495057;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f3eeff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #6a1ba0 0%, var(--purple2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--purple2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #faf5ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #e9d8fd;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--purple2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--purple2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #6a1ba0; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple2), var(--purple3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--purple2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--purple3); background: #faf5ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--purple2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--purple4); border-color: var(--purple2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #6a1ba0; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--purple4); border-left: 4px solid var(--purple2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(106,27,160,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--purple2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a1ba0, var(--purple2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(155,53,232,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #6a1ba0; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--purple4); border-left: 3px solid var(--purple2); }
+  .review-item.fail { background: var(--red2);     border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="etyka-testy.html">← Wróć do listy testów</a>
+  <h1>Etyka w zastosowaniach psychologii</h1>
+  <p>Test 8 · Pytania egzaminacyjne · 20 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN</div>
+    <h2>Test 8 — oryginalne pytania egzaminacyjne</h2>
+    <p>Zestaw <strong>autentycznych pytań z egzaminu</strong> „Etyka w zastosowaniach psychologii” (arkusz PM.NJ3.T07). Podstawy prawne i kodeksowe zawodu oraz tajemnica zawodowa.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Pierwszy kodeks (APA) · naczelne wartości i pięć zasad · ustawa 2001 i martwe przepisy (samorząd, izby, staż) · zawód zaufania publicznego · prawo wykonywania zawodu · klient w usługach dla dzieci · tajemnica zawodowa (KK art. 266, KPK, uchylenie) · zgoda i osoby o ograniczonej zdolności</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>20 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 20</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/20</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Pierwszym kodeksem etyki zawodowej psychologa był:", "opts": [{"t": "Kodeks etyki zawodowej Association of State and Provincial Psychology Boards", "c": false}, {"t": "Kodeks etyczno-zawodowy psychologa Polskiego Towarzystwa Psychologicznego", "c": false}, {"t": "Kodeks etyczno-zawodowy Brytyjskiego Towarzystwa Psychologicznego", "c": false}, {"t": "Kodeks etyki zawodowej Amerykańskiego Towarzystwa Psychologicznego", "c": true}], "exp": "Pierwszy kodeks etyki zawodowej psychologów uchwaliło Amerykańskie Towarzystwo Psychologiczne (APA) w 1953 r. Kodeksy brytyjski, polski (PTP) oraz ASPPB powstały później."},
+  {"q": "Naczelne wartości zawodu psychologa w Polsce definiuje:", "opts": [{"t": "Kodeks etyczny psychologa z 2019 roku", "c": false}, {"t": "Ustawa o zawodzie psychoterapeuty z 2023 roku", "c": false}, {"t": "Ustawa o zawodzie psychologa i samorządzie zawodowym psychologów z 2001 roku", "c": false}, {"t": "Żaden z wymienionych dokumentów", "c": true}], "exp": "Naczelne wartości zawodu opisuje Kodeks Etyczny Psychologa PTP, ale obowiązująca wersja pochodzi z 2018 r., nie 2019 — dlatego wskazanie roku 2019 jest błędne. Ustawa z 2001 r. reguluje warunki wykonywania zawodu, a nie naczelne wartości. Poprawna jest więc odpowiedź „żaden z wymienionych”."},
+  {"q": "W Polsce osoba, która otrzymuje dyplom magistra psychologii:", "opts": [{"t": "zostaje wpisana na listę psychologów Regionalnej Izby Psychologów", "c": false}, {"t": "odbywa obowiązkowy podyplomowy staż zawodowy, pod merytorycznym nadzorem psychologa posiadającego prawo wykonywania zawodu", "c": false}, {"t": "staje się członkiem samorządu zawodowego psychologów właściwego ze względu na miejsce zamieszkania", "c": false}, {"t": "żadna z wymienionych odpowiedzi nie jest poprawna", "c": true}], "exp": "Procedury z Ustawy z 2001 r. (wpis na listę, staż, samorząd) nigdy nie weszły w życie — Regionalne Izby Psychologów i samorząd zawodowy nie powstały, a stażu się nie odbywa. Osoba z dyplomem magistra nie jest więc ani wpisywana na listę, ani kierowana na staż, ani włączana do samorządu."},
+  {"q": "Prawo wykonywania zawodu psychologa w Polsce:", "opts": [{"t": "powstaje z chwilą dokonania wpisu na listę psychologów prowadzoną przez Regionalną Izbę Psychologów", "c": false}, {"t": "otrzymuje osoba, która łącznie spełnia warunki: uzyskała dyplom magistra psychologii, posiada pełną zdolność do czynności prawnych, włada językiem polskim w mowie i piśmie w zakresie koniecznym do wykonywania zawodu, odbyła podyplomowy staż zawodowy", "c": false}, {"t": "zarówno wpis na listę psychologów, jak i łączne spełnienie warunków ustawowych są tu poprawne", "c": false}, {"t": "w Polsce nie istnieją organy uprawnione do przeprowadzania procedury wpisu na listę, w rezultacie psychologowie nie mogą uzyskać potwierdzenia prawa wykonywania zawodu", "c": true}], "exp": "Choć Ustawa z 2001 r. opisuje warunki i wpis na listę, przepisy te są martwe — Regionalne Izby Psychologów nigdy nie powstały, więc nie ma organu dokonującego wpisu i formalnego potwierdzenia prawa wykonywania zawodu nie da się uzyskać. W praktyce psycholog legitymuje się dyplomem magistra."},
+  {"q": "Czy w Polsce psycholog jest uznawany za zawód zaufania publicznego?", "opts": [{"t": "Tak – w Polsce zawód psychologa jest zawodem zaufania publicznego", "c": false}, {"t": "Nie – ponieważ przepis ustawy o zawodzie psychologa i samorządzie zawodowym psychologów o tym mówiący jest tzw. „przepisem martwym”", "c": true}, {"t": "Nie – ponieważ w Polsce nie funkcjonuje samorząd zawodowy psychologów", "c": false}, {"t": "Nie – ponieważ w Polsce psycholog może być zwolniony z tajemnicy zawodowej", "c": false}], "exp": "Ustawa z 2001 r. zalicza psychologa do zawodów zaufania publicznego, lecz jest to przepis martwy — bez działającego samorządu zawodowego status ten nie jest realizowany. Brak samorządu jest skutkiem (a nie samą podstawą oceny), a możliwość zwolnienia z tajemnicy nie ma tu znaczenia."},
+  {"q": "Propozycje niektórych zapisów do uwzględnienia przy przygotowywaniu nowelizacji lub nowego projektu ustawy o zawodzie psychologa i samorządzie zawodowym psychologów z 2015 roku zawierały m.in. postulat:", "opts": [{"t": "uwzględnienia definicji świadczeń psychologicznych", "c": true}, {"t": "wskazania czasu przechowywania dokumentacji psychologicznej przez okres 10 lat od zakończenia relacji z klientem", "c": false}, {"t": "zawężenia katalogu kar za zawinione naruszenie zasad zawodowych lub zasad etyki określonej w Kodeksie Etyki Zawodowej", "c": false}, {"t": "wszystkie wymienione odpowiedzi są poprawne", "c": false}], "exp": "Wśród postulatów znalazło się m.in. wprowadzenie definicji świadczeń psychologicznych. Okres przechowywania dokumentacji postulowano na 5 lat (nie 10), a katalogu kar nie proponowano zawężać — dlatego poprawna jest tylko definicja świadczeń."},
+  {"q": "Pięć podstawowych zasad etycznych w pracy psychologa to:", "opts": [{"t": "Działanie na rzecz dobra klienta i nieszkodzenie mu. Odpowiedzialność zawodowa. Sprawiedliwość. Przestrzeganie tajemnicy zawodowej. Chronienie dobra jednostki o szczególnym charakterze", "c": false}, {"t": "Respektowanie praw człowieka i jego godności. Działanie na rzecz dobra klienta i nieszkodzenie mu. Integralność, uczciwość zawodowa. Odpowiedzialność zawodowa. Sprawiedliwość", "c": true}, {"t": "Odpowiedzialność zawodowa. Działanie na rzecz dobra klienta i nieszkodzenie mu. Chronienie dobra jednostki o szczególnym charakterze. Osobiste i samodzielne wykonywanie zawodu. Należyte wykonywanie zawodu w granicach interesu publicznego", "c": false}, {"t": "Odpowiedzialność zawodowa. Działanie na rzecz dobra klienta i nieszkodzenie mu. Osobiste i samodzielne wykonywanie zawodu. Psychoedukacja zgodnie z aktualną wiedzą. Sprawiedliwość", "c": false}], "exp": "Pięć naczelnych zasad (za APA) to: respektowanie praw człowieka i godności; działanie na rzecz dobra klienta i nieszkodzenie; integralność/uczciwość zawodowa; odpowiedzialność zawodowa; sprawiedliwość. Pozostałe zestawy mieszają zasady z zapisami szczegółowymi (np. „osobiste wykonywanie zawodu”, „psychoedukacja”)."},
+  {"q": "Zasada etyczna w pracy psychologa „Odpowiedzialność zawodowa” mówi m.in. o tym, że:", "opts": [{"t": "relacja z Klientem oparta jest na zaufaniu, a psycholog powinien wykazywać wrażliwość na odstępstwa innych psychologów od standardów zawodowych czy etycznych oraz unikać konfliktu ról społecznych", "c": true}, {"t": "psycholog powinien dbać o własną kondycję psychiczną i fizyczną, stale doskonalić swoje kompetencje oraz tworzyć zespoły interdyscyplinarne", "c": false}, {"t": "psycholog powinien stosować sprawdzone, naukowo uzasadnione metody diagnozy, poddawać refleksji własny system wartości oraz rzetelnie i precyzyjnie przedstawiać swoje kwalifikacje", "c": false}, {"t": "prawdziwe są zarówno budowanie relacji zaufania i reagowanie na odstępstwa innych psychologów, jak i dbałość o własną kondycję i doskonalenie kompetencji", "c": false}], "exp": "Zasada odpowiedzialności zawodowej obejmuje budowanie relacji opartej na zaufaniu, wrażliwość na nieetyczne zachowania innych psychologów oraz unikanie konfliktu ról. Dbałość o kondycję i doskonalenie kompetencji oraz stosowanie rzetelnych metod należą do innych zasad (kompetencji i integralności)."},
+  {"q": "Ustawa o zawodzie psychologa i samorządzie zawodowym psychologów stanowi, że zgoda na usługę psychologiczną nie jest wymagana:", "opts": [{"t": "w przypadkach określonych w przepisach Kodeksu karnego, Kodeksu postępowania karnego oraz w ustawie z dnia 19 sierpnia 1994 r. o ochronie zdrowia psychicznego", "c": true}, {"t": "w stosunku do kandydatów kierowanych do służby w Policji", "c": false}, {"t": "w stosunku do kandydatów na strażników miejskich", "c": false}, {"t": "wszystkie wymienione odpowiedzi są poprawne", "c": false}], "exp": "Ustawa o zawodzie psychologa zwalnia z wymogu zgody w przypadkach wskazanych w Kodeksie karnym, Kodeksie postępowania karnego oraz ustawie o ochronie zdrowia psychicznego. Badania kandydatów do Policji czy straży miejskiej regulują odrębne przepisy, a nie ta ustawa."},
+  {"q": "Kto jest Klientem w usługach psychologicznych świadczonych na rzecz dzieci:", "opts": [{"t": "Dziecko", "c": false}, {"t": "Rodzic/Opiekun prawny", "c": false}, {"t": "Klientem-zleceniodawcą jest rodzic/opiekun prawny, a klientem-podmiotem oddziaływań jest dziecko", "c": true}, {"t": "Dziecko lub Rodzic/Opiekun prawny w zależności od ustaleń dokonanych z rodzicami/opiekunami prawnymi", "c": false}], "exp": "W usługach na rzecz dzieci rozróżnia się klienta-zleceniodawcę (rodzic/opiekun prawny, który zleca usługę i wyraża zgodę) oraz klienta-podmiot oddziaływań (dziecko, na rzecz którego prowadzi się działania). Obie role współistnieją niezależnie od dodatkowych ustaleń."},
+  {"q": "Psycholog jest zobowiązany do zachowania tajemnicy zawodowej zgodnie z zapisami zawartymi w:", "opts": [{"t": "Kodeksie etycznym psychologa z 2018 roku", "c": false}, {"t": "Ustawie o zawodzie psychoterapeuty z 2023 roku", "c": false}, {"t": "Ustawie o zawodzie psychologa i samorządzie zawodowym psychologów z 2001 roku", "c": false}, {"t": "Zarówno w Kodeksie etycznym psychologa (2018), jak i w Ustawie o zawodzie psychologa (2001)", "c": true}], "exp": "Obowiązek zachowania tajemnicy zawodowej wynika równocześnie z Kodeksu Etycznego Psychologa PTP (2018) oraz z Ustawy o zawodzie psychologa z 2001 r. Ustawa o zawodzie psychoterapeuty (2023) nie jest tu źródłem dla psychologa."},
+  {"q": "Zachowanie tajemnicy zawodowej przez psychologa:", "opts": [{"t": "nie może być ograniczone w czasie", "c": false}, {"t": "obowiązuje również po śmierci odbiorcy", "c": false}, {"t": "obowiązuje również po śmierci psychologa", "c": false}, {"t": "wszystkie wymienione odpowiedzi są prawidłowe", "c": true}], "exp": "Tajemnica zawodowa nie jest ograniczona w czasie i trwa zarówno po śmierci odbiorcy usługi, jak i po śmierci samego psychologa — wszystkie wymienione stwierdzenia są prawdziwe."},
+  {"q": "Zgodnie z Kodeksem karnym psycholog, który ujawni informację dotyczącą klienta, z którą zapoznał się w trakcie wykonywania swojej pracy:", "opts": [{"t": "podlega grzywnie, karze ograniczenia wolności albo pozbawienia wolności do lat 3", "c": false}, {"t": "podlega grzywnie, karze ograniczenia wolności albo pozbawienia wolności do lat 2", "c": true}, {"t": "musi wypłacić klientowi odszkodowanie z tytułu poniesionych strat", "c": false}, {"t": "prawdziwe są zarówno kara do lat 2, jak i obowiązek wypłaty odszkodowania", "c": false}], "exp": "Art. 266 Kodeksu karnego przewiduje za ujawnienie tajemnicy zawodowej grzywnę, ograniczenie wolności albo pozbawienie wolności do lat 2. Odszkodowanie jest roszczeniem cywilnym (Kodeks cywilny), a nie sankcją z Kodeksu karnego."},
+  {"q": "Zgodnie z Kodeksem etycznym psychologa:", "opts": [{"t": "tajemnica zawodowa może zostać uchylona, jeśli istnieje poważne zagrożenie życia lub zdrowia osób albo jeśli tak stanowią przepisy prawa powszechnego", "c": true}, {"t": "tajemnica zawodowa może zostać uchylona na mocy zwolnienia przez Sąd z obowiązku jej zachowania w procesie cywilnym", "c": false}, {"t": "tajemnica zawodowa nie może zostać uchylona w żadnym przypadku", "c": false}, {"t": "prawdziwe jest zarówno uchylenie przy zagrożeniu życia/zdrowia lub na mocy przepisów prawa, jak i zwolnienie przez sąd w procesie cywilnym", "c": false}], "exp": "Tajemnicę można uchylić, gdy występuje poważne zagrożenie życia lub zdrowia albo gdy nakazują to przepisy prawa powszechnego. W procesie CYWILNYM nie ma procedury zwalniania psychologa z tajemnicy (jest ona możliwa tylko w postępowaniu karnym), więc wariant z procesem cywilnym jest błędny."},
+  {"q": "Zgodnie z Kodeksem postępowania karnego:", "opts": [{"t": "Sąd może dla dobra wymiaru sprawiedliwości zwolnić psychologa z obowiązku zachowania tajemnicy zawodowej", "c": false}, {"t": "Prokurator może dla dobra wymiaru sprawiedliwości zwolnić psychologa z obowiązku zachowania tajemnicy zawodowej", "c": false}, {"t": "Psycholog może odmówić zeznań co do okoliczności, na które rozciąga się obowiązek zachowania tajemnicy zawodowej", "c": false}, {"t": "wszystkie wymienione odpowiedzi są prawidłowe", "c": true}], "exp": "Zgodnie z art. 180 KPK z tajemnicy zawodowej psychologa może zwolnić zarówno sąd, jak i prokurator (w postępowaniu karnym), a sam psycholog może odmówić zeznań co do okoliczności objętych tajemnicą — wszystkie te stwierdzenia są prawdziwe."},
+  {"q": "Psycholog podejmujący decyzję odnośnie odstąpienia od tajemnicy zawodowej:", "opts": [{"t": "powinien skonsultować ją z innym psychologiem, doświadczonym i bezstronnym", "c": false}, {"t": "powinien omówić szczegółowo swoją decyzję z Klientem", "c": false}, {"t": "ze względu na wartość zdrowia i życia może podjąć tę decyzję bez zgody Klienta", "c": false}, {"t": "wszystkie wymienione odpowiedzi są prawidłowe", "c": true}], "exp": "Decyzję o odstąpieniu od tajemnicy psycholog powinien skonsultować z doświadczonym, bezstronnym psychologiem oraz w miarę możliwości omówić z klientem, a w sytuacji zagrożenia zdrowia lub życia może ją podjąć nawet bez zgody klienta — wszystkie wymienione zachowania są właściwe."},
+  {"q": "W przypadku naruszenia przez psychologa obowiązku zachowania tajemnicy zawodowej:", "opts": [{"t": "pokrzywdzony Klient może złożyć zawiadomienie do prokuratury o przestępstwie i wniosek o ściganie", "c": true}, {"t": "pokrzywdzonemu Klientowi nie przysługuje prawo do dochodzenia odszkodowania z tytułu poniesionych strat za naruszenie dóbr osobistych", "c": false}, {"t": "psycholog podlega grzywnie, karze ograniczenia wolności albo pozbawienia wolności do lat 4", "c": false}, {"t": "wszystkie wymienione odpowiedzi są prawidłowe", "c": false}], "exp": "Pokrzywdzony może złożyć zawiadomienie do prokuratury wraz z wnioskiem o ściganie. Przysługuje mu też roszczenie odszkodowawcze za naruszenie dóbr osobistych (więc twierdzenie o braku tego prawa jest błędne), a sankcja karna to do lat 2, nie 4."},
+  {"q": "W przypadku świadczenia usługi psychologicznej na rzecz osób z ograniczoną zdolnością do czynności prawnych psycholog ma obowiązek:", "opts": [{"t": "w zrozumiały sposób wyjaśnić procedury i cel usługi", "c": false}, {"t": "uzyskać na piśmie zgodę od prawnych opiekunów", "c": false}, {"t": "poszukiwać przyzwolenia na realizację usługi u osoby z ograniczoną zdolnością do czynności prawnych", "c": false}, {"t": "wszystkie wymienione odpowiedzi są prawidłowe", "c": true}], "exp": "Wobec osoby z ograniczoną zdolnością do czynności prawnych psycholog wyjaśnia procedury i cel, uzyskuje pisemną zgodę opiekunów prawnych, a samej osobie zapewnia podmiotowość, poszukując jej przyzwolenia — wszystkie te obowiązki obowiązują łącznie."},
+  {"q": "Zasada etyczna „Działanie na rzecz dobra klienta i nieszkodzenie mu”:", "opts": [{"t": "obowiązuje tylko w zawodzie psychologa i lekarza", "c": false}, {"t": "obowiązuje tylko w zawodzie psychologa, lekarza i lekarza dentysty", "c": false}, {"t": "obowiązuje we wszystkich zawodach zaufania publicznego", "c": true}, {"t": "żadna z wymienionych odpowiedzi nie jest prawidłowa", "c": false}], "exp": "Zasada działania na rzecz dobra odbiorcy i nieszkodzenia mu jest wspólna dla wszystkich zawodów zaufania publicznego (m.in. lekarz, prawnik, psycholog), a nie tylko dla wybranych. Zawężanie jej do jednego czy dwóch zawodów jest błędne."},
+  {"q": "Zasady i warunki wykonywania zawodu psychologa określa ustawa o zawodzie psychologa i samorządzie zawodowym psychologów z dnia:", "opts": [{"t": "8 czerwca 2001 roku", "c": true}, {"t": "2 lipca 2007 roku", "c": false}, {"t": "14 kwietnia 2015 roku", "c": false}, {"t": "2 grudnia 2018 roku", "c": false}], "exp": "Ustawa o zawodzie psychologa i samorządzie zawodowym psychologów została uchwalona 8 czerwca 2001 r."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6a1ba0'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#9b35e8'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#d18bff'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
