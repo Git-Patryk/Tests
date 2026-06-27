@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUZ – Test 7: Patomechanizmy chorób cywilizacyjnych</title>
+<style>
+  :root {
+    --green:  #2d6a4f;
+    --green2: #40916c;
+    --green3: #74c69d;
+    --green4: #d8f3dc;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f8f9fa;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ef;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p {
+    margin-top: .5rem;
+    opacity: .85;
+    font-size: .95rem;
+  }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* START */
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem;
+    color: var(--green);
+    margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .info-box {
+    background: var(--green4);
+    border-radius: 10px;
+    padding: 1rem .8rem;
+  }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--green); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  /* BUTTON */
+  .btn {
+    display: inline-block;
+    padding: .85rem 2.2rem;
+    border: none;
+    border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--green2);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(64,145,108,.35);
+  }
+  .btn-primary:hover { background: var(--green); transform: translateY(-2px); }
+  .btn-secondary {
+    background: var(--green4);
+    color: var(--green);
+  }
+  .btn-secondary:hover { background: var(--green3); color: #fff; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 50px;
+    height: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green2), var(--green3));
+    border-radius: 50px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    color: var(--gray);
+    margin-bottom: .4rem;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    margin-bottom: 1rem;
+  }
+  .q-meta {
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--green2);
+    margin-bottom: .6rem;
+  }
+  .q-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #1a1a2e;
+    margin-bottom: 1.5rem;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: .9rem 1.1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+    text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--green3); background: #f0faf4; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--green2); background: var(--green4); }
+  .option.wrong   { border-color: var(--red);    background: var(--red2);   }
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem;
+    transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--green2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red);    color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  /* EXPLANATION */
+  .explanation {
+    border-left: 4px solid var(--green2);
+    background: #f0faf4;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem;
+    font-size: .9rem;
+    line-height: 1.6;
+    color: var(--gray);
+    margin-top: 1rem;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--green); }
+
+  /* NAV */
+  .nav-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin: .5rem 0;
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--green); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+  .review-item.ok   { background: var(--green4); border-left: 3px solid var(--green2); }
+  .review-item.fail { background: var(--red2);   border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SUZ – Test 7: Patomechanizmy chorób cywilizacyjnych</h1>
+  <p>Zagadnienie V · Wykład V · 22 pytań</p>
+</header>
+
+<!-- START -->
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście egzaminacyjnym!</h2>
+    <p>Test obejmuje zagadnienie V — krajobraz epidemiologiczny XXI wieku: niedopasowanie ewolucyjne, przewlekły stan zapalny niskiego stopnia (low-grade inflammation), rolę cytokin (TNF-α, IL-6, CRP), triadę behawioralną i „Wielką Czwórkę” chorób cywilizacyjnych.</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>22</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>1</strong><span>zagadnienie egzaminacyjne</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 35</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--green);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Co — według wykładu — zajęło miejsce chorób zakaźnych jako główny przewlekły kryzys zdrowotny XXI wieku?",
+    opts: ["Choroby pasożytnicze", "Zatrucia pokarmowe", "Urazy komunikacyjne", "Choroby cywilizacyjne (układu krążenia, cukrzyca typu 2, otyłość, nowotwory)"],
+    ans: 3,
+    exp: "Po opanowaniu chorób zakaźnych (antybiotyki, szczepienia) głównym kryzysem stały się <strong>choroby cywilizacyjne</strong> — układu krążenia, cukrzyca typu 2, otyłość i nowotwory, będące główną przyczyną przedwczesnej śmiertelności."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Na czym polega koncepcja niedopasowania ewolucyjnego (evolutionary mismatch)?",
+    opts: ["Cechy korzystne w dawnym środowisku stają się nieadaptacyjne, gdy środowisko zmienia się zbyt szybko", "Człowiek jest idealnie przystosowany do współczesnego świata", "Choroby wynikają wyłącznie z mutacji genetycznych", "Geny zmieniają się szybciej niż środowisko"],
+    ans: 0,
+    exp: "<strong>Mismatch theory</strong> wyjaśnia, że cechy, które ewoluowały dla przetrwania w dawnym środowisku, stają się nieadaptacyjne, gdy środowisko zmienia się zbyt szybko (np. magazynowanie tłuszczu przy łatwym dostępie do przetworzonej żywności)."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Skąd — według wykładu — „płynie” dzisiejszy kryzys zdrowotny w porównaniu z erą chorób zakaźnych?",
+    opts: ["Wyłącznie z zewnątrz — od nowych bakterii i wirusów", "Z wewnątrz organizmu — z niewłaściwej interakcji genów ze środowiskiem, które sami stworzyliśmy", "Z promieniowania kosmicznego", "Z wad wrodzonych obecnych od urodzenia"],
+    ans: 1,
+    exp: "W przeciwieństwie do dawnych zagrożeń egzogennych (bakterie, wirusy), dzisiejszy kryzys rodzi się <strong>„wewnątrz” organizmu</strong> — jest wynikiem długotrwałej, niewłaściwej interakcji genów ze środowiskiem stworzonym przez człowieka."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Czym jest allostaza w kontekście chorób cywilizacyjnych?",
+    opts: ["Procesem wyłącznie genetycznym", "Stałą, niezmienną równowagą wewnętrzną", "Stabilnością przez zmianę — aktywnym przystosowaniem, którego długotrwałe utrzymanie obciąża organizm", "Całkowitym brakiem reakcji na stres"],
+    ans: 2,
+    exp: "<strong>Allostaza</strong> to „stabilność poprzez zmianę” — aktywne przystosowanie do stresorów. Długotrwałe jej utrzymywanie prowadzi do obciążenia allostatycznego (kosztu), wyczerpania i chorób."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Czym jest „low-grade inflammation” (przewlekły stan zapalny niskiego stopnia)?",
+    opts: ["Stanem subklinicznym z nadmiarem mediatorów zapalnych, bez wyraźnych objawów jak gorączka czy ból", "Ostrym zapaleniem z gorączką i silnym bólem", "Zakażeniem bakteryjnym leczonym antybiotykiem", "Reakcją alergiczną typu natychmiastowego"],
+    ans: 0,
+    exp: "<strong>Low-grade inflammation</strong> (zapalenie metaboliczne, „metaflammacja”) to stan subkliniczny — organizm produkuje nadmiar mediatorów zapalnych, lecz bez wyraźnych objawów (gorączka, ból). Trwa miesiącami/latami i leży u podłoża chorób cywilizacyjnych."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Która tkanka jest głównym źródłem przewlekłego stanu zapalnego w otyłości?",
+    opts: ["Tkanka mięśniowa podczas wysiłku", "Tkanka nerwowa", "Powiększona, dysfunkcyjna tkanka tłuszczowa (otyłość brzuszna)", "Tkanka kostna"],
+    ans: 2,
+    exp: "Głównym źródłem stanu zapalnego jest <strong>powiększona tkanka tłuszczowa (otyłość brzuszna)</strong>, która staje się dysfunkcyjna, wydziela adipokiny prozapalne (TNF-α, IL-6) i przyciąga makrofagi nasilające zapalenie."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Którą rolę pełnią cytokiny prozapalne TNF-α i IL-6?",
+    opts: ["Są hormonami obniżającymi poziom glukozy", "Są kluczowymi molekularnymi wyzwalaczami i przekaźnikami reakcji zapalnej", "Są enzymami trawiennymi jelit", "Są przeciwciałami neutralizującymi wirusy"],
+    ans: 1,
+    exp: "<strong>TNF-α i IL-6</strong> to kluczowe molekularne wyzwalacze reakcji zapalnej — działają jako przekaźniki międzykomórkowe, inicjując i regulując odpowiedź immunologiczną na infekcje, urazy lub stres metaboliczny."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Co stymuluje IL-6 jako główny regulator ostrej fazy?",
+    opts: ["Syntezę witaminy D w skórze", "Produkcję czerwonych krwinek w szpiku", "Wytwarzanie insuliny przez trzustkę", "Produkcję w wątrobie białek ostrej fazy, m.in. CRP i fibrynogenu"],
+    ans: 3,
+    exp: "<strong>IL-6</strong> jest głównym stymulatorem wątroby do produkcji białek ostrej fazy, takich jak <strong>CRP</strong> i fibrynogen; indukuje też gorączkę (działając na podwzgórze) i pobudza oś podwzgórze–przysadka–nadnercza."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Czym jest CRP (białko C-reaktywne) w ocenie przewlekłego stanu zapalnego?",
+    opts: ["Najczulszym klinicznym wskaźnikiem „cichego pożaru” — efektem działania IL-6 i TNF-α", "Cytokiną prozapalną produkowaną przez makrofagi", "Hormonem stresu wydzielanym przez nadnercza", "Bakteryjną endotoksyną (LPS)"],
+    ans: 0,
+    exp: "<strong>CRP</strong> nie jest cytokiną — jego podwyższony poziom (badany metodą hs-CRP) jest bezpośrednim wynikiem działania IL-6 i TNF-α i stanowi najczulszy kliniczny wskaźnik „cichego pożaru” toczącego się w organizmie."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Jakie trzy filary tworzą „triadę behawioralną” będącą zapalnikiem chorób cywilizacyjnych?",
+    opts: ["Genetyka, wiek i płeć", "Promieniowanie, hałas i wibracje", "Hipokinezja, dieta wysokoprzetworzona i przewlekły stres psychofizyczny", "Infekcje, urazy i alergie"],
+    ans: 2,
+    exp: "Triada behawioralna to <strong>hipokinezja</strong> (brak ruchu), <strong>dieta wysokoprzetworzona</strong> oraz <strong>przewlekły stres psychofizyczny</strong> — ewolucyjnie obce filary współczesnego stylu życia, indukujące przewlekły stan zapalny."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Czym są miokiny wydzielane przez mięśnie szkieletowe podczas wysiłku?",
+    opts: ["Adipokinami prozapalnymi z tkanki tłuszczowej", "Toksynami bakteryjnymi jelit", "Hormonami stresu z nadnerczy", "Cząsteczkami sygnałowymi o działaniu przeciwzapalnym (np. „dobra” IL-6, iryzyna)"],
+    ans: 3,
+    exp: "<strong>Miokiny</strong> (np. „dobra” IL-6, iryzyna, miostatyna) to cząsteczki sygnałowe uwalniane przez kurczące się mięśnie; mają działanie przeciwzapalne (stymulują IL-10, hamują TNF-α). W hipokinezji tracimy tę naturalną ochronę."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Do czego prowadzi długotrwała hipokinezja w kontekście stanu zapalnego?",
+    opts: ["Do całkowitego wyciszenia układu odpornościowego", "Do atrofii mięśni i ekspansji tkanki tłuszczowej trzewnej produkującej adipokiny prozapalne", "Do zwiększenia wrażliwości tkanek na insulinę", "Do wzrostu wydzielania miokin przeciwzapalnych"],
+    ans: 1,
+    exp: "Długotrwała hipokinezja prowadzi do <strong>atrofii mięśni i ekspansji tkanki tłuszczowej trzewnej</strong>. W miejsce ochronnych miokin pojawiają się adipokiny prozapalne, a tkanka tłuszczowa naciekana przez makrofagi staje się „generatorem” low-grade inflammation."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Na czym polega zjawisko „nieszczelnego jelita” wywoływane dietą wysokoprzetworzoną?",
+    opts: ["Bariera jelitowa staje się nieprzepuszczalna dla wody", "Mikrobiota całkowicie zanika bez żadnych skutków", "Uszkodzona bariera jelitowa przepuszcza do krwi toksyny (LPS) i bakterie, wywołując reakcję zapalną", "Jelito wchłania zbyt dużo witamin"],
+    ans: 2,
+    exp: "Dieta wysokoprzetworzona niszczy barierę jelitową („nieszczelne jelito”), przez co niestrawione cząstki, toksyny (LPS) i bakterie przenikają do krwiobiegu, wywołując ogólnoustrojową reakcję zapalną i reakcje autoimmunologiczne."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Czym jest kortyzolooporność wywołana przewlekłym stresem?",
+    opts: ["Całkowitym brakiem produkcji kortyzolu", "Stanem, w którym komórki przestają reagować na kortyzol mimo jego stale podwyższonego poziomu", "Niedoborem hormonów tarczycy", "Nadmierną wrażliwością tkanek na adrenalinę"],
+    ans: 1,
+    exp: "<strong>Kortyzolooporność</strong> to „znieczulenie” receptorów na kortyzol mimo jego stale wysokiego poziomu („brzuch kortyzolowy”). Ponieważ kortyzol działa przeciwzapalnie, brak reakcji komórek powoduje wzrost stanu zapalnego."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Przez którą oś organizm reaguje na przewlekły stres, co przy „błędzie systemu alarmowego” utrzymuje tryb ciągłej gotowości?",
+    opts: ["Oś podwzgórze–przysadka–nadnercza (HPA)", "Oś sercowo-naczyniową", "Oś jelitowo-mózgową", "Oś tarczycowo-przysadkową"],
+    ans: 0,
+    exp: "Organizm reaguje na stres przez <strong>oś HPA (podwzgórze–przysadka–nadnercza)</strong>, wydzielając adrenalinę i kortyzol. Gdy stres nie ustępuje, system alarmowy się nie wyłącza, utrzymując tryb ciągłej gotowości."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Co oznacza określenie „common soil” („wspólny grunt”) w odniesieniu do low-grade inflammation?",
+    opts: ["Nazwę konkretnej cytokiny", "Rodzaj diety przeciwzapalnej", "Pojedynczy gen odpowiedzialny za otyłość", "Wspólny mianownik najczęstszych przyczyn zgonów — chorób cywilizacyjnych"],
+    ans: 3,
+    exp: "Przewlekły stan zapalny nie jest chorobą samą w sobie, lecz <strong>wspólnym mianownikiem (common soil)</strong> dla najczęstszych przyczyn zgonów — „Wielkiej Czwórki” chorób cywilizacyjnych."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Jak współczesna kardiologia postrzega miażdżycę?",
+    opts: ["Jako chorobę zakaźną wywołaną bakterią", "Wyłącznie jako mechaniczne zatkanie naczyń", "Jako przewlekły proces zapalny, a nie jedynie „problem hydrauliczny” odkładania lipidów", "Jako wyłącznie wadę wrodzoną naczyń"],
+    ans: 2,
+    exp: "Współczesna kardiologia odchodzi od modelu „zatkanych rur” — kluczową rolę w rozwoju miażdżycy odgrywa <strong>przewlekły proces zapalny</strong> obejmujący śródbłonek i odpowiedź immunologiczną, nie tylko odkładanie lipidów."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "W jakie komórki przekształcają się makrofagi fagocytujące utlenione LDL (oxLDL) w ścianie naczynia?",
+    opts: ["Komórki plazmatyczne produkujące przeciwciała", "Komórki piankowate — podstawowy element blaszki miażdżycowej", "Neurony", "Erytrocyty"],
+    ans: 1,
+    exp: "Makrofagi fagocytujące oxLDL przekształcają się w <strong>komórki piankowate</strong>, stanowiące podstawowy element blaszki miażdżycowej. Proces wspierają cytokiny prozapalne (IL-1β, IL-6, TNF-α)."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Co — według wykładu — bezpośrednio prowadzi do ostrego zespołu wieńcowego lub udaru w niestabilnej blaszce miażdżycowej?",
+    opts: ["Spadek poziomu CRP we krwi", "Stopniowe wchłanianie lipidów przez śródbłonek", "Wzrost wydzielania miokin", "Pęknięcie blaszki, aktywacja krzepnięcia i powstanie zakrzepu"],
+    ans: 3,
+    exp: "Aktywowane makrofagi produkują metaloproteinazy degradujące włóknistą czapeczkę blaszki. <strong>Pęknięcie blaszki</strong> aktywuje układ krzepnięcia i tworzy zakrzep — bezpośrednią przyczynę ostrych zespołów wieńcowych i udaru mózgu."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Czym jest zespół metaboliczny?",
+    opts: ["Zbiorem powiązanych zaburzeń (otyłość brzuszna, nadciśnienie, dyslipidemia, hiperglikemia) zwiększającym ryzyko cukrzycy", "Pojedynczą chorobą zakaźną", "Niedoborem witaminy C", "Reakcją alergiczną na pokarm"],
+    ans: 0,
+    exp: "<strong>Zespół metaboliczny</strong> to zbiór wzajemnie powiązanych zaburzeń: otyłość brzuszna, nadciśnienie, zaburzenia lipidowe i wysoka glikemia. Zwiększa ryzyko cukrzycy typu 2 i chorób układu krążenia 3,5–5-krotnie."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Co potwierdziły badania kliniczne o związku stanu zapalnego z ryzykiem sercowo-naczyniowym?",
+    opts: ["Stan zapalny nie ma żadnego związku z chorobami serca", "Tylko obniżenie cholesterolu wpływa na ryzyko", "Redukcja stanu zapalnego — niezależnie od poziomu lipidów — może zmniejszać ryzyko zdarzeń sercowo-naczyniowych", "Markery zapalne są bezużyteczne w ocenie ryzyka"],
+    ans: 2,
+    exp: "Badania potwierdziły, że <strong>redukcja stanu zapalnego — niezależnie od poziomu lipidów — może zmniejszać ryzyko zdarzeń sercowo-naczyniowych</strong>, co podkreśla wartość markerów zapalnych (CRP) i terapii modulujących zapalenie."
+  },
+  {
+    topic: "V. Patomechanizmy chorób cywilizacyjnych",
+    q: "Czym są reaktywne formy tlenu (RFT/ROS) w patogenezie chorób cywilizacyjnych?",
+    opts: ["Produktami stresu oksydacyjnego uszkadzającymi komórki i aktywującymi ścieżki zapalne", "Witaminami antyoksydacyjnymi", "Przeciwzapalnymi cząsteczkami chroniącymi komórki", "Hormonami regulującymi sen"],
+    ans: 0,
+    exp: "<strong>Reaktywne formy tlenu (ROS)</strong> powstają w stresie oksydacyjnym, m.in. przy nadmiarze składników odżywczych. Uszkadzają komórki i aktywują ścieżki zapalne (NF-κB, JNK), prowadząc do insulinooporności i utrwalenia zapalenia."
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0;
+  score = 0;
+  answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) {
+    grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.';
+    bg = '#d8f3dc'; color = '#2d6a4f';
+  } else if (pct >= 75) {
+    grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.';
+    bg = '#e8f5e9'; color = '#388e3c';
+  } else if (pct >= 60) {
+    grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.';
+    bg = '#fff9c4'; color = '#f9a825';
+  } else if (pct >= 50) {
+    grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.';
+    bg = '#fff3e0'; color = '#e65100';
+  } else {
+    grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.';
+    bg = '#fde8e9'; color = '#c1121f';
+  }
+  circle.style.background = bg;
+  circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+
+  // review
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() {
+  startQuiz();
+  window.scrollTo(0, 0);
+}
+
+// Attach listeners directly — script is at bottom of body so DOM exists
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>

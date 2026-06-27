@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUZ – Test 8: Nanotechnologia</title>
+<style>
+  :root {
+    --green:  #2d6a4f;
+    --green2: #40916c;
+    --green3: #74c69d;
+    --green4: #d8f3dc;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f8f9fa;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef2ef;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p {
+    margin-top: .5rem;
+    opacity: .85;
+    font-size: .95rem;
+  }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* START */
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  }
+  .start-card h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem;
+    color: var(--green);
+    margin-bottom: 1rem;
+  }
+  .start-card p { color: var(--gray); line-height: 1.7; margin-bottom: .6rem; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .info-box {
+    background: var(--green4);
+    border-radius: 10px;
+    padding: 1rem .8rem;
+  }
+  .info-box strong { display: block; font-size: 1.6rem; color: var(--green); }
+  .info-box span { font-size: .8rem; color: var(--gray); }
+
+  /* BUTTON */
+  .btn {
+    display: inline-block;
+    padding: .85rem 2.2rem;
+    border: none;
+    border-radius: 50px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--green2);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(64,145,108,.35);
+  }
+  .btn-primary:hover { background: var(--green); transform: translateY(-2px); }
+  .btn-secondary {
+    background: var(--green4);
+    color: var(--green);
+  }
+  .btn-secondary:hover { background: var(--green3); color: #fff; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 50px;
+    height: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green2), var(--green3));
+    border-radius: 50px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .82rem;
+    color: var(--gray);
+    margin-bottom: .4rem;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    margin-bottom: 1rem;
+  }
+  .q-meta {
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--green2);
+    margin-bottom: .6rem;
+  }
+  .q-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #1a1a2e;
+    margin-bottom: 1.5rem;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: .9rem 1.1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+    text-align: left;
+  }
+  .option:hover:not(.disabled) { border-color: var(--green3); background: #f0faf4; }
+  .option.disabled { cursor: default; }
+  .option.correct { border-color: var(--green2); background: var(--green4); }
+  .option.wrong   { border-color: var(--red);    background: var(--red2);   }
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem;
+    transition: all .15s;
+  }
+  .option.correct .option-letter { background: var(--green2); color: #fff; }
+  .option.wrong   .option-letter { background: var(--red);    color: #fff; }
+  .option-text { font-size: .95rem; line-height: 1.5; padding-top: 2px; }
+
+  /* EXPLANATION */
+  .explanation {
+    border-left: 4px solid var(--green2);
+    background: #f0faf4;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.2rem;
+    font-size: .9rem;
+    line-height: 1.6;
+    color: var(--gray);
+    margin-top: 1rem;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--green); }
+
+  /* NAV */
+  .nav-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .7; }
+  .grade-label {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin: .5rem 0;
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: var(--green); }
+  .stat-wrong   strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+  .review-item.ok   { background: var(--green4); border-left: 3px solid var(--green2); }
+  .review-item.fail { background: var(--red2);   border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SUZ – Test 8: Nanotechnologia</h1>
+  <p>Zagadnienie VI · Wykład VI · 22 pytań</p>
+</header>
+
+<!-- START -->
+<div id="start-screen">
+  <div class="start-card">
+    <h2>Witaj w teście egzaminacyjnym!</h2>
+    <p>Test obejmuje zagadnienie VI — nanotechnologię: rewolucyjne zastosowania (nanomedycyna, kosmetyki, budownictwo, żywność) oraz „ciemną stronę mocy” — ryzyko zdrowotne i środowiskowe nanocząstek.</p>
+    <p style="margin-top:.5rem">Pytania są losowane i wyświetlane w innej kolejności przy każdym podejściu. Po każdej odpowiedzi zobaczysz krótkie wyjaśnienie.</p>
+    <div class="info-grid">
+      <div class="info-box"><strong>22</strong><span>pytań</span></div>
+      <div class="info-box"><strong>4</strong><span>odpowiedzi ABCD</span></div>
+      <div class="info-box"><strong>1</strong><span>zagadnienie egzaminacyjne</span></div>
+    </div>
+    <button class="btn btn-primary" id="start-btn">Rozpocznij test →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" style="display:none">
+  <div class="progress-label">
+    <span id="prog-label">Pytanie 1 z 35</span>
+    <span id="score-label">Wynik: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-meta" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-area">
+    <button class="btn btn-primary" id="next-btn" style="display:none">Następne pytanie →</button>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:var(--green);font-size:1.4rem">Wynik końcowy</h2>
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num"></span>
+      <span class="score-denom" id="score-denom"></span>
+    </div>
+    <div class="grade-label" id="grade-label"></div>
+    <div id="grade-msg" style="color:var(--gray);font-size:.95rem;margin-bottom:1rem"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="rs-correct"></strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong">  <strong id="rs-wrong"></strong>  <span>Błędnych</span></div>
+      <div class="stat-box">             <strong id="rs-pct"></strong>    <span>Procent</span></div>
+    </div>
+    <button class="btn btn-primary" id="restart-btn">Spróbuj ponownie</button>
+  </div>
+  <div class="result-card">
+    <h3 style="font-family:Georgia,'Times New Roman',serif;margin-bottom:1rem;text-align:left">Przegląd odpowiedzi</h3>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Od jakiego greckiego słowa pochodzi przedrostek „nano” w nanotechnologii?",
+    opts: ["„nanos” — karzeł", "„nomos” — prawo", "„nous” — umysł", "„neos” — nowy"],
+    ans: 0,
+    exp: "Termin „nano” pochodzi od greckiego <strong>„nanos” — karzeł</strong>. Nanotechnologia zajmuje się manipulowaniem materią w skali atomowej i tworzeniem struktur o rozmiarach rzędu nanometrów."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Jak definiuje się nanocząsteczkę (produkt nanotechnologii)?",
+    opts: ["Każdą cząsteczkę widoczną pod zwykłym mikroskopem", "Obiekt, którego przynajmniej jeden wymiar nie przekracza 100 nm", "Obiekt o wszystkich wymiarach powyżej 1 mm", "Wyłącznie cząsteczkę metalu szlachetnego"],
+    ans: 1,
+    exp: "<strong>Nanocząsteczka</strong> to obiekt, którego przynajmniej jeden wymiar nie przekracza 100 nm (zakres nano: 1–100 nm). W tej skali materia zyskuje osobliwe właściwości."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Dlaczego materia w skali nano fascynuje naukowców?",
+    opts: ["Bo całkowicie traci właściwości chemiczne", "Bo zawsze zachowuje się identycznie jak w skali makro", "Bo przestaje zachowywać się przewidywalnie — tradycyjne prawa fizyki ustępują efektom kwantowym", "Bo staje się widoczna gołym okiem"],
+    ans: 2,
+    exp: "W skali nano (poniżej 100 nm) <strong>tradycyjne prawa fizyki ustępują efektom kwantowym</strong> — ten sam materiał może mieć inny kolor, twardość czy przewodnictwo niż jego większy odpowiednik (np. złoto przestaje być żółte)."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Kto w 1959 r. wykładem „There's Plenty of Room at the Bottom” położył fundament pod nanotechnologię?",
+    opts: ["Niels Bohr", "Albert Einstein", "René Descartes", "Richard Feynman"],
+    ans: 3,
+    exp: "Fizyk <strong>Richard Feynman</strong> w wykładzie „There's Plenty of Room at the Bottom” (1959) ogłosił, że nie ma technicznych przeszkód, by konstruować urządzenia z pojedynczych atomów — przewidział erę ekstremalnej miniaturyzacji."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Jakie odkrycie z lat 80. XX wieku umożliwiło tworzenie i badanie nanostruktur?",
+    opts: ["Skaningowy mikroskop tunelowy (rozdzielczość rzędu pojedynczych atomów)", "Mikroskop optyczny", "Tomograf komputerowy", "Teleskop kosmiczny"],
+    ans: 0,
+    exp: "Dopiero <strong>skaningowy mikroskop tunelowy</strong> (lata 80.), o zdolności rozdzielczej rzędu pojedynczych atomów, umożliwił tworzenie i badanie nanostruktur (studni, kropek, drutów kwantowych, fullerenów, nanorurek węglowych)."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Którą zaletę oferują nanocząsteczki srebra, złota i miedzi w nanomedycynie wobec antybiotykooporności?",
+    opts: ["Zwiększają oporność bakterii na leki", "Skutecznie zwalczają drobnoustroje, nie wywołując u nich odporności", "Działają wyłącznie na wirusy, nie na bakterie", "Zastępują szczepienia ochronne"],
+    ans: 1,
+    exp: "Wobec narastającej antybiotykooporności nanotechnologia oferuje <strong>nanocząsteczki srebra, złota i miedzi</strong>, które skutecznie zwalczają drobnoustroje, nie wywołując przy tym ich odporności."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Na czym polega terapia fotodynamiczna z użyciem nanometrycznych tlenków metali?",
+    opts: ["Opiera się na podawaniu antybiotyków", "Polega na chirurgicznym usuwaniu guza", "Wykorzystuje światło i nietoksyczne substancje do niszczenia komórek (np. raka, trądziku)", "Wykorzystuje ultradźwięki zamiast światła"],
+    ans: 2,
+    exp: "<strong>Terapia fotodynamiczna</strong> wykorzystuje światło i nietoksyczne substancje do walki z rakiem, trądzikiem czy zwyrodnieniem plamki żółtej. Terapia sonodynamiczna działa podobnie, ale używa ultradźwięków zamiast światła."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Która największa zaleta wyróżnia nanomedycynę w leczeniu nowotworów?",
+    opts: ["Całkowita rezygnacja z diagnostyki", "Wyłączne stosowanie na skórę", "Działanie na cały organizm bez rozróżniania tkanek", "Wybiórczość — precyzyjne uderzanie w źródło choroby, pozostawiające zdrowe tkanki nietknięte"],
+    ans: 3,
+    exp: "Największą zaletą nanomedycyny jest jej <strong>wybiórczość</strong> — nanostruktury działają jak miniaturowe urządzenia naprowadzające, uderzając precyzyjnie w chore komórki i pozostawiając zdrowe tkanki nietknięte."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Które nanocząsteczki stanowią fundament nowoczesnych kremów z filtrem UV?",
+    opts: ["Fullereny", "Nanocząsteczki tlenku tytanu i cynku", "Nanozłoto i grafen", "Nanorurki węglowe"],
+    ans: 1,
+    exp: "Fundamentem nowoczesnych kremów z filtrem są <strong>nanocząsteczki tlenku tytanu i cynku</strong> — skutecznie odbijają promieniowanie UV i są łagodniejsze dla skóry niż tradycyjne filtry chemiczne, minimalizując ryzyko alergii."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Czym są nanokapsułki stosowane w kosmetykach?",
+    opts: ["Filtrami mechanicznymi do oczyszczania wody", "Nanorobotami naprawiającymi tkanki", "Twardymi powłokami chroniącymi opakowania przed wstrząsem", "Inteligentnymi systemami zamykającymi składniki aktywne, poprawiającymi ich wchłanialność"],
+    ans: 3,
+    exp: "<strong>Nanokapsułki</strong> to inteligentne systemy dostarczania substancji — „zamykają” składniki aktywne (witaminy, olejki, ekstrakty) w ultramałych otoczkach, dzięki czemu skuteczniej pokonują bariery skórne i poprawiają wchłanialność."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Co umożliwia dodanie nanocząsteczek do betonu, stali czy szkła (nanokompozyty)?",
+    opts: ["Ekstremalną wytrzymałość, mniejszą wagę i lepsze przewodzenie ciepła/prądu", "Wyłącznie zmianę koloru bez wpływu na właściwości", "Całkowitą utratę wytrzymałości materiałów", "Brak jakiegokolwiek wpływu na konstrukcję"],
+    ans: 0,
+    exp: "<strong>Nanokompozyty</strong> (materiały wzbogacone nanocząsteczkami) zyskują ekstremalną wytrzymałość (odporność na pękanie, ścieranie, wysokie temperatury), mniejszą wagę i lepsze przewodnictwo — czynią budownictwo trwalszym i tańszym."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Iloma drogami nanocząstki mogą być wprowadzane do organizmu człowieka?",
+    opts: ["Sześcioma różnymi drogami", "Dwiema: oddechową i pokarmową", "Czterema: oddechową, pokarmową, pozajelitową i przez skórę", "Wyłącznie jedną — przez skórę"],
+    ans: 2,
+    exp: "Istnieją <strong>cztery drogi narażenia</strong> na nanocząstki: oddechowa, pokarmowa, pozajelitowa i przez skórę. Narażenie może występować podczas całego cyklu życiowego cząstek (produkcja, użycie, składowanie, usuwanie)."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Którą drogą do organizmu wnika najwięcej nanocząstek?",
+    opts: ["Drogą pozajelitową", "Drogą oddechową", "Przez skórę", "Drogą pokarmową"],
+    ans: 1,
+    exp: "Najwięcej nanocząstek wnika do organizmu <strong>drogą oddechową</strong>. Do płuc dociera ok. połowy wdychanych cząstek (głównie 10–50 nm), skąd mogą przenikać do krwi, a nawet pokonywać barierę krew–mózg."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Które czynniki decydują o toksyczności nanocząstek?",
+    opts: ["Wyłącznie kraj pochodzenia", "Wyłącznie cena produkcji", "Rozmiar, kształt, skład chemiczny, zdolność do agregacji, rozpuszczalność, pole powierzchni i ładunek", "Wyłącznie ich kolor"],
+    ans: 2,
+    exp: "O toksyczności nanocząstek decydują: <strong>rozmiar, kształt, skład chemiczny, zdolność do agregacji, rozpuszczalność, pole powierzchni i ładunek powierzchniowy</strong>. Duża powierzchnia reaktywna nasila ich oddziaływanie."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Jakie zagrożenia dla płuc mogą powodować nanocząstki (nanotoksykologia)?",
+    opts: ["Przewlekłe stany zapalne, stres oksydacyjny i zwłóknienie tkanki płucnej", "Całkowitą odporność płuc na infekcje", "Wyłącznie nieszkodliwe przebarwienia", "Natychmiastową poprawę wydolności oddechowej"],
+    ans: 0,
+    exp: "Ze względu na mikroskopijny rozmiar i dużą powierzchnię reaktywną nanocząstki mogą powodować <strong>przewlekłe stany zapalne, stres oksydacyjny i trwałe bliznowacenie (zwłóknienie) płuc</strong>; niektóre (nikiel, niektóre nanorurki) są genotoksyczne."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "W których narządach głównie akumulują się nanocząstki traktowane przez organizm jako ciała obce?",
+    opts: ["Wyłącznie w mięśniach szkieletowych", "Nigdzie — są natychmiast wydalane", "Wyłącznie w kościach", "W wątrobie i śledzionie"],
+    ans: 3,
+    exp: "Głównymi miejscami „składowania” są <strong>wątroba i śledziona</strong> — makrofagi traktują nanocząstki jako ciała obce i transportują je tam do neutralizacji; mogą tam przebywać od dni do wielu miesięcy. Najmniejsze (<5–10 nm) filtrują nerki."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Na czym polega efekt „korony białkowej” (protein corona) wokół nanocząstki w krwiobiegu?",
+    opts: ["Nanocząstka rozpuszcza się natychmiast bez śladu", "Nanocząstka wiąże się trwale z erytrocytami", "Nanocząstka traci całkowicie masę", "Nanocząstka pokrywa się warstwą białek ustrojowych, co zmienia jej cechy i może mylić jej „adres”"],
+    ans: 3,
+    exp: "<strong>Korona białkowa</strong> to opłaszczenie nanocząstki warstwą białek ustrojowych po wejściu do krwi. Zmienia to jej pierwotne cechy — grozi atakiem odpornościowym (uznaniem za ciało obce) i utratą precyzji (trafieniem do innych organów)."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Czym jest biomagnifikacja nanocząstek w środowisku?",
+    opts: ["Procesem oczyszczania wody z nanocząstek", "Kumulacją cząstek w łańcuchu pokarmowym, osiągającą niebezpieczne stężenia u drapieżników szczytowych", "Rozpadem cząstek na nieszkodliwe składniki", "Zmniejszaniem stężenia cząstek w wyższych ogniwach"],
+    ans: 1,
+    exp: "<strong>Biomagnifikacja</strong>: mniejsze organizmy (bakterie, glony, plankton) absorbują nanomateriały, które kumulują się w ciałach drapieżników (ryb, ssaków), osiągając niebezpieczne stężenia u organizmów na szczycie piramidy — w tym u ludzi."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Na czym polega podejście Safe-by-Design w nanotechnologii?",
+    opts: ["Na projektowaniu nanocząstek tak, by rozpadały się na bezpieczne składniki po wykonaniu zadania", "Na zakazie wszelkich badań nad nanocząstkami", "Na produkcji wyłącznie metalowych nanocząstek", "Na rezygnacji z monitoringu środowiska"],
+    ans: 0,
+    exp: "<strong>Safe-by-Design</strong> (bezpieczeństwo na etapie projektowania) to projektowanie nanocząstek tak, by rozpadały się na bezpieczne składniki zaraz po wykonaniu zadania — jeden z czterech filarów bezpiecznego wdrażania nanotechnologii."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Jakie proekologiczne zastosowania ma nanotechnologia w ochronie środowiska?",
+    opts: ["Wyłącznie produkcję broni", "Wyłącznie zwiększanie ilości odpadów", "Remediację zanieczyszczeń, oczyszczanie wody, redukcję emisji i lepsze ogniwa słoneczne", "Brak jakichkolwiek zastosowań ekologicznych"],
+    ans: 2,
+    exp: "Nanotechnologia ma „podwójne oblicze” — proekologicznie służy do <strong>remediacji gleby i wód, oczyszczania wody, redukcji emisji (nanokatalizatory) i poprawy wydajności energetycznej</strong> (lepsze ogniwa słoneczne), choć sama stwarza nowe zagrożenia."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Jak nazwano w podsumowaniu ryzyko, że nanocząstki staną się trwałymi, trudnymi do usunięcia zanieczyszczeniami?",
+    opts: ["Bioindykatory", "Pollution havens", "Emerging contaminants (zanieczyszczenia nowej generacji)", "Spillover"],
+    ans: 2,
+    exp: "Bez rygorystycznego nadzoru nad cyklem życia nanocząstki ryzykują stworzenie nowej generacji trwałych, trudnych do usunięcia zanieczyszczeń — tzw. <strong>emerging contaminants</strong>."
+  },
+  {
+    topic: "VI. Nanotechnologia",
+    q: "Dlaczego monitoring i legislacja nanocząstek w środowisku są utrudnione?",
+    opts: ["Nanocząstki są zawsze widoczne gołym okiem", "Tradycyjne systemy nie wykrywają cząstek w skali nano i brak ujednoliconych norm stężeń", "Istnieją już pełne, globalne regulacje obejmujące wszystkie nanocząstki", "Nanocząstki nie przedostają się do środowiska"],
+    ans: 1,
+    exp: "Monitoring utrudnia <strong>„niewidzialność” zanieczyszczeń</strong> — tradycyjne systemy nie wykrywają cząstek w skali nano. Brakuje też ujednoliconych norm dopuszczalnych stężeń i standardowych metod badania ich długofalowej toksyczności."
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS);
+  currentIndex = 0;
+  score = 0;
+  answers = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+
+  document.getElementById('prog-label').textContent = `Pytanie ${currentIndex + 1} z ${total}`;
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.q;
+
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[currentIndex];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = chosen === q.ans;
+
+  if (isCorrect) score++;
+  answers.push({ q, chosen, isCorrect });
+
+  opts.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === chosen && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = (isCorrect ? '✅ <strong>Poprawnie!</strong> ' : '❌ <strong>Błędna odpowiedź.</strong> ') + q.exp;
+  exp.classList.add('show');
+
+  document.getElementById('score-label').textContent = `Wynik: ${score}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = currentIndex < questions.length - 1 ? 'Następne pytanie →' : 'Zobacz wynik →';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const wrong = total - score;
+
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-denom').textContent = `/ ${total}`;
+  document.getElementById('rs-correct').textContent = score;
+  document.getElementById('rs-wrong').textContent = wrong;
+  document.getElementById('rs-pct').textContent = pct + '%';
+
+  const circle = document.getElementById('score-circle');
+  let grade, msg, bg, color;
+  if (pct >= 90) {
+    grade = 'Celujący 🏆'; msg = 'Doskonały wynik! Jesteś świetnie przygotowany/a do egzaminu.';
+    bg = '#d8f3dc'; color = '#2d6a4f';
+  } else if (pct >= 75) {
+    grade = 'Bardzo dobry 🌟'; msg = 'Solidna wiedza! Kilka tematów warto jeszcze powtórzyć.';
+    bg = '#e8f5e9'; color = '#388e3c';
+  } else if (pct >= 60) {
+    grade = 'Dobry 👍'; msg = 'Dobra podstawa, ale kilka obszarów wymaga uzupełnienia.';
+    bg = '#fff9c4'; color = '#f9a825';
+  } else if (pct >= 50) {
+    grade = 'Dostateczny 📚'; msg = 'Warto powtórzyć materiał przed egzaminem — szczególnie tematy, w których pojawiły się błędy.';
+    bg = '#fff3e0'; color = '#e65100';
+  } else {
+    grade = 'Niedostateczny 💪'; msg = 'Nie zniechęcaj się! Przejrzyj materiał i spróbuj ponownie — wyjaśnienia przy pytaniach pomogą się przygotować.';
+    bg = '#fde8e9'; color = '#c1121f';
+  }
+  circle.style.background = bg;
+  circle.style.color = color;
+  document.getElementById('grade-label').style.color = color;
+  document.getElementById('grade-label').textContent = grade;
+  document.getElementById('grade-msg').textContent = msg;
+
+  // review
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  answers.forEach((a, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.isCorrect ? 'ok' : 'fail');
+    div.innerHTML = `<div class="ri-meta">${a.q.topic} · Pytanie ${i + 1}</div>
+      <strong>${a.q.q}</strong><br>
+      Twoja odpowiedź: ${letters[a.chosen]}. ${a.q.opts[a.chosen]}<br>
+      ${!a.isCorrect ? `Poprawna: <strong>${letters[a.q.ans]}. ${a.q.opts[a.q.ans]}</strong>` : ''}`;
+    rl.appendChild(div);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function restartQuiz() {
+  startQuiz();
+  window.scrollTo(0, 0);
+}
+
+// Attach listeners directly — script is at bottom of body so DOM exists
+(function() {
+  var sb = document.getElementById('start-btn');
+  var nb = document.getElementById('next-btn');
+  var rb = document.getElementById('restart-btn');
+  if (sb) sb.addEventListener('click', startQuiz);
+  if (nb) nb.addEventListener('click', nextQuestion);
+  if (rb) rb.addEventListener('click', restartQuiz);
+})();
+</script>
+</body>
+</html>
