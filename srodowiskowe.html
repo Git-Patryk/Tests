@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Środowiskowe Uwarunkowania Zdrowia – Testy</title>
+<title>Środowiskowe Uwarunkowania Zdrowia – StudyZone</title>
 <style>
   :root {
     --bg:     #0a0a0f;
@@ -13,6 +13,8 @@
     --muted:  #6b6b8a;
     --nc:     #00e5ff;
     --ng:     rgba(0,229,255,.10);
+    --nc2:    #34d399;
+    --ng2:    rgba(52,211,153,.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -20,6 +22,7 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    display: flex; flex-direction: column;
   }
   body::before {
     content: '';
@@ -31,100 +34,78 @@
     pointer-events: none; z-index: 0;
   }
 
-  /* NAV */
   nav {
     position: relative; z-index: 1;
     padding: 1.2rem 1.5rem;
     border-bottom: 1px solid var(--border);
     display: flex; align-items: center; gap: .6rem;
   }
-  nav a {
-    color: var(--muted); text-decoration: none; font-size: .85rem;
-    transition: color .2s;
-  }
+  nav a { color: var(--muted); text-decoration: none; font-size: .85rem; transition: color .2s; }
   nav a:hover { color: var(--nc); }
   nav .sep { color: var(--border); }
   nav .current { color: var(--text); font-weight: 600; }
 
-  /* HEADER */
-  .page-header {
-    position: relative; z-index: 1;
-    padding: 3rem 1.5rem 2rem;
-    max-width: 860px; margin: 0 auto;
-  }
-  .subject-icon { font-size: 2.8rem; margin-bottom: 1rem; filter: drop-shadow(0 0 14px var(--nc)); }
-  .page-header h1 {
-    font-size: clamp(1.4rem, 4vw, 2rem);
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: .6rem;
-    background: linear-gradient(90deg, #fff 60%, var(--nc));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .page-header p { color: var(--muted); font-size: .9rem; line-height: 1.6; max-width: 540px; }
-  .accent-line {
-    width: 50px; height: 2px;
-    background: var(--nc);
-    box-shadow: 0 0 8px var(--nc);
-    border-radius: 2px;
-    margin: 1rem 0;
-  }
+  .page { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 3.5rem 1.5rem 4rem; width: 100%; }
 
-  /* TESTS LIST */
-  .tests-section {
-    position: relative; z-index: 1;
-    max-width: 860px; margin: 0 auto;
-    padding: 0 1.5rem 5rem;
+  .page-header { text-align: center; margin-bottom: 3rem; }
+  .page-icon { font-size: 3rem; filter: drop-shadow(0 0 14px var(--nc)); margin-bottom: .9rem; }
+  .page-title {
+    font-size: clamp(1.4rem, 4.5vw, 2rem); font-weight: 900;
+    background: linear-gradient(90deg, #fff 40%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: .5rem;
   }
+  .page-sub { font-size: .88rem; color: var(--muted); }
+
   .section-label {
-    font-size: .7rem; font-weight: 700; letter-spacing: .15em;
+    font-size: .68rem; font-weight: 700; letter-spacing: .18em;
     text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem;
   }
-  .tests-list { display: flex; flex-direction: column; gap: 1rem; }
 
-  .test-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.5rem 1.8rem;
-    display: flex; align-items: center; gap: 1.4rem;
-    text-decoration: none; color: inherit;
-    transition: border-color .2s, transform .15s, box-shadow .2s;
+  .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+
+  .mode-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+    padding: 2.2rem 1.8rem; display: flex; flex-direction: column; gap: .8rem;
     position: relative; overflow: hidden;
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+    text-decoration: none; color: inherit;
   }
-  .test-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: var(--ng); opacity: 0; transition: opacity .25s;
-    border-radius: 14px;
+  .mode-card::before {
+    content: ''; position: absolute; top: -50px; right: -50px;
+    width: 130px; height: 130px; border-radius: 50%; opacity: .3; pointer-events: none;
+    background: radial-gradient(circle, var(--mc), transparent 70%);
   }
-  .test-card:hover { border-color: var(--nc); transform: translateX(4px); box-shadow: 0 0 20px rgba(0,229,255,.15); }
-  .test-card:hover::before { opacity: 1; }
+  .mode-card.notes { --mc: var(--nc2); --mg: var(--ng2); }
+  .mode-card.tests { --mc: var(--nc);  --mg: var(--ng); }
+  .mode-card::after {
+    content: ''; position: absolute; inset: 0; background: var(--mg);
+    opacity: 0; transition: opacity .3s; border-radius: 18px; pointer-events: none;
+  }
+  .mode-card:hover { transform: translateY(-5px); border-color: var(--mc); box-shadow: 0 0 36px color-mix(in srgb, var(--mc) 20%, transparent), 0 8px 28px rgba(0,0,0,.4); }
+  .mode-card:hover::after { opacity: 1; }
 
-  .test-num {
-    width: 50px; height: 50px; border-radius: 12px;
-    background: var(--ng); border: 1px solid color-mix(in srgb, var(--nc) 25%, transparent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem; font-weight: 900; color: var(--nc); flex-shrink: 0;
-    position: relative; z-index: 1;
+  .mode-emblem { font-size: 2.6rem; position: relative; z-index: 1; filter: drop-shadow(0 0 8px var(--mc)); }
+  .mode-name   { font-size: 1.3rem; font-weight: 800; color: #fff; position: relative; z-index: 1; }
+  .mode-desc   { font-size: .82rem; color: rgba(232,232,240,.6); line-height: 1.55; position: relative; z-index: 1; }
+  .mode-footer {
+    position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between;
+    padding-top: .8rem; border-top: 1px solid var(--border); margin-top: auto;
   }
-  .test-info { flex: 1; position: relative; z-index: 1; }
-  .test-title { font-size: 1rem; font-weight: 700; margin-bottom: .25rem; }
-  .test-meta { font-size: .8rem; color: var(--muted); }
-  .test-arrow { color: var(--nc); font-size: 1.2rem; transition: transform .2s; position: relative; z-index: 1; }
-  .test-card:hover .test-arrow { transform: translateX(4px); }
+  .mode-badge {
+    font-size: .68rem; font-weight: 700; padding: .24rem .65rem; border-radius: 20px;
+    background: color-mix(in srgb, var(--mc) 15%, transparent); color: var(--mc);
+    border: 1px solid color-mix(in srgb, var(--mc) 30%, transparent);
+  }
+  .mode-arrow { color: var(--mc); font-size: 1.1rem; transition: transform .2s; }
+  .mode-card:hover .mode-arrow { transform: translateX(5px); }
 
   footer {
-    position: relative; z-index: 1;
-    text-align: center; padding: 2rem;
-    color: var(--muted); font-size: .75rem;
-    border-top: 1px solid var(--border);
+    position: relative; z-index: 1; text-align: center; padding: 1.5rem;
+    color: var(--muted); font-size: .73rem; border-top: 1px solid var(--border); margin-top: auto;
   }
 
-  @media (max-width: 480px) {
-    .page-header { padding: 2rem 1rem 1.5rem; }
-    .tests-section { padding: 0 1rem 3rem; }
-    .test-card { padding: 1.1rem 1.2rem; gap: 1rem; }
-  }
+  @media (max-width: 520px) { .mode-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -137,142 +118,39 @@
   <span class="current">Środowiskowe Uwarunkowania Zdrowia</span>
 </nav>
 
-<div class="page-header">
-  <div class="subject-icon">🌿</div>
-  <h1>Środowiskowe Uwarunkowania Zdrowia</h1>
-  <div class="accent-line"></div>
-  <p>Determinanty środowiskowe, zagrożenia fizyczne, chemiczne i biologiczne, medycyna pracy, nanotechnologia, psychologia kryzysu klimatycznego.</p>
-</div>
-
-<div class="tests-section">
-  <div class="section-label">Dostępne testy</div>
-  <div class="tests-list">
-
-    <a class="test-card" href="test_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">1</div>
-      <div class="test-info">
-        <div class="test-title">Test 1 – Zagrożenia i mechanizmy</div>
-        <div class="test-meta">Pytania zaawansowane · czynniki ryzyka, choroby zawodowe, prawo pracy</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test2_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">2</div>
-      <div class="test-info">
-        <div class="test-title">Test 2 – Podstawy i pojęcia</div>
-        <div class="test-meta">37 pytań · definicje, determinanty, model Lalonde'a, globalne zagrożenia</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
+<div class="page">
+  <div class="page-header">
+    <div class="page-icon">🌿</div>
+    <div class="page-title">Środowiskowe Uwarunkowania Zdrowia</div>
+    <div class="page-sub">Wybierz tryb nauki</div>
   </div>
 
-  <div class="section-label" style="margin-top:2.5rem">Testy tematyczne · jeden test = jedno zagadnienie egzaminacyjne</div>
-  <div class="tests-list">
+  <div class="section-label">Tryb</div>
+  <div class="mode-grid">
 
-    <a class="test-card" href="test3_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">3</div>
-      <div class="test-info">
-        <div class="test-title">Test 3 – Determinanty zdrowia i czynniki ryzyka</div>
-        <div class="test-meta">Zagadnienie I · 22 pytania · paradygmaty zdrowia, model Lalonde'a, klasyfikacja czynników ryzyka</div>
+    <a class="mode-card notes" href="srodowiskowe-notatka.html">
+      <div class="mode-emblem">📖</div>
+      <div class="mode-name">Notatka</div>
+      <div class="mode-desc">Kompletne opracowanie wszystkich 11 zagadnień egzaminacyjnych (I–XI) — od determinant zdrowia i czynników środowiska pracy, przez globalizację i psychologię kryzysu klimatycznego, po żywność, zabawki i kosmetyki.</div>
+      <div class="mode-footer">
+        <span class="mode-badge">11 działów</span>
+        <span class="mode-arrow">→</span>
       </div>
-      <span class="test-arrow">→</span>
     </a>
 
-    <a class="test-card" href="test4_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">4</div>
-      <div class="test-info">
-        <div class="test-title">Test 4 – Czynniki środowiska pracy i życia</div>
-        <div class="test-meta">Zagadnienie II · 22 pytania · zagrożenia w procesie pracy, mikroklimat, czynniki biologiczne</div>
+    <a class="mode-card tests" href="srodowiskowe-testy.html">
+      <div class="mode-emblem">📝</div>
+      <div class="mode-name">Testy</div>
+      <div class="mode-desc">Sprawdź się: trzynaście quizów z wyjaśnieniami — dwa ogólne oraz jedenaście tematycznych, po jednym na każde zagadnienie egzaminacyjne.</div>
+      <div class="mode-footer">
+        <span class="mode-badge">13 testów</span>
+        <span class="mode-arrow">→</span>
       </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test5_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">5</div>
-      <div class="test-info">
-        <div class="test-title">Test 5 – Od skali indywidualnej po globalną</div>
-        <div class="test-meta">Zagadnienie III · 22 pytania · globalizacja, bilans ekologiczny, Nowe Zdrowie Publiczne</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test6_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">6</div>
-      <div class="test-info">
-        <div class="test-title">Test 6 – Psychologia kryzysu klimatycznego</div>
-        <div class="test-meta">Zagadnienie IV · 22 pytania · postawy wobec zmian klimatu, mity, emocje klimatyczne</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test7_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">7</div>
-      <div class="test-info">
-        <div class="test-title">Test 7 – Patomechanizmy chorób cywilizacyjnych</div>
-        <div class="test-meta">Zagadnienie V · 22 pytania · niedopasowanie ewolucyjne, low-grade inflammation, „Wielka Czwórka”</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test8_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">8</div>
-      <div class="test-info">
-        <div class="test-title">Test 8 – Nanotechnologia</div>
-        <div class="test-meta">Zagadnienie VI · 22 pytania · zastosowania nanomedycyny i ryzyko zdrowotne nanocząstek</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test9_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">9</div>
-      <div class="test-info">
-        <div class="test-title">Test 9 – Ochrona zdrowia pracowników</div>
-        <div class="test-meta">Zagadnienie VII · 22 pytania · narażenie zawodowe, choroby zawodowe, biomonitoring</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test10_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">10</div>
-      <div class="test-info">
-        <div class="test-title">Test 10 – Wypadki i urazy</div>
-        <div class="test-meta">Zagadnienie VIII · 23 pytania · czynniki sprzyjające urazom, wypadki przy pracy, profilaktyka</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test11_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">11</div>
-      <div class="test-info">
-        <div class="test-title">Test 11 – Zanieczyszczenie środowiska i biomonitoring</div>
-        <div class="test-meta">Zagadnienie IX · 23 pytania · patomechanizmy, populacje wrażliwe, EBD/DALY</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test12_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">12</div>
-      <div class="test-info">
-        <div class="test-title">Test 12 – Zagrożenia związane z żywnością</div>
-        <div class="test-meta">Zagadnienie X · 23 pytania · klasyfikacja zagrożeń, pestycydy i leki, substancje antyodżywcze</div>
-      </div>
-      <span class="test-arrow">→</span>
-    </a>
-
-    <a class="test-card" href="test13_srodowiskowe_uwarunkowania_zdrowia.html">
-      <div class="test-num">13</div>
-      <div class="test-info">
-        <div class="test-title">Test 13 – Zabawki, kosmetyki i opakowania</div>
-        <div class="test-meta">Zagadnienie XI · 23 pytania · ftalany, parabeny, PFAS, mikroplastik</div>
-      </div>
-      <span class="test-arrow">→</span>
     </a>
 
   </div>
 </div>
 
-<footer>MedQuiz &mdash; materiały pomocnicze do nauki</footer>
+<footer>StudyZone &mdash; materiały pomocnicze do nauki</footer>
 </body>
 </html>

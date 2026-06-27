@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Środowiskowe Uwarunkowania Zdrowia – Notatka</title>
+<style>
+  :root {
+    --bg:     #0a0a0f;
+    --card:   #12121a;
+    --card2:  #16161f;
+    --border: #1e1e2e;
+    --text:   #e8e8f0;
+    --muted:  #8a8aa8;
+    --nc:     #00e5ff;
+    --ng:     rgba(0,229,255,.10);
+    --amber:  #fbbf24;
+    --rose:   #fb7185;
+    --green:  #34d399;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,.022) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none; z-index: 0;
+  }
+
+  nav.crumbs {
+    position: sticky; top: 0; z-index: 30;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
+    background: rgba(10,10,15,.82); backdrop-filter: blur(10px);
+  }
+  nav.crumbs a { color: var(--muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+  nav.crumbs a:hover { color: var(--nc); }
+  nav.crumbs .sep { color: var(--border); }
+  nav.crumbs .current { color: var(--text); font-weight: 600; font-size: .82rem; }
+  nav.crumbs .spacer { flex: 1; }
+  .recall-btn {
+    font-family: inherit; cursor: pointer;
+    background: var(--ng); color: var(--nc);
+    border: 1px solid color-mix(in srgb, var(--nc) 35%, transparent);
+    border-radius: 20px; padding: .35rem .9rem; font-size: .76rem; font-weight: 700;
+    transition: background .2s, transform .1s;
+  }
+  .recall-btn:hover { background: rgba(0,229,255,.18); }
+  .recall-btn.on { background: var(--nc); color: #04141a; }
+
+  .wrap { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; display: flex; gap: 2.2rem; padding: 0 1.5rem; }
+
+  /* TOC */
+  aside {
+    width: 250px; flex-shrink: 0; position: sticky; top: 64px; align-self: flex-start;
+    max-height: calc(100vh - 80px); overflow-y: auto; padding: 2rem 0 2rem; display: block;
+  }
+  aside .toc-title { font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; font-weight: 700; }
+  aside ol { list-style: none; counter-reset: toc; }
+  aside ol li { margin-bottom: .15rem; }
+  aside ol li a {
+    display: flex; gap: .55rem; align-items: baseline;
+    color: var(--muted); text-decoration: none; font-size: .82rem; padding: .35rem .5rem;
+    border-radius: 8px; border-left: 2px solid transparent; transition: all .18s;
+  }
+  aside ol li a .rn { color: var(--nc); font-weight: 800; font-size: .72rem; min-width: 1.6rem; }
+  aside ol li a:hover { background: var(--ng); color: var(--text); }
+  aside ol li a.active { background: var(--ng); color: var(--text); border-left-color: var(--nc); }
+
+  main { flex: 1; min-width: 0; padding: 2.2rem 0 5rem; }
+
+  .hero { margin-bottom: 2.5rem; }
+  .hero .ico { font-size: 2.6rem; filter: drop-shadow(0 0 14px var(--nc)); }
+  .hero h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 900; line-height: 1.2; margin: .6rem 0 .5rem;
+    background: linear-gradient(90deg, #fff 45%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero p { color: var(--muted); font-size: .9rem; max-width: 640px; }
+  .hint { font-size: .78rem; color: var(--muted); margin-top: 1rem; padding: .7rem 1rem; border:1px dashed var(--border); border-radius: 10px; background: var(--card); }
+
+  section.topic { margin-bottom: 3rem; scroll-margin-top: 72px; }
+  .topic-head { display: flex; gap: 1rem; align-items: flex-start; padding-bottom: 1rem; margin-bottom: 1.4rem; border-bottom: 1px solid var(--border); }
+  .topic-rn {
+    flex-shrink: 0; width: 46px; height: 46px; border-radius: 12px;
+    background: var(--ng); border: 1px solid color-mix(in srgb, var(--nc) 30%, transparent);
+    color: var(--nc); font-weight: 900; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .topic-head h2 { font-size: 1.32rem; font-weight: 800; line-height: 1.25; }
+  .topic-head .sub { font-size: .82rem; color: var(--muted); margin-top: .2rem; }
+
+  h3 { font-size: 1.05rem; font-weight: 800; color: #fff; margin: 1.8rem 0 .7rem; padding-left: .7rem; border-left: 3px solid var(--nc); }
+  h4 { font-size: .95rem; font-weight: 700; color: var(--nc); margin: 1.2rem 0 .5rem; }
+
+  p.lead { margin-bottom: .8rem; }
+  ul.list { list-style: none; margin: .4rem 0 .9rem; }
+  ul.list li { position: relative; padding-left: 1.3rem; margin-bottom: .45rem; font-size: .92rem; }
+  ul.list li::before { content: '▹'; position: absolute; left: 0; color: var(--nc); }
+  ul.sub { list-style: none; margin: .3rem 0 .5rem .6rem; }
+  ul.sub li { position: relative; padding-left: 1.2rem; margin-bottom: .3rem; font-size: .88rem; color: #d6d6e6; }
+  ul.sub li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
+
+  .box { border-radius: 12px; padding: 1rem 1.2rem; margin: 1rem 0; font-size: .9rem; border: 1px solid var(--border); background: var(--card); }
+  .box .bt { font-weight: 800; font-size: .8rem; letter-spacing: .04em; margin-bottom: .35rem; display: flex; align-items: center; gap: .4rem; }
+  .box.def { border-left: 3px solid var(--nc); }
+  .box.def .bt { color: var(--nc); }
+  .box.exam { border-left: 3px solid var(--amber); background: rgba(251,191,36,.06); }
+  .box.exam .bt { color: var(--amber); }
+  .box.warn { border-left: 3px solid var(--rose); background: rgba(251,113,133,.05); }
+  .box.warn .bt { color: var(--rose); }
+  .box.note { border-left: 3px solid var(--green); background: rgba(52,211,153,.05); }
+  .box.note .bt { color: var(--green); }
+
+  table.tbl { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .86rem; }
+  table.tbl th, table.tbl td { text-align: left; padding: .6rem .75rem; border: 1px solid var(--border); vertical-align: top; }
+  table.tbl th { background: var(--ng); color: var(--nc); font-weight: 700; }
+  table.tbl tr:nth-child(even) td { background: var(--card2); }
+
+  .stat-row { display: flex; flex-wrap: wrap; gap: .8rem; margin: 1rem 0; }
+  .stat { flex: 1; min-width: 130px; background: var(--card); border:1px solid var(--border); border-radius: 12px; padding: .9rem 1rem; }
+  .stat .n { font-size: 1.35rem; font-weight: 900; color: var(--nc); }
+  .stat .l { font-size: .76rem; color: var(--muted); line-height: 1.4; }
+
+  /* recall mode */
+  .k { color: var(--nc); font-weight: 600; }
+  body.recall .k {
+    background: var(--nc); color: transparent; border-radius: 4px;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--nc) 40%, transparent) inset;
+    transition: all .15s; cursor: help; filter: saturate(.6);
+  }
+  body.recall .k:hover { background: transparent; color: var(--nc); box-shadow: none; }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 2rem; color: var(--muted); font-size: .74rem; border-top: 1px solid var(--border); }
+
+  .toTop { position: fixed; right: 1.3rem; bottom: 1.3rem; z-index: 40; width: 42px; height: 42px; border-radius: 50%;
+    background: var(--card); border:1px solid var(--border); color: var(--nc); font-size: 1.1rem; cursor: pointer;
+    display: none; align-items: center; justify-content: center; }
+  .toTop.show { display: flex; }
+
+  @media (max-width: 880px) {
+    aside { display: none; }
+    .wrap { padding: 0 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="crumbs">
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <a href="wum.html">WUM</a>
+  <span class="sep">/</span>
+  <a href="srodowiskowe.html">Środowiskowe Uwarunkowania Zdrowia</a>
+  <span class="sep">/</span>
+  <span class="current">Notatka</span>
+  <span class="spacer"></span>
+  <button class="recall-btn" id="recallBtn" onclick="toggleRecall()">🙈 Tryb powtórki</button>
+</nav>
+
+<div class="wrap">
+
+  <aside>
+    <div class="toc-title">Zagadnienia</div>
+    <ol id="toc">
+      <li><a href="#t1"><span class="rn">I</span><span>Determinanty zdrowia i czynniki ryzyka</span></a></li>
+      <li><a href="#t2"><span class="rn">II</span><span>Czynniki środowiska pracy i życia</span></a></li>
+      <li><a href="#t3"><span class="rn">III</span><span>Od skali indywidualnej po globalną</span></a></li>
+      <li><a href="#t4"><span class="rn">IV</span><span>Psychologia kryzysu klimatycznego</span></a></li>
+      <li><a href="#t5"><span class="rn">V</span><span>Patomechanizmy chorób cywilizacyjnych</span></a></li>
+      <li><a href="#t6"><span class="rn">VI</span><span>Nanotechnologia</span></a></li>
+      <li><a href="#t7"><span class="rn">VII</span><span>Ochrona zdrowia pracowników</span></a></li>
+      <li><a href="#t8"><span class="rn">VIII</span><span>Wypadki i urazy</span></a></li>
+      <li><a href="#t9"><span class="rn">IX</span><span>Zanieczyszczenie środowiska i biomonitoring</span></a></li>
+      <li><a href="#t10"><span class="rn">X</span><span>Zagrożenia związane z żywnością</span></a></li>
+      <li><a href="#t11"><span class="rn">XI</span><span>Zabawki i kosmetyki</span></a></li>
+    </ol>
+  </aside>
+
+  <main>
+    <div class="hero">
+      <div class="ico">🌿</div>
+      <h1>Środowiskowe Uwarunkowania Zdrowia</h1>
+      <p>Kompletna notatka do egzaminu. Struktura odpowiada dokładnie spisowi zagadnień egzaminacyjnych (I–XI) — każdy dział i podpunkt to kolejny fragment opracowania.</p>
+      <div class="hint">💡 <b>Tryb powtórki:</b> kliknij „Tryb powtórki", aby zasłonić kluczowe pojęcia (podświetlone na niebiesko). Najedź kursorem na zasłonięte słowo, aby je odsłonić i sprawdzić się.</div>
+    </div>
+
+    <!-- ============ I ============ -->
+    <section class="topic" id="t1">
+      <div class="topic-head">
+        <div class="topic-rn">I</div>
+        <div>
+          <h2>Determinanty zdrowia i czynniki ryzyka</h2>
+          <div class="sub">Klasyfikacja czynników ryzyka</div>
+        </div>
+      </div>
+
+      <p class="lead">Stan zdrowia — w wymiarze indywidualnym i populacyjnym — kształtują liczne, częściowo zazębiające się grupy czynników. Mimo ponad 2 tys. lat rozważań powstało ok. <span class="k">300 definicji zdrowia</span>, a żadna nie jest uniwersalna; w ocenie zdrowia istotny pozostaje element <span class="k">subiektywny</span>. Każdy człowiek rodzi się z określonym <span class="k">kapitałem zdrowia</span>, który rośnie, a w dorosłości ulega deprecjacji wraz ze starzeniem.</p>
+
+      <h3>Ewolucja paradygmatów zdrowia</h3>
+      <table class="tbl">
+        <tr><th>Paradygmat</th><th>Twórca / źródło</th><th>Istota</th></tr>
+        <tr><td><b>Biomedyczny</b></td><td>René Descartes (Kartezjusz) — dualizm psychofizyczny</td><td>Ciało jako „maszyna"; zdrowie = <span class="k">brak choroby</span> somatycznej. Krytyka: pomija uwarunkowania społeczne i psychiczne, uprzedmiotawia pacjenta.</td></tr>
+        <tr><td><b>Psychosocjomedyczny</b></td><td>Henry Sigerist (1941) → <span class="k">definicja WHO</span></td><td>Zdrowie jako <span class="k">pełny dobrostan</span> fizyczny, psychiczny i społeczny. Krytyka: statyczność, utopijność, niejasność „dobrostanu".</td></tr>
+        <tr><td><b>Socjologiczny / społeczno-ekologiczny</b></td><td>WHO 1977; <span class="k">Mandala Zdrowia</span></td><td>Zdrowie = zdolność do długiego, twórczego życia mimo chorób; jednostka w centrum kręgów (rodzina, kultura, biosfera).</td></tr>
+      </table>
+
+      <div class="box def">
+        <div class="bt">📐 Pola zdrowia — raport Lalonde'a (1974)</div>
+        Analiza sytuacji zdrowotnej Kanady. Medycyna naprawcza odpowiada tylko za ok. <span class="k">10%</span> dobrostanu. Udział czynników:
+        <div class="stat-row" style="margin-top:.7rem">
+          <div class="stat"><div class="n">50%</div><div class="l">styl życia</div></div>
+          <div class="stat"><div class="n">25%</div><div class="l">środowisko</div></div>
+          <div class="stat"><div class="n">15%</div><div class="l">czynniki genetyczne</div></div>
+          <div class="stat"><div class="n">~10%</div><div class="l">opieka zdrowotna</div></div>
+        </div>
+      </div>
+
+      <h3>Klasyfikacja czynników ryzyka</h3>
+
+      <h4>1. Czynniki behawioralne (styl życia) — najczęściej modyfikowalne</h4>
+      <ul class="list">
+        <li><span class="k">palenie tytoniu</span> — kluczowy czynnik nowotworów i chorób sercowo-naczyniowych,</li>
+        <li>nieprawidłowa dieta (tłuszcze nasycone, cukry proste, sól; mało błonnika, warzyw),</li>
+        <li>brak aktywności fizycznej (siedzący tryb życia → otyłość),</li>
+        <li>spożywanie alkoholu i używek, przewlekły stres.</li>
+      </ul>
+
+      <h4>2. Czynniki biologiczne i fizjologiczne</h4>
+      <ul class="list">
+        <li>nadciśnienie tętnicze, wysoki cholesterol LDL,</li>
+        <li>wysokie BMI / otyłość, wysoka glukoza na czczo / cukrzyca,</li>
+        <li>wiek i historia rodzinna (genetyka).</li>
+      </ul>
+
+      <h4>3. Czynniki środowiskowe</h4>
+      <ul class="list">
+        <li>zanieczyszczenie powietrza — pyły zawieszone <span class="k">PM2,5</span> i PM10,</li>
+        <li>narażenie na substancje chemiczne, hałas i wibracje,</li>
+        <li>promieniowanie jonizujące i niejonizujące.</li>
+      </ul>
+      <p>Czynniki środowiskowe odpowiadają za ok. <span class="k">20%</span> stanu zdrowia populacji — ich identyfikacja pozwala optymalizować profilaktykę (analiza <span class="k">ekspozomu</span>, targetowanie ekspozycji, modyfikacja otoczenia zamiast „silnej woli", biomonitoring).</p>
+
+      <h4>4. Czynniki społeczno-ekonomiczne (wg WHO)</h4>
+      <p>Pozamedyczne warunki, w których ludzie rodzą się, rosną, żyją, pracują i starzeją się: status ekonomiczny, edukacja, warunki pracy, warunki mieszkaniowe, dostęp do żywności, wsparcie społeczne, dostęp do opieki zdrowotnej.</p>
+      <div class="box exam">
+        <div class="bt">⭐ Na egzamin</div>
+        WHO podkreśla, że czynniki społeczne mogą mieć <b>większy wpływ na zdrowie niż genetyka czy opieka medyczna</b>. Odpowiadają za <span class="k">gradient społeczny</span> — im niższa pozycja społeczno-ekonomiczna, tym gorszy stan zdrowia i krótsza długość życia.
+      </div>
+    </section>
+
+    <!-- ============ II ============ -->
+    <section class="topic" id="t2">
+      <div class="topic-head">
+        <div class="topic-rn">II</div>
+        <div>
+          <h2>Środowiskowe uwarunkowania zdrowia współczesnego człowieka — czynniki środowiska pracy i życia</h2>
+          <div class="sub">Definicja zagrożeń · kategorie · czynniki w procesie pracy · mikroklimat</div>
+        </div>
+      </div>
+
+      <p class="lead">System opieki zdrowotnej odpowiada za zaledwie <span class="k">10–15%</span> szans na przeżycie (pola zdrowia Lalonde'a) — reszta to czynniki poza gabinetem. Wg WHO czynniki środowiskowe odpowiadają za blisko <span class="k">24%</span> globalnej śmiertelności (co czwarty zgon). Korzenie medycyny środowiskowej: <span class="k">Hipokrates</span> („O powietrzu, wodach i miejscach") oraz <span class="k">Bernardino Ramazzini</span> („De morbis artificum diatriba", 1700 — choroby 54 zawodów).</p>
+
+      <h3>1. Środowiskowe zagrożenia zdrowia — definicja</h3>
+      <div class="box def">
+        <div class="bt">📘 Definicja</div>
+        <span class="k">Środowiskowe zagrożenia zdrowia</span> to negatywne wpływy skażonego środowiska na zdrowie, które mogą wynikać z <b>działalności człowieka</b> lub z <b>cech samego środowiska</b>; spośród innych zagrożeń są uwarunkowane stanem środowiska, w którym człowiek przebywa. Czyste środowisko jest czynnikiem koniecznym do zachowania zdrowia.
+      </div>
+
+      <h3>2. Główne kategorie zagrożeń środowiskowych dla zdrowia</h3>
+      <ul class="list">
+        <li><b>zanieczyszczenie powietrza</b> — największe pojedyncze zagrożenie; PM2,5/PM10, tlenki azotu, WWA → astma, POChP, rak płuc, zawały, udary,</li>
+        <li><b>zanieczyszczenie wody i złe warunki sanitarne</b> — bakterie (E. coli), wirusy, pasożyty → biegunki, WZW typu A, cholera,</li>
+        <li><b>zanieczyszczenie gleby</b> — metale ciężkie, pestycydy, mikroplastiki → przez łańcuch pokarmowy,</li>
+        <li><b>chemikalia i toksyczne odpady</b> — nowotwory, zaburzenia hormonalne,</li>
+        <li><b>zmiany klimatyczne</b> — fale upałów, powodzie, pożary, choroby zakaźne,</li>
+        <li><b>hałas i wibracje</b> — stres, zaburzenia snu, nadciśnienie,</li>
+        <li><b>zagrożenia biologiczne</b> — mikroorganizmy, rośliny, ukąszenia.</li>
+      </ul>
+      <p>Inny podział: zagrożenia <span class="k">globalne</span> (efekt cieplarniany) · <span class="k">regionalne</span> (niedobór jodu, kwaśne deszcze) · <span class="k">lokalne</span> (smog, hałas). Cecha czynników środowiskowych: zwykle <b>niskie natężenie, długie działanie</b>, skutki po dłuższej ekspozycji; częściej narażone dzieci.</p>
+
+      <h3>3. Środowiskowe zagrożenia zdrowia w procesie pracy</h3>
+      <p>Środowisko pracy znacząco wpływa na zdrowie pracownika. Kluczowe są: identyfikacja czynników szkodliwych, dobór środków prewencyjnych i określenie skali ryzyka zdrowotnego.</p>
+
+      <h3>4. Klasyfikacja czynników zagrożeń w środowisku pracy</h3>
+      <table class="tbl">
+        <tr><th>Kategoria</th><th>Charakterystyka</th></tr>
+        <tr><td><b>Szkodliwe</b></td><td>oddziaływanie prowadzi (lub może prowadzić) do <span class="k">schorzenia</span>,</td></tr>
+        <tr><td><b>Niebezpieczne</b></td><td>oddziaływanie prowadzi (lub może prowadzić) do <span class="k">urazu</span> (wypadki przy pracy),</td></tr>
+        <tr><td><b>Uciążliwe</b></td><td>nie zagrażają bezpośrednio, ale utrudniają pracę / obniżają wydajność (np. mikroklimat umiarkowany, hałas infradźwiękowy, obciążenie psychiczne, oświetlenie). Brak NDS/NDN.</td></tr>
+      </table>
+      <p>Zasada eskalacji: czynnik <b>uciążliwy → szkodliwy → niebezpieczny</b> w zależności od poziomu oddziaływania.</p>
+
+      <h4>Czynniki chemiczne</h4>
+      <p>Klasyfikacja i oznakowanie wg <span class="k">rozporządzenia CLP</span> (1272/2008), opartego na systemie <span class="k">GHS</span>. Substancje niebezpieczne: wybuchowe, utleniające, łatwopalne, toksyczne, żrące, drażniące, uczulające, <b>rakotwórcze, mutagenne, toksyczne dla rozrodczości</b>, niebezpieczne dla środowiska.</p>
+
+      <h4>Czynniki biologiczne — 4 grupy zagrożeń</h4>
+      <p>Kryteria klasyfikacji: zdolność wywołania choroby i jej ciężkość, możliwość rozprzestrzeniania, dostępność profilaktyki/leczenia.</p>
+      <table class="tbl">
+        <tr><th>Grupa</th><th>Charakterystyka</th><th>Przykłady</th></tr>
+        <tr><td><b>1</b></td><td>wywołanie choroby mało prawdopodobne</td><td>—</td></tr>
+        <tr><td><b>2</b></td><td>może wywołać chorobę, rozprzestrzenienie mało prawdopodobne, jest profilaktyka/leczenie</td><td>Borrelia, gronkowiec, tężec</td></tr>
+        <tr><td><b>3</b></td><td>ciężkie choroby, rozprzestrzenienie prawdopodobne, jest leczenie</td><td>gruźlica, dżuma, <span class="k">SARS-CoV-2</span></td></tr>
+        <tr><td><b>4</b></td><td>ciężkie choroby, rozprzestrzenienie prawdopodobne, <b>brak</b> skutecznej profilaktyki/leczenia</td><td>Ebola, Lassa, ospa prawdziwa</td></tr>
+      </table>
+
+      <h3>5. Mikroklimat środowiska pracy</h3>
+      <div class="box def">
+        <div class="bt">📘 Definicja</div>
+        <span class="k">Mikroklimat</span> to zespół warunków termiczno-wilgotnościowych (temperatura, wilgotność, ruch powietrza, promieniowanie cieplne) wpływających na wymianę ciepła między organizmem a otoczeniem. Zapewnienie komfortu cieplnego jest <b>prawnym obowiązkiem pracodawcy</b>.
+      </div>
+      <p><b>Komfort cieplny</b> — stan zrównoważonego bilansu cieplnego (ani chłodu, ani gorąca); subiektywne odczucie zadowolenia. Ciepło oddawane przez: <span class="k">promieniowanie, konwekcję, przewodzenie, parowanie potu i z układu oddechowego</span>. Czynniki: środowiskowe (temp., wilgotność, ruch powietrza, promieniowanie powierzchni) oraz indywidualne (metabolizm, izolacyjność odzieży).</p>
+      <table class="tbl">
+        <tr><th>Mikroklimat</th><th>Warunki</th><th>Skutki zdrowotne</th></tr>
+        <tr><td><b>Gorący</b></td><td>temp. &gt; <span class="k">30°C</span> (28°C przy ciężkiej pracy); wskaźnik <span class="k">WBGT</span>; praca szkodliwa</td><td>hipertermia (&gt;40°C), <span class="k">udar cieplny</span>, odwodnienie, skurcze, wyczerpanie cieplne</td></tr>
+        <tr><td><b>Zimny</b></td><td>temp. &lt; <span class="k">10°C</span> (14°C dla młodocianych)</td><td>hipotermia, odmrożenia części dystalnych, infekcje, bóle mięśniowo-stawowe</td></tr>
+        <tr><td><b>Umiarkowany</b></td><td>zrównoważona wymiana ciepła &gt;10°C; biuro min. <span class="k">18°C</span>, inne min. 14°C, max 28°C; wilgotność 35–65%</td><td>komfort cieplny</td></tr>
+      </table>
+      <div class="box warn">
+        <div class="bt">⚠️ Ważne</div>
+        W mikroklimacie gorącym i zimnym <b>nie mogą pracować</b> kobiety w ciąży, matki karmiące piersią ani pracownicy młodociani. WBGT (<i>wet bulb globe temperature</i>) ocenia średni wpływ ciepła na człowieka.
+      </div>
+    </section>
+
+    <!-- ============ III ============ -->
+    <section class="topic" id="t3">
+      <div class="topic-head">
+        <div class="topic-rn">III</div>
+        <div>
+          <h2>Zagrożenia środowiskowe od skali indywidualnej po globalną</h2>
+          <div class="sub">Globalizacja · ekologiczny bilans · Nowe Zdrowie Publiczne · zarys zagrożeń</div>
+        </div>
+      </div>
+
+      <h3>1. Globalizacja</h3>
+      <div class="box def">
+        <div class="bt">📘 Definicja</div>
+        <span class="k">Globalizacja</span> to proces coraz większej integracji krajów i ludzi na świecie, obejmujący ekonomię, kulturę, politykę i technologię; oznacza <b>zacieranie granic</b> między państwami i wzrost wpływu czynników globalnych na społeczności lokalne. Napędzana rozwojem technologii (Internet) i globalnymi łańcuchami dostaw.
+      </div>
+
+      <h4>Pozytywne i negatywne strony globalizacji</h4>
+      <table class="tbl">
+        <tr><th>Pozytywne</th><th>Negatywne</th></tr>
+        <tr><td>wzrost gospodarczy, nowe rynki i miejsca pracy</td><td>pogłębianie nierówności (Północ–Południe), „wyścig do dna"</td></tr>
+        <tr><td>edukacja bez barier, mobilność, kapitał ludzki</td><td>kryzys klimatyczny, ślad węglowy transportu</td></tr>
+        <tr><td>dialog międzykulturowy, tolerancja</td><td><span class="k">makdonaldyzacja</span> i homogenizacja kultury, erozja tożsamości</td></tr>
+        <tr><td>transfer technologii (w tym ekologicznych)</td><td>utrata suwerenności gospodarczej i politycznej, wzrost potęgi korporacji</td></tr>
+      </table>
+
+      <h4>Ekologiczny bilans globalizacji</h4>
+      <ul class="list">
+        <li><b>transport</b> — morski (90% towarów, mazut → tlenki siarki i azotu) i lotniczy (najszybciej rosnące źródło CO₂),</li>
+        <li><b>relokacja „brudnej" produkcji</b> do krajów o niskich normach (tzw. <span class="k">pollution havens</span>) i kryzys odpadów,</li>
+        <li><b>konsumpcjonizm</b> — kultura jednorazowości, nadmiar odpadów.</li>
+      </ul>
+
+      <h4>Globalizacja a Nowe Zdrowie Publiczne</h4>
+      <p>Zdrowie publiczne to <span class="k">holistyczna</span> wypadkowa determinant (społeczno-ekonomicznych, politycznych, środowiskowych). Globalizacja działa dwutorowo:</p>
+      <ul class="list">
+        <li>wpływ <b>pośredni</b>: globalny wzrost emisji PM2,5/CO₂, degradacja ekosystemów → <span class="k">spillover</span> (przeskakiwanie patogenów ze zwierząt na ludzi),</li>
+        <li><b>mobilność</b> (&gt;2 mld podróży rocznie) → „zdrowie bez barier", systemy ochrony zdrowia muszą być transnarodowe,</li>
+        <li>powrót „starych" i ekspansja „nowych" plag: lekooporna gruźlica, malaria/denga w strefie umiarkowanej,</li>
+        <li><b>epidemia otyłości</b>: globalizacja stylu życia (fast food, napoje słodzone) — ~1 mld nadwaga, ~300 mln otyłość.</li>
+      </ul>
+      <div class="box exam">
+        <div class="bt">⭐ Na egzamin — SARS (2003)</div>
+        Studium globalnego zagrożenia: w 4 miesiące wirus z Chin dotarł na kilka kontynentów; <span class="k">8 445</span> zakażonych, <span class="k">811</span> ofiar; straty globalne ~60 mld USD. Reakcja: <span class="k">IHR 2005</span> (Międzynarodowe Regulacje Zdrowotne, 2007), nadzór <span class="k">ECDC</span> (Sztokholm) i WHO (Kopenhaga).
+      </div>
+
+      <h3>2. Zarys współczesnych zagrożeń (globalny, regionalny, lokalny)</h3>
+      <p><b>Zagrożenie</b> — zjawisko naturalne lub wywołane przez człowieka, które pozbawia poczucia bezpieczeństwa i generuje niebezpieczeństwo dla życia i zdrowia.</p>
+      <ul class="list">
+        <li><b>naturalne</b> — wiatry, pożary, powodzie, susze; trzęsienia ziemi, wulkany, tsunami,</li>
+        <li><b>antropogeniczne</b> — zakłócenia porządku, katastrofy techniczne i komunikacyjne, akty terroru,</li>
+        <li><b>hybrydowe</b> — splot natury i człowieka (np. pożary w Kalifornii: susze + zła gospodarka leśna + iskrzące linie).</li>
+      </ul>
+      <table class="tbl">
+        <tr><th>Skala geograficzna</th><th>Reakcja / przykłady</th></tr>
+        <tr><td><b>globalne</b></td><td>WHO, IHR 2005 — pandemie, zmiany klimatyczne, kryzysy żywnościowe</td></tr>
+        <tr><td><b>regionalne</b></td><td>UE/ECDC, Unia Afrykańska — pożary śródziemnomorskie, konflikty</td></tr>
+        <tr><td><b>lokalne</b></td><td>służby ratownicze, obrona cywilna — wybuchy w kopalniach, podtopienia</td></tr>
+      </table>
+      <p>Podział czasowy: zagrożenia <span class="k">permanentne</span> (dziura ozonowa, pustynnienie) · <span class="k">okresowe</span> (sezonowe powodzie, susze) · <span class="k">incydentalne</span> (erupcje, trzęsienia). Skutki: natychmiastowe vs odroczone.</p>
+      <div class="box note">
+        <div class="bt">📑 Podstawa prawna</div>
+        <b>Ustawa z 18.04.2002 o stanie klęski żywiołowej</b> definiuje: klęskę żywiołową, katastrofę naturalną (działanie sił natury) i awarię techniczną (nagłe uszkodzenie obiektu/urządzenia). Szacuje się, że <span class="k">23–25%</span> wszystkich zgonów na świecie można przypisać czynnikom środowiskowym możliwym do uniknięcia.
+      </div>
+    </section>
+
+    <!-- ============ IV ============ -->
+    <section class="topic" id="t4">
+      <div class="topic-head">
+        <div class="topic-rn">IV</div>
+        <div>
+          <h2>Psychologia kryzysu klimatycznego</h2>
+          <div class="sub">Postawy wobec zmian klimatycznych</div>
+        </div>
+      </div>
+
+      <p class="lead">„Klimat" — słowo roku 2019 (UW). Powstały nowe pojęcia: <span class="k">flygskam</span> (wstyd przed lataniem), köpskam, climate emergency, „efekt Grety". Klimat staje się zagrożeniem egzystencjalnym, a jego dowiedziona przyczyna to <span class="k">antropogeniczna emisja gazów cieplarnianych</span> (głównie CO₂) wskutek uprzemysłowienia i paliw kopalnych.</p>
+
+      <div class="box def">
+        <div class="bt">📘 Kryzys klimatyczny</div>
+        Zagrożenie o <b>narastającej intensywności</b>, możliwym do przewidzenia przebiegu, powstałe wskutek rabunkowej gospodarki człowieka. Specyfika: <span class="k">globalny obszar</span> oddziaływania, czas neutralizacji obejmujący życie wielu pokoleń. W przeciwieństwie do pogody, <b>klimat zależy od człowieka</b> i przez <span class="k">mitygację</span> można spowolnić zmiany.
+      </div>
+
+      <h3>Mity i modele mentalne</h3>
+      <p>J. Cook (Skeptical Science) stworzył bazę <span class="k">mitów klimatycznych</span>; WWF opublikowała listę 10 mitów (m.in. „klimat zawsze się zmieniał", „CO₂ jest dobry dla roślin", „to spisek"). Typowy mechanizm: <span class="k">cherry picking</span> („wybieranie wisienek") — dobór tylko pasujących danych. Mity są chwytliwe, proste i utwierdzają istniejące poglądy.</p>
+      <p><b>Modele mentalne</b> (konstrukcje poznawcze) analizuje się w 4 aspektach: postrzegany <span class="k">stopień zagrożenia</span>, <span class="k">przyczynowość</span> (naturalna ↔ antropogeniczna), <span class="k">konsekwencje</span> i <span class="k">horyzont czasowy</span>. Przy konflikcie systemu afektywnego i racjonalnego decyduje <span class="k">afektywny</span> — dlatego mimo katastroficznych danych większość osób niedotkniętych bezpośrednio odczuwa mało obaw (zmiany wydają się odległe, a koszty zapobiegania bliskie i konkretne).</p>
+
+      <h3>Postawy wobec zmian klimatycznych</h3>
+      <table class="tbl">
+        <tr><th>Postawa</th><th>Charakterystyka</th></tr>
+        <tr><td><b>Braku zainteresowania</b></td><td>zaprzątnięcie innymi sprawami, ignorowanie tematu klimatu</td></tr>
+        <tr><td><b>Zaprzeczania (<span class="k">denializm</span>)</b></td><td>aktywne negowanie faktów naukowych, kampanie dezinformacyjne, teorie spiskowe</td></tr>
+        <tr><td><b>Bagatelizowania</b></td><td>przypisywanie zmianom nikłego znaczenia, traktowanie alarmów jako przesady</td></tr>
+        <tr><td><b>Usztywnienia</b></td><td>dostrzega zagrożenie, ale nie zmienia stylu życia, korzysta z udogodnień „jak długo się da"</td></tr>
+        <tr><td><b>Wykorzystywania</b></td><td>świadomość zagrożeń + chęć maksymalnego wykorzystania tego, co jeszcze dostępne</td></tr>
+        <tr><td><b>Dramatyzowania</b></td><td>sytuacja postrzegana jako tragiczna; utrata nadziei lub nadmierny rygoryzm</td></tr>
+        <tr><td><b>Przygotowywania na apokalipsę</b></td><td>survival, budowa schronów, gromadzenie zapasów; przekonanie o nieuchronnej katastrofie</td></tr>
+        <tr><td><b>Wypalenia</b></td><td>po silnym zaangażowaniu — frustracja brakiem skuteczności, rezygnacja</td></tr>
+        <tr><td><b><span class="k">Realizmu</span></b></td><td>poszukiwanie faktów, adekwatne emocje, realne działania w mikroskali, budowanie wspólnoty (postawa konstruktywna)</td></tr>
+      </table>
+
+      <h3>Emocje klimatyczne</h3>
+      <p>Polskie „depresja klimatyczna" nie oddaje sensu <span class="k">eco-anxiety / climate anxiety</span> (pomija komponent lęku). Inne stany: <i>climate despair</i> (rozpacz) i <i>climate rage</i> (gniew). To <b>nie patologia</b> — raczej racjonalna odpowiedź na sytuację, świadectwo świadomości ekologicznej. Najtrafniejszy termin: <span class="k">emocje klimatyczne</span>, obejmujące też stany konstruktywne (radykalna nadzieja, wspólnota).</p>
+      <div class="box exam">
+        <div class="bt">⭐ Na egzamin — Doherty i Clayton (2011)</div>
+        Trzy rodzaje skutków zmian klimatu dla psychiki: <b>bezpośrednie</b> (nagłe katastrofy), <b>pośrednie</b> (obserwacja stopniowych zmian, narastający niepokój), <b>długofalowe psychospołeczne</b> (migracje, konflikty o zasoby). <span class="k">Mediatory</span>: poglądy, przekazy medialne, postrzeganie ryzyka. <span class="k">Moderatory</span>: czynniki ostre, chroniczne i indywidualne.
+      </div>
+    </section>
+
+    <!-- ============ V ============ -->
+    <section class="topic" id="t5">
+      <div class="topic-head">
+        <div class="topic-rn">V</div>
+        <div>
+          <h2>Od nadwrażliwości do przewlekłego stanu zapalnego: patomechanizmy chorób cywilizacyjnych</h2>
+          <div class="sub">Krajobraz epidemiologiczny XXI wieku</div>
+        </div>
+      </div>
+
+      <p class="lead">Przełom XX/XXI w.: miejsce chorób zakaźnych zajęły <span class="k">schorzenia cywilizacyjne</span> — główny przewlekły kryzys zdrowotny. Zagrożenie przesunęło się od czynników <b>egzogennych</b> (bakterie, wirusy — opanowane dzięki antybiotykom i szczepieniom) do <b>endogennych</b>, rodzących się „wewnątrz" organizmu.</p>
+
+      <div class="box def">
+        <div class="bt">📘 Niedopasowanie ewolucyjne (Mismatch Theory)</div>
+        Cechy, które ewoluowały dla przetrwania (magazynowanie tłuszczu, preferencja cukrów, reakcja lękowa), stają się <b>nieadaptacyjne</b>, gdy środowisko zmienia się zbyt szybko. Skutek: otyłość, choroby metaboliczne, zaburzenia lękowe.
+      </div>
+
+      <p>Choroby cywilizacyjne = chroniczne <span class="k">zaburzenie homeostazy</span>. Kluczowe pojęcie: <span class="k">allostaza</span> („stabilność poprzez zmianę") — długotrwałe utrzymanie prowadzi do <b>obciążenia allostatycznego</b> i chorób. Główne przyczyny: brak ruchu, palenie, zła dieta, przewlekły stres → otyłość, cukrzyca typu 2, ChUK, nowotwory.</p>
+
+      <h3>Mechanizm „low-grade inflammation"</h3>
+      <div class="box def">
+        <div class="bt">📘 Definicja</div>
+        <span class="k">Low-grade inflammation</span> (zapalenie metaboliczne, „metaflammacja") — przewlekły, <b>subkliniczny</b> stan zapalny o niskim natężeniu, bez wyraźnych objawów (gorączki, bólu), trwający latami; leży u podłoża wielu chorób cywilizacyjnych.
+      </div>
+      <p>Patogeneza: dysfunkcyjna <b>tkanka tłuszczowa</b> (otyłość brzuszna) wydziela adipokiny prozapalne i przyciąga makrofagi; <b>stres oksydacyjny</b> (ROS) z nadmiaru składników odżywczych; aktywacja szlaków <span class="k">NF-κB</span> i JNK → insulinooporność; <b>dysbioza jelitowa</b> („nieszczelne jelito", LPS przenikają do krwi).</p>
+      <p><b>Molekularne wyzwalacze</b> — cytokiny prozapalne: <span class="k">TNF-α</span> (inicjator zapalenia, indukuje insulinooporność) i <span class="k">IL-6</span> (regulator ostrej fazy, stymuluje wątrobę do produkcji CRP). <span class="k">CRP / hs-CRP</span> — najczulszy kliniczny wskaźnik „cichego pożaru".</p>
+
+      <h3>Triada behawioralna — „zapalnik" procesu</h3>
+      <table class="tbl">
+        <tr><th>Filar</th><th>Mechanizm</th></tr>
+        <tr><td><b>Hipokinezja</b> (bezruch)</td><td>pracujące mięśnie wydzielają <span class="k">miokiny</span> (przeciwzapalne, „dobra" IL-6); bezruch → „cisza endokrynna", ekspansja tkanki tłuszczowej i adipokiny prozapalne</td></tr>
+        <tr><td><b>Dieta wysokoprzetworzona</b></td><td>„agresja metaboliczna" — cukry, tłuszcze trans, emulgatory niszczą mikrobiotę → <span class="k">nieszczelne jelito</span>, reakcje autoimmunologiczne, SIBO</td></tr>
+        <tr><td><b>Stres psychofizyczny</b></td><td>przewlekła aktywacja osi <span class="k">HPA</span> (podwzgórze–przysadka–nadnercza), <span class="k">kortyzolooporność</span> → rosnący stan zapalny, otyłość brzuszna</td></tr>
+      </table>
+
+      <h3>„Wielka Czwórka" chorób cywilizacyjnych</h3>
+      <p>Low-grade inflammation to wspólny mianownik (<span class="k">common soil</span>) najczęstszych przyczyn zgonów:</p>
+      <ul class="list">
+        <li><b>choroby układu krążenia</b> — <span class="k">miażdżyca jako proces zapalny</span> (nie tylko „zatkane rury"): uszkodzenie śródbłonka → utlenione LDL (oxLDL) → makrofagi/komórki piankowate → blaszka miażdżycowa; metaloproteinazy destabilizują blaszkę → zawał/udar,</li>
+        <li><b>cukrzyca typu 2 i zespół metaboliczny</b> — otyłość brzuszna, nadciśnienie, dyslipidemia, hiperglikemia; insulinooporność,</li>
+        <li><b>nowotwory</b> — cytokiny promują przeżycie i inwazyjność komórek,</li>
+        <li><b>schorzenia alergiczne, autoimmunologiczne i psychiczne</b>.</li>
+      </ul>
+      <div class="box note">
+        <div class="bt">📌 Wniosek</div>
+        Profilaktyka chorób cywilizacyjnych wymaga nie tyle leczenia objawowego, ile <b>przywrócenia równowagi organizmu przez zmianę stylu życia</b> (ruch = miokiny, dieta wspierająca mikrobiotę, redukcja stresu).
+      </div>
+    </section>
+
+    <!-- ============ VI ============ -->
+    <section class="topic" id="t6">
+      <div class="topic-head">
+        <div class="topic-rn">VI</div>
+        <div>
+          <h2>Nanotechnologia — możliwości wykorzystania, zagrożenia dla środowiska i zdrowia człowieka</h2>
+          <div class="sub">Rewolucyjne zastosowania · ciemna strona mocy: ryzyko</div>
+        </div>
+      </div>
+
+      <div class="box def">
+        <div class="bt">📘 Definicja</div>
+        <span class="k">Nanotechnologia</span> (gr. <i>nanos</i> — „karzeł") to manipulowanie materią w skali atomowej. <span class="k">Nanocząstki</span> to obiekty, których przynajmniej jeden wymiar nie przekracza <span class="k">100 nm</span>. W tej skali tradycyjne prawa fizyki ustępują efektom kwantowym — ten sam materiał ma inne właściwości (kolor, twardość, reaktywność). Fundament: wizja <span class="k">Richarda Feynmana</span> (1959, „There's Plenty of Room at the Bottom").
+      </div>
+
+      <h3>1. Rewolucyjne zastosowania</h3>
+      <ul class="list">
+        <li><b>nanomedycyna</b> — inteligentne systemy transportu leków (precyzyjne dawkowanie, mniejsza inwazyjność), nanocząstki srebra/złota/miedzi zwalczające drobnoustroje bez antybiotykooporności, terapia <span class="k">fotodynamiczna</span> i sonodynamiczna, grafen, nanozłoto, nanorurki węglowe,</li>
+        <li><b>kosmetyki</b> — filtry UV (nanocząstki <span class="k">TiO₂ i ZnO</span>, łagodniejsze niż filtry chemiczne), nanosrebro (konserwant), nanokapsułki (lepsza wchłanialność),</li>
+        <li><b>budownictwo</b> — nanokompozyty (większa wytrzymałość, lżejsze konstrukcje),</li>
+        <li><b>żywność</b> — inteligentne opakowania, nanoemulsje; <b>ekologia</b> — remediacja, oczyszczanie wody; <b>elektronika</b> — mikroprocesory.</li>
+      </ul>
+
+      <h3>2. „Ciemna strona mocy" — ryzyko zdrowotne i środowiskowe</h3>
+      <h4>Drogi narażenia (4)</h4>
+      <p><span class="k">oddechowa</span> (najważniejsza — do płuc, krwi, przez barierę krew-mózg) · pokarmowa · dermalna (przez skórę) · pozajelitowa (leki, protezy). Czynniki toksyczności: rozmiar, kształt, skład chemiczny, pole powierzchni, ładunek powierzchniowy.</p>
+      <ul class="list">
+        <li><b>płuca</b> — stany zapalne, zwłóknienia, genotoksyczność (nikiel, niektóre nanorurki → rak płuc),</li>
+        <li><b>układ krążenia</b> — przenikanie do krwi, uszkodzenie śródbłonka, miażdżyca, arytmie, nadkrzepliwość,</li>
+        <li><b>akumulacja w narządach</b> — wątroba, śledziona, nerki, mózg (neurotoksyczność),</li>
+        <li><b>efekt „korony białkowej" (protein corona)</b> — nanocząstka pokrywa się białkami → utrata precyzji, ryzyko ataku odpornościowego,</li>
+        <li><b>genotoksyczność</b> — wejście do jądra komórkowego, uszkodzenie DNA; wpływ na mikrobiom; bariera łożyskowa.</li>
+      </ul>
+      <div class="box warn">
+        <div class="bt">⚠️ Środowisko + niewiadome</div>
+        Nanocząstki są mobilne w wodzie i powietrzu, ulegają <b>biomagnifikacji</b> (kumulacja u drapieżników), są ekotoksyczne (ROS, niszczenie mikroflory glebowej). Problem skutków długofalowych („bio-retencja", brak biodegradacji złota/srebra/nanorurek). Odpowiedź nauki: <span class="k">Safe-by-Design</span> (bezpieczeństwo na etapie projektowania) — by rozpadały się na bezpieczne składniki po wykonaniu zadania.
+      </div>
+    </section>
+
+    <!-- ============ VII ============ -->
+    <section class="topic" id="t7">
+      <div class="topic-head">
+        <div class="topic-rn">VII</div>
+        <div>
+          <h2>Medycyna środowiskowa a ochrona zdrowia pracowników — nadzór nad stanem zdrowia załóg</h2>
+          <div class="sub">Narażenie zawodowe · biomonitoring (biomarkery)</div>
+        </div>
+      </div>
+
+      <p class="lead">Medycyna pracy skupia się na miejscu zatrudnienia (badania wstępne, okresowe, kontrolne; koszty ponosi pracodawca), a medycyna środowiskowa — na wpływie szerszego środowiska (dom, otoczenie). Łączy je koncepcja <span class="k">One Health</span> („Jedno Zdrowie") — zdrowie ludzi, zwierząt i środowiska jest współzależne.</p>
+
+      <h3>1. Narażenie zawodowe</h3>
+      <div class="box def">
+        <div class="bt">📘 Definicja</div>
+        <span class="k">Narażenie zawodowe</span> — podleganie oddziaływaniu czynników niebezpiecznych, szkodliwych lub uciążliwych związanych z pracą; praca w warunkach, gdzie ekspozycja przekracza normy higieniczne. Konsekwencją sytuacji zagrożenia jest <span class="k">ryzyko zawodowe</span>.
+      </div>
+
+      <h4>Główne kategorie skutków narażenia zawodowego</h4>
+      <table class="tbl">
+        <tr><th>Kategoria</th><th>Przykłady</th></tr>
+        <tr><td><b>Zdrowotne</b> (choroby zawodowe i parazawodowe)</td><td>choroby układu oddechowego (pylice), skóry (alergie), uszkodzenia słuchu (hałas), choroby narządu ruchu, nowotwory (benzen, azbest), zatrucia, zakażenia</td></tr>
+        <tr><td><b>Wypadkowe</b> (wypadki przy pracy)</td><td>amputacje, upadki z wysokości, porażenia prądem, urazy mechaniczne</td></tr>
+        <tr><td><b>Psychofizyczne</b> (uciążliwości)</td><td>wypalenie zawodowe, depresja, spadek sprawności umysłowej</td></tr>
+        <tr><td><b>Organizacyjne i ekonomiczne</b></td><td>absencja chorobowa, spadek wydajności, koszty rehabilitacji</td></tr>
+      </table>
+      <p><b>Choroba zawodowa</b> — ujęta w wykazie, spowodowana bezspornie lub z wysokim prawdopodobieństwem narażeniem zawodowym. <b>Choroba parazawodowa</b> — nie w wykazie, ale czynniki pracy odgrywają istotną rolę (np. zespoły przeciążeniowe kręgosłupa, nadciśnienie, choroba niedokrwienna serca).</p>
+
+      <h3>2. Biomonitoring — nowoczesne metody monitorowania załóg</h3>
+      <p>W odróżnieniu od monitoringu środowiskowego (badanie powietrza), <span class="k">biomonitoring</span> mierzy stężenie substancji, metabolitów lub efekty ich działania <b>bezpośrednio w organizmie</b> — pokazuje <b>dawkę wchłoniętą</b> wszystkimi drogami.</p>
+      <table class="tbl">
+        <tr><th>Kategoria biomarkerów</th><th>Co pokazują</th></tr>
+        <tr><td><b>narażenia</b></td><td>fakt wniknięcia substancji / jej metabolitu (np. addukty DNA) — „co wniknęło"</td></tr>
+        <tr><td><b>efektu</b></td><td>mierzalne zmiany w organizmie wywołane toksyną — wczesne, często odwracalne — „co się zepsuło"</td></tr>
+        <tr><td><b>podatności (wrażliwości)</b></td><td>jak dany organizm zareaguje (uwarunkowane genetycznie) — „jak bardzo ten pracownik jest zagrożony"</td></tr>
+      </table>
+      <p><b>Matryce biologiczne:</b> mocz (najpopularniejszy, metabolity), krew (metale), powietrze wydychane (LZO), włosy i paznokcie (ekspozycja długofalowa). Karty badań i pomiarów oraz rejestry czynników szkodliwych przechowuje się <span class="k">40 lat</span>.</p>
+    </section>
+
+    <!-- ============ VIII ============ -->
+    <section class="topic" id="t8">
+      <div class="topic-head">
+        <div class="topic-rn">VIII</div>
+        <div>
+          <h2>Wypadki i urazy jako problem zdrowia środowiskowego</h2>
+          <div class="sub">Klasyfikacja czynników · uwarunkowania typów wypadków · profilaktyka</div>
+        </div>
+      </div>
+
+      <p class="lead">Z punktu widzenia zdrowia środowiskowego wypadek niemal nigdy nie jest „pechem" — to komunikat, że relacja człowiek–przestrzeń została źle zaprojektowana. Urazy powodują ok. <span class="k">5 mln (9%)</span> zgonów na świecie i są pierwszą przyczyną zgonów osób młodych. Rozkład <b>bimodalny</b>: młodzi dorośli i osoby &gt;60 r.ż. (u seniorów dominują upadki).</p>
+
+      <h3>1. Klasyfikacja czynników środowiskowych sprzyjających urazom</h3>
+      <table class="tbl">
+        <tr><th>Grupa</th><th>Przykłady</th></tr>
+        <tr><td><b>Fizyczne i mechaniczne</b> (infrastrukturalne)</td><td>zła geometria dróg, brak oświetlenia, śliskie nawierzchnie, progi, brak poręczy</td></tr>
+        <tr><td><b>Naturalne i klimatyczne</b> (siły wyższe)</td><td>fale upałów, gołoledź, huragany, powodzie, lawiny</td></tr>
+        <tr><td><b>Chemiczne i energetyczne</b> (technologiczne)</td><td>detergenty (zatrucia u dzieci), zatrucia <span class="k">tlenkiem węgla (czad)</span>, porażenia prądem</td></tr>
+      </table>
+
+      <h3>2. Środowiskowe uwarunkowania najczęstszych typów wypadków</h3>
+      <h4>Wypadki przy pracy</h4>
+      <p>Kryterium <span class="k">nagłości</span> (oddziaływanie nie dłużej niż jedna dniówka) odróżnia wypadek przy pracy od choroby zawodowej. Przyczyny: <b>techniczne</b>, <b>organizacyjne</b> i <b>ludzkie</b> (większość wypadków wynika z niebezpiecznych zachowań, nie warunków). Rodzaje: <span class="k">śmiertelny</span> (zgon do 6 miesięcy), <span class="k">ciężki</span> (utrata wzroku/słuchu, choroba nieuleczalna), <span class="k">zbiorowy</span> (≥2 osoby). Osobno: wypadek <b>w drodze do/z pracy</b> (droga najkrótsza, nieprzerwana).</p>
+      <h4>Środowisko domowe i komunikacyjne</h4>
+      <p><b>Dom</b> — statystycznie najczęstsze miejsce wypadków: upadki (seniorzy), oparzenia i zatrucia (dzieci), czad, instalacje. <b>Komunikacja</b> — koncepcja „wybaczającej infrastruktury", separacja ruchu (VRU — <i>vulnerable road users</i>), uspokojenie ruchu (<i>traffic calming</i>).</p>
+
+      <h3>3. Profilaktyka wypadków przy pracy</h3>
+      <ul class="list">
+        <li>unikanie ryzyka i ocena ryzyka, którego nie da się uniknąć,</li>
+        <li>zapobieganie ryzyku <b>u źródła</b>, zastępowanie środków niebezpiecznych bezpiecznymi,</li>
+        <li><b>priorytet środków ochrony zbiorowej</b> (osłony, bariery) przed indywidualnymi,</li>
+        <li>spójna polityka zapobiegawcza, szkolenie i nadzór pracowników.</li>
+      </ul>
+      <div class="box note">
+        <div class="bt">📌 Polska</div>
+        Ryzyko zgonu w wypadku jest w Polsce wyższe niż średnia UE. Rośnie udział wypadków domowych (starzenie się społeczeństwa). Realizowany jest „Narodowy program bezpieczeństwa ruchu drogowego 2021–2030" oparty na <span class="k">wizji zero</span>.
+      </div>
+    </section>
+
+    <!-- ============ IX ============ -->
+    <section class="topic" id="t9">
+      <div class="topic-head">
+        <div class="topic-rn">IX</div>
+        <div>
+          <h2>Zaburzenia zdrowia i choroby związane z zanieczyszczeniem środowiska, populacje wrażliwe, biomonitoring i ocena stanu zdrowia</h2>
+          <div class="sub">Patomechanizmy · biomonitoring · metody oceny · EBD</div>
+        </div>
+      </div>
+
+      <p class="lead">W epoce <span class="k">Antropocenu</span> organizm to układ otwarty, który nieustannie przyjmuje <span class="k">ksenobiotyki</span> (mikroplastik, związki endokrynnie czynne). Nie pozostają one bierne — zaburzają gospodarkę hormonalną lub generują stres oksydacyjny.</p>
+
+      <h3>1. Patomechanizmy — jak „środowisko wchodzi" do organizmu</h3>
+      <p><b>Drogi ekspozycji:</b> <span class="k">inhalacyjna</span> (najszybsza, omija filtrację w wątrobie), pokarmowa (bioakumulacja), dermalna, bariera łożyskowa. Skutki zależą od czasu (ostra/chroniczna), dawki i częstotliwości.</p>
+      <p><b>Główne zanieczyszczenia:</b> pyły PM2,5/PM10 (stres oksydacyjny), metale ciężkie (Pb, Cd, Hg, As — neurotoksyczność), <span class="k">EDCs</span> (bisfenole, ftalany — zaburzające hormony), TZO (dioksyny, PCB).</p>
+      <p>Kluczowy mechanizm: <span class="k">stres oksydacyjny i stan zapalny</span> napędzają się wzajemnie (błędne koło). <span class="k">Epigenetyka</span> — zanieczyszczenia zmieniają ekspresję genów bez zmiany sekwencji DNA (zmiany dziedziczne, odwracalne).</p>
+      <div class="box note">
+        <div class="bt">🩺 Choroby środowiskozależne</div>
+        Układ oddechowy (POChP — do 50% ryzyka, astma), krążenia (zanieczyszczenie odpowiada za ~30% udarów wg WSO), cywilizacyjne (cukrzyca — <i>metabolic disruptors</i>, otyłość — <span class="k">obesogeny</span>), neurorozwojowe (spadek IQ), nowotwory (IARC: pył zawieszony = kancerogen <span class="k">grupy 1</span>).
+      </div>
+
+      <h4>Populacje wrażliwe — dlaczego nie wszyscy są równi?</h4>
+      <ul class="list">
+        <li><b>płody i noworodki</b> — krytyczne okna rozwojowe, teratogeneza, programowanie płodowe, cieńsza skóra,</li>
+        <li><b>dzieci</b> — szybszy metabolizm, więcej powietrza na kg masy, niedojrzała detoksykacja, eksploracja „ręka–buzia", niski wzrost (bliskość podłoża),</li>
+        <li><b>osoby starsze</b> — spadek rezerw fizjologicznych, wielochorobowość i polipragmazja, słabsza termoregulacja, immunosenescencja, wykluczenie społeczne,</li>
+        <li><b>osoby z chorobami współistniejącymi</b> — efekt domina, sprzeczności terapeutyczne, kruchość (frailty).</li>
+      </ul>
+
+      <h3>2. Biomonitoring — jak badamy narażenie?</h3>
+      <p><span class="k">Biomonitoring człowieka (HBM)</span> — bezpośredni pomiar stężeń substancji lub metabolitów w materiale biologicznym (uwzględnia wszystkie drogi wnikania). Biomarkery: <b>narażenia</b> („dawka wewnętrzna", np. ołów we krwi), <b>efektu</b> (np. spadek aktywności enzymu ALAD), <b>wrażliwości</b> (genetyczne). Matryce: mocz (bisfenole, ftalany), krew (metale), <b>włosy</b> (rtęć — stężenie nawet 50× wyższe niż we krwi), mleko, ślina.</p>
+
+      <h3>3. Metody oceny stanu zdrowia i ryzyka</h3>
+      <ul class="list">
+        <li><b>epidemiologia środowiskowa</b> — badania kohortowe i ekologiczne,</li>
+        <li><b>Ocena Ryzyka Zdrowotnego (HRA)</b> — 4 etapy: identyfikacja zagrożenia → zależność <span class="k">dawka–odpowiedź</span> → ocena narażenia → charakterystyka ryzyka,</li>
+        <li><b>metryki</b>: <span class="k">DALY</span> (lata życia skorygowane niesprawnością = lata utracone przedwcześnie + lata przeżyte w chorobie), śmiertelność przedwczesna.</li>
+      </ul>
+
+      <h3>4. Środowiskowe obciążenie chorobami (EBD)</h3>
+      <div class="box exam">
+        <div class="bt">⭐ Na egzamin — EBD</div>
+        <span class="k">EBD</span> (Environmental Burden of Disease) — pomiar efektów zdrowotnych przypisanych czynnikom środowiskowym. Czynniki środowiskowe odpowiadają za blisko <span class="k">20%</span> zgonów w Europie (u dzieci do 14 r.ż. nawet <span class="k">30%</span>) oraz 18–20% DALYs. Nadzór: WHO i Bank Światowy. Ograniczenia: dane szacunkowe, działa dla populacji ≥100 000, tylko pojedyncze czynniki, nie uwzględnia interakcji. W krajach <b>rozwijających się</b> dominują woda/sanitacja, w <b>rozwiniętych</b> — narażenie zawodowe.
+      </div>
+    </section>
+
+    <!-- ============ X ============ -->
+    <section class="topic" id="t10">
+      <div class="topic-head">
+        <div class="topic-rn">X</div>
+        <div>
+          <h2>Zagrożenia zdrowotne związane z żywnością</h2>
+          <div class="sub">Klasyfikacja zagrożeń · pestycydy i leki · zagrożenia mikrobiologiczne · substancje antyodżywcze i toksyczne</div>
+        </div>
+      </div>
+
+      <p class="lead">Bezpieczeństwo żywności to filar zdrowia publicznego. Wg WHO skażona żywność jest przyczyną ponad <span class="k">200</span> jednostek chorobowych. Żywność przemysłowa podlega kontrolom (<span class="k">HACCP</span>), a zagrożenia są zarówno biologiczne (tradycyjne), jak i chemiczne (intensyfikacja rolnictwa).</p>
+
+      <h3>1–2. Klasyfikacja zagrożeń bezpieczeństwa żywności</h3>
+      <table class="tbl">
+        <tr><th>Kategoria</th><th>Przykłady</th></tr>
+        <tr><td><b>Mikrobiologiczne (biologiczne)</b></td><td>bakterie (Salmonella, Listeria, Campylobacter, E. coli), wirusy (norowirusy, WZW A), pasożyty, pleśnie i <span class="k">mikotoksyny</span></td></tr>
+        <tr><td><b>Chemiczne</b></td><td>metale ciężkie, pestycydy, leki weterynaryjne, dodatki (konserwanty, słodziki), zanieczyszczenia technologiczne (<span class="k">akrylamid</span>, migracja z opakowań)</td></tr>
+        <tr><td><b>Fizyczne</b></td><td>ciała obce: szkło, metal, plastik, kości</td></tr>
+        <tr><td><b>Radiologiczne</b></td><td>skażenie radioaktywne (rzadkie w kontrolowanym obrocie)</td></tr>
+      </table>
+
+      <h4>Pozostałości pestycydów i leków</h4>
+      <p>Pestycydy: insektycydy, fungicydy, herbicydy, akarycydy, rodentycydy. Poziom reguluje <span class="k">NDP</span> (Najwyższe Dopuszczalne Pozostałości; domyślnie 0,01 mg/kg) — rozp. UE 396/2005. Długotrwałe narażenie: zaburzenia hormonalne, nowotwory, „efekt koktajlowy". Leki w żywności (antybiotyki, hormony z intensywnej hodowli, niezachowane <b>okresy karencji</b>) → najpoważniejszy skutek: <span class="k">antybiotykooporność (AMR)</span>.</p>
+
+      <h3>3. Mikrobiologiczne zagrożenia żywności</h3>
+      <ul class="list">
+        <li><b>bakterie</b>: Salmonella (mięso, jaja), Listeria monocytogenes (nabiał, wędliny — wysoka śmiertelność), E. coli, Clostridium botulinum (konserwy),</li>
+        <li><b>wirusy</b>: norowirusy, rotawirusy (droga fekalno-oralna); <b>pleśnie</b>: mykotoksyny,</li>
+        <li><b>zapobieganie</b>: obróbka cieplna i <span class="k">pasteryzacja</span>, łańcuch chłodniczy, higiena (zapobieganie zanieczyszczeniu krzyżowemu), systemy <span class="k">HACCP, GHP, GMP</span>.</li>
+      </ul>
+
+      <h3>4. Naturalne substancje anty-odżywcze i toksyczne</h3>
+      <table class="tbl">
+        <tr><th>Substancja</th><th>Występowanie / działanie</th></tr>
+        <tr><td><b>Szczawiany</b></td><td>szpinak, rabarbar, kakao — wiążą wapń → kamica nerkowa</td></tr>
+        <tr><td><b>Kwas fitynowy (fityniany)</b></td><td>zboża, orzechy — wiążą żelazo, cynk, wapń</td></tr>
+        <tr><td><b>Solanina</b></td><td>zielone części ziemniaków — toksyczna dla układu pokarmowego i nerwowego</td></tr>
+        <tr><td><b>Lektyny</b></td><td>strączkowe (fasola, soja) — zakłócają trawienie</td></tr>
+        <tr><td><b>Tioglikozydy</b></td><td>kapustowate — zaburzają pracę tarczycy (przy niedoborze jodu)</td></tr>
+        <tr><td><b>Glikozydy cyjanogenne</b></td><td>amigdalina w pestkach (morele, wiśnie) — uwalnia cyjanowodór</td></tr>
+        <tr><td><b>Awidyna</b></td><td>surowe białko jaja — niszczy biotynę (witaminę H)</td></tr>
+      </table>
+      <p>Minimalizacja: <span class="k">gotowanie</span> (redukcja szczawianów i tioglikozydów ~50%), moczenie i kiełkowanie (fityniany, lektyny), obieranie (solanina). W zbilansowanej, różnorodnej diecie zwykle nie stanowią zagrożenia dla osób zdrowych.</p>
+    </section>
+
+    <!-- ============ XI ============ -->
+    <section class="topic" id="t11">
+      <div class="topic-head">
+        <div class="topic-rn">XI</div>
+        <div>
+          <h2>Zagrożenia związane z zabawkami i kosmetykami (oraz opakowania do żywności)</h2>
+          <div class="sub">Ftalany · parabeny · PFAS · mikroplastik</div>
+        </div>
+      </div>
+
+      <p class="lead">Wspólny mianownik świata zabawek, kosmetyków i opakowań to <span class="k">migracja substancji szkodliwych</span> — pod wpływem ciepła, tłuszczu czy dotyku związki (bisfenole, ftalany, metale) przenikają do żywności i organizmu. Skład kosmetyków opisuje system <span class="k">INCI</span>; w opakowaniach żywności na wynos kryją się PFAS, a podgrzewanie plastiku uwalnia mikroplastik i ftalany.</p>
+
+      <h3>1. Ftalany</h3>
+      <div class="box def">
+        <div class="bt">📘 Definicja</div>
+        <span class="k">Ftalany</span> — estrowe pochodne kwasu ftalowego, stosowane jako <span class="k">plastyfikatory</span> (nadają plastikowi miękkość i elastyczność). Obecne w zabawkach (gryzaki, lalki), kosmetykach (lakiery, perfumy, szampony — utrzymują zapach) i wyrobach medycznych (cewniki, rurki).
+      </div>
+      <ul class="list">
+        <li><b>zaburzenia endokrynologiczne</b> — „endokrynne zaburzacze"; szczególnie groźne dla kobiet w ciąży, niemowląt i dzieci,</li>
+        <li><b>problemy z płodnością</b> — obniżenie jakości nasienia, wady wrodzone,</li>
+        <li><b>rakotwórczość</b> (zwłaszcza wątroba) i wpływ na rozwój mózgu.</li>
+      </ul>
+      <p>Alternatywy: silikon, poliuretan, materiały biodegradowalne.</p>
+
+      <h3>2. Parabeny</h3>
+      <p><span class="k">Parabeny</span> — estry kwasu p-hydroksybenzoesowego, konserwanty bakterio- i grzybobójcze w kosmetykach, lekach i żywności (najpopularniejsze: metylo- i etyloparaben). Działają jako <span class="k">ksenoestrogeny</span> (EDC) — łączą się z receptorami estrogenowymi (α, β). Ich działanie jest 1 000 – 1 000 000 razy słabsze niż estradiolu, ale problemem jest <b>efekt skali</b> (codzienna ekspozycja z wielu źródeł). Badania na zwierzętach: spadek testosteronu i liczby plemników, wzrost masy macicy.</p>
+
+      <h3>3. PFAS — „wieczne chemikalia"</h3>
+      <div class="box def">
+        <div class="bt">📘 Definicja</div>
+        <span class="k">PFAS</span> (związki per- i polifluoroalkilowe) — syntetyczne związki o łańcuchach węglowo-fluorowych; dzięki bardzo trwałym wiązaniom praktycznie <b>nie ulegają rozkładowi</b> („wieczne chemikalia"). Powłoki odporne na tłuszcz, wodę i temperaturę: patelnie teflonowe, wodoodporna odzież, <b>opakowania na wynos</b> (pudełka na pizzę, burgery), kosmetyki.
+      </div>
+      <p>Zagrożenia: problemy z płodnością, zaburzenia tarczycy (groźne w ciąży), uszkodzenia wątroby i wzrost cholesterolu, ryzyko nowotworów (rak jądra, nerki). Kumulują się w glebie, wodzie i organizmach. Z perspektywy toksykologicznej papier powlekany PFAS bywa „większym złem" niż plastik PP — najbezpieczniejszy jest własny pojemnik wielorazowy (szkło, stal).</p>
+
+      <h3>4. Mikroplastik</h3>
+      <div class="box def">
+        <div class="bt">📘 Definicja</div>
+        <span class="k">Mikroplastik</span> — stałe, nierozpuszczalne cząstki tworzyw &lt;5 mm (najmniejsze, poniżej 1 µm, to <span class="k">nanoplastik</span>). Oficjalna definicja UE: rozp. 2023/2055. Źródła: <b>pierwotny</b> (świadomie wytwarzany — granulat, brokat, drobinki w kosmetykach) i <b>wtórny</b> (z degradacji odpadów — 69–81% zanieczyszczeń oceanów).
+      </div>
+      <p>Wykryty na całej planecie (Arktyka, Antarktyda) i w organizmie człowieka: krew, ślina, wątroba, nerki, płuca, <b>łożysko, mleko matki, smółka</b>. Główne źródła do oceanów to rozpadające się odpady, farby i opony.</p>
+      <div class="box warn">
+        <div class="bt">⚠️ Skutki zdrowotne (najnowsze dowody)</div>
+        Problemy kardiologiczne (mikroplastik w blaszce miażdżycowej → ponad <span class="k">4×</span> wyższe ryzyko zawału/udaru/zgonu w ciągu 3 lat), zaburzenia hormonalne i metaboliczne (uwalniane bisfenole, ftalany), stany zapalne i ryzyko nowotworowe, transport toksyn i bakterii („magnesy"), przenikanie nanoplastiku przez barierę krew-mózg. <i>Uwaga: część danych o ilości plastiku w narządach mogła być zawyżona przez zanieczyszczenie próbek.</i>
+      </div>
+    </section>
+
+
+  </main>
+</div>
+
+<button class="toTop" id="toTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<footer>StudyZone &mdash; materiały pomocnicze do nauki · Środowiskowe Uwarunkowania Zdrowia</footer>
+
+<script>
+  function toggleRecall(){
+    document.body.classList.toggle('recall');
+    var b=document.getElementById('recallBtn');
+    var on=document.body.classList.contains('recall');
+    b.classList.toggle('on',on);
+    b.textContent = on ? '👁️ Pokaż wszystko' : '🙈 Tryb powtórki';
+  }
+  // active TOC highlight + back-to-top
+  var secs=[].slice.call(document.querySelectorAll('section.topic'));
+  var links={};
+  document.querySelectorAll('#toc a').forEach(function(a){ links[a.getAttribute('href').slice(1)]=a; });
+  var top=document.getElementById('toTop');
+  function onScroll(){
+    var y=window.scrollY+90, cur=null;
+    secs.forEach(function(s){ if(s.offsetTop<=y) cur=s.id; });
+    Object.values(links).forEach(function(a){ a.classList.remove('active'); });
+    if(cur&&links[cur]) links[cur].classList.add('active');
+    top.classList.toggle('show', window.scrollY>500);
+  }
+  window.addEventListener('scroll',onScroll); onScroll();
+</script>
+</body>
+</html>
