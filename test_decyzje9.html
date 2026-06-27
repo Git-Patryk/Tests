@@ -247,7 +247,7 @@
 <header>
   <a class="back-link" href="decyzje-testy.html">← Wróć do listy testów</a>
   <h1>Decyzje i ryzyko</h1>
-  <p>Test 9 · EGZAMIN · 25 pytań</p>
+  <p>Test 9 · EGZAMIN · 28 pytań</p>
 </header>
 
 <div id="start-screen">
@@ -259,7 +259,7 @@
       <strong>Zakres pytań:</strong>
       <p>żal i Zeelenberg · eksperyment lotniskowy Epsteina · błąd koniunkcji (Linda) · belief bias (Revlin) · zasada Laplace'a · System 1 w marketingu · strategia ostrożna (klipiec) · dominacja proporcji i prototyp (Slovic) · model kontrastu (cechy wspólne, prototyp, obiekty bogate w cechy) · efekt odbicia · regresja do średniej · częstości naturalne (Gigerenzer) · ryzyko względne vs bezwzględne · maksymaliści vs satisficers · przeciążenie wyborem · model SP/A Lopes · grupy nominalne · reguła Condorceta i metoda Bordy · strategie kompensacyjne · efekt dysjunkcji</p>
     </div>
-    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>28 pytań</strong>.</p>
     <button class="btn" id="startBtn">Rozpocznij test</button>
   </div>
 </div>
@@ -267,7 +267,7 @@
 <div id="quiz-screen" style="display:none">
   <div class="progress-wrap">
     <div class="progress-label">
-      <span id="progText">Pytanie 1 z 25</span>
+      <span id="progText">Pytanie 1 z 28</span>
       <span id="scoreText">Wynik: 0</span>
     </div>
     <div class="progress-bar-bg">
@@ -290,7 +290,7 @@
     <h2>Wyniki testu</h2>
     <div class="score-circle">
       <span class="score-num" id="resFinal">0</span>
-      <span class="score-denom" id="resDenom">/25</span>
+      <span class="score-denom" id="resDenom">/28</span>
     </div>
     <div class="grade-label" id="gradeLabel"></div>
     <div class="result-stats">
@@ -558,6 +558,37 @@ const ALL_QUESTIONS = [
       { t: "na gotowości do zapłaty za dodatkową informację tylko wtedy, gdy realnie może ona zmienić końcową decyzję", c: false }
     ],
     exp: "Efekt dysjunkcji: ludzie czekają na rozstrzygnięcie niepewności i odraczają wybór, choć w każdym z możliwych scenariuszy podjęliby tę samą decyzję — łamie to zasadę „rzeczy pewnej”."
+  },
+  {
+    q: "Zgodnie z Teorią Perspektywy stosunek do ryzyka wynika z:",
+    opts: [
+      { t: "kształtu funkcji użyteczności oraz kształtu funkcji wag decyzyjnych", c: true },
+      { t: "wyłącznie z kształtu funkcji użyteczności (wartości)", c: false },
+      { t: "wyłącznie z kształtu funkcji wag decyzyjnych", c: false },
+      { t: "przede wszystkim z różnic indywidualnych między decydentami", c: false }
+    ],
+    exp: "Na decyzje wpływa zarazem to, jak wartościujemy zyski i straty (funkcja wartości — awersja do strat), oraz to, jak zniekształcamy prawdopodobieństwa (funkcja wag decyzyjnych — np. przecenianie małych szans)."
+  },
+  {
+    q: "Na wykresie przedstawiono efektywne i nieefektywne portfele inwestycyjne zgodnie z teorią Markowitza. Pan Kowalski wybrał portfel W, leżący najdalej na prawo na krzywej efektywnej. Oznacza to, że:",
+    img: '<svg viewBox="0 0 340 230" xmlns="http://www.w3.org/2000/svg" style="max-width:340px;width:100%;height:auto;background:#f4faf9;border:1px solid #c7f0e6;border-radius:8px"><line x1="45" y1="22" x2="45" y2="192" stroke="#495057" stroke-width="1.5"/><line x1="45" y1="192" x2="322" y2="192" stroke="#495057" stroke-width="1.5"/><text x="50" y="17" font-size="11" fill="#495057" font-family="sans-serif">wartość oczekiwana — zysk</text><text x="262" y="207" font-size="11" fill="#495057" font-family="sans-serif">ryzyko</text><path d="M45 192 Q72 68 300 50" fill="none" stroke="#0d9488" stroke-width="2.5"/><circle cx="112" cy="142" r="3" fill="#94a3b8"/><text x="100" y="140" font-size="11" fill="#475569" font-family="sans-serif">P</text><circle cx="182" cy="114" r="3" fill="#94a3b8"/><text x="188" y="112" font-size="11" fill="#475569" font-family="sans-serif">U</text><circle cx="212" cy="76" r="3" fill="#0d9488"/><text x="198" y="74" font-size="11" fill="#0d9488" font-family="sans-serif">S</text><circle cx="300" cy="50" r="5" fill="#115e59"/><text x="305" y="46" font-size="13" fill="#115e59" font-family="sans-serif" font-weight="700">W</text></svg>',
+    opts: [
+      { t: "ma skłonność do ryzyka", c: true },
+      { t: "ma awersję do ryzyka", c: false },
+      { t: "ma neutralny stosunek do ryzyka", c: false },
+      { t: "wybrał portfel, który nie jest efektywny", c: false }
+    ],
+    exp: "Portfel W leży na krzywej efektywnej najdalej w prawo — to portfel o maksymalnym oczekiwanym zysku, ale i maksymalnym ryzyku (wariancji). Wybór tego punktu świadczy o wysokiej tolerancji i skłonności do ryzyka."
+  },
+  {
+    q: "W którym z poniższych modeli wyboru ryzykownego różnice indywidualne mają najmniejsze znaczenie w określaniu stosunku do ryzyka?",
+    opts: [
+      { t: "w Teorii Perspektywy", c: true },
+      { t: "w modelu Coombsa (Ryzyko-Wartość)", c: false },
+      { t: "w modelu portfelowym Markowitza", c: false },
+      { t: "w modelu Lopes (Bezpieczeństwo/Okazja vs Aspiracje)", c: false }
+    ],
+    exp: "Teoria Perspektywy zakłada uniwersalne dla większości ludzi zniekształcenia (ten sam kształt funkcji wartości i wag decyzyjnych). Modele Coombsa, Markowitza i Lopes silnie opierają się na indywidualnych preferencjach (np. indywidualny punkt idealny ryzyka)."
   }
 
 ];
@@ -597,7 +628,14 @@ function renderQuestion() {
   document.getElementById('scoreText').textContent = 'Wynik: ' + score;
   document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
   document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
-  document.getElementById('qText').textContent = q.q;
+  var qTextEl = document.getElementById('qText');
+  qTextEl.textContent = q.q;
+  if (q.img) {
+    var figEl = document.createElement('div');
+    figEl.style.cssText = 'margin:1rem 0 .2rem;text-align:center';
+    figEl.innerHTML = q.img;
+    qTextEl.appendChild(figEl);
+  }
 
   const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
   const letters = ['A', 'B', 'C', 'D'];
