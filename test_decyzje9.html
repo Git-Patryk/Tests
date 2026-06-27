@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 9 (EGZAMIN) – Decyzje i ryzyko</title>
+<style>
+  :root {
+    --teal:   #14b8a6;
+    --teal2:  #0d9488;
+    --teal3:  #5eead4;
+    --teal4:  #ccfbf1;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f4faf9;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #effdfa;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #115e59 0%, var(--teal2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--teal2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #ecfdf8;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #c7f0e6;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--teal2); }
+
+  .level-badge {
+    display: inline-block;
+    background: #b45309;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #115e59; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal2), var(--teal3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--teal2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal3); background: #ecfdf8; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--teal2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--teal4); border-color: var(--teal2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #115e59; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--teal4); border-left: 4px solid var(--teal2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--teal2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #115e59, var(--teal2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(13,148,136,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #115e59; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--teal4); border-left: 3px solid var(--teal2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="decyzje-testy.html">← Wróć do listy testów</a>
+  <h1>Decyzje i ryzyko</h1>
+  <p>Test 9 · EGZAMIN · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN — ORYGINALNE PYTANIA</div>
+    <h2>Test 9 — pytania z prawdziwego egzaminu</h2>
+    <p>Trzeci z trzech nowych zestawów egzaminacyjnych. Zawiera oryginalne pytania egzaminacyjne (w oryginalnym brzmieniu i z oryginalnymi odpowiedziami) oraz pytania w tym samym stylu, domykające pozostałe zagadnienia kursu.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>żal i Zeelenberg · eksperyment lotniskowy Epsteina · błąd koniunkcji (Linda) · belief bias (Revlin) · zasada Laplace'a · System 1 w marketingu · strategia ostrożna (klipiec) · dominacja proporcji i prototyp (Slovic) · model kontrastu (cechy wspólne, prototyp, obiekty bogate w cechy) · efekt odbicia · regresja do średniej · częstości naturalne (Gigerenzer) · ryzyko względne vs bezwzględne · maksymaliści vs satisficers · przeciążenie wyborem · model SP/A Lopes · grupy nominalne · reguła Condorceta i metoda Bordy · strategie kompensacyjne · efekt dysjunkcji</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  {
+    q: "Dwaj inwestorzy stracili tę samą kwotę: pierwszy aktywnie sprzedał/zamienił akcje, drugi nic nie zrobił. Zgodnie z badaniami Zeelenberga, który odczuwał większy żal?",
+    opts: [
+      { t: "inwestor, który podjął aktywne działanie", c: true },
+      { t: "inwestor, który nic nie zrobił", c: false },
+      { t: "obaj odczuwali taki sam żal", c: false },
+      { t: "zależało to od ich wyników w skali REI", c: false }
+    ],
+    exp: "Osoba, która podjęła aktywne działanie (akcję) i straciła, odczuwa znacznie większy żal niż osoba, która straciła tyle samo wskutek bierności (zaniechania)."
+  },
+  {
+    q: "Zjawiasz się na lotnisku 30 min po odlocie. W eksperymencie Epsteina (rozwinięcie Tversky'ego i Kahnemana) pytano: (a) jak zareagowałaby większość ludzi, (b) jak Ty byś zareagował, (c) jak zareagowałaby osoba racjonalna. Przy którym pytaniu większość odpowiadała, że moment odlotu „nie ma znaczenia”?",
+    opts: [
+      { t: "przy pytaniu o osobę racjonalną", c: true },
+      { t: "przy pytaniu o reakcję większości ludzi", c: false },
+      { t: "przy pytaniu o własną reakcję", c: false },
+      { t: "zawsze, niezależnie od pytania", c: false }
+    ],
+    exp: "Pytanie o własne lub cudze uczucia uruchamia myślenie kontrfaktyczne i frustrację. Dopiero pytanie o „osobę racjonalną” włącza System 2, który stwierdza obiektywny fakt: w obu przypadkach samolot odleciał."
+  },
+  {
+    q: "W eksperymencie z opisem Lindy (31 lat, niezamężna, inteligentna, elokwentna) badani wyżej oceniali prawdopodobieństwo, że Linda jest feministką i kasjerką niż że jest kasjerką. Wskazuje to, że ludzkie sądy są niezgodne z:",
+    opts: [
+      { t: "zasadą koniunkcji", c: true },
+      { t: "zasadą addytywności dla zdarzeń komplementarnych", c: false },
+      { t: "prawem wielkich liczb", c: false },
+      { t: "prawem małych liczb", c: false }
+    ],
+    exp: "Koniunkcja (A i B) nie może być bardziej prawdopodobna niż pojedyncze zdarzenie (A). Ludzie łamią tę zasadę, bo opis „feministka” pasuje do stereotypu (reprezentatywność)."
+  },
+  {
+    q: "W eksperymencie Revlina i in. (1980) badano wnioskowanie. Wielu respondentów wskazywało błędny wniosek 2 jako wynikający z przesłanek. Jak nazwano błąd tłumaczący taką odpowiedź?",
+    opts: [
+      { t: "błąd przekonań, czyli belief bias", c: true },
+      { t: "błąd zakotwiczenia (oparcia się na podanej liczbie)", c: false },
+      { t: "unikanie straty (awersja do strat)", c: false },
+      { t: "lekceważenie prawdopodobieństw a priori", c: false }
+    ],
+    exp: "Belief bias: badani oceniają prawdziwość wniosku na podstawie własnej wiedzy/doświadczenia o świecie zamiast na podstawie przesłanek i reguł logicznych."
+  },
+  {
+    q: "Zgodnie z klasyczną definicją prawdopodobieństwa (proporcja zdarzeń sprzyjających do wszystkich możliwych) przyjmuje się zasadę Laplace'a, zgodnie z którą:",
+    opts: [
+      { t: "każde możliwe zdarzenie jest tak samo prawdopodobne", c: true },
+      { t: "prawdopodobieństwo wyliczamy z doświadczenia (eksperymentu lub obserwacji)", c: false },
+      { t: "na podstawie przekonań ustalamy priory, czyli prawdopodobieństwa wyjściowe", c: false },
+      { t: "suma szans wszystkich zdarzeń zawsze przekracza 100%", c: false }
+    ],
+    exp: "Zasada Laplace'a (obojętności): jeśli nie ma podstaw, by sądzić, że jedno zdarzenie jest bardziej prawdopodobne, zakładamy równe szanse (np. orzeł i reszka 50/50)."
+  },
+  {
+    q: "Techniki marketingowe takie jak gry, skojarzenia słowne czy pomiar afektu odwołują się do:",
+    opts: [
+      { t: "Systemu 1", c: true },
+      { t: "Systemu 2", c: false },
+      { t: "zarówno do Systemu 1, jak i do Systemu 2", c: false },
+      { t: "żadnego z dwóch systemów", c: false }
+    ],
+    exp: "Marketing opiera się na emocjach, szybkich skojarzeniach i impulsach — ma ominąć analityczny filtr Systemu 2 i uderzyć w automatyczny System 1."
+  },
+  {
+    q: "W eksperymencie Lewickiego badani odgadywali znaczenie sztucznego pojęcia „KLIPIEC”, pokazując karty z figurami. Desygnatem jest karta 1. Jeśli badany pokaże kartę różniącą się od wzorca tylko jedną cechą, zastosował strategię:",
+    opts: [
+      { t: "bezpieczną, czyli ostrożną (conservative focusing)", c: true },
+      { t: "ryzykowną (zmianę wielu cech naraz)", c: false },
+      { t: "łączoną (mieszaną)", c: false },
+      { t: "losową (przypadkowy wybór kart)", c: false }
+    ],
+    exp: "Strategia ostrożna (conservative focusing) zmienia tylko jedną cechę naraz — pozwala precyzyjnie ustalić, która cecha jest istotna, bez obciążania pamięci."
+  },
+  {
+    q: "Desygnatem pojęcia „klipiec” jest karta 1. Którą kartę należy pokazać, jeśli wybieramy bezpieczną strategię ustalania treści pojęcia (karty 2, 3, 4 różnią się od wzorca jedną cechą)?",
+    opts: [
+      { t: "kartę różniącą się od wzorca tylko jedną cechą, np. 2, 3 lub 4", c: true },
+      { t: "kartę różniącą się od wzorca jednocześnie wieloma cechami (strategia ryzykowna)", c: false },
+      { t: "kartę identyczną z wzorcem, niczym się od niego nieróżniącą", c: false },
+      { t: "dowolną kartę, bo przy tej strategii wybór nie ma znaczenia", c: false }
+    ],
+    exp: "Strategia bezpieczna polega na pokazywaniu kart różniących się od pełnego desygnatu tylko jedną cechą, co pozwala izolować znaczenie poszczególnych wymiarów."
+  },
+  {
+    q: "W eksperymencie Slovica pytano, jak atrakcyjny jest zakup sprzętu ratującego życie: opisanego jako „150 osób”, „98% spośród 150 osób”, „95% spośród 150 osób”. Wersje procentowe oceniano wyżej niż liczbę bezwzględną. Wynik ilustruje:",
+    opts: [
+      { t: "dominację proporcji", c: true },
+      { t: "asymetryczną dominację", c: false },
+      { t: "unikanie opcji skrajnych", c: false },
+      { t: "efekt zakotwiczenia", c: false }
+    ],
+    exp: "Proporcja (98%) brzmi jak niemal pewny sukces i wywołuje silny pozytywny afekt, który „dominuje” nad chłodną wyceną absolutnej liczby uratowanych."
+  },
+  {
+    q: "Na rysunku przedstawiono eksperyment Slovica (oceny atrakcyjności ratowania życia zależnie od formy podania liczby). Jakie zjawisko ilustruje ten wynik?",
+    opts: [
+      { t: "lekceważenie warunków stałości na skutek heurystyki prototypu", c: true },
+      { t: "zgodność bodźca i reakcji (stimulus-response compatibility)", c: false },
+      { t: "prawo małych liczb (przecenianie małych prób)", c: false },
+      { t: "wynik różnic indywidualnych między badanymi", c: false }
+    ],
+    exp: "Forma podania (proporcja vs liczba bezwzględna) zmienia ocenę tej samej sytuacji — badani lekceważą stałość wyniku, kierując się emocjonalną reakcją na prototyp."
+  },
+  {
+    q: "Zgodnie z modelem kontrastu Tversky'ego, cechy wspólne dwóch obiektów otrzymują wyższe wagi:",
+    opts: [
+      { t: "przy ocenie podobieństwa obiektów", c: true },
+      { t: "przy ocenie zróżnicowania (różnic) między obiektami", c: false },
+      { t: "zawsze — w obu przypadkach jednakowo", c: false },
+      { t: "nigdy — wagę mają tylko cechy odróżniające", c: false }
+    ],
+    exp: "Pytanie „jak bardzo X jest podobne do Y?” kieruje uwagę na cechy wspólne; pytanie o różnice przenosi wagę na cechy unikalne."
+  },
+  {
+    q: "Kiedy te same obiekty mogą być oceniane jednocześnie jako bardziej podobne i jako bardziej różne?",
+    opts: [
+      { t: "gdy mają zarazem dużo cech wspólnych i dużo cech różnych", c: true },
+      { t: "gdy mają przede wszystkim dużo cech wspólnych", c: false },
+      { t: "gdy mają przede wszystkim dużo cech różnych", c: false },
+      { t: "to niemożliwe — te same obiekty nie mogą być zarazem bardziej podobne i bardziej różne", c: false }
+    ],
+    exp: "Pojęcia bogate w cechy (np. USA i ZSRR) mają mnóstwo cech wspólnych (wydają się podobne) i mnóstwo różnic (wydają się odmienne) — w przeciwieństwie do obiektów ubogich w cechy."
+  },
+  {
+    q: "W sądach porównawczych typu „a jest w zasadzie takie samo jak b” prototyp (wzorzec) powinien zajmować:",
+    opts: [
+      { t: "pozycję b — wariant porównujemy do wzorca", c: true },
+      { t: "pozycję a — wariant jest zawsze punktem odniesienia", c: false },
+      { t: "dowolną pozycję — kolejność a i b nie ma znaczenia", c: false },
+      { t: "pozycję a, ale tylko przy ocenie emocji", c: false }
+    ],
+    exp: "Mówimy „syn jest podobny do ojca”, a nie odwrotnie — wariant (a) porównujemy do wyrazistego prototypu (b)."
+  },
+  {
+    q: "W teorii perspektywy obserwuje się efekt odbicia (reflection effect). Na czym polega?",
+    opts: [
+      { t: "w domenie zysków ludzie są skłonni do awersji do ryzyka, a w domenie strat — do poszukiwania ryzyka", c: true },
+      { t: "ludzie są konsekwentnie skłonni do ryzyka zarówno w domenie zysków, jak i w domenie strat", c: false },
+      { t: "ludzie konsekwentnie unikają ryzyka zarówno w domenie zysków, jak i w domenie strat", c: false },
+      { t: "preferencje wobec ryzyka są całkowicie niezależne od tego, czy chodzi o zyski, czy o straty", c: false }
+    ],
+    exp: "Efekt odbicia: preferencje wobec ryzyka „odbijają się” wokół punktu odniesienia — awersja do ryzyka po stronie zysków zmienia się w poszukiwanie ryzyka po stronie strat (np. by uniknąć pewnej straty)."
+  },
+  {
+    q: "Po wyjątkowo słabym locie pilot dostał reprymendę i poleciał lepiej, a po świetnym — pochwałę i poleciał gorzej. Instruktor wnioskuje, że kary działają, a nagrody szkodzą. Jaki mechanizm pomija?",
+    opts: [
+      { t: "regresję do średniej", c: true },
+      { t: "efekt Peltzmana (kompensację ryzyka)", c: false },
+      { t: "heurystykę afektu (ocenę pod wpływem emocji)", c: false },
+      { t: "złudzenie gracza (oczekiwanie odwrócenia serii)", c: false }
+    ],
+    exp: "Skrajne wyniki naturalnie wracają do średniej niezależnie od kary czy nagrody — instruktor myli regresję do średniej ze skutkiem swojej interwencji."
+  },
+  {
+    q: "Zgodnie z badaniami Gigerenzera nad komunikowaniem ryzyka, kiedy ludzie poprawniej wnioskują o prawdopodobieństwach (np. przy interpretacji wyniku testu medycznego)?",
+    opts: [
+      { t: "gdy dane podane są jako częstości naturalne zamiast prawdopodobieństw warunkowych w procentach", c: true },
+      { t: "gdy dane podane są jako prawdopodobieństwa warunkowe wyrażone w procentach (np. czułość, swoistość)", c: false },
+      { t: "gdy poda się wyłącznie czułość testu, z całkowitym pominięciem stopy bazowej", c: false },
+      { t: "gdy zamiast liczb użyje się nieprecyzyjnych określeń słownych typu „rzadko” lub „często”", c: false }
+    ],
+    exp: "Format częstości naturalnych ułatwia rozumowanie bayesowskie, bo zachowuje informację o stopie bazowej i odciąża pamięć roboczą w porównaniu z procentami warunkowymi."
+  },
+  {
+    q: "Komunikaty „ryzyko podwaja się” oraz „ryzyko rośnie z 1 na 7000 do 2 na 7000” opisują tę samą zmianę. Które stwierdzenie jest najtrafniejsze?",
+    opts: [
+      { t: "pierwszy używa ryzyka względnego i może wyolbrzymiać percepcję, drugi — ryzyka absolutnego, lepiej pokazując skalę", c: true },
+      { t: "pierwszy komunikat zawsze najwierniej oddaje realną skalę zagrożenia dla pojedynczego odbiorcy", c: false },
+      { t: "pierwszy komunikat jest matematycznie fałszywy, bo „podwojenie” nie może dotyczyć prawdopodobieństw", c: false },
+      { t: "oba komunikaty przekazują odbiorcy dokładnie tę samą informację o wielkości zagrożenia", c: false }
+    ],
+    exp: "Ryzyko względne („podwaja się”) bez znajomości ryzyka bazowego zniekształca percepcję; ryzyko absolutne (z klasą referencyjną) pokazuje realną skalę zmiany."
+  },
+  {
+    q: "Zgodnie z badaniami Schwartza nad maksymalistami i osobami „wystarczająco zadowolonymi” (satisficers):",
+    opts: [
+      { t: "maksymaliści szukają obiektywnie najlepszej opcji, ale bywają mniej zadowoleni i bardziej żałują wyborów", c: true },
+      { t: "maksymaliści podejmują decyzje znacznie szybciej i są z nich konsekwentnie bardziej zadowoleni", c: false },
+      { t: "osoby wystarczająco zadowolone zawsze wybierają opcję obiektywnie najlepszą z dostępnych", c: false },
+      { t: "oba style prowadzą ostatecznie do identycznego poziomu satysfakcji z podjętej decyzji", c: false }
+    ],
+    exp: "Maksymalista dąży do absolutnie najlepszego wyboru, co podnosi koszt poznawczy, żal i podatność na porównania społeczne; satisficer akceptuje opcję „wystarczająco dobrą” i bywa bardziej zadowolony."
+  },
+  {
+    q: "W badaniu Iyengar i Leppera klientom oferowano do degustacji 6 albo 24 rodzaje dżemu. Co zaobserwowano?",
+    opts: [
+      { t: "większy wybór przyciągał uwagę, ale realnie kupowało mniej osób niż przy małym wyborze", c: true },
+      { t: "im więcej opcji było wystawionych, tym więcej osób ostatecznie dokonywało zakupu dżemu", c: false },
+      { t: "liczba dostępnych opcji nie miała żadnego wpływu na decyzję klientów o zakupie", c: false },
+      { t: "klienci przy dużym wyborze deklarowali wyraźnie mniejsze zainteresowanie stoiskiem", c: false }
+    ],
+    exp: "Przeciążenie wyborem (choice overload): nadmiar opcji utrudnia decyzję i obniża skłonność do zakupu oraz satysfakcję, mimo że duży wybór wydaje się atrakcyjny."
+  },
+  {
+    q: "Model SP/A Lopes opisuje stosunek do ryzyka za pomocą dwóch elementów. Które ujęcie jest trafne?",
+    opts: [
+      { t: "dyspozycyjnego dążenia do bezpieczeństwa lub potencjału oraz sytuacyjnego poziomu aspiracji", c: true },
+      { t: "wyłącznie wartości oczekiwanej oraz wariancji (rozproszenia) możliwego wyniku", c: false },
+      { t: "wyłącznie indywidualnego, stałego dla danej osoby punktu idealnego ryzyka", c: false },
+      { t: "kształtu funkcji wartości oraz kształtu funkcji wag decyzyjnych", c: false }
+    ],
+    exp: "Lopes łączy czynnik dyspozycyjny (Security–Potential: nastawienie na bezpieczeństwo vs potencjał wygranej) z czynnikiem sytuacyjnym (Aspiration: poziom aspiracji w danej decyzji)."
+  },
+  {
+    q: "Dlaczego grupa nominalna (osoby pracujące osobno, potem zbierające pomysły) często generuje więcej pomysłów niż klasyczna grupa dyskusyjna?",
+    opts: [
+      { t: "bo osoby pracujące osobno nie doświadczają blokowania wypowiedzi, dominacji i presji natychmiastowej oceny", c: true },
+      { t: "bo grupa nominalna eliminuje wszystkie błędy poznawcze i emocjonalne swoich uczestników", c: false },
+      { t: "bo sama obecność innych osób zawsze podnosi jakość wykonania każdego rodzaju zadania", c: false },
+      { t: "bo klasyczna burza mózgów zakłada, że krytyka pomysłów powinna poprzedzać ich generowanie", c: false }
+    ],
+    exp: "W grupie interaktywnej działają straty procesualne: blokowanie produkcji (jedna osoba mówi naraz), lęk przed oceną i dominacja. Praca osobna te straty redukuje."
+  },
+  {
+    q: "Zespół głosuje parami nad strategiami A, B, C. Większość woli A od B, A od C oraz B od C. Co wynika z reguły Condorceta?",
+    opts: [
+      { t: "należy wybrać A, bo wygrywa w porównaniach parami z każdą inną opcją", c: true },
+      { t: "nie można wybrać żadnej opcji, bo reguła Condorceta wymaga identycznych preferencji wszystkich", c: false },
+      { t: "należy wybrać C, bo przegrywa parami i jest najmniej konfliktowa", c: false },
+      { t: "należy wybrać B, bo zajmuje pozycję środkową", c: false }
+    ],
+    exp: "Zwycięzca Condorceta to opcja pokonująca każdą inną w bezpośrednim porównaniu parami — tutaj A. (Gdy takie preferencje tworzą cykl A>B>C>A, mówimy o paradoksie Condorceta.)"
+  },
+  {
+    q: "Strategia A ma najwięcej pierwszych miejsc, ale wielu członków stawia ją też na ostatnim miejscu; strategia B rzadko jest pierwsza, lecz prawie wszyscy stawiają ją wysoko. Które stwierdzenie jest najtrafniejsze?",
+    opts: [
+      { t: "metoda Bordy może wskazać B jako opcję kompromisową, bo uwzględnia cały ranking, a nie tylko pierwsze miejsca", c: true },
+      { t: "zwykłe głosowanie większościowe i metoda Bordy zawsze muszą dać dokładnie ten sam wynik końcowy", c: false },
+      { t: "reguła Condorceta zawsze wybiera opcję z największą liczbą pierwszych miejsc w rankingu", c: false },
+      { t: "skoro A ma najwięcej pierwszych miejsc, każda racjonalna procedura grupowa musi wybrać właśnie A", c: false }
+    ],
+    exp: "Metoda Bordy przydziela punkty za pozycje w całym rankingu, więc faworyzuje opcje szeroko akceptowane (kompromisowe), a nie tylko te z największą liczbą pierwszych miejsc."
+  },
+  {
+    q: "Które stwierdzenia poprawnie odróżniają strategie kompensacyjne od niekompensacyjnych? I. W strategiach kompensacyjnych słabość jednej cechy może zostać zrównoważona mocnymi wynikami na innych. II. Reguła Franklina i MAU są przykładami podejścia kompensacyjnego (suma ważonych ocen). III. Strategie niekompensacyjne nigdy nie upraszczają decyzji.",
+    opts: [
+      { t: "tylko I i II są poprawne", c: true },
+      { t: "tylko I jest poprawne", c: false },
+      { t: "tylko II i III są poprawne", c: false },
+      { t: "I, II i III są poprawne", c: false }
+    ],
+    exp: "I i II są trafne. III jest fałszywe — strategie niekompensacyjne (np. koniunkcyjna, leksykograficzna, eliminacja przez aspekty) właśnie UPRASZCZAJĄ decyzję, redukując liczbę porównań."
+  },
+  {
+    q: "Na czym polega efekt dysjunkcji (Shafir, Tversky)?",
+    opts: [
+      { t: "na odkładaniu decyzji w warunkach niepewności, mimo że ta sama decyzja zapadłaby niezależnie od tego, który wynik się zrealizuje", c: true },
+      { t: "na podejmowaniu ryzyka wyłącznie wtedy, gdy wcześniejsze, poprzedzające zdarzenie zakończyło się wyraźnym sukcesem", c: false },
+      { t: "na wyborze aktywnego działania po negatywnym wyniku jako swoistej formie psychologicznej rekompensaty", c: false },
+      { t: "na gotowości do zapłaty za dodatkową informację tylko wtedy, gdy realnie może ona zmienić końcową decyzję", c: false }
+    ],
+    exp: "Efekt dysjunkcji: ludzie czekają na rozstrzygnięcie niepewności i odraczają wybór, choć w każdym z możliwych scenariuszy podjęliby tę samą decyzję — łamie to zasadę „rzeczy pewnej”."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#0f766e'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#0d9488'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#14b8a6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

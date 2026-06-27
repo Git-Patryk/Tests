@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 8 (EGZAMIN) – Decyzje i ryzyko</title>
+<style>
+  :root {
+    --teal:   #14b8a6;
+    --teal2:  #0d9488;
+    --teal3:  #5eead4;
+    --teal4:  #ccfbf1;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f4faf9;
+    --border: #dee2e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #effdfa;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #115e59 0%, var(--teal2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: .82rem;
+    font-family: sans-serif;
+    margin-bottom: .8rem;
+    transition: color .2s;
+  }
+  header .back-link:hover { color: #fff; }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--teal2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #ecfdf8;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #c7f0e6;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--teal2); }
+
+  .level-badge {
+    display: inline-block;
+    background: #b45309;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--teal2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #115e59; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal2), var(--teal3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--teal2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--teal3); background: #ecfdf8; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--teal2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--teal4); border-color: var(--teal2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #115e59; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--teal4); border-left: 4px solid var(--teal2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(13,148,136,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--teal2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #115e59, var(--teal2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(13,148,136,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #115e59; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--teal4); border-left: 3px solid var(--teal2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="decyzje-testy.html">← Wróć do listy testów</a>
+  <h1>Decyzje i ryzyko</h1>
+  <p>Test 8 · EGZAMIN · 25 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN — ORYGINALNE PYTANIA</div>
+    <h2>Test 8 — pytania z prawdziwego egzaminu</h2>
+    <p>Drugi z trzech nowych zestawów egzaminacyjnych. Łączy oryginalne pytania egzaminacyjne (w oryginalnym brzmieniu i z oryginalnymi odpowiedziami) z pytaniami w tym samym stylu o pozostałe, nieporuszone wcześniej zagadnienia.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>techniki dynamiczne (BART, CCT) · DOSPERT · percepcja ceny (przecinek, kolor) · CRT a Stroop (System 2) · heurystyka reprezentatywności (pan F) · zastępowanie wymiarów naturalnych (Detroit) · heurystyka prototypu (ptaki) · sondaż produktów · heurystyka afektu · model Coombsa (Ryzyko-Wartość) · nastrój jako informacja · księgowanie umysłowe · utopione koszty · złudzenie gracza · zakotwiczenie · heurystyka dostępności · lekceważenie stopy bazowej · funkcja wartości · efekt pewności · efekt posiadania · efekt status quo</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  {
+    q: "Które z poniższych technik do pomiaru ryzyka mają charakter dynamiczny?",
+    opts: [
+      { t: "test z nadmuchiwaniem balonów BART", c: true },
+      { t: "skala DOSPERT", c: false },
+      { t: "skala poszukiwania doznań SSS Zuckermana", c: false },
+      { t: "wielokrotna wycena, np. skala Holta i Laury", c: false }
+    ],
+    exp: "BART jest zadaniem dynamicznym (ryzyko rośnie w czasie). DOSPERT, SSS i Holt-Laury to statyczne procedury samoopisowe/wyboru."
+  },
+  {
+    q: "Która z poniższych technik pomiaru postaw wobec ryzyka ma charakter dynamiczny?",
+    opts: [
+      { t: "Columbia Card Task w wersji „gorącej”", c: true },
+      { t: "skala DOSPERT", c: false },
+      { t: "skala poszukiwania doznań SSS Zuckermana", c: false },
+      { t: "wielokrotna wycena, np. skala Holta i Laury", c: false }
+    ],
+    exp: "W CCT (podobnie jak w BART) poziom ryzyka i emocji zmienia się z każdą kolejną kartą — to zadanie dynamiczne, w odróżnieniu od statycznych kwestionariuszy."
+  },
+  {
+    q: "Które wymiary są zdaniem Kahnemana i Fredericka traktowane przez ludzi jako wymiary naturalne (oceniane automatycznie przez System 1)?",
+    opts: [
+      { t: "wielkość, odległość, głośność, podobieństwo, afekt", c: true },
+      { t: "prawdopodobieństwo i afekt (oceniane bez wysiłku)", c: false },
+      { t: "wielkość i liczby rzeczywiste oraz prawdopodobieństwo", c: false },
+      { t: "prawdopodobieństwo, liczby rzeczywiste, liczba wielokątów", c: false }
+    ],
+    exp: "Wymiary naturalne to bodźce przetwarzane natychmiast i bez wysiłku (System 1). Prawdopodobieństwo czy liczby rzeczywiste wymagają analitycznego Systemu 2."
+  },
+  {
+    q: "Która z poniższych technik służy do pomiaru postaw wobec ryzyka?",
+    opts: [
+      { t: "skala DOSPERT", c: true },
+      { t: "skala REI Epsteina", c: false },
+      { t: "skala CRT Fredericka", c: false },
+      { t: "test Berliński (numeryczny)", c: false }
+    ],
+    exp: "DOSPERT mierzy skłonność do ryzyka. REI mierzy style myślenia, CRT — refleksję poznawczą, a Test Berliński — zdolności numeryczne."
+  },
+  {
+    q: "Która cena jest odbierana przez nas jako wyższa: A) $1342 czy B) $1,342?",
+    opts: [
+      { t: "cena B, zapisana z przecinkiem", c: true },
+      { t: "cena A, zapisana bez przecinka", c: false },
+      { t: "obie ceny są odbierane tak samo", c: false },
+      { t: "zależy to od rodzaju produktu", c: false }
+    ],
+    exp: "Dodanie przecinka wydłuża zapis (więcej „sylab”/elementów do przetworzenia), przez co kwota wydaje się subiektywnie większa."
+  },
+  {
+    q: "Jednym z czynników wpływających na percepcję ceny jest kolor. Kiedy konsumenci są skłonni wydać/oszczędzić więcej?",
+    opts: [
+      { t: "gdy cena jest w kolorze czerwonym", c: true },
+      { t: "gdy cena jest w kolorze czarnym", c: false },
+      { t: "kolor ceny nie ma żadnego wpływu", c: false },
+      { t: "zależy to wyłącznie od rodzaju produktu", c: false }
+    ],
+    exp: "Czerwień przyciąga uwagę i jest heurystyczną wskazówką „okazja/wyprzedaż”, co skłania do szybszych i większych wydatków."
+  },
+  {
+    q: "Dlaczego wyniki w teście CRT korelują z wynikami w teście Stroopa?",
+    opts: [
+      { t: "oba sprawdzają zdolność hamowania reakcji automatycznej, czyli włączenie Systemu 2", c: true },
+      { t: "oba testy mierzą ogólną inteligencję (IQ)", c: false },
+      { t: "oba testy wymagają zaawansowanej wiedzy matematycznej", c: false },
+      { t: "nieprawda — wyniki w tych testach w ogóle nie są skorelowane", c: false }
+    ],
+    exp: "Oba badają zdolność zahamowania szybkiej, automatycznej odpowiedzi Systemu 1 na rzecz odpowiedzi przemyślanej (System 2)."
+  },
+  {
+    q: "Panu F (wylosowanemu z reprezentatywnej próby epidemiologicznej) 58% studentów uznało za bardziej prawdopodobne, że „miał zawał ORAZ ma >55 lat” niż że „miał zawał”. Udzielili takiej odpowiedzi, ponieważ:",
+    opts: [
+      { t: "oceniali prawdopodobieństwo w oparciu o heurystykę reprezentatywności", c: true },
+      { t: "kierowali się teorią żalu", c: false },
+      { t: "stosowali zasadę „wszystko albo nic”", c: false },
+      { t: "rzeczywiście drugie stwierdzenie jest bardziej prawdopodobne", c: false }
+    ],
+    exp: "To błąd koniunkcji: „starszy pan” bardziej pasuje do stereotypu zawałowca (jest bardziej reprezentatywny), choć zdarzenie złożone nie może być bardziej prawdopodobne niż pojedyncze."
+  },
+  {
+    q: "Studenci oceniali liczbę morderstw rocznie w całym stanie Michigan oraz w mieście Detroit (leżącym w Michigan, znanym z przestępczości). Oceny dla Detroit (200) były dwa razy wyższe niż dla całego stanu (100). Jest to przykład:",
+    opts: [
+      { t: "zastępowania wymiarów właściwych wymiarami naturalnymi", c: true },
+      { t: "złudzenia gracza wywołanego heurystyką dostępności", c: false },
+      { t: "lekceważenia prawdopodobieństw a priori", c: false },
+      { t: "efektu zakotwiczenia na liczbie 100", c: false }
+    ],
+    exp: "Detroit jest podzbiorem Michigan, więc nie może mieć więcej morderstw. Ludzie zastępują właściwy wymiar (częstość) wymiarem naturalnym (reprezentatywność/rozgłos Detroit), łamiąc tym monotoniczność."
+  },
+  {
+    q: "Respondentów pytano, ile zapłaciliby za ocalenie (1) 2 tys., (2) 20 tys., (3) 200 tys. ptaków ginących w zbiornikach ropy. Średnie kwoty wynosiły $80, $78 i $88. Lekceważenie wielkości dóbr wynika tu ze stosowania:",
+    opts: [
+      { t: "heurystyki prototypu", c: true },
+      { t: "heurystyki zakotwiczenia", c: false },
+      { t: "prawa małych liczb", c: false },
+      { t: "łamania zasady koniunkcji", c: false }
+    ],
+    exp: "Zaniedbywanie wielkości (extension neglect): badani wyobrażają sobie prototyp — pojedynczego cierpiącego ptaka — i to on, a nie liczba ptaków, steruje gotowością do zapłaty."
+  },
+  {
+    q: "Sondaż: produkt A ma 900 osób na 1000 (popularny), produkt B ma 100 na 1000 (niepopularny). Pan Kowalski deklaruje, że kupi oba. Sondaż ma błąd 5%. Jakie jest prawdopodobieństwo, że pan Kowalski kupi te produkty?",
+    opts: [
+      { t: "dużo większe, że kupi produkt A", c: true },
+      { t: "dużo większe, że kupi produkt B", c: false },
+      { t: "takie samo dla obu produktów: A i B", c: false },
+      { t: "żadne stwierdzenie nie jest prawdziwe", c: false }
+    ],
+    exp: "Skoro produkt A jest znacznie popularniejszy, prawdopodobieństwo jego zakupu jest dużo wyższe niż produktu B."
+  },
+  {
+    q: "Przejawem heurystyki afektu, zaobserwowanym w badaniach psychometrycznych, jest:",
+    opts: [
+      { t: "odwrotna zależność między oceną zysków a oceną ryzyka danej aktywności", c: true },
+      { t: "efekt utopionych kosztów (brnięcie z powodu poniesionych nakładów)", c: false },
+      { t: "efekt posiadania (zawyżona wycena rzeczy, którą się ma)", c: false },
+      { t: "unikanie straty (awersja do strat)", c: false }
+    ],
+    exp: "Gdy coś lubimy (pozytywny afekt), oceniamy to jako bardziej korzystne i mniej ryzykowne — i odwrotnie. Stąd ujemna korelacja ocen zysku i ryzyka, choć obiektywnie często rosną razem."
+  },
+  {
+    q: "Zgodnie z modelem wyboru „Ryzyko-Wartość”, wprowadzonym do psychologii przez Coombsa, wybór w sytuacji ryzykownej to:",
+    opts: [
+      { t: "konflikt typu dążenie–unikanie", c: true },
+      { t: "konflikt typu dążenie–dążenie", c: false },
+      { t: "konflikt typu unikanie–unikanie", c: false },
+      { t: "kierowanie się wyłącznie maksymalizacją zysku", c: false }
+    ],
+    exp: "Decydent ma sprzeczne motywacje: dąży do zysku (wartości oczekiwanej), a zarazem chce uniknąć ryzyka (wariancji/straty). Wybór to kompromis między chciwością a strachem."
+  },
+  {
+    q: "Zgodnie z modelem wyboru zaproponowanym przez Coombsa, przy wyborze w sytuacji ryzykownej:",
+    opts: [
+      { t: "każdy człowiek ma swój indywidualny, idealny poziom ryzyka i wybiera zgodnie z nim", c: true },
+      { t: "wszyscy ludzie dążą do maksymalizacji zysku, w ogóle nie biorąc pod uwagę poziomu ryzyka", c: false },
+      { t: "wszyscy ludzie konsekwentnie poszukują jak najwyższego ryzyka", c: false },
+      { t: "wszyscy ludzie konsekwentnie unikają wszelkiego ryzyka", c: false }
+    ],
+    exp: "Model Coombsa zakłada indywidualny punkt idealny ryzyka — człowiek wybiera opcje o preferowanym dla siebie poziomie ryzyka, a nie po prostu minimalnym lub maksymalnym."
+  },
+  {
+    q: "Na czym polega zjawisko „nastroju jako informacji” (Schwarz i Clore)?",
+    opts: [
+      { t: "bieżący nastrój bywa używany jako wskazówka przy ocenie, nawet gdy nie dotyczy ocenianego obiektu", c: true },
+      { t: "emocje pojawiają się dopiero po podjęciu w pełni racjonalnej, chłodnej decyzji", c: false },
+      { t: "negatywny nastrój zawsze prowadzi do podejmowania bardziej ryzykownych decyzji", c: false },
+      { t: "ludzie zawsze poprawnie rozpoznają prawdziwe źródło swojego aktualnego nastroju", c: false }
+    ],
+    exp: "Badani w deszczowy dzień oceniali życie gorzej — chyba że uprzednio skierowano ich uwagę na pogodę. Wtedy „odpisywali” nastrój do właściwego źródła i efekt znikał."
+  },
+  {
+    q: "Na czym polega mechanizm księgowania umysłowego (mental accounting) opisany przez Thalera?",
+    opts: [
+      { t: "na przypisywaniu pieniędzy do odrębnych „kont” umysłowych i traktowaniu ich niewymiennie", c: true },
+      { t: "na traktowaniu wszystkich pieniędzy jako w pełni wymienialnych, zgodnie z zasadą zamienności", c: false },
+      { t: "na automatycznym dyskontowaniu przyszłych zysków stałą stopą", c: false },
+      { t: "na ocenie majątku wyłącznie względem stanu końcowego", c: false }
+    ],
+    exp: "Ludzie segregują środki na osobne konta (np. „na wakacje”, „na jedzenie”) i wydają je niezależnie, łamiąc ekonomiczną zasadę wymienialności pieniądza."
+  },
+  {
+    q: "Inwestor dokłada pieniądze do nierokującego projektu, „bo już tyle w niego włożył”. To przykład:",
+    opts: [
+      { t: "efektu utopionych kosztów", c: true },
+      { t: "efektu posiadania (endowment)", c: false },
+      { t: "awersji do dwuznaczności", c: false },
+      { t: "reguły satysfakcji (satisficing)", c: false }
+    ],
+    exp: "Efekt utopionych kosztów (np. paradoks Concorde'a): aby „obronić” poniesione już nakłady, brniemy dalej, zamiast racjonalnie ocenić przyszłe koszty i korzyści."
+  },
+  {
+    q: "Inwestor mówi: „Ta spółka rosła sześć miesięcy z rzędu, więc teraz spadek jest już prawie pewny”. Najbliższy temu błąd poznawczy to:",
+    opts: [
+      { t: "złudzenie gracza", c: true },
+      { t: "efekt zakotwiczenia (trzymanie się podanej wcześniej liczby)", c: false },
+      { t: "heurystyka dostępności (ocena wg łatwości przypomnienia)", c: false },
+      { t: "efekt ramowania (wpływ sposobu sformułowania)", c: false }
+    ],
+    exp: "Złudzenie gracza: błędne przekonanie, że po serii jednakowych wyników niezależne zdarzenie „musi” się odwrócić — mylenie niezależnych zdarzeń z mechanizmem wyrównującym."
+  },
+  {
+    q: "Analityk ma oszacować koszt wdrożenia systemu. Przed własną analizą słyszy od dyrektora: „pewnie będzie to około 2 mln”. Jego prognoza wychodzi bliska tej liczbie, mimo że dyrektor nie miał danych. Najlepsze wyjaśnienie to:",
+    opts: [
+      { t: "efekt zakotwiczenia", c: true },
+      { t: "heurystyka dostępności", c: false },
+      { t: "efekt Peltzmana", c: false },
+      { t: "ryzyko instrumentalne", c: false }
+    ],
+    exp: "Zakotwiczenie i niedostateczne dostosowanie: podana wcześniej liczba staje się punktem odniesienia, od którego szacunek odchyla się zbyt słabo."
+  },
+  {
+    q: "Ktoś przecenia ryzyko katastrofy lotniczej tuż po obejrzeniu reportażu o wypadku samolotu. Jaki mechanizm najlepiej to wyjaśnia?",
+    opts: [
+      { t: "heurystyka dostępności", c: true },
+      { t: "heurystyka reprezentatywności", c: false },
+      { t: "efekt zakotwiczenia", c: false },
+      { t: "awersja do strat", c: false }
+    ],
+    exp: "Dostępność: częstość oceniamy wg łatwości przypomnienia. Żywe, medialne przykłady są łatwo dostępne w pamięci i zawyżają szacowane prawdopodobieństwo."
+  },
+  {
+    q: "Świadek twierdzi, że taksówka była niebieska. W mieście 85% taksówek to taksówki zielone, a 15% niebieskie; trafność świadka to 80%. Badani zwykle zawyżają szansę, że taksówka faktycznie była niebieska, bo:",
+    opts: [
+      { t: "lekceważą stopę bazową, czyli proporcję taksówek niebieskich w mieście", c: true },
+      { t: "przeceniają trafność świadka pod wpływem efektu pewności (certainty effect)", c: false },
+      { t: "kierują się złudzeniem gracza (oczekiwaniem odwrócenia serii)", c: false },
+      { t: "stosują zakotwiczenie na podanej liczbie 80% trafności", c: false }
+    ],
+    exp: "Lekceważenie stopy bazowej (base-rate neglect): badani skupiają się na trafności zeznania, ignorując rzadkość taksówek niebieskich w populacji — co radykalnie zmienia rachunek Bayesa."
+  },
+  {
+    q: "Jak wygląda funkcja wartości w teorii perspektywy Kahnemana i Tversky'ego?",
+    opts: [
+      { t: "wklęsła dla zysków, wypukła dla strat i bardziej stroma po stronie strat", c: true },
+      { t: "wypukła dla zysków, wklęsła dla strat i bardziej stroma po stronie zysków", c: false },
+      { t: "liniowa w całym zakresie, symetryczna względem punktu odniesienia", c: false },
+      { t: "wklęsła w całym zakresie, z większym nachyleniem dla zysków", c: false }
+    ],
+    exp: "Malejąca wrażliwość daje wklęsłość dla zysków i wypukłość dla strat, a awersja do strat — większe nachylenie krzywej po stronie strat (strata boli mocniej niż cieszy równy zysk)."
+  },
+  {
+    q: "Ludzie cenią wzrost szansy wygranej z 99% do 100% znacznie wyżej niż wzrost z 10% do 11%, choć w obu wypadkach przyrost wynosi 1 punkt procentowy. To przejaw:",
+    opts: [
+      { t: "efektu pewności", c: true },
+      { t: "efektu posiadania", c: false },
+      { t: "złudzenia gracza", c: false },
+      { t: "efektu zakotwiczenia", c: false }
+    ],
+    exp: "Efekt pewności (z funkcji wag decyzyjnych): nadwartościujemy przejście do absolutnej pewności (lub od zera), dlatego skok 99→100% waży psychologicznie więcej niż 10→11%."
+  },
+  {
+    q: "Studenci, którzy dostali kubek, żądali za jego sprzedaż znacznie więcej, niż inni byli gotowi za niego zapłacić. To przejaw:",
+    opts: [
+      { t: "efektu posiadania", c: true },
+      { t: "efektu zakotwiczenia (oparcia się na podanej liczbie)", c: false },
+      { t: "heurystyki dostępności (oceny wg łatwości przypomnienia)", c: false },
+      { t: "złudzenia gracza (oczekiwania odwrócenia serii)", c: false }
+    ],
+    exp: "Efekt posiadania: samo bycie właścicielem podnosi subiektywną wartość rzeczy (napędzane awersją do strat — rozstanie z rzeczą odczuwamy jako stratę)."
+  },
+  {
+    q: "Pracownicy rzadko zmieniają domyślny fundusz emerytalny, nawet gdy inne opcje są dla nich korzystniejsze. To przykład:",
+    opts: [
+      { t: "efektu status quo, czyli skłonności do utrzymania stanu obecnego", c: true },
+      { t: "efektu pewności (przeceniania pełnej pewności)", c: false },
+      { t: "złudzenia gracza (oczekiwania odwrócenia serii)", c: false },
+      { t: "heurystyki reprezentatywności (oceny przez podobieństwo)", c: false }
+    ],
+    exp: "Skłonność do status quo: trzymamy się stanu obecnego/opcji domyślnej (napędzane inercją i awersją do strat), nawet gdy zmiana byłaby racjonalnie lepsza."
+  }
+
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#0f766e'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#0d9488'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#14b8a6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
