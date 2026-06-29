@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 5 – Komunikacja i perswazja (egzamin)</title>
+<style>
+  :root {
+    --vio:    #8b5cf6;
+    --vio2:   #7c3aed;
+    --vio3:   #c4b5fd;
+    --vio4:   #ede9fe;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f7f5ff;
+    --border: #e3dcf5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f6f3ff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #5b21b6 0%, var(--vio2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 600;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+    padding: .5rem 1.15rem;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 999px;
+    transition: background .2s, border-color .2s, transform .1s;
+  }
+  header .back-link:hover { background: rgba(255,255,255,.28); border-color: #fff; transform: translateY(-1px); }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(124,58,237,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--vio2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #f1ecfe;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #ddd0fb;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--vio2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--vio2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--vio2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #5b21b6; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--vio2), var(--vio3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(124,58,237,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--vio2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--vio3); background: #f1ecfe; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--vio2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--vio4); border-color: var(--vio2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #5b21b6; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--vio4); border-left: 4px solid var(--vio2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(124,58,237,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--vio2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5b21b6, var(--vio2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(124,58,237,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #5b21b6; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--vio4); border-left: 3px solid var(--vio2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="komunikacja-testy.html">← Wróć do listy testów</a>
+  <h1>Komunikacja i perswazja</h1>
+  <p>Test 5 · Pytania egzaminacyjne · 22 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN</div>
+    <h2>Test 5 — oryginalne pytania egzaminacyjne (cz. II)</h2>
+    <p>Zestaw <strong>autentycznych pytań egzaminacyjnych</strong> z komunikacji i perswazji. Część II: wpływ społeczny, reguły Cialdiniego, sekwencyjne techniki wpływu oraz erystyka i błędy logiczne.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>reguły Cialdiniego i co do nich nie należy · rozproszenie odpowiedzialności, Asch, autorytet, kapitanoza · niedostępność i reguła „My” · techniki sekwencyjne (stopa w drzwiach/ustach, drzwi przed nosem, niska piłka, usidlanie eksperta) · erystyka: chochoł, tu quoque, shotgun, błąd formalny vs nieformalny</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>22 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    q: "Początek wypowiedzi „Jestem pod wrażeniem, że jesteś taki…” to przykład komplementu:",
+    opts: [
+      { t: "Bezpośredniego", c: true },
+      { t: "Pośredniego", c: false },
+      { t: "Trafnego", c: false },
+      { t: "Relacyjnego", c: false },
+    ],
+    exp: "Komplement skierowany wprost o osobie = bezpośredni (pośredni działałby aluzyjnie lub przez osobę trzecią)."
+  },
+  {
+    q: "Jak NVC (porozumienie bez przemocy) nazywa język oceniający i nieoceniający?",
+    opts: [
+      { t: "Język żyrafy i język szakala", c: true },
+      { t: "Język pantery i język koali", c: false },
+      { t: "Język kangura i język jeżozwierza", c: false },
+      { t: "Język słonia i język hieny", c: false },
+    ],
+    exp: "Rosenberg: żyrafa = język empatyczny, nieoceniający („serce”); szakal = język oceniający, „przemocowy”."
+  },
+  {
+    q: "Efekt asymilacji w procesie akceptowania ceny polega na tym, że:",
+    opts: [
+      { t: "Produkt przejmuje cechy kontekstu, w którym się znajduje", c: true },
+      { t: "Klient kupuje produkt wyłącznie ze względu na jego niską cenę", c: false },
+      { t: "Klient szacuje wartość produktu na podstawie włożonego w niego wysiłku", c: false },
+      { t: "Cena produktu kończy się charakterystycznie na 99 groszy", c: false },
+    ],
+    exp: "Np. „apartament” zamiast „mieszkanie” — kontekst podnosi postrzeganą wartość produktu (asymilacja)."
+  },
+  {
+    q: "Wolontariusz pyta cię, czy lubisz zwierzęta, a po twojej odpowiedzi zachęca do wpłaty na schronisko. To technika:",
+    opts: [
+      { t: "Stopy w ustach", c: true },
+      { t: "Stopy w drzwiach", c: false },
+      { t: "Drzwi zatrzaśniętych przed nosem", c: false },
+      { t: "Niskiej piłki", c: false },
+    ],
+    exp: "Najpierw wciągnięcie w pozytywną deklarację, potem prośba zgodna z nią (spójność) — to „stopa w ustach”. (W materiale źródłowym zaznaczono wzajemność, ale brak tu daru.)"
+  },
+  {
+    q: "Reguły wpływu społecznego Roberta Cialdiniego NIE uwzględniają:",
+    opts: [
+      { t: "Efektu rozproszenia odpowiedzialności", c: true },
+      { t: "Reguły wzajemności", c: false },
+      { t: "Społecznego dowodu słuszności", c: false },
+      { t: "Reguły niedostępności", c: false },
+    ],
+    exp: "Sześć reguł: wzajemność, zaangażowanie/konsekwencja, dowód społeczny, autorytet, lubienie, niedostępność (+ jedność). Rozproszenie odpowiedzialności to efekt widza, nie reguła Cialdiniego."
+  },
+  {
+    q: "Na ulicy leży nieprzytomna osoba, mija ją wielu przechodniów i nikt nie pomaga. To:",
+    opts: [
+      { t: "Efekt rozproszenia odpowiedzialności", c: true },
+      { t: "Społeczny dowód słuszności", c: false },
+      { t: "Reguła wzajemności", c: false },
+      { t: "Efekt motyla", c: false },
+    ],
+    exp: "Im więcej świadków, tym mniejsza szansa pomocy — każdy zakłada, że zareaguje ktoś inny (Latané i Darley)."
+  },
+  {
+    q: "Dlaczego władze Etiopii wysłały pomoc Meksykowi mimo własnych ogromnych problemów gospodarczych?",
+    opts: [
+      { t: "Zadziałała reguła wzajemności za pomoc Meksyku udzieloną im lata wcześniej", c: true },
+      { t: "Wymusiła to presja społeczna i naciski ze strony ONZ", c: false },
+      { t: "Zadziałała reguła zaangażowania po podpisaniu paktu", c: false },
+      { t: "Etiopia chciała poprawić swój wizerunek międzynarodowy", c: false },
+    ],
+    exp: "Klasyczny przykład wzajemności — odwdzięczenie się za wcześniejszą pomoc humanitarną."
+  },
+  {
+    q: "Eksperyment Ascha (uleganie jednomyślnej, błędnej opinii grupy co do długości odcinków) jest fundamentem której reguły wpływu?",
+    opts: [
+      { t: "Społecznego dowodu słuszności", c: true },
+      { t: "Reguły wzajemności", c: false },
+      { t: "Reguły niedostępności", c: false },
+      { t: "Reguły zaangażowania i konsekwencji", c: false },
+    ],
+    exp: "Asch pokazał uleganie grupie — to podstawa reguły dowodu społecznego (o słuszności wnioskujemy z zachowania innych)."
+  },
+  {
+    q: "Dziewięcioletnia dziewczynka na polecenie prowadzącego eksperyment razi prądem inną osobę. Jakie zjawisko występuje?",
+    opts: [
+      { t: "Uleganie autorytetowi", c: true },
+      { t: "Dysonans poznawczy", c: false },
+      { t: "Niedostępność", c: false },
+      { t: "Wzajemność", c: false },
+    ],
+    exp: "Wykonywanie poleceń autorytetu wbrew sumieniu — to paradygmat posłuszeństwa (jak u Milgrama)."
+  },
+  {
+    q: "Czy piękna modelka reklamująca produkt typu pestycydy zwiększa skłonność konsumenta do zakupu?",
+    opts: [
+      { t: "Nie", c: true },
+      { t: "Tak, zawsze i bezwarunkowo", c: false },
+      { t: "Tylko jeśli konsument zna daną markę", c: false },
+      { t: "Tylko jeśli produkt jest odpowiednio drogi", c: false },
+    ],
+    exp: "Atrakcyjność działa dla produktów wizerunkowych, nie dla użytkowych (pestycydy) — liczy się dopasowanie nadawcy do produktu."
+  },
+  {
+    q: "Które zdanie najlepiej opisuje działanie reguły niedostępności?",
+    opts: [
+      { t: "Ludzie cenią wyżej to, czego liczba jest ograniczona lub czas zdobycia krótki", c: true },
+      { t: "Ludzie podejmują decyzje zakupowe wyłącznie na podstawie wcześniejszych doświadczeń", c: false },
+      { t: "Ludzie częściej wybierają to, co łatwo dostępne i nie wymaga pośpiechu", c: false },
+      { t: "Ludzie unikają produktów popularnych wśród innych", c: false },
+    ],
+    exp: "Ograniczenie liczby lub czasu podnosi postrzeganą wartość — perspektywa utraty motywuje silniej niż perspektywa zysku."
+  },
+  {
+    q: "Na czym polega zjawisko „kapitanozy” związane z regułą autorytetu?",
+    opts: [
+      { t: "Na braku reakcji załogi na ewidentne błędy popełniane przez pilota", c: true },
+      { t: "Na nadmiernym zaufaniu pilota do automatycznych systemów samolotu", c: false },
+      { t: "Na skrajnym wyczerpaniu fizycznym uniemożliwiającym pilotowi lot", c: false },
+      { t: "Na ignorowaniu poleceń kontrolera ruchu przez doświadczonego pilota", c: false },
+    ],
+    exp: "Kapitanoza to skrajny skutek reguły autorytetu — podwładni nie kwestionują nawet oczywistych błędów autorytetu."
+  },
+  {
+    q: "Przechodzień mówi wolontariuszowi: „Nie mam przy sobie gotówki”, a ten odpowiada: „Można też kartą i BLIKIEM”. Jaką technikę zastosowano?",
+    opts: [
+      { t: "Zamień odrzucenie w przeszkodę", c: true },
+      { t: "Technikę „my już pomogliśmy”", c: false },
+      { t: "Drzwi zatrzaśnięte przed nosem", c: false },
+      { t: "Technikę karate", c: false },
+    ],
+    exp: "Usunięcie wymówki zmienia odmowę w drobną, łatwą do pokonania przeszkodę."
+  },
+  {
+    q: "Nastolatek prosi rodziców o 5000 zł na wakacje; gdy odmawiają, pyta, czy dadzą mu chociaż 100 zł do kina. Jaką technikę zastosował?",
+    opts: [
+      { t: "Drzwi zatrzaśnięte przed nosem", c: true },
+      { t: "Stopa w drzwiach", c: false },
+      { t: "Dwie stopy w drzwiach", c: false },
+      { t: "Niska piłka", c: false },
+    ],
+    exp: "Duża prośba (odrzucona) → mniejsza, odebrana jako ustępstwo, które wypada odwzajemnić zgodą (door-in-the-face)."
+  },
+  {
+    q: "To, że chętniej spełniamy prośbę osoby, która „wrzuciła nas” do swojej grupy (np. „My, Polacy”), wynika z:",
+    opts: [
+      { t: "Reguły „My” (jedności)", c: true },
+      { t: "Indukowania hipokryzji", c: false },
+      { t: "Reguły wzajemności", c: false },
+      { t: "Zasady niebezpośredniej (odroczonej) wzajemności", c: false },
+    ],
+    exp: "Wspólna tożsamość grupowa nasila uległość — to siódma reguła Cialdiniego (jedność)."
+  },
+  {
+    q: "Która technika sekwencyjna jest „zaprzeczeniem” reguły zaangażowania i konsekwencji?",
+    opts: [
+      { t: "Drzwi zatrzaśnięte przed nosem", c: true },
+      { t: "Niska piłka", c: false },
+      { t: "Stopa w drzwiach", c: false },
+      { t: "Cztery ściany", c: false },
+    ],
+    exp: "Drzwi przed nosem działają odwrotnie — opierają się na wzajemności ustępstw, a nie na konsekwencji (jak niska piłka czy stopa w drzwiach)."
+  },
+  {
+    q: "Dziennikarz zaczyna wywiad od słów: „Jako najwybitniejszy specjalista z pewnością Pan wyjaśni…”, by rozmówca nie powiedział „nie wiem”. Jakiej techniki użyto?",
+    opts: [
+      { t: "Usidlanie eksperta", c: true },
+      { t: "Etykietowanie", c: false },
+      { t: "Cztery ściany", c: false },
+      { t: "Samoetykietowanie", c: false },
+    ],
+    exp: "Pochlebstwo zmusza eksperta, by nie przyznał się do niewiedzy — to usidlanie eksperta."
+  },
+  {
+    q: "Do technik sekwencyjnych NIE należy:",
+    opts: [
+      { t: "Etykietowanie", c: true },
+      { t: "Stopa w drzwiach", c: false },
+      { t: "Technika czterech ścian", c: false },
+      { t: "Niebezpośrednia wzajemność", c: false },
+    ],
+    exp: "Etykietowanie to wpływ jednoetapowy (nadanie etykiety → zachowanie zgodne z nią), a nie sekwencja kroków."
+  },
+  {
+    q: "Na czym polega argumentacja shotgunowa?",
+    opts: [
+      { t: "Na podaniu dużej liczby argumentów naraz, by nie dało się ich skontrować", c: true },
+      { t: "Na przecenianiu nowych rozwiązań i niedocenianiu starych", c: false },
+      { t: "Na przecenianiu starych rozwiązań i niedocenianiu nowych", c: false },
+      { t: "Na celowym skupianiu uwagi na innym zagadnieniu", c: false },
+    ],
+    exp: "Zasypanie rozmówcy lawiną argumentów (tzw. Gish gallop) uniemożliwia rzeczową kontrę."
+  },
+  {
+    q: "W dyskusji jeden z rozmówców mówi: „Zawsze się spóźniasz”, a drugi odpowiada: „Przecież ty też się ciągle spóźniasz”. Jaka to technika?",
+    opts: [
+      { t: "Technika tu quoque", c: true },
+      { t: "Dychotomia myślenia", c: false },
+      { t: "Odwracanie uwagi / fałszywy trop", c: false },
+      { t: "Równia pochyła / efekt domina", c: false },
+    ],
+    exp: "Tu quoque („i ty też”) — zarzut hipokryzji zamiast merytorycznej odpowiedzi na argument."
+  },
+  {
+    q: "Na czym polega błąd atakowania chochoła?",
+    opts: [
+      { t: "Na stworzeniu przesadzonej lub uproszczonej wersji argumentu przeciwnika, by łatwiej go obalić", c: true },
+      { t: "Na odwołaniu do opinii większości jako jedynego dowodu słuszności", c: false },
+      { t: "Na uznaniu, że następstwo czasowe jednego zdarzenia oznacza związek przyczynowy", c: false },
+      { t: "Na wyśmiewaniu wyglądu lub cech charakteru przeciwnika", c: false },
+    ],
+    exp: "Straw man — atakujemy zniekształconą wersję cudzego stanowiska, a nie jego rzeczywisty argument."
+  },
+  {
+    q: "„W prognozie mówili, że będzie padać, a prognozy nigdy się nie mylą, więc będzie padać” to przykład błędu:",
+    opts: [
+      { t: "Nieformalnego — ciąg logiczny poprawny, ale oparty na nieprawdziwym założeniu", c: true },
+      { t: "Formalnego — ciąg logiczny poprawny, lecz oparty na fałszywym założeniu", c: false },
+      { t: "Formalnego — wniosek z ciągu logicznego błędny, ale oparty na prawdziwych argumentach", c: false },
+      { t: "Nieformalnego — wniosek z ciągu logicznego błędny, ale oparty na prawdziwych argumentach", c: false },
+    ],
+    exp: "Struktura wnioskowania jest poprawna, ale przesłanka („prognozy nigdy się nie mylą”) jest fałszywa → błąd nieformalny (materialny)."
+  },
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6d28d9'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#7c3aed'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#8b5cf6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#d97706'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
