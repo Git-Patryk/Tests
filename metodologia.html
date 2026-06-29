@@ -55,17 +55,18 @@
 
   /* ── NAV ── */
   nav {
-    position: sticky; top: 0; z-index: 100;
-    padding: .9rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    background: rgba(5,8,13,.94);
+    position: sticky; top: 0; z-index: 50;
+    padding: 1rem 1.5rem;
+    background: rgba(8,8,15,.92);
     backdrop-filter: blur(14px);
-    display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 2px solid var(--nc);
+    display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
   }
-  nav a { color: var(--muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+  nav a { color: #c4c4dc; text-decoration: none; font-size: .9rem; font-weight: 500; transition: color .2s; }
   nav a:hover { color: var(--nc); }
-  nav .sep { color: var(--border); font-size: .82rem; }
-  nav .current { color: var(--text); font-weight: 600; font-size: .82rem; }
+  nav .sep { color: var(--nc); opacity: .5; font-size: .9rem; }
+  nav .current { color: var(--text); font-weight: 700; font-size: .9rem; }
 
   /* ── LAYOUT ── */
   .layout {
