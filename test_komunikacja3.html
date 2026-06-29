@@ -407,7 +407,7 @@ const ALL_QUESTIONS = [
     opts: [
       { t: "Pomnóż planowany czas przez 0,9 (np. 20 min → przygotuj treść na 18 min)", c: true },
       { t: "Pomnóż planowany czas przez 1,5", c: false },
-      { t: "Mów dokładnie tyle, ile masz przydzielone, co do minuty", c: false },
+      { t: "Mów dokładnie tyle, ile masz przydzielone, co do jednej minuty (bez żadnego zapasu)", c: false },
       { t: "Skróć każde wystąpienie do maksymalnie 5 minut", c: false }
     ],
     exp: "Reguła Rives'a: planowany czas × 0,9. Przy 20 minutach: 20 × 0,9 = 18 → przygotuj treść na 18 min; resztę zajmą reakcje publiczności (oklaski, śmiech)."
@@ -426,7 +426,7 @@ const ALL_QUESTIONS = [
     q: "Czego dotyczyło badanie irlandzkie z 2018 r. (N≈3140) tydzień przed referendum?",
     opts: [
       { t: "Fałszywych wspomnień — badani „pamiętali” fake newsy zgodne z własną postawą wobec aborcji", c: true },
-      { t: "Wpływu reklam telewizyjnych na frekwencję wyborczą", c: false },
+      { t: "Wpływu intensywnych reklam telewizyjnych na ostateczną frekwencję w wyborach parlamentarnych", c: false },
       { t: "Skuteczności dotyku w sprzedaży bezpośredniej", c: false },
       { t: "Pomiaru zdolności numerycznych wyborców", c: false }
     ],
@@ -440,7 +440,7 @@ const ALL_QUESTIONS = [
       { t: "Philip Kotler i współpracownicy", c: true },
       { t: "George Lakoff", c: false },
       { t: "Robert Cialdini", c: false },
-      { t: "Chip Heath i Dan Heath", c: false }
+      { t: "Chip Heath i Dan Heath, autorzy bestsellerów", c: false }
     ],
     exp: "Marketing 5.0 opisali Kotler i in. (2021): przesunięcie akcentu od produktu, przez konsumenta, po człowieka, wartości i doświadczenia (CX), wspierane nowymi technologiami."
   },
@@ -458,7 +458,7 @@ const ALL_QUESTIONS = [
     q: "Co ilustruje hasło „Nie myśl o słoniu” (Lakoff)?",
     opts: [
       { t: "Negowanie cudzej ramy ją aktywuje — zaprzeczając na cudzych warunkach, wzmacniamy ją", c: true },
-      { t: "Że metafory zwierzęce są w polityce zakazane", c: false },
+      { t: "Że wszelkie metafory zwierzęce są w poważnej debacie politycznej całkowicie zakazane i szkodliwe", c: false },
       { t: "Że framing nie ma wpływu na odbiorcę", c: false },
       { t: "Że należy zawsze powtarzać hasła przeciwnika", c: false }
     ],
@@ -468,7 +468,7 @@ const ALL_QUESTIONS = [
     q: "Którzy autorzy opisali equivocation jako „character insurance” (1975)?",
     opts: [
       { t: "M. Lee Williams i Blaine Goss", c: true },
-      { t: "Lance Bennett", c: false },
+      { t: "Lance Bennett i Murray Edelman", c: false },
       { t: "Cwalina i Koniak", c: false },
       { t: "Heath i Heath", c: false }
     ],
@@ -487,8 +487,8 @@ const ALL_QUESTIONS = [
   {
     q: "Jakie dwie główne funkcje wieloznaczności w polityce wskazali Cwalina i Koniak (2014)?",
     opts: [
-      { t: "Prewencyjną/defensywną (obrona wizerunku) i promocyjną/strategiczną (budowanie wizerunku i poparcia)", c: true },
-      { t: "Informacyjną i rozrywkową", c: false },
+      { t: "Prewencyjną/defensywną i promocyjną/strategiczną", c: true },
+      { t: "Informacyjną (przekaz wiedzy) i rozrywkową (budowanie emocji)", c: false },
       { t: "Poznawczą i emocjonalną", c: false },
       { t: "Lokalną i globalną", c: false }
     ],
@@ -498,7 +498,7 @@ const ALL_QUESTIONS = [
     q: "Czym charakteryzuje się wieloznaczność semantyczna (a nie argumentacyjna)?",
     opts: [
       { t: "Ogólnikami i banałami, np. „Sytuacja w służbie zdrowia musi się zmienić”", c: true },
-      { t: "Przedstawianiem różnych opcji bez opowiedzenia się za którąkolwiek", c: false },
+      { t: "Przedstawianiem wielu różnych opcji naraz, bez wyraźnego opowiedzenia się za którąkolwiek", c: false },
       { t: "Precyzyjnym wskazaniem jednego rozwiązania", c: false },
       { t: "Stosowaniem wyłącznie danych liczbowych", c: false }
     ],
@@ -517,8 +517,8 @@ const ALL_QUESTIONS = [
   {
     q: "Do czego odnosi się teza Heath i Heath (2020): „nie może istnieć 5 gwiazd polarnych”?",
     opts: [
-      { t: "Do tego, że mówiąc 3 (lub 5) rzeczy naraz, w istocie nie mówisz nic — potrzebny jest jeden przekaz przewodni", c: true },
-      { t: "Do liczby kanałów komunikacji niewerbalnej", c: false },
+      { t: "Do tego, że mówiąc wiele rzeczy naraz, nie mówisz nic — liczy się jeden przekaz", c: true },
+      { t: "Do liczby równoległych kanałów komunikacji niewerbalnej w wystąpieniu publicznym mówcy", c: false },
       { t: "Do pięciu typów framingu", c: false },
       { t: "Do reguły Rives'a", c: false }
     ],
@@ -538,7 +538,7 @@ const ALL_QUESTIONS = [
     q: "Jaka jest kolejność kroków w modelu „Co i dla kogo?” (Drzewiecka, 2016)?",
     opts: [
       { t: "Rozpoznanie oczekiwań → oferta → framing → rozmowa/kampania", c: true },
-      { t: "Kampania → framing → oferta → rozpoznanie", c: false },
+      { t: "Najpierw kampania, potem framing, oferta i na końcu rozpoznanie oczekiwań odbiorcy", c: false },
       { t: "Oferta → rozpoznanie → kampania → framing", c: false },
       { t: "Framing → kampania → rozpoznanie → oferta", c: false }
     ],

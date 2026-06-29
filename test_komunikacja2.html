@@ -334,7 +334,7 @@ const ALL_QUESTIONS = [
     q: "Jaki wniosek praktyczny dla perswazji płynie z teorii funkcji postaw?",
     opts: [
       { t: "Argument warto dopasować do funkcji, jaką postawa pełni dla danej osoby", c: true },
-      { t: "Wszystkie postawy zmienia się tym samym argumentem", c: false },
+      { t: "Wszystkie postawy zmienia się tym samym uniwersalnym argumentem racjonalnym", c: false },
       { t: "Postaw w ogóle nie da się zmienić perswazją", c: false },
       { t: "Liczy się tylko siła emocji w przekazie", c: false }
     ],
@@ -345,8 +345,8 @@ const ALL_QUESTIONS = [
   {
     q: "Czym jest „manipulacja dystrakcją” w kontekście modelu ELM?",
     opts: [
-      { t: "Rozpraszaniem odbiorcy, by utrudnić mu tor centralny i skłonić do ulegania wskazówkom peryferycznym", c: true },
-      { t: "Dostarczaniem dodatkowych mocnych argumentów", c: false },
+      { t: "Rozpraszaniem uwagi, by utrudnić tor centralny i pchnąć odbiorcę na tor peryferyczny", c: true },
+      { t: "Dostarczaniem odbiorcy dodatkowych, mocnych i logicznie powiązanych argumentów merytorycznych", c: false },
       { t: "Zwiększaniem motywacji odbiorcy do analizy", c: false },
       { t: "Powtarzaniem tej samej tezy wielokrotnie", c: false }
     ],
@@ -390,7 +390,7 @@ const ALL_QUESTIONS = [
     q: "Od czego — wg koncepcji kontroli agendy — zależy spostrzegana „ważność” tematu?",
     opts: [
       { t: "Od „filtra medialnego” — tego, co wydawcy i dziennikarze uznają za istotne", c: true },
-      { t: "Wyłącznie od obiektywnej wagi zdarzenia", c: false },
+      { t: "Wyłącznie od obiektywnej, mierzalnej wagi samego zdarzenia dla społeczeństwa", c: false },
       { t: "Od samodzielnego monitorowania świata przez odbiorców", c: false },
       { t: "Od liczby reklam w danym medium", c: false }
     ],
@@ -400,7 +400,7 @@ const ALL_QUESTIONS = [
     q: "Jak działa mechanizm dostępności w primingu?",
     opts: [
       { t: "Bieżący przekaz wprowadza obiekt do pamięci pracującej i z niej korzystamy przy ocenie", c: true },
-      { t: "Im rzadziej o czymś słyszymy, tym łatwiej to oceniamy", c: false },
+      { t: "Im rzadziej o jakimś temacie słyszymy w mediach, tym łatwiej i trafniej go oceniamy później", c: false },
       { t: "Ocena zależy wyłącznie od wykształcenia odbiorcy", c: false },
       { t: "Priming usuwa temat z pamięci długotrwałej", c: false }
     ],
@@ -439,8 +439,8 @@ const ALL_QUESTIONS = [
   {
     q: "Na czym polega tzw. efekt źródła przy stosowaniu ram interpretacyjnych?",
     opts: [
-      { t: "Nawet silna rama traci moc, jeśli pochodzi ze źródła bez autorytetu lub niezgodnego z sympatiami odbiorcy", c: true },
-      { t: "Siła ramy zależy wyłącznie od jej treści", c: false },
+      { t: "Nawet silna rama traci moc, gdy pochodzi ze źródła bez autorytetu", c: true },
+      { t: "Siła oddziaływania ramy zależy wyłącznie od jej treści, nie zaś od nadawcy", c: false },
       { t: "Każda rama działa identycznie niezależnie od nadawcy", c: false },
       { t: "Słabe ramy zawsze przewyższają silne", c: false }
     ],
@@ -462,7 +462,7 @@ const ALL_QUESTIONS = [
     q: "Które osoby — wg badań — są szczególnie podatne na fake news?",
     opts: [
       { t: "Osoby o niskim poziomie myślenia analitycznego i wysokiej zależności emocjonalnej", c: true },
-      { t: "Osoby o wysokim poziomie myślenia analitycznego", c: false },
+      { t: "Osoby o wysokim poziomie myślenia analitycznego oraz krytycznego nastawienia do źródeł", c: false },
       { t: "Wyłącznie osoby starsze, niezależnie od stylu myślenia", c: false },
       { t: "Osoby całkowicie obojętne emocjonalnie wobec treści", c: false }
     ],
@@ -481,8 +481,8 @@ const ALL_QUESTIONS = [
   {
     q: "Na czym polega prebunking (teoria inokulacji)?",
     opts: [
-      { t: "Na uodparnianiu z wyprzedzeniem — pokazaniu osłabionej dawki manipulacji i jej mechanizmu, zanim odbiorca spotka ją „na serio”", c: true },
-      { t: "Na prostowaniu fałszu dopiero po jego rozpowszechnieniu", c: false },
+      { t: "Na uodparnianiu z wyprzedzeniem przez pokazanie mechanizmu manipulacji", c: true },
+      { t: "Na prostowaniu fałszywej informacji dopiero po jej szerokim rozpowszechnieniu", c: false },
       { t: "Na całkowitym blokowaniu dostępu do mediów", c: false },
       { t: "Na powtarzaniu fake newsa, aż przestanie działać", c: false }
     ],
@@ -496,7 +496,7 @@ const ALL_QUESTIONS = [
       { t: "Znalezienie choć jednego sprzymierzeńca, który łamie jednomyślność grupy", c: true },
       { t: "Wzrost jednomyślności grupy", c: false },
       { t: "Niska samoocena osoby", c: false },
-      { t: "Silne poczucie zagrożenia", c: false }
+      { t: "Silne poczucie zagrożenia oraz presja czasu odczuwana przez jednostkę w grupie", c: false }
     ],
     exp: "Konformizm osłabiają m.in.: wysoka samoocena, doświadczenie, kultura indywidualistyczna i — bardzo silnie — znalezienie min. jednego sprzymierzeńca, bo łamie jednomyślność grupy."
   },
@@ -515,8 +515,8 @@ const ALL_QUESTIONS = [
   {
     q: "Na czym polega technika „stopa w drzwiach” (foot-in-the-door)?",
     opts: [
-      { t: "Najpierw drobna prośba (łatwa do spełnienia), potem większa — bazuje na regule zaangażowania i konsekwencji", c: true },
-      { t: "Najpierw duża prośba (odrzucona), potem mniejsza", c: false },
+      { t: "Najpierw drobna prośba, potem większa — reguła zaangażowania i konsekwencji", c: true },
+      { t: "Najpierw bardzo duża prośba (zwykle odrzucona), a dopiero potem znacznie mniejsza", c: false },
       { t: "Atrakcyjna oferta, której warunki potem się pogarsza", c: false },
       { t: "Dawanie prezentu przed prośbą", c: false }
     ],
@@ -525,9 +525,9 @@ const ALL_QUESTIONS = [
   {
     q: "Na czym polega technika „drzwiami w twarz” (door-in-the-face)?",
     opts: [
-      { t: "Najpierw duża prośba (odrzucona), potem mniejsza — odebrana jako ustępstwo, które wypada odwzajemnić zgodą", c: true },
+      { t: "Najpierw duża prośba, potem mniejsza — odebrana jako ustępstwo do odwzajemnienia", c: true },
       { t: "Najpierw mała prośba, potem coraz większe", c: false },
-      { t: "Uzyskanie decyzji, a potem pogorszenie warunków", c: false },
+      { t: "Uzyskanie wstępnej decyzji, a następnie stopniowe pogarszanie pierwotnie podanych warunków", c: false },
       { t: "Powtarzanie tej samej prośby aż do skutku", c: false }
     ],
     exp: "Drzwiami w twarz: zaczynamy od dużej prośby (odrzuconej), a następnie zgłaszamy mniejszą — odbieraną jako nasze ustępstwo, które na mocy reguły wzajemności wypada odwzajemnić zgodą."
@@ -535,8 +535,8 @@ const ALL_QUESTIONS = [
   {
     q: "Na czym polega technika „niska piłka” (low-ball)?",
     opts: [
-      { t: "Uzyskanie decyzji na atrakcyjnych warunkach, a potem ich „pogorszenie” — zaangażowanie już trzyma", c: true },
-      { t: "Najpierw duża prośba, potem mniejsza", c: false },
+      { t: "Uzyskanie decyzji na atrakcyjnych warunkach, a potem ich pogorszenie", c: true },
+      { t: "Najpierw bardzo duża prośba, a zaraz po jej odrzuceniu wyraźnie mniejsza", c: false },
       { t: "Wręczenie prezentu przed prośbą", c: false },
       { t: "Powołanie się na większość („wszyscy tak robią”)", c: false }
     ],
@@ -547,7 +547,7 @@ const ALL_QUESTIONS = [
     opts: [
       { t: "Wspólnej tożsamości — najsilniej ulegamy tym, z którymi czujemy, że „jesteśmy jednym”", c: true },
       { t: "Odwzajemniania prezentów", c: false },
-      { t: "Ulegania ekspertom i autorytetom", c: false },
+      { t: "Ulegania uznanym ekspertom, autorytetom oraz zewnętrznym symbolom wysokiego statusu społecznego", c: false },
       { t: "Cenienia rzeczy rzadkich", c: false }
     ],
     exp: "Reguła jedności (Cialdini, 2016) wykracza poza zwykłe lubienie: chodzi o poczucie wspólnej tożsamości („my to to samo”) — więzy rodzinne/„rodzinopodobne”, wspólne miejsce, współtworzenie."
@@ -557,8 +557,8 @@ const ALL_QUESTIONS = [
   {
     q: "Czym jest efekt kameleona (mimikra) i jak działa w perswazji?",
     opts: [
-      { t: "Nieświadomym naśladowaniem rozmówcy, które działa jak „klej społeczny” — podnosi sympatię, napiwki i sprzedaż", c: true },
-      { t: "Świadomym przedrzeźnianiem klienta w celu zniechęcenia", c: false },
+      { t: "Nieświadomym naśladowaniem rozmówcy, działającym jak „klej społeczny”", c: true },
+      { t: "Świadomym, celowym przedrzeźnianiem klienta w celu zniechęcenia go do zakupu", c: false },
       { t: "Unikaniem jakiegokolwiek kontaktu fizycznego", c: false },
       { t: "Mówieniem zawsze przeciwnie do rozmówcy", c: false }
     ],
@@ -568,7 +568,7 @@ const ALL_QUESTIONS = [
     q: "Kiedy — wg modelu Tannera i in. (1991) — reklama odwołująca się do lęku jest skuteczna?",
     opts: [
       { t: "Gdy poza wzbudzeniem lęku daje odbiorcy skuteczną rekomendację, jak zagrożenia uniknąć", c: true },
-      { t: "Zawsze — im silniejszy lęk, tym lepszy efekt", c: false },
+      { t: "Zawsze i bezwarunkowo — im silniejszy wzbudzony lęk, tym lepszy i trwalszy efekt perswazyjny", c: false },
       { t: "Tylko gdy całkowicie pomija informację o zagrożeniu", c: false },
       { t: "Wyłącznie gdy towarzyszy jej humor", c: false }
     ],

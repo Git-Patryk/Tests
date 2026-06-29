@@ -313,8 +313,8 @@ const ALL_QUESTIONS = [
   {
     q: "Czym jest komunikowanie według definicji z wykładu?",
     opts: [
-      { t: "Kontaktem między min. 2 osobami, w którym nadawca przekazuje odbiorcy — za pomocą zrozumiałych znaków — pewne treści", c: true },
-      { t: "Wyłącznie przekazem masowym kierowanym do anonimowej publiczności", c: false },
+      { t: "Kontaktem, w którym nadawca przekazuje odbiorcy zrozumiałe dla niej treści", c: true },
+      { t: "Wyłącznie przekazem masowym kierowanym do anonimowej, rozproszonej publiczności odbiorców", c: false },
       { t: "Każdą formą myślenia jednostki o samej sobie", c: false },
       { t: "Procesem, który zawsze wymaga kanału werbalnego", c: false }
     ],
@@ -326,7 +326,7 @@ const ALL_QUESTIONS = [
       { t: "Nadawca (kto), komunikat (co), kanał (jak) i odbiorca (do kogo)", c: true },
       { t: "Logos, pathos, ethos i mythos", c: false },
       { t: "Priming, framing, agenda setting i bias", c: false },
-      { t: "Kodowanie, szum, dekodowanie i cisza", c: false }
+      { t: "Kodowanie (szyfrowanie sensu), szum, dekodowanie i sprzężenie zwrotne", c: false }
     ],
     exp: "Podstawowe elementy to KTO (nadawca), CO (komunikat), JAK (kanał komunikacji) i DO KOGO (odbiorca) — to klasyczny układ formuły Lasswella."
   },
@@ -344,7 +344,7 @@ const ALL_QUESTIONS = [
     q: "Czym jest sprzężenie zwrotne (feedback) w komunikacji?",
     opts: [
       { t: "Reakcją odbiorcy, dzięki której nadawca wie, czy i jak komunikat został odebrany", c: true },
-      { t: "Zakłóceniem fizycznym w kanale przekazu", c: false },
+      { t: "Zakłóceniem fizycznym lub semantycznym powstającym w kanale między nadawcą a odbiorcą", c: false },
       { t: "Procesem kodowania komunikatu przez nadawcę", c: false },
       { t: "Powtórzeniem tego samego komunikatu wielokrotnie", c: false }
     ],
@@ -367,7 +367,7 @@ const ALL_QUESTIONS = [
     opts: [
       { t: "Poznawczego, afektywnego (emocjonalnego) i behawioralnego", c: true },
       { t: "Centralnego, peryferycznego i zwrotnego", c: false },
-      { t: "Werbalnego, niewerbalnego i parawerbalnego", c: false },
+      { t: "Werbalnego, niewerbalnego i parawerbalnego (np. tonu i barwy głosu)", c: false },
       { t: "Świadomego, podświadomego i nieświadomego", c: false }
     ],
     exp: "Trójkomponentowy model postawy obejmuje komponent poznawczy (wiedza, przekonania), afektywny (uczucia, oceny) i behawioralny (tendencje do działania)."
@@ -420,7 +420,7 @@ const ALL_QUESTIONS = [
       { t: "Gdy ma niską motywację lub niską zdolność oceny argumentów", c: true },
       { t: "Gdy ma wysoką potrzebę poznania i mocne argumenty", c: false },
       { t: "Wyłącznie gdy temat jest dla niego bardzo ważny", c: false },
-      { t: "Gdy jest rozliczany z trafności swojej oceny", c: false }
+      { t: "Gdy jest rozliczany z trafności swojej oceny i ma silną potrzebę poznania", c: false }
     ],
     exp: "Tor peryferyczny uruchamia się przy niskiej motywacji, braku potrzeby poznania i niskiej zdolności oceny — wtedy odbiorca kieruje się wskazówkami, a nie treścią argumentów."
   },
@@ -449,8 +449,8 @@ const ALL_QUESTIONS = [
   {
     q: "Jak należy poprawnie rozumieć tzw. regułę Mehrabiana (7–38–55%)?",
     opts: [
-      { t: "Dotyczy tylko komunikatów o uczuciach/postawach, gdy kanały są ze sobą sprzeczne — nie całej komunikacji", c: true },
-      { t: "Oznacza, że treść słowna stanowi tylko 7% każdej komunikacji", c: false },
+      { t: "Dotyczy tylko komunikatów o uczuciach/postawach przy sprzeczności kanałów", c: true },
+      { t: "Oznacza, że treść słowna stanowi tylko 7% znaczenia w każdej rozmowie i prezentacji", c: false },
       { t: "Mówi, że mowa ciała jest zawsze ważniejsza od argumentów", c: false },
       { t: "Dotyczy wyłącznie komunikacji pisemnej", c: false }
     ],
@@ -462,7 +462,7 @@ const ALL_QUESTIONS = [
     q: "Na czym polega agenda setting?",
     opts: [
       { t: "Duża uwaga mediów poświęcana jakiemuś tematowi zwiększa jego spostrzeganą ważność", c: true },
-      { t: "Media narzucają odbiorcom konkretne opinie na każdy temat", c: false },
+      { t: "Media wprost narzucają odbiorcom konkretne opinie i gotowe oceny na każdy poruszany temat", c: false },
       { t: "Odbiorcy samodzielnie monitorują wszystkie wydarzenia na świecie", c: false },
       { t: "Dziennikarze zawsze prezentują obie strony sporu po równo", c: false }
     ],
@@ -473,7 +473,7 @@ const ALL_QUESTIONS = [
     opts: [
       { t: "Ujmowaniem zagadnienia w określone ramy interpretacyjne kierujące jego rozumieniem i oceną", c: true },
       { t: "Świadomym fałszowaniem danych liczbowych", c: false },
-      { t: "Selekcją materiałów dopuszczanych do publikacji", c: false },
+      { t: "Selekcją i hierarchizacją materiałów dopuszczanych do publikacji przez redakcję danego medium", c: false },
       { t: "Powtarzaniem przekazu aż do zapamiętania", c: false }
     ],
     exp: "Framing to ujmowanie tematu w ramy interpretacyjne, które kierują tym, jak go rozumiemy i oceniamy (np. „90% przeżywalności” vs „10% śmiertelności”)."
@@ -482,7 +482,7 @@ const ALL_QUESTIONS = [
     q: "Czym jest priming w przekazie medialnym?",
     opts: [
       { t: "Narzucaniem standardów oceny zjawiska, zanim się z nim zetkniemy", c: true },
-      { t: "Komentowaniem zdarzeń przez dziennikarzy", c: false },
+      { t: "Komentowaniem bieżących zdarzeń przez dziennikarzy i zaproszonych do studia ekspertów", c: false },
       { t: "Ograniczaniem dostępności informacji", c: false },
       { t: "Naśladowaniem gestów rozmówcy", c: false }
     ],
@@ -492,7 +492,7 @@ const ALL_QUESTIONS = [
     q: "Jak definiuje się fake news?",
     opts: [
       { t: "Treść publikowana/rozpowszechniana jako „prawdziwa”, gdy w rzeczywistości taka nie jest", c: true },
-      { t: "Każda informacja krytyczna wobec rządu", c: false },
+      { t: "Każda informacja krytyczna wobec rządu lub osób aktualnie sprawujących władzę publiczną w państwie", c: false },
       { t: "Wiadomość zawierająca błąd ortograficzny", c: false },
       { t: "Dowolny artykuł opinii w internecie", c: false }
     ],
@@ -506,7 +506,7 @@ const ALL_QUESTIONS = [
       { t: "Informacyjny działa „by mieć słuszność”, normatywny — „by być lubianym”", c: true },
       { t: "Informacyjny działa „by być lubianym”, normatywny — „by mieć słuszność”", c: false },
       { t: "Oba dotyczą wyłącznie reklamy komercyjnej", c: false },
-      { t: "Informacyjny dotyczy emocji, a normatywny faktów", c: false }
+      { t: "Informacyjny dotyczy wyłącznie emocji odbiorcy, a normatywny twardych, obiektywnych faktów", c: false }
     ],
     exp: "Wpływ informacyjny: ulegamy „by mieć słuszność” (inni są źródłem wiedzy o tym, co poprawne). Normatywny: ulegamy „by być lubianym” (by zyskać akceptację, uniknąć odrzucenia)."
   },
@@ -514,7 +514,7 @@ const ALL_QUESTIONS = [
     q: "Czym jest konformizm (badania Ascha, 1951)?",
     opts: [
       { t: "Uleganiem naciskowi grupowemu — zmianą opinii lub zachowania pod wpływem grupy", c: true },
-      { t: "Wykonywaniem poleceń autorytetu", c: false },
+      { t: "Wykonywaniem bezpośrednich poleceń autorytetu wbrew własnemu sumieniu i przekonaniom", c: false },
       { t: "Odrzucaniem wszystkich norm grupy", c: false },
       { t: "Naśladowaniem gestów rozmówcy", c: false }
     ],
@@ -548,7 +548,7 @@ const ALL_QUESTIONS = [
       { t: "Powszechność postawy/zachowania wydaje się dowodem jej słuszności — „skoro inni, to i ja”", c: true },
       { t: "Im rzadszy produkt, tym bardziej pożądany", c: false },
       { t: "Ulegamy ekspertom i symbolom autorytetu", c: false },
-      { t: "Chcemy być konsekwentni wobec własnych deklaracji", c: false }
+      { t: "Chcemy być konsekwentni i zgodni z naszymi wcześniejszymi, publicznie złożonymi deklaracjami", c: false }
     ],
     exp: "Społeczny dowód słuszności: o tym, co właściwe, wnioskujemy z zachowania innych — zwłaszcza w niepewności i gdy „inni” są do nas podobni."
   },
