@@ -14,7 +14,8 @@ window.RECALL_DECK = {
       {id:"B1", label:"1 · Komunikacja i perswazja"},
       {id:"B2", label:"2 · (Social) media"},
       {id:"B3", label:"3 · Wpływ społeczny"},
-      {id:"B4", label:"4 · Biznes / polityka"}
+      {id:"B4", label:"4 · Biznes / polityka"},
+      {id:"B5", label:"5 · Postawy, techniki, erystyka"}
     ]
   },
   cards: [
@@ -69,6 +70,29 @@ window.RECALL_DECK = {
     {id:"B4-7", sec:"B4", f:"Rodzaje strategicznej wieloznaczności?", b:"Semantyczna — ogólniki i banały („sytuacja w służbie zdrowia musi się zmienić”). Argumentacyjna — różne opcje bez opowiedzenia się za którąkolwiek („są argumenty za i przeciw…”)."},
     {id:"B4-8", sec:"B4", f:"Reguły jasnego języka Orwella (1946) — idea?", b:"M.in.: unikaj banalnych metafor, używaj krótszego wyrazu zamiast długiego, wyrzuć zbędne słowo, używaj strony czynnej zamiast biernej, codziennych słów zamiast żargonu."},
     {id:"B4-9", sec:"B4", f:"Zasada „jednego przekazu” (Heath & Heath 2020)?", b:"„Jeśli mówisz 3 rzeczy na raz, nic nie mówisz”. Jak nie ma 5 gwiazd polarnych, tak nie ma 5 najważniejszych celów — jeden jasny przekaz przewodni > wiele rozmytych."},
-    {id:"B4-10", sec:"B4", f:"Model „Co i dla kogo?” (Drzewiecka 2016)?", b:"Rozpoznanie oczekiwań i sytuacji odbiorcy → oferta → framing sytuacji i oferty → rozmowa/kampania. Punkt wyjścia to perspektywa odbiorcy, nie „co ja chcę powiedzieć”."}
+    {id:"B4-10", sec:"B4", f:"Model „Co i dla kogo?” (Drzewiecka 2016)?", b:"Rozpoznanie oczekiwań i sytuacji odbiorcy → oferta → framing sytuacji i oferty → rozmowa/kampania. Punkt wyjścia to perspektywa odbiorcy, nie „co ja chcę powiedzieć”."},
+
+    {id:"B5-1", sec:"B5", f:"Model ABC postawy — co oznaczają litery?", b:"A = Affect (emocjonalny — uczucia), B = Behavior (behawioralny — zachowanie), C = Cognition (poznawczy — wiedza, przekonania). To te same trzy komponenty co model trójkomponentowy."},
+    {id:"B5-2", sec:"B5", f:"Niespójność postawy w modelu ABC?", b:"Gdy komponenty się rozjeżdżają (najczęściej poznanie ≠ zachowanie), np. wiesz, że fast fashion jest nieetyczne, ale i tak kupujesz. Rodzi dysonans poznawczy (Festinger)."},
+    {id:"B5-3", sec:"B5", f:"Warunkowanie ewaluatywne vs instrumentalne postaw?", b:"Ewaluatywne: neutralny obiekt skojarzony z czymś lubianym przejmuje jego znak (piłkarz X + lubiany klub A). Instrumentalne: postawa/zachowanie wzmacniane nagrodą (prezent w programie lojalnościowym)."},
+    {id:"B5-4", sec:"B5", f:"Efekt czystej (samej) ekspozycji (Zajonc)?", b:"Im częściej i dłużej stykamy się z bodźcem (np. produktem lokowanym w serialu), tym bardziej go lubimy — nawet bez świadomej analizy poznawczej."},
+    {id:"B5-5", sec:"B5", f:"Efekt familiarności?", b:"Produkt, który już znamy, wydaje się bezpieczniejszym wyborem niż widziany pierwszy raz. Spokrewniony z efektem czystej ekspozycji."},
+    {id:"B5-6", sec:"B5", f:"Efekt przesypiania (sleeper effect)?", b:"Komunikat z niewiarygodnego źródła z czasem zyskuje wiarygodność — zapominamy podejrzane źródło (wskazówkę odrzucającą), a treść zostaje. Źródło i treść rozłączają się w pamięci."},
+    {id:"B5-7", sec:"B5", f:"Model HSM — czym różni się od ELM?", b:"Oba dwutorowe. HSM (Chaiken): tor systematyczny (analiza treści) i heurystyczny (skróty: „ekspert ma rację”, „dużo argumentów = mocne”). HSM wprost podkreśla rolę HEURYSTYK."},
+    {id:"B5-8", sec:"B5", f:"Heurystyka zakotwiczenia w sprzedaży?", b:"Pierwsza liczba = kotwica. Pokazuje się najpierw WYSOKĄ cenę pierwotną, by cena promocyjna wydała się atrakcyjna (nie odwrotnie)."},
+    {id:"B5-9", sec:"B5", f:"Sekwencyjne techniki wpływu — wymień?", b:"Stopa w drzwiach, drzwi zatrzaśnięte przed nosem, niska piłka, stopa w ustach, „zamień odrzucenie w przeszkodę”, cztery ściany, usidlanie eksperta. Etykietowanie NIE jest sekwencyjne (wpływ jednoetapowy)."},
+    {id:"B5-10", sec:"B5", f:"Stopa w ustach vs stopa w drzwiach?", b:"Stopa w ustach: najpierw pozytywna deklaracja (np. „Czy lubisz zwierzęta?”), potem prośba zgodna z nią. Stopa w drzwiach: najpierw mała prośba, potem większa. Obie bazują na spójności/konsekwencji."},
+    {id:"B5-11", sec:"B5", f:"Która technika jest „zaprzeczeniem” reguły zaangażowania i konsekwencji?", b:"Drzwi zatrzaśnięte przed nosem — działają odwrotnie: od dużej prośby, na bazie wzajemności USTĘPSTW, a nie konsekwencji (jak stopa w drzwiach czy niska piłka)."},
+    {id:"B5-12", sec:"B5", f:"Rozproszenie odpowiedzialności (efekt widza)?", b:"Im więcej świadków, tym mniejsza szansa pomocy — każdy liczy, że zareaguje ktoś inny (Latané & Darley). NIE jest regułą Cialdiniego."},
+    {id:"B5-13", sec:"B5", f:"Kapitanoza (captainitis)?", b:"Brak reakcji załogi na ewidentne błędy autorytetu (kapitana/pilota) — skrajny skutek reguły autorytetu, bywa przyczyną katastrof."},
+    {id:"B5-14", sec:"B5", f:"Atrakcyjność nadawcy — kiedy NIE działa?", b:"Działa dla produktów wizerunkowych/ekspresyjnych, ale nie dla użytkowych/funkcjonalnych (np. pestycydy). Liczy się dopasowanie nadawcy do produktu (hipoteza dopasowania)."},
+    {id:"B5-15", sec:"B5", f:"Cztery uszy (strony komunikatu) von Thuna?", b:"Rzeczowe (fakty), ujawniania siebie (co nadawca mówi o sobie), apelu (czego chce), relacji (co myśli o naszej relacji)."},
+    {id:"B5-16", sec:"B5", f:"Modele informacji zwrotnej FUKO i DESC?", b:"FUKO = Fakty, Uczucia, Konsekwencje, Oczekiwania. DESC = opis zachowania → wyrażenie reakcji → określenie zmiany → konsekwencje. Oba zaczynają od opisu zachowania SUCHYMI FAKTAMI (tym się NIE różnią)."},
+    {id:"B5-17", sec:"B5", f:"NVC (Rosenberg) — żyrafa vs szakal? Rodzaje komplementów?", b:"Język żyrafy = empatyczny, nieoceniający („serce”); szakal = oceniający, „przemocowy”. Komplementy: bezpośredni („jesteś taki…”), pośredni, trafny, relacyjny."},
+    {id:"B5-18", sec:"B5", f:"Psychologia ceny — kluczowe zabiegi?", b:"Asymilacja (produkt przejmuje cechy kontekstu — „apartament” zamiast „mieszkanie”), odd-even (99,99 zł zamiast 100 zł), cena prestiżu (wysoka = jakość), cena odniesienia/zakotwiczenie, ujawnianie wysiłku."},
+    {id:"B5-19", sec:"B5", f:"Marketing 1.0 → 5.0 (Kotler)?", b:"1.0 produkt, 2.0 klient, 3.0 wartości/człowiek, 4.0 świat cyfrowy, 5.0 technologie w służbie człowieka (AI, CX). Najczęściej pytane: 3.0 = wartości."},
+    {id:"B5-20", sec:"B5", f:"Erystyka: chochoł, tu quoque, shotgun?", b:"Chochoł (straw man): obalanie przesadzonej/uproszczonej wersji cudzego argumentu. Tu quoque: zarzut hipokryzji („ty też…”). Shotgun: lawina argumentów naraz, by nie dało się skontrować."},
+    {id:"B5-21", sec:"B5", f:"Błąd formalny vs nieformalny?", b:"Formalny: wadliwa STRUKTURA wnioskowania (wniosek nie wynika z przesłanek). Nieformalny: ciąg logiczny poprawny, ale oparty na NIEPRAWDZIWYM założeniu (np. „prognozy nigdy się nie mylą”)."},
+    {id:"B5-22", sec:"B5", f:"Różnice płciowe w komunikacji (Witoszek-Kubicka & Rudziński 2025)?", b:"Mężczyźni: bezpośredni, rywalizacja, fakty i cele (styl instrumentalny). Kobiety: relacje, współpraca, empatia (styl ekspresyjny)."}
   ]
 };
