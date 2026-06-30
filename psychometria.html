@@ -689,8 +689,11 @@
         <tr><td>0,9 – 1</td><td>bardzo wysoka — precyzyjne wyniki diagnostyczne</td></tr>
       </table>
       <div class="callout exam"><span class="ci">🎯</span><div>α Cronbacha „<strong>pozwala ocenić, na ile odpowiedzi na pozycje testowe są determinowane nasileniem jednej cechy</strong>". <span class="strata">NIE</span> oblicza się jej metodą test-retest. Im wyższa α → tym <strong>mniejszy błąd pomiaru</strong> (np. skala α=0,94 ma mniejszy błąd niż α=0,84).</div></div>
-      <p><strong>Współczynnik determinacji</strong> (rzetelność jako kwadrat korelacji wynik otrzymany–prawdziwy): α=0,9 → 81%; α=0,8 → 64%; α=0,7 → 49%.</p>
-      <div class="callout info"><span class="ci">ℹ️</span><div>Alternatywy: <strong>omega McDonalda</strong>, współczynnik Sijtsmy i Molenaara (dobry dla zadań mocno różniących się trudnością). W IRT odpowiednikiem jest <strong>funkcja informacyjna</strong>.</div></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>Pułapka: rzetelność vs korelacja — podnosić do kwadratu czy nie?</strong> Rzetelność jest <em>sama w sobie</em> udziałem wariancji prawdziwej — <span class="uwaga">NIE podnosimy jej do kwadratu</span>: rzetelność = 0,8 → <strong>80%</strong> wariancji to „prawdziwy sygnał". Do kwadratu podnosimy <strong>korelację</strong> (np. trafność, związek z kryterium): r = 0,8 → r² = <strong>64%</strong> wariancji wspólnej (<strong>współczynnik determinacji</strong>). <em>(Korelacja wynik otrzymany–prawdziwy = √rzetelności; dopiero jej kwadrat daje z powrotem rzetelność.)</em></div></div>
+      <h4>Kiedy α zaniża rzetelność → omega McDonalda</h4>
+      <p>α Cronbacha zakłada <strong>tau-ekwiwalentność</strong> — że <span class="term">wszystkie pozycje mierzą cechę z dokładnie tą samą siłą</span> (równe ładunki czynnikowe). Gdy to założenie jest złamane (pozycje mają różne ładunki — model <strong>kongeneryczny</strong>), α staje się <strong>dolnym oszacowaniem</strong> i <span class="strata">zaniża</span> prawdziwą rzetelność.</p>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>α zaniża rzetelność, gdy nie jest spełniona tau-ekwiwalentność</strong> (pozycje o różnych ładunkach / różnej wariancji prawdziwej) → lepszą miarą jest wtedy <strong>omega McDonalda</strong> (nie wymaga równych ładunków).</div></div>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Inne alternatywy: współczynnik <strong>Sijtsmy i Molenaara</strong> (dobry dla zadań mocno różniących się trudnością). W IRT odpowiednikiem precyzji pomiaru jest <strong>funkcja informacyjna</strong>.</div></div>
     </div>
 
     <div class="lcard">
@@ -733,6 +736,22 @@
       <div class="callout exam"><span class="ci">🎯</span><div><strong>Im wyższy poziom ufności → tym szerszy przedział.</strong> Aby <strong>zmniejszyć szerokość przedziału</strong> (gdy nie możemy zmienić własności testu) → <strong>zmniejszyć poziom ufności</strong> (np. z 95% do 85%).</div></div>
       <div class="callout exam"><span class="ci">🎯</span><div>Przykład: wynik <strong>9 stenów</strong>, półprzedział = 2 → wynik prawdziwy zawiera się <strong>w przedziale od 7 do 11 stena</strong> (9±2) z prawdopodobieństwem równym przyjętemu poziomowi ufności.</div></div>
       <div class="callout info"><span class="ci">ℹ️</span><div>PU odnosi się do kontroli błędów <strong>w perspektywie długoterminowej</strong>, a nie do pojedynczego badania. Wartości półprzedziałów zaokrąglamy w górę do liczby całkowitej.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>🎯 Zadanie: przeliczanie przedziału na inny poziom ufności</h3>
+      <p>Półprzedział = <strong>z × SEM</strong>, gdzie <strong>z</strong> to liczba odchyleń standardowych potrzebnych, by „złapać" dany % przypadków rozkładu normalnego. Wartości z warto znać na pamięć:</p>
+      <table class="ltable">
+        <tr><th>Poziom ufności</th><th>68%</th><th>85%</th><th>90%</th><th>95%</th><th>99%</th></tr>
+        <tr><td><strong>z</strong></td><td>1,00</td><td>1,44</td><td>1,64</td><td>1,96</td><td>2,58</td></tr>
+      </table>
+      <p><strong>Przykład:</strong> wynik 120; przy 85% półprzedział = 7. Ile wyniesie przedział dla 95%?</p>
+      <ol class="nlist">
+        <li>SEM z poziomu 85%: &nbsp;7 = 1,44 × SEM → <strong>SEM ≈ 4,86</strong></li>
+        <li>Półprzedział dla 95%: &nbsp;1,96 × 4,86 ≈ <strong>9,5</strong></li>
+        <li>Przedział: &nbsp;120 ± 9,5 → <strong>≈ 111–129</strong></li>
+      </ol>
+      <div class="callout tip"><span class="ci">💡</span><div>Skrót: by przejść z jednego poziomu na drugi, przeskaluj półprzedział przez <strong>stosunek z-ów</strong>: 7 × (1,96 / 1,44) ≈ 9,5. Wyższy poziom ufności → większe z → <strong>szerszy</strong> przedział.</div></div>
     </div>
 
     <div class="lcard">
@@ -826,6 +845,18 @@
       <h3>Analiza czynnikowa — interpretacja</h3>
       <p>Analiza czynnikowa szuka <strong>zmiennych nieobserwowalnych (latentnych)</strong>, które wyjaśniają odpowiedzi na zadania.</p>
       <div class="callout exam"><span class="ci">🎯</span><div>„Analiza czynnikowa wykazała 5 czynników" → oznacza, że <strong>pięć zmiennych nieobserwowalnych najlepiej wyjaśnia odpowiedzi na zadania w teście</strong> (NIE: kwestionariusz ma 5 zadań / jest nierzetelny).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Ładunek czynnikowy i KMO</h3>
+      <p><strong>Ładunek czynnikowy</strong> = na ile dana pozycja „pasuje" do wyodrębnionego czynnika. Przyjmuje wartości od <strong>−1 do 1</strong>; liczy się <span class="term">odległość od 0</span> (a nie sam znak):</p>
+      <ul class="alist">
+        <li>blisko 0 → pozycja <span class="strata">bezużyteczna</span>, nie mierzy czynnika (kandydat do usunięcia)</li>
+        <li>daleko od 0 (np. 0,7) → pozycja dobrze mierzy czynnik</li>
+        <li><strong>wartość ujemna</strong> (np. −0,85) → pozycja użyteczna, tylko <span class="uwaga">odwrócona</span> (np. „często się uśmiecham" w skali depresji — dobrze pasuje do puli, lecz w przeciwną stronę)</li>
+      </ul>
+      <p><strong>KMO</strong> (Kaiser–Meyer–Olkin) = miara od <strong>0 do 1</strong> sprawdzająca, <span class="term">czy pozycje w ogóle „pasują do siebie"</span> na tyle, by je sensownie grupować w czynniki. Niski KMO → korelacje między pozycjami bliskie 0, nie da się wyodrębnić sensownych wymiarów (analiza czynnikowa traci sens).</p>
+      <div class="callout exam"><span class="ci">🎯</span><div>Ładunek czynnikowy: zakres <strong>−1 do 1</strong>, oceniamy <strong>odległość od 0</strong>; ładunek bliski 0 = pozycja do usunięcia, ładunek ujemny = pozycja odwrócona. <strong>KMO</strong> bliski 1 = pozycje dobrze nadają się do analizy czynnikowej.</div></div>
     </div>
 
     <div class="lcard">
@@ -978,6 +1009,49 @@
       <div class="callout exam"><span class="ci">🎯</span><div>Współczynnik trudności <strong>IRT</strong>: na pytanie o wartości <strong>−0,88</strong> poprawnie odpowiada <strong>najwięcej osób</strong> (im niższy/bardziej ujemny parametr, tym łatwiejsze zadanie).</div></div>
       <div class="callout exam"><span class="ci">🎯</span><div><strong>Model 2-parametryczny IRT</strong> szacuje: <strong>trudność i moc dyskryminacyjną</strong>. (Model 3-parametryczny dodaje zgadywanie.)</div></div>
       <div class="callout exam"><span class="ci">🎯</span><div>Najwyższą moc dyskryminacyjną mają zwykle <strong>pozycje o umiarkowanej trudności</strong>. W teście o normalnym rozkładzie wyników surowych dominują <strong>pytania o umiarkowanej trudności</strong>. Konstruując test inteligencji dla populacji ogólnej, należy <strong>uwzględnić pozycje o zróżnicowanej trudności</strong> (łatwe, przeciętne i trudne).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Modele IRT: od 1PL do 4PL (parametry pozycji)</h3>
+      <p>IRT modeluje <strong>prawdopodobieństwo dobrej odpowiedzi</strong> na <span class="term">jedną pozycję</span> w zależności od nasilenia cechy badanego (oznaczanego <strong>θ</strong>, „theta"). Najprościej wyobrazić to sobie jako <strong>skok wzwyż</strong>: θ = jak wysoko potrafisz skoczyć (Twoja cecha), a parametry pozycji opisują samą poprzeczkę.</p>
+      <table class="ltable">
+        <tr><th>Parametr</th><th>Co opisuje (analogia poprzeczki)</th></tr>
+        <tr><td><strong>b</strong> — trudność</td><td><em>gdzie</em> stoi poprzeczka. Wysokie b = pozycja trudna (mało kto „przeskakuje")</td></tr>
+        <tr><td><strong>a</strong> — dyskryminacja</td><td><em>jak ostro</em> poprzeczka sortuje. Wysokie a = czysto oddziela lepszych od słabszych (odpowiednik <strong>ładunku czynnikowego</strong> pozycji)</td></tr>
+        <tr><td><strong>c</strong> — zgadywanie</td><td><em>podłoga</em>. Nawet osoba o najniższej cesze ma jakąś szansę trafić (np. ~0,25 przy 4 odpowiedziach)</td></tr>
+        <tr><td><strong>d</strong> — nieuwaga</td><td><em>sufit</em>. Nawet ekspert czasem się „pośliźnie", więc maksymalna szansa &lt; 100%</td></tr>
+      </table>
+      <p>Każdy kolejny model <strong>dokłada jeden parametr</strong> do poprzedniego:</p>
+      <ul class="alist">
+        <li><strong>1PL</strong> (model Rascha) → tylko <strong>b</strong>. Zakłada, że wszystkie pozycje różnicują tak samo dobrze (krzywe równoległe, nigdy się nie przecinają).</li>
+        <li><strong>2PL</strong> → <strong>+ a</strong> (dyskryminacja). Pozycje mogą różnić się „ostrością" → krzywe mogą się przecinać (to, która pozycja jest trudniejsza, może zależeć od poziomu cechy).</li>
+        <li><strong>3PL</strong> → <strong>+ c</strong> (zgadywanie). Dla testów wyboru, gdzie da się trafić losowo.</li>
+        <li><strong>4PL</strong> → <strong>+ d</strong> (nieuwaga). <span class="term">Model maksymalny</span> — komplet czterech parametrów (a, b, c, d).</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div>Mnemonik: <strong>b</strong> — gdzie (trudność) · <strong>a</strong> — jak ostro (dyskryminacja) · <strong>c</strong> — podłoga (zgadywanie) · <strong>d</strong> — sufit (nieuwaga). <strong>2PL dodaje a</strong> względem 1PL; <strong>4PL = model maksymalny</strong> (najbardziej złożony dychotomiczny).</div></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>Haczyk „na zrozumienie":</strong> w 1PL i 2PL punkt trudności b to miejsce, gdzie P = 0,5. W <strong>3PL już nie</strong> — skoro podłoga podniosła się do c, to przy θ = b prawdopodobieństwo wynosi <strong>(1 + c)/2</strong> (dla c = 0,25 → <strong>0,625</strong>, a nie 0,5). Parametr <em>c</em> nazywamy <strong>pseudo-zgadywaniem</strong> (realnie ≠ 1/liczba opcji, bo dystraktory nie są równie kuszące).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Krzywa charakterystyczna pozycji (ICC)</h3>
+      <p><strong>ICC</strong> (item characteristic curve) to wykres w kształcie litery <strong>S</strong> pokazujący, jak <span class="term">nasilenie cechy (θ) wpływa na szansę dobrej odpowiedzi</span> na daną pozycję — czyli „jak to, co masz w głowie (cecha), przekłada się na zaznaczoną odpowiedź".</p>
+      <ul class="alist">
+        <li><strong>Dotyczy JEDNEJ pozycji</strong>, nie całego testu</li>
+        <li>kształt wyznaczają parametry: <strong>b</strong> przesuwa krzywą w lewo (łatwa) / w prawo (trudna), <strong>a</strong> = nachylenie (strome = wysokie a), <strong>c</strong> = dolna asymptota, <strong>d</strong> = górna asymptota</li>
+        <li>suma ICC wszystkich pozycji = <strong>TCC</strong> (krzywa charakterystyczna całego testu)</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>ICC</strong> = prawdopodobieństwo poprawnej odpowiedzi (P) w funkcji nasilenia cechy (θ); dotyczy <strong>pojedynczej pozycji</strong>. „Dolna asymptota" = c (zgadywanie), „górna asymptota" = d (nieuwaga).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Modele politomiczne (wielokategorialność w IRT)</h3>
+      <p>Modele 1–4PL są <strong>dychotomiczne</strong> — pasują do pozycji z odpowiedzią „dobrze / źle". Gdy pozycja ma <strong>więcej niż dwie kategorie</strong> odpowiedzi (np. skala Likerta: zdecydowanie nie → zdecydowanie tak), używamy <span class="term">modeli politomicznych</span>.</p>
+      <ul class="alist">
+        <li><strong>GRM</strong> — Graded Response Model (Samejima) — najczęstszy</li>
+        <li><strong>GPCM</strong> / <strong>PCM</strong> — (Generalized) Partial Credit Model</li>
+        <li><strong>RSM</strong> — Rating Scale Model · <strong>NRM</strong> — Nominal Response Model</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div>„Jak nazywa się wielokategorialność w IRT?" → <strong>modele politomiczne</strong>. Jeśli wśród opcji są 1PL/2PL/3PL (dychotomiczne), poprawna jest ta politomiczna — najpewniej <strong>GRM</strong>.</div></div>
     </div>
 
     <div class="lcard">
