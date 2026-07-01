@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 9 – Zaawansowana metodologia badań</title>
+<style>
+  :root {
+    --blue:   #3b82f6;
+    --blue2:  #2563eb;
+    --blue3:  #93c5fd;
+    --blue4:  #dbeafe;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f5f8ff;
+    --border: #dbe2ec;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #eff6ff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1e40af 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 600;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+    padding: .5rem 1.15rem;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 999px;
+    transition: background .2s, border-color .2s, transform .1s;
+  }
+  header .back-link:hover { background: rgba(255,255,255,.28); border-color: #fff; transform: translateY(-1px); }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #eff6ff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #bfdbfe;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #1e40af; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #eff6ff; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #1e40af; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(37,99,235,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e40af, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(37,99,235,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #1e40af; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
+  <h1>Zaawansowana metodologia badań</h1>
+  <p>Test 9 · Pytania egzaminacyjne · 31 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN</div>
+    <h2>Test 9 — oryginalne pytania egzaminacyjne</h2>
+    <p>Zestaw <strong>autentycznych pytań z egzaminu</strong> z metodologii (sesja 2024/2025). Przekrój podstaw: przyczynowość i wnioskowanie, plany badawcze, trafność, moc i istotność, Open Science oraz konstruowanie teorii.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>Plany badawcze (wewnątrzgrupowe, quasi) · trafność wewnętrzna vs zewnętrzna · qui pro quo · moc a priori/post hoc · błędy I/II rodzaju · p-value i istotność · d Cohena a istotność · mediacja i moderacja · korelacja vs przyczynowość · prerejestracja, HARKing, p-hacking · SMAR · abdukcja · TCM (Borsboom) · model Rescorli-Wagnera</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>31 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    "q": "W badaniu sprawdzano, czy ekspozycja na dwa przekazy medialne wpływa na poziom zapamiętywania treści; kolejność prezentowania warunków była losowa. Jaki plan badawczy zastosowano?",
+    "opts": [
+      {
+        "t": "wewnątrzgrupowy",
+        "c": true
+      },
+      {
+        "t": "międzygrupowy",
+        "c": false
+      },
+      {
+        "t": "naturalny",
+        "c": false
+      },
+      {
+        "t": "mieszany",
+        "c": false
+      }
+    ],
+    "exp": "Ci sami badani przechodzą przez oba warunki (dwa przekazy), a losowa kolejność równoważy efekt wprawy — to plan wewnątrzgrupowy (z powtarzanym pomiarem). Międzygrupowy = różne osoby w każdym warunku; naturalny = bez manipulacji; mieszany = łączy czynnik między- i wewnątrzgrupowy."
+  },
+  {
+    "q": "Co oznacza „bias publikacyjny” (publication bias)?",
+    "opts": [
+      {
+        "t": "nadreprezentację badań z wynikami istotnymi statystycznie",
+        "c": true
+      },
+      {
+        "t": "nadmierne skupienie badaczy na czasopismach otwartego dostępu (open access)",
+        "c": false
+      },
+      {
+        "t": "tendencyjne cytowanie wyłącznie znanych autorów",
+        "c": false
+      },
+      {
+        "t": "używanie tylko jednego języka publikacji",
+        "c": false
+      }
+    ],
+    "exp": "Błąd publikacyjny to nadreprezentacja badań z wynikami istotnymi — łatwiej opublikować wynik pozytywny niż zerowy, co zniekształca obraz literatury i zawyża efekty w metaanalizach."
+  },
+  {
+    "q": "Co jest głównym kryterium odróżniającym naukę od pseudonauki według Karla Poppera?",
+    "opts": [
+      {
+        "t": "możliwość falsyfikacji teorii",
+        "c": true
+      },
+      {
+        "t": "liczba empirycznych potwierdzeń teorii",
+        "c": false
+      },
+      {
+        "t": "stopień ogólności twierdzeń naukowych",
+        "c": false
+      },
+      {
+        "t": "wysoka trafność zewnętrzna wyników",
+        "c": false
+      }
+    ],
+    "exp": "Dla Poppera nauka to twierdzenia, które można sfalsyfikować (wskazać obserwację je obalającą). Liczba potwierdzeń nie rozstrzyga (asymetria falsyfikacji), a ogólność i trafność zewnętrzna to inne własności."
+  },
+  {
+    "q": "Jeśli badanie ma niską trafność wewnętrzną, oznacza to, że:",
+    "opts": [
+      {
+        "t": "trafność zewnętrzna jest od niej niezależna i może być umiarkowana lub wysoka",
+        "c": true
+      },
+      {
+        "t": "trafność zewnętrzna również okaże się niska",
+        "c": false
+      },
+      {
+        "t": "trafność wnioskowania statystycznego również automatycznie okaże się bardzo niska",
+        "c": false
+      },
+      {
+        "t": "z pewnością nie zadbano o trafność teoretyczną",
+        "c": false
+      }
+    ],
+    "exp": "Trafność wewnętrzna i zewnętrzna są względnie niezależne — badanie o słabej kontroli (niska wewnętrzna) może wciąż dobrze uogólniać się na realia i odwrotnie."
+  },
+  {
+    "q": "Plan badawczy z nieekwiwalentną grupą kontrolną zakłada, że:",
+    "opts": [
+      {
+        "t": "grupa badawcza powstała już naturalnie, a kontrolną dobiera się o podobnych cechach",
+        "c": true
+      },
+      {
+        "t": "musi wystąpić randomizacja II stopnia, ponieważ grupa kontrolna jest nieekwiwalentna względem badawczej",
+        "c": false
+      },
+      {
+        "t": "grupa kontrolna powinna różnić się od badawczej cechami drugorzędnymi",
+        "c": false
+      },
+      {
+        "t": "badacz z góry przeprowadza testy statystyczne ekwiwalencji grup",
+        "c": false
+      }
+    ],
+    "exp": "W tym planie grupy nie powstają przez randomizację — grupa badawcza jest już uformowana, a kontrolną dobiera się tak, by przypominała ją pod względem istotnych cech. Brak randomizacji to źródło „nieekwiwalentności”."
+  },
+  {
+    "q": "Zakładanie, że manipulacja lub metoda mierzy wyłącznie zamierzone zmienne, nazywane jest:",
+    "opts": [
+      {
+        "t": "efektem qui pro quo",
+        "c": true
+      },
+      {
+        "t": "samospełniającą się przepowiednią",
+        "c": false
+      },
+      {
+        "t": "myśleniem życzeniowym",
+        "c": false
+      },
+      {
+        "t": "afirmacją trafności",
+        "c": false
+      }
+    ],
+    "exp": "Qui pro quo („jedno zamiast drugiego”) to pułapka zakładania, że narzędzie mierzy tylko to, co chcemy — w praktyce może chwytać coś innego. To błąd trafności pomiaru, nie zniekształcenie oczekiwaniami."
+  },
+  {
+    "q": "Czy można uzyskać silny efekt (np. d Cohena = 0,82) w badaniu, w którym nie wykryto istotnych statystycznie różnic?",
+    "opts": [
+      {
+        "t": "tak, na przykład wtedy, gdy próba jest mała",
+        "c": true
+      },
+      {
+        "t": "nie, bo siła efektu i istotność są zawsze ściśle powiązane niezależnie od próby",
+        "c": false
+      },
+      {
+        "t": "nie, bo silny efekt niemal zawsze prowadzi do istotności statystycznej",
+        "c": false
+      },
+      {
+        "t": "tak, gdy badanie miało zbyt dużą moc, przez co beta jest niskie",
+        "c": false
+      }
+    ],
+    "exp": "Istotność zależy nie tylko od wielkości efektu, ale i od liczebności próby. Przy małej próbie nawet duże d może nie osiągnąć istotności (za mała moc); bardzo duża próba uistotni nawet drobny efekt."
+  },
+  {
+    "q": "Czym jest prerejestracja w badaniach naukowych?",
+    "opts": [
+      {
+        "t": "zapisaniem planu badania i analiz przed rozpoczęciem zbierania danych",
+        "c": true
+      },
+      {
+        "t": "publicznym udostępnieniem wszystkich surowych danych zaraz po zakończeniu badania",
+        "c": false
+      },
+      {
+        "t": "zobowiązaniem do przestrzegania zasad etycznych w trakcie badania",
+        "c": false
+      },
+      {
+        "t": "automatycznym generowaniem wyników jeszcze przed analizą danych",
+        "c": false
+      }
+    ],
+    "exp": "Prerejestracja to publiczne złożenie hipotez, planu doboru i analiz PRZED zebraniem danych (np. na OSF) — ogranicza HARKing i p-hacking. Udostępnianie danych to open data, a nie prerejestracja."
+  },
+  {
+    "q": "Manipulacja wpływała na wypalenie zawodowe, ale po uwzględnieniu przekonań o własnej skuteczności związek osłabł, bo wpływ zachodził poprzez te przekonania. Pełniły one rolę:",
+    "opts": [
+      {
+        "t": "mediatora",
+        "c": true
+      },
+      {
+        "t": "moderatora",
+        "c": false
+      },
+      {
+        "t": "zmiennej niezależnej",
+        "c": false
+      },
+      {
+        "t": "zmiennej kontrolnej",
+        "c": false
+      }
+    ],
+    "exp": "Zmienna, przez którą PRZECHODZI wpływ (X → M → Y) i której uwzględnienie osłabia efekt bezpośredni, to mediator (mechanizm „jak/dlaczego”). Moderator zmieniałby siłę efektu zależnie od swojego poziomu."
+  },
+  {
+    "q": "Jaką wartość mocy testu przyjmuje się w badaniach psychologicznych najczęściej?",
+    "opts": [
+      {
+        "t": "0,8",
+        "c": true
+      },
+      {
+        "t": "0,95",
+        "c": false
+      },
+      {
+        "t": "0,05",
+        "c": false
+      },
+      {
+        "t": "0,001",
+        "c": false
+      }
+    ],
+    "exp": "Konwencjonalny standard mocy to 0,80 (akceptujemy 20% ryzyka błędu II rodzaju). 0,05 to typowy poziom istotności (alfa), a nie moc."
+  },
+  {
+    "q": "Która praktyka najskuteczniej przeciwdziała HARKingowi (formułowaniu hipotez dopiero po poznaniu wyników)?",
+    "opts": [
+      {
+        "t": "prerejestracja badania",
+        "c": true
+      },
+      {
+        "t": "testowanie wielu hipotez jednocześnie",
+        "c": false
+      },
+      {
+        "t": "zwiększenie liczebności próby",
+        "c": false
+      },
+      {
+        "t": "przeprowadzenie metaanalizy",
+        "c": false
+      }
+    ],
+    "exp": "HARKing polega na udawaniu, że hipotezę postawiono przed danymi. Prerejestracja „zamraża” hipotezy i plan analiz przed zebraniem danych, więc uniemożliwia dorabianie ich po fakcie. Większa próba ani metaanaliza nie chronią przed HARKingiem."
+  },
+  {
+    "q": "Co jest główną wadą analizy mocy przeprowadzanej post hoc (po zakończeniu badania)?",
+    "opts": [
+      {
+        "t": "nie dostarcza nowych informacji, bo moc liczy się z zaobserwowanego wyniku",
+        "c": true
+      },
+      {
+        "t": "błędnie zakłada z góry, że w badaniu w ogóle nie występuje żaden realny efekt",
+        "c": false
+      },
+      {
+        "t": "nie da się jej przeprowadzić na małych próbach",
+        "c": false
+      },
+      {
+        "t": "wymaga dodatkowych, trudno dostępnych danych",
+        "c": false
+      }
+    ],
+    "exp": "Moc post hoc jest funkcją uzyskanego p (obserwowanego efektu), więc nie wnosi nic ponad sam wynik istotności — jest redundantna. Sensowna jest moc a priori, planowana przed badaniem."
+  },
+  {
+    "q": "Jaki jest główny cel analizy mocy a priori?",
+    "opts": [
+      {
+        "t": "oszacowanie potrzebnej wielkości próby, by zwiększyć szansę wykrycia zakładanego efektu",
+        "c": true
+      },
+      {
+        "t": "zmniejszenie ryzyka popełnienia błędu I rodzaju",
+        "c": false
+      },
+      {
+        "t": "przeprowadzenie badania jak najmniejszym nakładem sił",
+        "c": false
+      },
+      {
+        "t": "uniknięcie jakiejkolwiek nieświadomej manipulacji uzyskanymi wynikami w analizach statystycznych",
+        "c": false
+      }
+    ],
+    "exp": "Analizę mocy a priori robi się przed badaniem, by wyznaczyć liczebność próby zapewniającą założoną moc (zwykle 0,80) przy spodziewanym efekcie. Dotyczy błędu II rodzaju (beta), nie I rodzaju."
+  },
+  {
+    "q": "Nie wykryto istotnych różnic między dwiema terapiami obniżającymi stres (p > 0,05 przy alfa = 0,05). Czy można uznać, że są równie skuteczne?",
+    "opts": [
+      {
+        "t": "nie — brak istotnych różnic nie oznacza równoważności grup",
+        "c": true
+      },
+      {
+        "t": "nie można tego wnioskować bez przeprowadzenia dodatkowej analizy mocy",
+        "c": false
+      },
+      {
+        "t": "można, ale tylko wówczas, gdy poziom alfa wynosił 0,01",
+        "c": false
+      },
+      {
+        "t": "tak, brak istotnych różnic oznacza równoważność interwencji",
+        "c": false
+      }
+    ],
+    "exp": "Brak istotnego wyniku to niemożność odrzucenia H0, a nie dowód jej prawdziwości („brak dowodu różnicy” ≠ „dowód braku różnicy”). Równoważność wykazuje się osobnym testem równoważności."
+  },
+  {
+    "q": "Rodzaj muzyki (jazz vs metal) wpływa na liczbę poprawnych odpowiedzi w teście pamięci. Co jest zmienną zależną?",
+    "opts": [
+      {
+        "t": "liczba poprawnych odpowiedzi",
+        "c": true
+      },
+      {
+        "t": "zainteresowanie uczestnika muzyką",
+        "c": false
+      },
+      {
+        "t": "rodzaj puszczanej muzyki",
+        "c": false
+      },
+      {
+        "t": "czas trwania testu",
+        "c": false
+      }
+    ],
+    "exp": "Zmienna zależna to mierzony skutek — tu liczba poprawnych odpowiedzi. Rodzaj muzyki jest manipulowaną zmienną niezależną."
+  },
+  {
+    "q": "Czym jest framing (efekt sformułowania)?",
+    "opts": [
+      {
+        "t": "przedstawieniem sytuacji w kategoriach zysku lub straty, co wpływa na decyzję",
+        "c": true
+      },
+      {
+        "t": "techniką neutralnego, obiektywnego opisywania zdarzeń w psychologii",
+        "c": false
+      },
+      {
+        "t": "procesem eliminowania nieistotnych informacji w analizie danych",
+        "c": false
+      },
+      {
+        "t": "strategią skupiania uwagi na pozytywnych aspektach sytuacji",
+        "c": false
+      }
+    ],
+    "exp": "Framing to zależność decyzji od tego, czy tę samą sytuację ujęto jako zysk, czy jako stratę (np. „90% przeżywa” vs „10% umiera”). To nie neutralny opis, lecz wpływ ramy na wybór."
+  },
+  {
+    "q": "Czym jest p-hacking?",
+    "opts": [
+      {
+        "t": "wielokrotnym testowaniem hipotez, aż uzyska się wynik istotny",
+        "c": true
+      },
+      {
+        "t": "zmniejszaniem liczby zmiennych w celu uproszczenia całej analizy",
+        "c": false
+      },
+      {
+        "t": "testowaniem jednej hipotezy i raportowaniem tylko jej wyniku",
+        "c": false
+      },
+      {
+        "t": "formą replikacji uzyskanych wcześniej wyników na nowej próbie",
+        "c": false
+      }
+    ],
+    "exp": "P-hacking to naginanie analiz (testowanie wielu wariantów, selektywne raportowanie), aż p spadnie poniżej 0,05. Przeciwdziała mu prerejestracja. To nie replikacja ani upraszczanie modelu."
+  },
+  {
+    "q": "Czym jest abdukcja w procesie budowania teorii?",
+    "opts": [
+      {
+        "t": "dochodzeniem do najbardziej prawdopodobnego, najlepszego wyjaśnienia zjawisk",
+        "c": true
+      },
+      {
+        "t": "wnioskowaniem czysto dedukcyjnym z przyjętych z góry założeń",
+        "c": false
+      },
+      {
+        "t": "wnioskowaniem z rozkładu skrajnych wyników w zebranych danych",
+        "c": false
+      },
+      {
+        "t": "testowaniem wszystkich możliwych hipotez w jednym badaniu",
+        "c": false
+      }
+    ],
+    "exp": "Abdukcja to wnioskowanie do najlepszego wyjaśnienia (inference to the best explanation) — od obserwacji do najbardziej prawdopodobnej hipotezy je tłumaczącej. Różni się od dedukcji (z założeń) i indukcji (uogólnianie z przypadków)."
+  },
+  {
+    "q": "Prawdopodobieństwo poprawnego odrzucenia fałszywej hipotezy zerowej to inaczej:",
+    "opts": [
+      {
+        "t": "1 − beta",
+        "c": true
+      },
+      {
+        "t": "1 − alfa",
+        "c": false
+      },
+      {
+        "t": "alfa",
+        "c": false
+      },
+      {
+        "t": "beta",
+        "c": false
+      }
+    ],
+    "exp": "To definicja mocy testu = 1 − beta. Alfa to ryzyko błędu I rodzaju, beta — II rodzaju, a 1 − alfa to poziom ufności."
+  },
+  {
+    "q": "W teście t dla prób zależnych uzyskano p = 0,010 przy poziomie istotności 5%. Jak interpretujesz wynik?",
+    "opts": [
+      {
+        "t": "hipoteza zerowa została odrzucona, wynik jest istotny statystycznie",
+        "c": true
+      },
+      {
+        "t": "hipoteza zerowa nie została odrzucona, wynik nie jest istotny statystycznie",
+        "c": false
+      },
+      {
+        "t": "wynik byłby istotny dopiero po podniesieniu poziomu alfa",
+        "c": false
+      },
+      {
+        "t": "wynik byłby istotny, ale należałoby obniżyć poziom alfa",
+        "c": false
+      }
+    ],
+    "exp": "p = 0,010 jest mniejsze od alfa = 0,05, więc odrzucamy H0 — wynik jest istotny statystycznie. Gdyby p było większe od 0,05, H0 pozostałaby nieodrzucona."
+  },
+  {
+    "q": "Ilość wypitego alkoholu (0, 2, 4 kieliszki) wpływa na zdolność koncentracji. Co jest zmienną niezależną?",
+    "opts": [
+      {
+        "t": "ilość wypitego alkoholu",
+        "c": true
+      },
+      {
+        "t": "zmierzona zdolność koncentracji",
+        "c": false
+      },
+      {
+        "t": "rodzaj wypitego alkoholu",
+        "c": false
+      },
+      {
+        "t": "czas wykonywania zadania",
+        "c": false
+      }
+    ],
+    "exp": "Zmienna niezależna to czynnik manipulowany — tu ilość alkoholu (0/2/4 kieliszki). Zdolność koncentracji jest mierzonym skutkiem (zmienną zależną)."
+  },
+  {
+    "q": "Co zazwyczaj jest wadą badań quasi-eksperymentalnych w porównaniu z eksperymentem?",
+    "opts": [
+      {
+        "t": "nie pozwalają pewnie wnioskować o zależnościach przyczynowo-skutkowych",
+        "c": true
+      },
+      {
+        "t": "zawsze opierają się na w pełni losowym doborze próby z populacji",
+        "c": false
+      },
+      {
+        "t": "pozwalają całkowicie wykluczyć wpływ zmiennych zakłócających",
+        "c": false
+      },
+      {
+        "t": "nie wymagają żadnej manipulacji zmienną niezależną",
+        "c": false
+      }
+    ],
+    "exp": "Quasi-eksperymentowi brakuje randomizacji do warunków, więc grupy mogą różnić się na starcie — nie da się pewnie orzec przyczynowości. Manipulacja bywa obecna, ale to brak losowego przydziału ogranicza wnioski."
+  },
+  {
+    "q": "W badaniu nie wykazano istotnej zależności; recenzent sugeruje niewystarczającą moc. Co najprawdopodobniej wskazuje na niski poziom mocy?",
+    "opts": [
+      {
+        "t": "przeprowadzenie badania na zbyt małej próbie",
+        "c": true
+      },
+      {
+        "t": "ustalenie zbyt niskiego poziomu istotności alfa",
+        "c": false
+      },
+      {
+        "t": "pominięcie części istotnych testów statystycznych",
+        "c": false
+      },
+      {
+        "t": "zastosowanie całkowicie niewłaściwych testów",
+        "c": false
+      }
+    ],
+    "exp": "Moc rośnie z liczebnością próby, wielkością efektu i poziomem alfa. Najczęstsza przyczyna niskiej mocy to zbyt mała próba — realny efekt może wtedy pozostać niewykryty (błąd II rodzaju)."
+  },
+  {
+    "q": "Co odróżnia mediatory od moderatorów w badaniach?",
+    "opts": [
+      {
+        "t": "mediatory odpowiadają na pytanie „jak/dlaczego”, a moderatory na „kiedy/dla kogo”",
+        "c": true
+      },
+      {
+        "t": "mediatory wyłącznie wskazują kierunek badanej zależności",
+        "c": false
+      },
+      {
+        "t": "moderatory wskazują bezpośrednią przyczynę zależności",
+        "c": false
+      },
+      {
+        "t": "moderatory całkowicie eliminują wpływ wszystkich zmiennych zakłócających obecnych w modelu",
+        "c": false
+      }
+    ],
+    "exp": "Mediator to ogniwo mechanizmu (X → M → Y) — wyjaśnia, DLACZEGO/JAK działa efekt. Moderator określa, KIEDY i dla kogo efekt jest silniejszy lub słabszy (warunki graniczne)."
+  },
+  {
+    "q": "Do analizy użyto korelacji r-Pearsona; wynik jest istotny statystycznie. Na tej podstawie:",
+    "opts": [
+      {
+        "t": "nie można wnioskować o wpływie, bo korelacja mówi o związku, nie o przyczynowości",
+        "c": true
+      },
+      {
+        "t": "można wnioskować o wpływie, skoro wynik okazał się istotny",
+        "c": false
+      },
+      {
+        "t": "można wnioskować o przyczynowości, gdyby metodologia na to pozwalała",
+        "c": false
+      },
+      {
+        "t": "nie można wnioskować o wpływie, ponieważ korelacja obejmuje zawsze tylko dwie wybrane zmienne",
+        "c": false
+      }
+    ],
+    "exp": "Istotna korelacja świadczy o współwystępowaniu, nie o przyczynie — może ją wyjaśniać trzecia zmienna lub odwrotny kierunek. Istotność statystyczna niczego tu nie zmienia."
+  },
+  {
+    "q": "Moc testu to inaczej:",
+    "opts": [
+      {
+        "t": "prawdopodobieństwo poprawnego odrzucenia hipotezy zerowej",
+        "c": true
+      },
+      {
+        "t": "prawdopodobieństwo błędnego odrzucenia hipotezy zerowej",
+        "c": false
+      },
+      {
+        "t": "prawdopodobieństwo poprawnego nieodrzucenia hipotezy zerowej",
+        "c": false
+      },
+      {
+        "t": "prawdopodobieństwo błędnego nieodrzucenia hipotezy zerowej",
+        "c": false
+      }
+    ],
+    "exp": "Moc = prawdopodobieństwo wykrycia efektu, który istnieje = poprawnego odrzucenia fałszywej H0 (1 − beta). Błędne odrzucenie to błąd I rodzaju (alfa), a błędne nieodrzucenie — II rodzaju (beta)."
+  },
+  {
+    "q": "Co oznacza istotność statystyczna (wartość p)?",
+    "opts": [
+      {
+        "t": "prawdopodobieństwo takich lub skrajniejszych danych, gdy zależność jest zerowa",
+        "c": true
+      },
+      {
+        "t": "prawdopodobieństwo, że hipoteza alternatywna jest prawdziwa",
+        "c": false
+      },
+      {
+        "t": "prawdopodobieństwo odrzucenia hipotezy zerowej bez zebranych danych",
+        "c": false
+      },
+      {
+        "t": "prawdopodobieństwo wystąpienia czysto losowego wyniku w badaniu",
+        "c": false
+      }
+    ],
+    "exp": "p to prawdopodobieństwo uzyskania obserwowanego (lub skrajniejszego) wyniku, GDYBY H0 była prawdziwa. To NIE jest prawdopodobieństwo prawdziwości H1 ani „że wynik jest dziełem przypadku”."
+  },
+  {
+    "q": "Czym różni się strategia SMAR od pojedynczych badań empirycznych?",
+    "opts": [
+      {
+        "t": "opiera się na systematycznych, celowych modyfikacjach zmiennych i metod",
+        "c": true
+      },
+      {
+        "t": "nie wymaga żadnej szczególnej analizy statystycznej wyników",
+        "c": false
+      },
+      {
+        "t": "obejmuje wyłącznie badania o charakterze korelacyjnym",
+        "c": false
+      },
+      {
+        "t": "pozwala zweryfikować jedynie moderatory efektu",
+        "c": false
+      }
+    ],
+    "exp": "SMAR (Systematycznie Modyfikowane AutoReplikacje) to seria powtórzeń, w których ten sam zespół celowo zmienia próbę, metody i zmienne, by wykazać stabilność (prawidłowość) efektu — inaczej niż pojedyncze badanie."
+  },
+  {
+    "q": "W metodologii konstruowania teorii (TCM, Borsboom i wsp.) prototeoria różni się od modelu formalnego tym, że:",
+    "opts": [
+      {
+        "t": "prototeoria to słowne wyjaśnienie, a model formalny bywa matematyczny",
+        "c": true
+      },
+      {
+        "t": "prototeoria dotyczy jedynie danych, a model formalny wyłącznie teorii",
+        "c": false
+      },
+      {
+        "t": "prototeorię wnioskuje się dedukcyjnie, a model formalny indukcyjnie",
+        "c": false
+      },
+      {
+        "t": "prototeoria to surowy zbiór danych, a model formalny to zawsze pojedyncza hipoteza",
+        "c": false
+      }
+    ],
+    "exp": "Prototeoria to wstępne, słowne (jakościowe) wyjaśnienie zjawiska; formalizacja przekłada je na precyzyjny, zwykle matematyczny model. To kolejne etapy budowania teorii, nie opozycja dane–teoria."
+  },
+  {
+    "q": "Jakie są podstawowe etapy metodologii konstrukcji teorii (TCM)?",
+    "opts": [
+      {
+        "t": "stworzenie prototeorii, jej formalizacja, testowanie i ocena modelu",
+        "c": true
+      },
+      {
+        "t": "obserwacje, testowanie hipotez i budowanie aplikacji praktycznych",
+        "c": false
+      },
+      {
+        "t": "formułowanie testowalnych założeń i tworzenie testowalnych teorii",
+        "c": false
+      },
+      {
+        "t": "synteza badań wtórnych, opracowanie testów i wdrożenie w praktykę",
+        "c": false
+      }
+    ],
+    "exp": "TCM przebiega od zidentyfikowania zjawiska i zbudowania prototeorii (funkcji wyjaśniającej), przez jej formalizację (model), po testowanie i ocenę adekwatności modelu. To cykl teorii, nie samo zbieranie danych."
+  },
+  {
+    "q": "Co — według modelu Rescorli-Wagnera — jest kluczowe, aby zachodziło uczenie się?",
+    "opts": [
+      {
+        "t": "pojawienie się wzmocnienia wtedy, gdy nie jest ono spodziewane",
+        "c": true
+      },
+      {
+        "t": "pojawienie się wzmocnienia o natężeniu zbliżonym do oczekiwanego poziomu",
+        "c": false
+      },
+      {
+        "t": "wykrycie różnicy w tempie prezentacji kolejnych bodźców",
+        "c": false
+      },
+      {
+        "t": "pojawienie się zupełnie nowego bodźca w warunkach habituacji",
+        "c": false
+      }
+    ],
+    "exp": "W modelu Rescorli-Wagnera uczenie napędza „błąd predykcji” — rozbieżność między oczekiwanym a otrzymanym wzmocnieniem. Uczymy się najwięcej, gdy wzmocnienie jest ZASKAKUJĄCE; gdy jest w pełni przewidziane, przyrost uczenia dąży do zera."
+  }
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#1e40af'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#2563eb'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#3b82f6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
