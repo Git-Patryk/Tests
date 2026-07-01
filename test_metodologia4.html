@@ -313,258 +313,556 @@
 
 <script>
 const ALL_QUESTIONS = [
-
   {
-    q: "Co charakteryzuje replikację bezpośrednią (direct)?",
-    opts: [
-      { t: "Nic się nie zmienia — te same narzędzia i procedura, ale zbiera się NOWE dane", c: true },
-      { t: "Zmienia się metoda analizy statystycznej na tych samych danych", c: false },
-      { t: "Modyfikuje się próbę, manipulację i pomiar", c: false },
-      { t: "Powtarza się tę samą analizę na tych samych danych", c: false },
+    "q": "Co charakteryzuje replikację bezpośrednią (direct)?",
+    "opts": [
+      {
+        "t": "Nic się nie zmienia — te same narzędzia i procedura, ale zbiera się NOWE dane",
+        "c": true
+      },
+      {
+        "t": "Zmienia się metoda analizy statystycznej na tych samych danych",
+        "c": false
+      },
+      {
+        "t": "Modyfikuje się próbę, manipulację i pomiar",
+        "c": false
+      },
+      {
+        "t": "Powtarza się tę samą analizę na tych samych danych",
+        "c": false
+      }
     ],
-    exp: "Replikacja bezpośrednia powtarza badanie bez zmian (te same narzędzia, procedura), ale na nowych danych. Modyfikacja elementów metody to replikacja rozszerzona/konceptualna."
+    "exp": "Replikacja bezpośrednia powtarza badanie bez zmian (te same narzędzia, procedura), ale na nowych danych. Modyfikacja elementów metody to replikacja rozszerzona/konceptualna."
   },
   {
-    q: "Czym jest re-analiza jako typ replikacji?",
-    opts: [
-      { t: "Zastosowaniem innych metod analizy statystycznej do TYCH SAMYCH danych", c: true },
-      { t: "Zebraniem nowych danych tą samą procedurą", c: false },
-      { t: "Powtórzeniem badania z inną próbą i manipulacją", c: false },
-      { t: "Powtórzeniem dokładnie tej samej analizy na tych samych danych", c: false },
+    "q": "Czym jest re-analiza jako typ replikacji?",
+    "opts": [
+      {
+        "t": "Zastosowaniem innych metod analizy statystycznej do TYCH SAMYCH danych",
+        "c": true
+      },
+      {
+        "t": "Zebraniem nowych danych tą samą procedurą",
+        "c": false
+      },
+      {
+        "t": "Powtórzeniem badania z inną próbą i manipulacją",
+        "c": false
+      },
+      {
+        "t": "Powtórzeniem dokładnie tej samej analizy na tych samych danych",
+        "c": false
+      }
     ],
-    exp: "Re-analiza używa innych metod analizy statystycznej na tych samych danych. (Weryfikacja = te same dane i te same metody; replikacja bezpośrednia/rozszerzona = nowe dane.)"
+    "exp": "Re-analiza używa innych metod analizy statystycznej na tych samych danych. (Weryfikacja = te same dane i te same metody; replikacja bezpośrednia/rozszerzona = nowe dane.)"
   },
   {
-    q: "Co pokazały próby replikacji efektu „feeling the future” Bema (2011) przez Galaka i wsp. (2012)?",
-    opts: [
-      { t: "Z 7 bezpośrednich replikacji tylko 1 potwierdziła wynik", c: true },
-      { t: "Wszystkie 7 replikacji w pełni potwierdziło prekognicję", c: false },
-      { t: "Żadna replikacja nie została w ogóle przeprowadzona", c: false },
-      { t: "Replikacje wykazały efekt jeszcze silniejszy niż Bem", c: false },
+    "q": "Co pokazały próby replikacji efektu „feeling the future” Bema (2011) przez Galaka i wsp. (2012)?",
+    "opts": [
+      {
+        "t": "Z 7 bezpośrednich replikacji tylko 1 potwierdziła wynik",
+        "c": true
+      },
+      {
+        "t": "Wszystkie 7 replikacji w pełni potwierdziło prekognicję",
+        "c": false
+      },
+      {
+        "t": "Żadna replikacja nie została w ogóle przeprowadzona",
+        "c": false
+      },
+      {
+        "t": "Replikacje wykazały efekt jeszcze silniejszy niż Bem",
+        "c": false
+      }
     ],
-    exp: "Bem opisał wyniki sugerujące prekognicję; Galak i wsp. zrobili 7 bezpośrednich replikacji — tylko 1 potwierdziła wynik. Wniosek: nadzwyczajne twierdzenia wymagają nadzwyczajnie mocnych dowodów."
+    "exp": "Bem opisał wyniki sugerujące prekognicję; Galak i wsp. zrobili 7 bezpośrednich replikacji — tylko 1 potwierdziła wynik. Wniosek: nadzwyczajne twierdzenia wymagają nadzwyczajnie mocnych dowodów."
   },
   {
-    q: "Jaki był wynik projektu Open Science Collaboration (2015)?",
-    opts: [
-      { t: "Z prób replikacji 100 badań odtworzono ok. 50% efektów", c: true },
-      { t: "Odtworzono ok. 95% efektów", c: false },
-      { t: "Nie udało się odtworzyć żadnego efektu", c: false },
-      { t: "Replikowano wyłącznie badania kliniczne", c: false },
+    "q": "Jaki był wynik projektu Open Science Collaboration (2015)?",
+    "opts": [
+      {
+        "t": "Z prób replikacji 100 badań odtworzono ok. 50% efektów",
+        "c": true
+      },
+      {
+        "t": "Odtworzono ok. 95% efektów",
+        "c": false
+      },
+      {
+        "t": "Nie udało się odtworzyć żadnego efektu",
+        "c": false
+      },
+      {
+        "t": "Replikowano wyłącznie badania kliniczne z obszaru medycyny i farmakologii",
+        "c": false
+      }
     ],
-    exp: "OSC (2015) podjęło próbę replikacji 100 badań i odtworzyło ok. 50% efektów. Pytanie przesunęło się z „czy się powtarzają?” na „dlaczego tak wiele się nie powtarza?”."
+    "exp": "OSC (2015) podjęło próbę replikacji 100 badań i odtworzyło ok. 50% efektów. Pytanie przesunęło się z „czy się powtarzają?” na „dlaczego tak wiele się nie powtarza?”."
   },
   {
-    q: "Czym jest publication bias (błąd publikacyjny) jako przyczyna kryzysu replikacyjnego?",
-    opts: [
-      { t: "Łatwiej publikować wyniki pozytywne (istotne) niż zerowe", c: true },
-      { t: "Czasopisma publikują wyłącznie replikacje, a nie badania oryginalne", c: false },
-      { t: "Autorzy publikują tylko wyniki nieistotne", c: false },
-      { t: "Recenzenci preferują badania na małych próbach", c: false },
+    "q": "Czym jest publication bias (błąd publikacyjny) jako przyczyna kryzysu replikacyjnego?",
+    "opts": [
+      {
+        "t": "Łatwiej publikować wyniki pozytywne (istotne) niż zerowe",
+        "c": true
+      },
+      {
+        "t": "Czasopisma publikują wyłącznie replikacje, a nie badania oryginalne",
+        "c": false
+      },
+      {
+        "t": "Autorzy publikują tylko wyniki nieistotne (zerowe)",
+        "c": false
+      },
+      {
+        "t": "Recenzenci preferują badania na małych próbach",
+        "c": false
+      }
     ],
-    exp: "Publication bias polega na tym, że łatwiej opublikować wyniki pozytywne/istotne niż zerowe. Wraz z małymi próbami, niską mocą i niechęcią czasopism do replikacji napędza to kryzys replikacyjny."
+    "exp": "Publication bias polega na tym, że łatwiej opublikować wyniki pozytywne/istotne niż zerowe. Wraz z małymi próbami, niską mocą i niechęcią czasopism do replikacji napędza to kryzys replikacyjny."
   },
   {
-    q: "Po czym m.in. wykryto fabrykację danych w oszustwie Stapela?",
-    opts: [
-      { t: "Po „zbyt ładnych” wynikach, różnicach w p mimo tych samych testów i niepoprawnych zaokrągleniach", c: true },
-      { t: "Po zbyt dużych próbach i wysokiej mocy testów", c: false },
-      { t: "Po prerejestracji wszystkich jego badań", c: false },
-      { t: "Po tym, że publikował wyłącznie wyniki nieistotne", c: false },
+    "q": "Po czym m.in. wykryto fabrykację danych w oszustwie Stapela?",
+    "opts": [
+      {
+        "t": "Po „zbyt ładnych” wynikach i różnicach w p mimo tych samych testów",
+        "c": true
+      },
+      {
+        "t": "Po zbyt dużych próbach i wysokiej mocy testów",
+        "c": false
+      },
+      {
+        "t": "Po prerejestracji wszystkich jego badań",
+        "c": false
+      },
+      {
+        "t": "Po tym, że publikował niemal wyłącznie wyniki nieistotne statystycznie",
+        "c": false
+      }
     ],
-    exp: "Oszustwo Stapela wykryto m.in. po „zbyt ładnych” wynikach, różnicach w wartościach p mimo tych samych testów, niepoprawnych zaokrągleniach i usuwaniu outlierów bez raportowania (eliminacja danych zmniejsza wariancję i sztucznie zwiększa istotność)."
+    "exp": "Oszustwo Stapela wykryto m.in. po „zbyt ładnych” wynikach, różnicach w wartościach p mimo tych samych testów, niepoprawnych zaokrągleniach i usuwaniu outlierów bez raportowania (eliminacja danych zmniejsza wariancję i sztucznie zwiększa istotność)."
   },
   {
-    q: "Na czym polega strategia SMAR (Systematycznie Modyfikowane AutoReplikacje, Wojciszke)?",
-    opts: [
-      { t: "Ten sam zespół wielokrotnie powtarza badanie, CELOWO modyfikując próbę, metody i zmienne, by pokazać stabilność efektu", c: true },
-      { t: "Różne zespoły powtarzają badanie bez żadnych zmian", c: false },
-      { t: "Jednorazowe badanie na bardzo dużej próbie", c: false },
-      { t: "Ponowna analiza cudzych danych innymi metodami", c: false },
+    "q": "Na czym polega strategia SMAR (Systematycznie Modyfikowane AutoReplikacje, Wojciszke)?",
+    "opts": [
+      {
+        "t": "Ten sam zespół wielokrotnie powtarza badanie, celowo modyfikując próbę, metody i zmienne",
+        "c": true
+      },
+      {
+        "t": "Zupełnie różne, niezależne zespoły powtarzają to samo badanie bez wprowadzania żadnych zmian",
+        "c": false
+      },
+      {
+        "t": "Jednorazowe badanie na bardzo dużej próbie",
+        "c": false
+      },
+      {
+        "t": "Ponowna analiza cudzych danych innymi metodami",
+        "c": false
+      }
     ],
-    exp: "SMAR to wielokrotne powtarzanie przez ten sam zespół badania wykazującego prawidłowość, przy celowym modyfikowaniu próby, metod pomiaru i zmiennych — by pokazać stabilność (rzetelność) efektu mimo zmian procedury."
+    "exp": "SMAR to wielokrotne powtarzanie przez ten sam zespół badania wykazującego prawidłowość, przy celowym modyfikowaniu próby, metod pomiaru i zmiennych — by pokazać stabilność (rzetelność) efektu mimo zmian procedury."
   },
   {
-    q: "Czym jest torowanie (priming) na przykładzie Florida effect (Bargh, Chen & Burrows, 1996)?",
-    opts: [
-      { t: "Czynniki tła wprowadzają osobę w stan wpływający na zachowanie bez jej świadomości (po słowach o starości szła wolniej)", c: true },
-      { t: "Świadome instruowanie uczestnika, jak ma się zachować", c: false },
-      { t: "Podanie placebo zamiast aktywnego leku", c: false },
-      { t: "Powtarzanie pomiaru u tych samych osób w czasie", c: false },
+    "q": "Czym jest torowanie (priming) na przykładzie Florida effect (Bargh, Chen & Burrows, 1996)?",
+    "opts": [
+      {
+        "t": "Czynniki tła wprowadzają osobę w stan wpływający na zachowanie bez jej świadomości",
+        "c": true
+      },
+      {
+        "t": "Świadome, jawne instruowanie uczestnika badania, jak dokładnie ma się w nim zachować",
+        "c": false
+      },
+      {
+        "t": "Podanie placebo zamiast aktywnego leku",
+        "c": false
+      },
+      {
+        "t": "Powtarzanie pomiaru u tych samych osób w czasie",
+        "c": false
+      }
     ],
-    exp: "Priming (torowanie) to wpływ czynników tła wprowadzających osobę w stan oddziałujący na zachowanie bez świadomości. W Florida effect po primingu stereotypu osoby starszej (Floryda, samotny, pomarszczony) uczestnicy szli wolniej w korytarzu."
+    "exp": "Priming (torowanie) to wpływ czynników tła wprowadzających osobę w stan oddziałujący na zachowanie bez świadomości. W Florida effect po primingu stereotypu osoby starszej (Floryda, samotny, pomarszczony) uczestnicy szli wolniej w korytarzu."
   },
   {
-    q: "Co pokazały autoreplikacje efektu primingu zachowania (Doyen 2012, Shanks 2013)?",
-    opts: [
-      { t: "Efekt nie pojawia się — primingi zachowania często się nie replikują, choć primingi poznawcze (semantyczne) są stabilne", c: true },
-      { t: "Efekt potwierdzono jeszcze silniej niż u Bargha", c: false },
-      { t: "Wszystkie rodzaje primingu okazały się niereplikowalne", c: false },
-      { t: "Replikacje dotyczyły wyłącznie primingów semantycznych", c: false },
+    "q": "Co pokazały autoreplikacje efektu primingu zachowania (Doyen 2012, Shanks 2013)?",
+    "opts": [
+      {
+        "t": "Efekt nie pojawia się — primingi zachowania często się nie replikują",
+        "c": true
+      },
+      {
+        "t": "Efekt potwierdzono jeszcze silniej niż u Bargha",
+        "c": false
+      },
+      {
+        "t": "Wszystkie rodzaje primingu okazały się niereplikowalne",
+        "c": false
+      },
+      {
+        "t": "Replikacje dotyczyły wyłącznie bardzo wąskiej grupy primingów semantycznych i pojęciowych",
+        "c": false
+      }
     ],
-    exp: "Przy dużym N i prerejestracji (Doyen 2012, Shanks 2013) efekt primingu zachowania nie pojawia się. Primingi poznawcze/semantyczne są stabilne, primingi zachowania często nie. SMAR nie służy „potwierdzaniu na siłę”, lecz mapowaniu warunków efektu."
+    "exp": "Przy dużym N i prerejestracji (Doyen 2012, Shanks 2013) efekt primingu zachowania nie pojawia się. Primingi poznawcze/semantyczne są stabilne, primingi zachowania często nie. SMAR nie służy „potwierdzaniu na siłę”, lecz mapowaniu warunków efektu."
   },
   {
-    q: "Czym jest prerejestracja badania?",
-    opts: [
-      { t: "Publicznym przedstawieniem planu badania (hipotezy, dobór, analizy) PRZED zebraniem danych, np. na OSF", c: true },
-      { t: "Zgłoszeniem gotowych wyników do czasopisma po analizie", c: false },
-      { t: "Rejestracją uczestników badania w bazie danych", c: false },
-      { t: "Powtórnym przeprowadzeniem już opublikowanego badania", c: false },
+    "q": "Czym jest prerejestracja badania?",
+    "opts": [
+      {
+        "t": "Publicznym przedstawieniem planu badania PRZED zebraniem danych, np. na OSF",
+        "c": true
+      },
+      {
+        "t": "Zgłoszeniem gotowych, przeanalizowanych już wyników do czasopisma naukowego po analizie",
+        "c": false
+      },
+      {
+        "t": "Rejestracją uczestników badania w bazie danych",
+        "c": false
+      },
+      {
+        "t": "Powtórnym przeprowadzeniem już opublikowanego badania",
+        "c": false
+      }
     ],
-    exp: "Prerejestracja to publiczne przedstawienie planu badawczego (teoria, hipotezy, plan doboru, narzędzia, plan analiz) przed zebraniem danych (np. na OSF). Oddziela część konfirmacyjną od eksploracyjnej i chroni przed HARKingiem."
+    "exp": "Prerejestracja to publiczne przedstawienie planu badawczego (teoria, hipotezy, plan doboru, narzędzia, plan analiz) przed zebraniem danych (np. na OSF). Oddziela część konfirmacyjną od eksploracyjnej i chroni przed HARKingiem."
   },
   {
-    q: "Czym jest HARKing?",
-    opts: [
-      { t: "Formułowaniem hipotezy dopiero po poznaniu wyników (Hypothesizing After the Results are Known)", c: true },
-      { t: "Rejestrowaniem hipotez przed zebraniem danych", c: false },
-      { t: "Publikowaniem wyłącznie wyników nieistotnych", c: false },
-      { t: "Powtarzaniem badania przez ten sam zespół", c: false },
+    "q": "Czym jest HARKing?",
+    "opts": [
+      {
+        "t": "Formułowaniem hipotezy dopiero po poznaniu wyników badania",
+        "c": true
+      },
+      {
+        "t": "Rejestrowaniem hipotez publicznie, jeszcze przed rozpoczęciem zbierania danych",
+        "c": false
+      },
+      {
+        "t": "Publikowaniem wyłącznie wyników nieistotnych",
+        "c": false
+      },
+      {
+        "t": "Powtarzaniem badania przez ten sam zespół",
+        "c": false
+      }
     ],
-    exp: "HARKing (Hypothesizing After the Results are Known) to przedstawianie hipotezy postawionej po analizie jako gdyby była postawiona przed badaniem. Prerejestracja chroni przed tą praktyką."
+    "exp": "HARKing (Hypothesizing After the Results are Known) to przedstawianie hipotezy postawionej po analizie jako gdyby była postawiona przed badaniem. Prerejestracja chroni przed tą praktyką."
   },
   {
-    q: "Na czym polega procedura Registered Reports?",
-    opts: [
-      { t: "Projekt jest recenzowany PRZED zebraniem danych i przy dobrej metodzie dostaje in-principle acceptance, a po danych przechodzi drugi etap recenzji", c: true },
-      { t: "Recenzja odbywa się dopiero po zebraniu i przeanalizowaniu danych", c: false },
-      { t: "Publikuje się wyłącznie wyniki istotne statystycznie", c: false },
-      { t: "Autor sam decyduje, które analizy ujawnić", c: false },
+    "q": "Na czym polega procedura Registered Reports?",
+    "opts": [
+      {
+        "t": "Projekt jest recenzowany PRZED zebraniem danych i po dobrej metodzie dostaje wstępną akceptację",
+        "c": true
+      },
+      {
+        "t": "Recenzja projektu odbywa się dopiero po zebraniu i pełnym przeanalizowaniu wszystkich zebranych danych",
+        "c": false
+      },
+      {
+        "t": "Publikuje się wyłącznie wyniki istotne statystycznie",
+        "c": false
+      },
+      {
+        "t": "Autor sam decyduje, które analizy ujawnić",
+        "c": false
+      }
     ],
-    exp: "W Registered Reports projekt recenzowany jest przed zebraniem danych; przy poprawnej metodzie otrzymuje in-principle acceptance, a po zebraniu danych następuje drugi etap recenzji. Ogranicza to wpływ sensacyjności wyniku na decyzję o publikacji."
+    "exp": "W Registered Reports projekt recenzowany jest przed zebraniem danych; przy poprawnej metodzie otrzymuje in-principle acceptance, a po zebraniu danych następuje drugi etap recenzji. Ogranicza to wpływ sensacyjności wyniku na decyzję o publikacji."
   },
   {
-    q: "Co — według Heada i wsp. (2015) — zdradza obecność p-hackingu w literaturze?",
-    opts: [
-      { t: "Nadreprezentacja wyników tuż poniżej 0,05 (zamiast naprawdę silnych p < 0,025)", c: true },
-      { t: "Przewaga wyników z bardzo niskim p < 0,001", c: false },
-      { t: "Brak jakichkolwiek wyników istotnych statystycznie", c: false },
-      { t: "Nadmiar bezpośrednich replikacji", c: false },
+    "q": "Co — według Heada i wsp. (2015) — zdradza obecność p-hackingu w literaturze?",
+    "opts": [
+      {
+        "t": "Nadreprezentacja wyników tuż poniżej progu 0,05 zamiast naprawdę silnych efektów",
+        "c": true
+      },
+      {
+        "t": "Przewaga wyników z bardzo niskim p < 0,001",
+        "c": false
+      },
+      {
+        "t": "Zupełny brak jakichkolwiek wyników istotnych statystycznie w całej badanej literaturze",
+        "c": false
+      },
+      {
+        "t": "Nadmiar bezpośrednich replikacji",
+        "c": false
+      }
     ],
-    exp: "Head i wsp. (2015) wykazali w wielu dziedzinach nadreprezentację wyników tuż poniżej 0,05 — ślad p-hackingu (naginania analiz, aż p<0,05). „Istotny” nie znaczy „rzetelny”; remedium to prerejestracja, otwarte dane i nacisk na wielkość efektu."
+    "exp": "Head i wsp. (2015) wykazali w wielu dziedzinach nadreprezentację wyników tuż poniżej 0,05 — ślad p-hackingu (naginania analiz, aż p<0,05). „Istotny” nie znaczy „rzetelny”; remedium to prerejestracja, otwarte dane i nacisk na wielkość efektu."
   },
   {
-    q: "Czym jest hipoteza zerowa (H₀) w stosunku do hipotezy alternatywnej (H₁)?",
-    opts: [
-      { t: "H₀ to „twierdzenie do obalenia”, H₁ to konkurencyjna możliwość (badawcza)", c: true },
-      { t: "H₀ to hipoteza badawcza, a H₁ to twierdzenie do obalenia", c: false },
-      { t: "H₀ i H₁ to dwie nazwy tej samej hipotezy", c: false },
-      { t: "H₀ zawsze przewiduje kierunek efektu, H₁ nigdy", c: false },
+    "q": "Czym jest hipoteza zerowa (H₀) w stosunku do hipotezy alternatywnej (H₁)?",
+    "opts": [
+      {
+        "t": "H₀ to „twierdzenie do obalenia”, H₁ to konkurencyjna możliwość badawcza",
+        "c": true
+      },
+      {
+        "t": "H₀ to główna hipoteza badawcza, a H₁ to zwykłe twierdzenie do obalenia statystycznego",
+        "c": false
+      },
+      {
+        "t": "H₀ i H₁ to dwie nazwy tej samej hipotezy",
+        "c": false
+      },
+      {
+        "t": "H₀ zawsze przewiduje kierunek efektu, H₁ nigdy",
+        "c": false
+      }
     ],
-    exp: "H₀ (zerowa) to „twierdzenie do obalenia”, a H₁ (alternatywna/badawcza) to konkurencyjna możliwość. Testowanie statystyczne — w duchu Poppera — szuka podstaw do odrzucenia (falsyfikacji) H₀."
+    "exp": "H₀ (zerowa) to „twierdzenie do obalenia”, a H₁ (alternatywna/badawcza) to konkurencyjna możliwość. Testowanie statystyczne — w duchu Poppera — szuka podstaw do odrzucenia (falsyfikacji) H₀."
   },
   {
-    q: "Czym różni się hipoteza kierunkowa od niekierunkowej?",
-    opts: [
-      { t: "Kierunkowa przewiduje kierunek efektu, niekierunkowa tylko że różnica wystąpi", c: true },
-      { t: "Kierunkowa dotyczy wskaźników, niekierunkowa teorii", c: false },
-      { t: "Kierunkowa to H₀, niekierunkowa to H₁", c: false },
-      { t: "To dwa określenia hipotezy operacyjnej", c: false },
+    "q": "Czym różni się hipoteza kierunkowa od niekierunkowej?",
+    "opts": [
+      {
+        "t": "Kierunkowa przewiduje kierunek efektu, niekierunkowa tylko że różnica wystąpi",
+        "c": true
+      },
+      {
+        "t": "Kierunkowa dotyczy wskaźników, niekierunkowa teorii",
+        "c": false
+      },
+      {
+        "t": "Kierunkowa to H₀, niekierunkowa to H₁",
+        "c": false
+      },
+      {
+        "t": "To dwa określenia hipotezy operacyjnej",
+        "c": false
+      }
     ],
-    exp: "Hipoteza kierunkowa przewiduje kierunek zależności (np. grupa A > grupa B), a niekierunkowa zakłada jedynie, że różnica wystąpi (bez wskazania kierunku)."
+    "exp": "Hipoteza kierunkowa przewiduje kierunek zależności (np. grupa A > grupa B), a niekierunkowa zakłada jedynie, że różnica wystąpi (bez wskazania kierunku)."
   },
   {
-    q: "Czym jest błąd I rodzaju (α)?",
-    opts: [
-      { t: "Stwierdzeniem efektu, którego nie ma (odrzucenie prawdziwej H₀) — fałszywy alarm", c: true },
-      { t: "Niewykryciem realnie istniejącego efektu", c: false },
-      { t: "Poprawnym odrzuceniem fałszywej H₀", c: false },
-      { t: "Błędem doboru próby", c: false },
+    "q": "Czym jest błąd I rodzaju (α)?",
+    "opts": [
+      {
+        "t": "Stwierdzeniem efektu, którego nie ma — fałszywy alarm, odrzucenie prawdziwej H₀",
+        "c": true
+      },
+      {
+        "t": "Niewykryciem realnie i faktycznie istniejącego w badanej populacji efektu psychologicznego",
+        "c": false
+      },
+      {
+        "t": "Poprawnym odrzuceniem fałszywej H₀",
+        "c": false
+      },
+      {
+        "t": "Błędem doboru próby",
+        "c": false
+      }
     ],
-    exp: "Błąd I rodzaju (α) to odrzucenie prawdziwej H₀ — stwierdzamy efekt, którego nie ma (fałszywy alarm). Bywa częstszy przy zbyt dużych próbach."
+    "exp": "Błąd I rodzaju (α) to odrzucenie prawdziwej H₀ — stwierdzamy efekt, którego nie ma (fałszywy alarm). Bywa częstszy przy zbyt dużych próbach."
   },
   {
-    q: "Czym jest błąd II rodzaju (β) i kiedy jest częstszy?",
-    opts: [
-      { t: "Nieodrzuceniem fałszywej H₀ (przeoczeniem realnego efektu) — częstszy przy małych próbach i niskiej mocy", c: true },
-      { t: "Odrzuceniem prawdziwej H₀ — częstszym przy dużych próbach", c: false },
-      { t: "Poprawnym przyjęciem H₁", c: false },
-      { t: "Błędem wynikającym wyłącznie z fałszowania danych", c: false },
+    "q": "Czym jest błąd II rodzaju (β) i kiedy jest częstszy?",
+    "opts": [
+      {
+        "t": "Nieodrzuceniem fałszywej H₀ — częstszy przy małych próbach i niskiej mocy",
+        "c": true
+      },
+      {
+        "t": "Odrzuceniem prawdziwej H₀ — rzekomo częstszym przy bardzo dużych próbach badawczych",
+        "c": false
+      },
+      {
+        "t": "Poprawnym przyjęciem H₁",
+        "c": false
+      },
+      {
+        "t": "Błędem wynikającym wyłącznie z fałszowania danych",
+        "c": false
+      }
     ],
-    exp: "Błąd II rodzaju (β) to nieodrzucenie fałszywej H₀ — przeoczenie realnego efektu. Jest częstszy przy zbyt małych próbach i niskiej mocy (np. wczesne badania fMRI z n=10–15)."
+    "exp": "Błąd II rodzaju (β) to nieodrzucenie fałszywej H₀ — przeoczenie realnego efektu. Jest częstszy przy zbyt małych próbach i niskiej mocy (np. wczesne badania fMRI z n=10–15)."
   },
   {
-    q: "Czym JEST wartość p?",
-    opts: [
-      { t: "Prawdopodobieństwem uzyskania takiego (lub bardziej skrajnego) wyniku przy założeniu, że H₀ jest prawdziwa", c: true },
-      { t: "Prawdopodobieństwem, że hipoteza badawcza jest prawdziwa", c: false },
-      { t: "Prawdopodobieństwem powtórzenia (replikacji) wyniku", c: false },
-      { t: "Prawdopodobieństwem popełnienia błędu I rodzaju w danym badaniu", c: false },
+    "q": "Czym JEST wartość p?",
+    "opts": [
+      {
+        "t": "Prawdopodobieństwem uzyskania takiego lub bardziej skrajnego wyniku, gdy H₀ jest prawdziwa",
+        "c": true
+      },
+      {
+        "t": "Prawdopodobieństwem, że hipoteza badawcza jest prawdziwa",
+        "c": false
+      },
+      {
+        "t": "Prawdopodobieństwem powtórzenia (replikacji) wyniku",
+        "c": false
+      },
+      {
+        "t": "Prawdopodobieństwem popełnienia błędu I rodzaju w tym konkretnym pojedynczym badaniu empirycznym",
+        "c": false
+      }
     ],
-    exp: "p to prawdopodobieństwo uzyskania takiego (lub bardziej skrajnego) wyniku PRZY ZAŁOŻENIU prawdziwości H₀. p to NIE jest prawdopodobieństwo błędu I rodzaju, replikacji ani prawdziwości hipotezy."
+    "exp": "p to prawdopodobieństwo uzyskania takiego (lub bardziej skrajnego) wyniku PRZY ZAŁOŻENIU prawdziwości H₀. p to NIE jest prawdopodobieństwo błędu I rodzaju, replikacji ani prawdziwości hipotezy."
   },
   {
-    q: "Jak należy rozumieć wynik p > 0,05?",
-    opts: [
-      { t: "Że nie możemy odrzucić H₀ — efekt może być mały lub próba za mała; to nie dowód „braku efektu”", c: true },
-      { t: "Że udowodniono brak jakiegokolwiek efektu", c: false },
-      { t: "Że hipoteza badawcza została potwierdzona", c: false },
-      { t: "Że popełniono błąd I rodzaju", c: false },
+    "q": "Jak należy rozumieć wynik p > 0,05?",
+    "opts": [
+      {
+        "t": "Że nie możemy odrzucić H₀ — efekt może być mały lub próba za mała",
+        "c": true
+      },
+      {
+        "t": "Że udowodniono brak jakiegokolwiek efektu",
+        "c": false
+      },
+      {
+        "t": "Że hipoteza badawcza została w pełni i ostatecznie potwierdzona danymi",
+        "c": false
+      },
+      {
+        "t": "Że popełniono błąd I rodzaju",
+        "c": false
+      }
     ],
-    exp: "p > 0,05 oznacza tylko, że nie możemy odrzucić H₀ — efekt może być mały lub próba za mała. Traktowanie „nieistotnego wyniku” jako dowodu braku efektu to błąd."
+    "exp": "p > 0,05 oznacza tylko, że nie możemy odrzucić H₀ — efekt może być mały lub próba za mała. Traktowanie „nieistotnego wyniku” jako dowodu braku efektu to błąd."
   },
   {
-    q: "Czym wielkość efektu różni się od istotności statystycznej?",
-    opts: [
-      { t: "Mierzy siłę/rozmiar efektu i jest odporna na wielkość próby", c: true },
-      { t: "Rośnie automatycznie wraz z wielkością próby", c: false },
-      { t: "Jest tym samym co wartość p", c: false },
-      { t: "Mówi tylko, czy efekt jest istotny, nie jak duży", c: false },
+    "q": "Czym wielkość efektu różni się od istotności statystycznej?",
+    "opts": [
+      {
+        "t": "Mierzy siłę/rozmiar efektu i jest odporna na wielkość próby",
+        "c": true
+      },
+      {
+        "t": "Rośnie automatycznie wraz z wielkością próby",
+        "c": false
+      },
+      {
+        "t": "Jest tym samym co wartość p",
+        "c": false
+      },
+      {
+        "t": "Mówi tylko, czy efekt jest istotny, nie jak duży",
+        "c": false
+      }
     ],
-    exp: "Wielkość efektu to miara siły/rozmiaru różnicy lub związku, odporna na wielkość próby — w odróżnieniu od istotności, która zależy od N. Dlatego jest wiarygodniejszą miarą „jak duży jest efekt”."
+    "exp": "Wielkość efektu to miara siły/rozmiaru różnicy lub związku, odporna na wielkość próby — w odróżnieniu od istotności, która zależy od N. Dlatego jest wiarygodniejszą miarą „jak duży jest efekt”."
   },
   {
-    q: "Jak interpretuje się wartości Cohen's d?",
-    opts: [
-      { t: "≈0,2 efekt mały, ≈0,5 średni, ≈0,8 duży", c: true },
-      { t: "≈0,2 duży, ≈0,5 średni, ≈0,8 mały", c: false },
-      { t: "≈0,2 średni, ≈0,5 duży, ≈0,8 bardzo duży", c: false },
-      { t: "d zawsze musi przekraczać 1,0, by efekt był istotny", c: false },
+    "q": "Jak interpretuje się wartości Cohen's d?",
+    "opts": [
+      {
+        "t": "≈0,2 efekt mały, ≈0,5 średni, ≈0,8 duży",
+        "c": true
+      },
+      {
+        "t": "≈0,2 duży, ≈0,5 średni, ≈0,8 mały",
+        "c": false
+      },
+      {
+        "t": "≈0,2 średni, ≈0,5 duży, ≈0,8 bardzo duży",
+        "c": false
+      },
+      {
+        "t": "d zawsze musi przekraczać 1,0, by efekt był istotny",
+        "c": false
+      }
     ],
-    exp: "Cohen's d to standaryzowana różnica średnich: d ≈ 0,2 to efekt mały, ≈ 0,5 średni, ≈ 0,8 duży."
+    "exp": "Cohen's d to standaryzowana różnica średnich: d ≈ 0,2 to efekt mały, ≈ 0,5 średni, ≈ 0,8 duży."
   },
   {
-    q: "Czym jest moc testu i jaki jest jej standard?",
-    opts: [
-      { t: "Moc = 1 − β, czyli prawdopodobieństwo wykrycia prawdziwego efektu; standard to 0,80", c: true },
-      { t: "Moc = 1 − α, czyli prawdopodobieństwo błędu I rodzaju; standard 0,05", c: false },
-      { t: "Moc = wielkość próby podzielona przez efekt", c: false },
-      { t: "Moc = prawdopodobieństwo, że H₀ jest prawdziwa", c: false },
+    "q": "Czym jest moc testu i jaki jest jej standard?",
+    "opts": [
+      {
+        "t": "Moc = 1 − β, czyli prawdopodobieństwo wykrycia prawdziwego efektu; standard to 0,80",
+        "c": true
+      },
+      {
+        "t": "Moc = 1 − α, czyli prawdopodobieństwo błędu I rodzaju; standard 0,05",
+        "c": false
+      },
+      {
+        "t": "Moc = wielkość próby podzielona przez efekt",
+        "c": false
+      },
+      {
+        "t": "Moc = prawdopodobieństwo, że H₀ jest prawdziwa",
+        "c": false
+      }
     ],
-    exp: "Moc = 1 − β — prawdopodobieństwo wykrycia prawdziwego efektu (standard 0,80). W analizie a priori (G*Power), znając zakładaną wielkość efektu, α i moc, szukamy najmniejszej potrzebnej próby. Im silniejszy efekt, tym mniejsza próba."
+    "exp": "Moc = 1 − β — prawdopodobieństwo wykrycia prawdziwego efektu (standard 0,80). W analizie a priori (G*Power), znając zakładaną wielkość efektu, α i moc, szukamy najmniejszej potrzebnej próby. Im silniejszy efekt, tym mniejsza próba."
   },
   {
-    q: "Czym jest meta-analiza?",
-    opts: [
-      { t: "Wystandaryzowaną procedurą ilościowej syntezy wyników wielu niezależnych badań na ten sam temat", c: true },
-      { t: "Jakościowym streszczeniem jednego badania", c: false },
-      { t: "Ponowną analizą surowych danych pojedynczego badania", c: false },
-      { t: "Badaniem na bardzo dużej, pojedynczej próbie", c: false },
+    "q": "Czym jest meta-analiza?",
+    "opts": [
+      {
+        "t": "Wystandaryzowaną ilościową syntezą wyników wielu niezależnych badań na ten sam temat",
+        "c": true
+      },
+      {
+        "t": "Jakościowym streszczeniem jednego badania",
+        "c": false
+      },
+      {
+        "t": "Ponowną, szczegółową analizą surowych danych z jednego pojedynczego badania empirycznego",
+        "c": false
+      },
+      {
+        "t": "Badaniem na bardzo dużej, pojedynczej próbie",
+        "c": false
+      }
     ],
-    exp: "Meta-analiza to wystandaryzowana procedura ilościowej syntezy wyników wielu niezależnych badań na ten sam temat (historycznie: spór Eysenck vs Smith & Glass 1977 o psychoterapię). Daje precyzyjniejsze wnioski, ocenia wielkość efektu i wykrywa błąd publikacyjny."
+    "exp": "Meta-analiza to wystandaryzowana procedura ilościowej syntezy wyników wielu niezależnych badań na ten sam temat (historycznie: spór Eysenck vs Smith & Glass 1977 o psychoterapię). Daje precyzyjniejsze wnioski, ocenia wielkość efektu i wykrywa błąd publikacyjny."
   },
   {
-    q: "Czym różni się model fixed effects od random effects w meta-analizie?",
-    opts: [
-      { t: "Fixed zakłada jeden wspólny prawdziwy efekt; random dopuszcza zróżnicowanie efektów między badaniami", c: true },
-      { t: "Fixed dopuszcza zróżnicowanie efektów, random zakłada jeden wspólny", c: false },
-      { t: "Oba zakładają dokładnie ten sam model efektu", c: false },
-      { t: "Fixed dotyczy forest plot, random funnel plot", c: false },
+    "q": "Czym różni się model fixed effects od random effects w meta-analizie?",
+    "opts": [
+      {
+        "t": "Fixed zakłada jeden wspólny prawdziwy efekt; random dopuszcza zróżnicowanie między badaniami",
+        "c": true
+      },
+      {
+        "t": "Fixed dopuszcza pełne zróżnicowanie efektów, a random zakłada jeden wspólny prawdziwy efekt dla wszystkich",
+        "c": false
+      },
+      {
+        "t": "Oba zakładają dokładnie ten sam model efektu",
+        "c": false
+      },
+      {
+        "t": "Fixed dotyczy forest plot, random funnel plot",
+        "c": false
+      }
     ],
-    exp: "Model fixed effects zakłada jeden wspólny efekt prawdziwy dla wszystkich badań, a random effects dopuszcza, że prawdziwe efekty różnią się między badaniami."
+    "exp": "Model fixed effects zakłada jeden wspólny efekt prawdziwy dla wszystkich badań, a random effects dopuszcza, że prawdziwe efekty różnią się między badaniami."
   },
   {
-    q: "Do czego służy funnel plot w meta-analizie?",
-    opts: [
-      { t: "Do wykrywania błędu publikacyjnego (asymetria lejka)", c: true },
-      { t: "Do wizualizacji efektów poszczególnych badań i efektu zbiorczego", c: false },
-      { t: "Do obliczania mocy testu", c: false },
-      { t: "Do kodowania liczebności badań", c: false },
+    "q": "Do czego służy funnel plot w meta-analizie?",
+    "opts": [
+      {
+        "t": "Do wykrywania błędu publikacyjnego (asymetria lejka)",
+        "c": true
+      },
+      {
+        "t": "Do wizualizacji efektów poszczególnych badań i efektu zbiorczego",
+        "c": false
+      },
+      {
+        "t": "Do obliczania mocy testu (1 − β)",
+        "c": false
+      },
+      {
+        "t": "Do kodowania liczebności badań",
+        "c": false
+      }
     ],
-    exp: "Funnel plot służy do wykrywania błędu publikacyjnego — jego asymetria sugeruje brakujące (niepublikowane) badania. Wizualizacją efektów poszczególnych badań i efektu zbiorczego jest forest plot."
+    "exp": "Funnel plot służy do wykrywania błędu publikacyjnego — jego asymetria sugeruje brakujące (niepublikowane) badania. Wizualizacją efektów poszczególnych badań i efektu zbiorczego jest forest plot."
   }
-
 ];
 
 // ---- SHUFFLE ----

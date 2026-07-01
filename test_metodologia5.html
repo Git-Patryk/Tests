@@ -313,258 +313,556 @@
 
 <script>
 const ALL_QUESTIONS = [
-
   {
-    q: "Które trzy formy wymieniono jako badania samoopisowe?",
-    opts: [
-      { t: "Sondaże, ankiety i analiza danych zastanych (wtórna)", c: true },
-      { t: "Eksperyment, quasi-eksperyment i korelacja", c: false },
-      { t: "Wywiad, obserwacja i focus group", c: false },
-      { t: "Meta-analiza, replikacja i prerejestracja", c: false },
+    "q": "Które trzy formy wymieniono jako badania samoopisowe?",
+    "opts": [
+      {
+        "t": "Sondaże, ankiety i analiza danych zastanych (wtórna)",
+        "c": true
+      },
+      {
+        "t": "Eksperyment, quasi-eksperyment i badanie korelacyjne (schematy)",
+        "c": false
+      },
+      {
+        "t": "Wywiad, obserwacja i focus group",
+        "c": false
+      },
+      {
+        "t": "Meta-analiza, replikacja i prerejestracja",
+        "c": false
+      }
     ],
-    exp: "Badania samoopisowe to: sondaże (opinie/postawy na próbie populacji), ankiety (kwestionariusze do samoopisu) oraz analiza danych zastanych (wtórna/reanaliza — wykorzystanie już zebranych danych do nowych pytań)."
+    "exp": "Badania samoopisowe to: sondaże (opinie/postawy na próbie populacji), ankiety (kwestionariusze do samoopisu) oraz analiza danych zastanych (wtórna/reanaliza — wykorzystanie już zebranych danych do nowych pytań)."
   },
   {
-    q: "Czym jest sondaż omnibus?",
-    opts: [
-      { t: "Wielotematycznym sondażem, w którym kilku zleceniodawców dokłada własne pytania do jednej fali na tej samej próbie", c: true },
-      { t: "Sondażem prowadzonym wyłącznie przez telefon", c: false },
-      { t: "Badaniem jednej, wąskiej grupy o jednym temacie", c: false },
-      { t: "Ponowną analizą danych z poprzedniego sondażu", c: false },
+    "q": "Czym jest sondaż omnibus?",
+    "opts": [
+      {
+        "t": "Wielotematycznym sondażem, w którym kilku zleceniodawców dokłada własne pytania do jednej fali",
+        "c": true
+      },
+      {
+        "t": "Sondażem prowadzonym wyłącznie przez telefon na jednej, wąsko dobranej grupie stałych respondentów",
+        "c": false
+      },
+      {
+        "t": "Badaniem jednej, wąskiej grupy o jednym temacie",
+        "c": false
+      },
+      {
+        "t": "Ponowną analizą danych z poprzedniego sondażu",
+        "c": false
+      }
     ],
-    exp: "Omnibus to wielotematyczny sondaż, w którym kilku zleceniodawców dokłada własne pytania do jednej fali na tej samej próbie (instytut robi rekrutację i ważenie). Przykłady: GSS, European Social Survey, Polski Generalny Sondaż Społeczny."
+    "exp": "Omnibus to wielotematyczny sondaż, w którym kilku zleceniodawców dokłada własne pytania do jednej fali na tej samej próbie (instytut robi rekrutację i ważenie). Przykłady: GSS, European Social Survey, Polski Generalny Sondaż Społeczny."
   },
   {
-    q: "Czym różni się CAPI od CATI?",
-    opts: [
-      { t: "CAPI to wywiad osobisty wspomagany komputerowo, a CATI to wywiad telefoniczny", c: true },
-      { t: "CAPI to wywiad telefoniczny, a CATI osobisty", c: false },
-      { t: "CAPI to ankieta pocztowa, a CATI online", c: false },
-      { t: "To dwie nazwy tej samej metody internetowej", c: false },
+    "q": "Czym różni się CAPI od CATI?",
+    "opts": [
+      {
+        "t": "CAPI to wywiad osobisty wspomagany komputerowo, a CATI to wywiad telefoniczny",
+        "c": true
+      },
+      {
+        "t": "CAPI to wywiad telefoniczny, a CATI osobisty",
+        "c": false
+      },
+      {
+        "t": "CAPI to ankieta pocztowa, a CATI online",
+        "c": false
+      },
+      {
+        "t": "To dwie nazwy tej samej metody internetowej",
+        "c": false
+      }
     ],
-    exp: "CAPI (computer-assisted personal interview) to wywiad osobisty wspomagany komputerowo, a CATI to wywiad telefoniczny. Obok nich media to też ankieta pocztowa, grupowa i online/panelowa."
+    "exp": "CAPI (computer-assisted personal interview) to wywiad osobisty wspomagany komputerowo, a CATI to wywiad telefoniczny. Obok nich media to też ankieta pocztowa, grupowa i online/panelowa."
   },
   {
-    q: "Po co stosuje się list przewodni w ankiecie?",
-    opts: [
-      { t: "Wyjaśnia cel i zasady udziału, zapewnia o poufności (RODO) — zwiększa response rate i spełnia wymogi etyczne", c: true },
-      { t: "Zawiera właściwe pytania merytoryczne sondażu", c: false },
-      { t: "Służy do ważenia próby po zebraniu danych", c: false },
-      { t: "Jest narzędziem analizy statystycznej wyników", c: false },
+    "q": "Po co stosuje się list przewodni w ankiecie?",
+    "opts": [
+      {
+        "t": "Wyjaśnia cel i zasady udziału, zapewnia o poufności — zwiększa response rate",
+        "c": true
+      },
+      {
+        "t": "Zawiera wszystkie właściwe pytania merytoryczne całego kwestionariusza sondażowego",
+        "c": false
+      },
+      {
+        "t": "Służy do ważenia próby po zebraniu danych",
+        "c": false
+      },
+      {
+        "t": "Jest narzędziem analizy statystycznej wyników",
+        "c": false
+      }
     ],
-    exp: "List przewodni wyjaśnia cel, kto prowadzi badanie, dlaczego ten adresat i na czym polega udział; zapewnia o dobrowolności, poufności/anonimowości (RODO) i podaje kontakt. Zwiększa response rate i spełnia wymogi etyczne."
+    "exp": "List przewodni wyjaśnia cel, kto prowadzi badanie, dlaczego ten adresat i na czym polega udział; zapewnia o dobrowolności, poufności/anonimowości (RODO) i podaje kontakt. Zwiększa response rate i spełnia wymogi etyczne."
   },
   {
-    q: "Czym jest rama doboru próby?",
-    opts: [
-      { t: "Tym, z czego losujemy — np. zweryfikowana lista e-mail z dziekanatu", c: true },
-      { t: "Rozbieżnością między charakterystykami próby a populacji", c: false },
-      { t: "Odsetkiem osób, które nie odpowiedziały na zaproszenie", c: false },
-      { t: "Sposobem nadawania wag obserwacjom", c: false },
+    "q": "Czym jest rama doboru próby?",
+    "opts": [
+      {
+        "t": "Tym, z czego losujemy — np. zweryfikowana lista e-mail z dziekanatu",
+        "c": true
+      },
+      {
+        "t": "Rozbieżnością między charakterystykami próby a populacji",
+        "c": false
+      },
+      {
+        "t": "Odsetkiem osób, które nie odpowiedziały na zaproszenie",
+        "c": false
+      },
+      {
+        "t": "Sposobem nadawania wag obserwacjom",
+        "c": false
+      }
     ],
-    exp: "Rama doboru to zbiór, z którego losujemy (np. zweryfikowana lista e-mail). Rozbieżność próby i populacji to błąd próby, a brak odpowiedzi to nonresponse (wymaga zapasu zaproszeń)."
+    "exp": "Rama doboru to zbiór, z którego losujemy (np. zweryfikowana lista e-mail). Rozbieżność próby i populacji to błąd próby, a brak odpowiedzi to nonresponse (wymaga zapasu zaproszeń)."
   },
   {
-    q: "Co cechuje dobór losowy prosty?",
-    opts: [
-      { t: "Losujemy n z pełnej listy — złoty standard uogólniania, ale wymaga ramy i jest droższy", c: true },
-      { t: "Dobieramy ochotników zgłaszających się sami", c: false },
-      { t: "Tworzymy „mini-populację” wg proporcji cech", c: false },
-      { t: "Uczestnicy polecają kolejnych badanych", c: false },
+    "q": "Co cechuje dobór losowy prosty?",
+    "opts": [
+      {
+        "t": "Losujemy n z pełnej listy — złoty standard uogólniania, ale droższy",
+        "c": true
+      },
+      {
+        "t": "Dobieramy ochotników zgłaszających się sami",
+        "c": false
+      },
+      {
+        "t": "Sami tworzymy „mini-populację” zgodnie z docelowymi proporcjami cech",
+        "c": false
+      },
+      {
+        "t": "Uczestnicy polecają kolejnych badanych",
+        "c": false
+      }
     ],
-    exp: "Dobór losowy prosty polega na wylosowaniu n osób z pełnej listy. To złoty standard uogólniania (z kontrolą błędu), ale wymaga ramy doboru i jest droższy."
+    "exp": "Dobór losowy prosty polega na wylosowaniu n osób z pełnej listy. To złoty standard uogólniania (z kontrolą błędu), ale wymaga ramy doboru i jest droższy."
   },
   {
-    q: "Na czym polega dobór warstwowy?",
-    opts: [
-      { t: "Dzielimy populację na warstwy (np. płeć, rok) i losujemy w każdej z nich", c: true },
-      { t: "Losujemy całe klastry (np. szkoły), a potem osoby w nich", c: false },
-      { t: "Dobieramy próbę wg proporcji cech bez losowania", c: false },
-      { t: "Bierzemy osoby najłatwiej dostępne", c: false },
+    "q": "Na czym polega dobór warstwowy?",
+    "opts": [
+      {
+        "t": "Dzielimy populację na warstwy (np. płeć, rok) i losujemy w każdej z nich",
+        "c": true
+      },
+      {
+        "t": "Losujemy całe klastry (np. szkoły), a potem osoby w nich",
+        "c": false
+      },
+      {
+        "t": "Dobieramy próbę wg proporcji cech bez losowania",
+        "c": false
+      },
+      {
+        "t": "Bierzemy osoby najłatwiej dostępne",
+        "c": false
+      }
     ],
-    exp: "Dobór warstwowy dzieli populację na warstwy (płeć, rok itp.) i losuje osoby w każdej warstwie — zapewnia reprezentację każdej warstwy. To wciąż dobór losowy."
+    "exp": "Dobór warstwowy dzieli populację na warstwy (płeć, rok itp.) i losuje osoby w każdej warstwie — zapewnia reprezentację każdej warstwy. To wciąż dobór losowy."
   },
   {
-    q: "Na czym polega dobór klastrowy?",
-    opts: [
-      { t: "Losujemy całe klastry (np. szkoły), a następnie osoby wewnątrz nich", c: true },
-      { t: "Dzielimy populację na warstwy i losujemy w każdej", c: false },
-      { t: "Dobieramy próbę wg kwot odzwierciedlających proporcje cech", c: false },
-      { t: "Uczestnicy rekrutują kolejnych przez znajomości", c: false },
+    "q": "Na czym polega dobór klastrowy?",
+    "opts": [
+      {
+        "t": "Losujemy całe klastry, a następnie badamy osoby wewnątrz nich",
+        "c": true
+      },
+      {
+        "t": "Dzielimy populację na warstwy i losujemy w każdej",
+        "c": false
+      },
+      {
+        "t": "Dobieramy próbę wg ustalonych kwot odzwierciedlających proporcje cech populacji",
+        "c": false
+      },
+      {
+        "t": "Uczestnicy rekrutują kolejnych przez znajomości",
+        "c": false
+      }
     ],
-    exp: "Dobór klastrowy polega na wylosowaniu całych klastrów (np. szkół), a potem osób wewnątrz nich. Przydatny, gdy populacja jest naturalnie pogrupowana."
+    "exp": "Dobór klastrowy polega na wylosowaniu całych klastrów (np. szkół), a potem osób wewnątrz nich. Przydatny, gdy populacja jest naturalnie pogrupowana."
   },
   {
-    q: "Co charakteryzuje dobór kwotowy (np. metoda Gallupa)?",
-    opts: [
-      { t: "To dobór NIELOSOWY: próba „mini-populacja” wg proporcji cech — szybki, ale wnioski ostrożnie", c: true },
-      { t: "To złoty standard losowego uogólniania", c: false },
-      { t: "Polega na poleceniach kolejnych uczestników", c: false },
-      { t: "Wymaga pełnej ramy doboru i losowania", c: false },
+    "q": "Co charakteryzuje dobór kwotowy (np. metoda Gallupa)?",
+    "opts": [
+      {
+        "t": "To dobór NIELOSOWY: próba „mini-populacja” wg proporcji cech — wnioski ostrożnie",
+        "c": true
+      },
+      {
+        "t": "To złoty standard losowego uogólniania",
+        "c": false
+      },
+      {
+        "t": "Polega na wzajemnych poleceniach kolejnych uczestników przez już zbadanych znajomych",
+        "c": false
+      },
+      {
+        "t": "Wymaga pełnej ramy doboru i losowania",
+        "c": false
+      }
     ],
-    exp: "Dobór kwotowy (Gallup) jest nielosowy — buduje próbę jako „mini-populację” wg proporcji cech. Jest szybki, ale z wnioskami trzeba być ostrożnym (brak losowania)."
+    "exp": "Dobór kwotowy (Gallup) jest nielosowy — buduje próbę jako „mini-populację” wg proporcji cech. Jest szybki, ale z wnioskami trzeba być ostrożnym (brak losowania)."
   },
   {
-    q: "Dla jakich populacji i z jakim ograniczeniem stosuje się metodę kuli śnieżnej?",
-    opts: [
-      { t: "Dla populacji ukrytych — uczestnicy polecają kolejnych; brak reprezentatywności (homofilia)", c: true },
-      { t: "Dla całej populacji ogólnej — daje pełną reprezentatywność", c: false },
-      { t: "Dla badań eksperymentalnych z randomizacją II stopnia", c: false },
-      { t: "Dla doboru warstwowego dużych populacji", c: false },
+    "q": "Dla jakich populacji i z jakim ograniczeniem stosuje się metodę kuli śnieżnej?",
+    "opts": [
+      {
+        "t": "Dla populacji ukrytych — uczestnicy polecają kolejnych; brak reprezentatywności",
+        "c": true
+      },
+      {
+        "t": "Dla całej populacji ogólnej — rzekomo daje pełną statystyczną reprezentatywność wyników",
+        "c": false
+      },
+      {
+        "t": "Dla badań eksperymentalnych z randomizacją II stopnia",
+        "c": false
+      },
+      {
+        "t": "Dla doboru warstwowego dużych populacji",
+        "c": false
+      }
     ],
-    exp: "Kula śnieżna (nielosowa) polega na tym, że uczestnicy polecają kolejnych. Sprawdza się dla populacji ukrytych/trudno dostępnych, ale nie daje reprezentatywności (homofilia — podobni polecają podobnych)."
+    "exp": "Kula śnieżna (nielosowa) polega na tym, że uczestnicy polecają kolejnych. Sprawdza się dla populacji ukrytych/trudno dostępnych, ale nie daje reprezentatywności (homofilia — podobni polecają podobnych)."
   },
   {
-    q: "Po co stosuje się ważenie danych w sondażu?",
-    opts: [
-      { t: "By skorygować nadreprezentację grup — np. nadreprezentowanym kobietom nadaje się wagę <1, by „odchudzić” próbę", c: true },
-      { t: "By zwiększyć liczebność próby po badaniu", c: false },
-      { t: "By losowo przydzielić osoby do warunków", c: false },
-      { t: "By ukryć cel badania przed respondentami", c: false },
+    "q": "Po co stosuje się ważenie danych w sondażu?",
+    "opts": [
+      {
+        "t": "By skorygować nadreprezentację grup — nadreprezentowanym nadaje się wagę <1",
+        "c": true
+      },
+      {
+        "t": "By sztucznie zwiększyć liczebność zbadanej próby już po całkowitym zakończeniu badania",
+        "c": false
+      },
+      {
+        "t": "By losowo przydzielić osoby do warunków",
+        "c": false
+      },
+      {
+        "t": "By ukryć cel badania przed respondentami",
+        "c": false
+      }
     ],
-    exp: "Ważenie koryguje rozbieżności struktury próby i populacji. Jeśli kobiety to 70% próby vs 60% populacji, nadaje się im wagę 0,60/0,70 ≈ 0,857 („odchudzanie”), a mężczyznom 0,40/0,30 ≈ 1,333 (doważanie)."
+    "exp": "Ważenie koryguje rozbieżności struktury próby i populacji. Jeśli kobiety to 70% próby vs 60% populacji, nadaje się im wagę 0,60/0,70 ≈ 0,857 („odchudzanie”), a mężczyznom 0,40/0,30 ≈ 1,333 (doważanie)."
   },
   {
-    q: "Co dzieje się „w głowie badanego” po zadaniu pytania w sondażu?",
-    opts: [
-      { t: "Konstruuje odpowiedź (rzadko ma gotową): interpretacja → wydobycie/utworzenie opinii → ocena → wybór komunikacji", c: true },
-      { t: "Zawsze odczytuje gotową, stabilną opinię z pamięci", c: false },
-      { t: "Losowo wybiera dowolną odpowiedź", c: false },
-      { t: "Odpowiada wyłącznie zgodnie z instrukcją ankietera", c: false },
+    "q": "Co dzieje się „w głowie badanego” po zadaniu pytania w sondażu?",
+    "opts": [
+      {
+        "t": "Konstruuje odpowiedź: interpretacja → wydobycie opinii → ocena → wybór komunikacji",
+        "c": true
+      },
+      {
+        "t": "Zawsze po prostu odczytuje gotową, w pełni stabilną opinię wprost z pamięci długotrwałej",
+        "c": false
+      },
+      {
+        "t": "Losowo wybiera dowolną odpowiedź",
+        "c": false
+      },
+      {
+        "t": "Odpowiada wyłącznie zgodnie z instrukcją ankietera",
+        "c": false
+      }
     ],
-    exp: "Badany zwykle konstruuje odpowiedź (rzadko ma gotową opinię): interpretuje pytanie, wydobywa/tworzy opinię, kalkuluje ocenę i wybiera sposób komunikacji. Modele integracji: szkiców wielokrotnych vs Pandemonium Selfridge'a."
+    "exp": "Badany zwykle konstruuje odpowiedź (rzadko ma gotową opinię): interpretuje pytanie, wydobywa/tworzy opinię, kalkuluje ocenę i wybiera sposób komunikacji. Modele integracji: szkiców wielokrotnych vs Pandemonium Selfridge'a."
   },
   {
-    q: "Dlaczego pytania podwójne (np. „Czy treść była zgodna z sylabusem i oczekiwaniami?”) są błędne?",
-    opts: [
-      { t: "Łączą dwie kwestie w jednym pytaniu — respondent nie wie, na którą odpowiada", c: true },
-      { t: "Są zbyt krótkie, by zmierzyć postawę", c: false },
-      { t: "Zawierają podwójne przeczenie", c: false },
-      { t: "Wymuszają rozkład normalny odpowiedzi", c: false },
+    "q": "Dlaczego pytania podwójne (np. „Czy treść była zgodna z sylabusem i oczekiwaniami?”) są błędne?",
+    "opts": [
+      {
+        "t": "Łączą dwie kwestie w jednym pytaniu — nie wiadomo, na którą pada odpowiedź",
+        "c": true
+      },
+      {
+        "t": "Są zbyt krótkie, by zmierzyć postawę",
+        "c": false
+      },
+      {
+        "t": "Zawierają podwójne przeczenie",
+        "c": false
+      },
+      {
+        "t": "Sztucznie wymuszają rozkład normalny wszystkich udzielanych przez badanych odpowiedzi",
+        "c": false
+      }
     ],
-    exp: "Pytanie podwójne łączy dwie kwestie („zgodna z sylabusem i z oczekiwaniami?”), więc nie wiadomo, do której odnosi się odpowiedź — to źródło błędu pomiaru. Należy rozdzielić je na osobne pytania."
+    "exp": "Pytanie podwójne łączy dwie kwestie („zgodna z sylabusem i z oczekiwaniami?”), więc nie wiadomo, do której odnosi się odpowiedź — to źródło błędu pomiaru. Należy rozdzielić je na osobne pytania."
   },
   {
-    q: "Dlaczego unika się negacji i podwójnych przeczeń w pytaniach (np. „Czy nie masz nic przeciwko nie jeżdżeniu metrem?”)?",
-    opts: [
-      { t: "Utrudniają zrozumienie i zwiększają ryzyko błędnej odpowiedzi", c: true },
-      { t: "Zawsze prowadzą do efektu świeżości", c: false },
-      { t: "Wymuszają aprobatę społeczną", c: false },
-      { t: "Skracają czas wypełniania ankiety", c: false },
+    "q": "Dlaczego unika się negacji i podwójnych przeczeń w pytaniach (np. „Czy nie masz nic przeciwko nie jeżdżeniu metrem?”)?",
+    "opts": [
+      {
+        "t": "Utrudniają zrozumienie i zwiększają ryzyko błędnej odpowiedzi",
+        "c": true
+      },
+      {
+        "t": "Zawsze prowadzą do efektu świeżości",
+        "c": false
+      },
+      {
+        "t": "Wymuszają aprobatę społeczną",
+        "c": false
+      },
+      {
+        "t": "Skracają czas wypełniania ankiety",
+        "c": false
+      }
     ],
-    exp: "Negacje i podwójne przeczenia utrudniają interpretację pytania i zwiększają ryzyko, że respondent odpowie niezgodnie z intencją — należy formułować pytania wprost."
+    "exp": "Negacje i podwójne przeczenia utrudniają interpretację pytania i zwiększają ryzyko, że respondent odpowie niezgodnie z intencją — należy formułować pytania wprost."
   },
   {
-    q: "Na czym polega efekt świeżości w odpowiedziach na pytania?",
-    opts: [
-      { t: "Skłonność do wyboru OSTATNIEJ usłyszanej opcji — zwłaszcza w sondażu telefonicznym, silniejsza u starszych", c: true },
-      { t: "Skłonność do wyboru pierwszej opcji z listy na papierze", c: false },
-      { t: "Podawanie odpowiedzi społecznie pożądanych", c: false },
-      { t: "Mniej uważne czytanie ostatnich pytań ankiety", c: false },
+    "q": "Na czym polega efekt świeżości w odpowiedziach na pytania?",
+    "opts": [
+      {
+        "t": "Skłonność do wyboru OSTATNIEJ usłyszanej opcji — zwłaszcza w sondażu telefonicznym",
+        "c": true
+      },
+      {
+        "t": "Skłonność do wyboru pierwszej opcji widocznej na liście na papierze (efekt kolejności)",
+        "c": false
+      },
+      {
+        "t": "Podawanie odpowiedzi społecznie pożądanych",
+        "c": false
+      },
+      {
+        "t": "Mniej uważne czytanie ostatnich pytań ankiety",
+        "c": false
+      }
     ],
-    exp: "Efekt świeżości to skłonność do wyboru ostatniej z prezentowanych opcji — nasila się w sondażu telefonicznym (opcje słyszane) i jest silniejszy u starszych. Odwrotnością przy skali na papierze jest efekt pierwszeństwa."
+    "exp": "Efekt świeżości to skłonność do wyboru ostatniej z prezentowanych opcji — nasila się w sondażu telefonicznym (opcje słyszane) i jest silniejszy u starszych. Odwrotnością przy skali na papierze jest efekt pierwszeństwa."
   },
   {
-    q: "Na czym polega efekt pierwszeństwa w pytaniach kwestionariuszowych?",
-    opts: [
-      { t: "Przy skali prezentowanej na papierze respondenci chętniej wybierają opcje początkowe", c: true },
-      { t: "Respondenci wybierają ostatnią usłyszaną opcję", c: false },
-      { t: "Pierwsze pytania są pomijane z powodu zmęczenia", c: false },
-      { t: "Pierwsza opcja zawsze jest poprawna", c: false },
+    "q": "Na czym polega efekt pierwszeństwa w pytaniach kwestionariuszowych?",
+    "opts": [
+      {
+        "t": "Przy skali prezentowanej na papierze respondenci chętniej wybierają opcje początkowe",
+        "c": true
+      },
+      {
+        "t": "Respondenci wybierają ostatnią usłyszaną opcję",
+        "c": false
+      },
+      {
+        "t": "Pierwsze pytania są pomijane z powodu zmęczenia",
+        "c": false
+      },
+      {
+        "t": "Pierwsza opcja zawsze jest poprawna",
+        "c": false
+      }
     ],
-    exp: "Efekt pierwszeństwa: przy skali prezentowanej wzrokowo (na papierze) respondenci chętniej wskazują opcje początkowe. W sondażu telefonicznym dominuje przeciwny efekt świeżości."
+    "exp": "Efekt pierwszeństwa: przy skali prezentowanej wzrokowo (na papierze) respondenci chętniej wskazują opcje początkowe. W sondażu telefonicznym dominuje przeciwny efekt świeżości."
   },
   {
-    q: "Jak konstrukcja skali (1–10 vs −5…+5) wpływa na rozkład odpowiedzi?",
-    opts: [
-      { t: "Skala 1–10 daje rozkład bliski normalnemu, a −5…+5 bywa skośna, bo „minus” sugeruje „coś nie tak”", c: true },
-      { t: "Obie skale zawsze dają identyczny rozkład", c: false },
-      { t: "Skala −5…+5 zawsze daje rozkład normalny", c: false },
-      { t: "Liczba punktów skali nie wpływa na odpowiedzi", c: false },
+    "q": "Jak konstrukcja skali (1–10 vs −5…+5) wpływa na rozkład odpowiedzi?",
+    "opts": [
+      {
+        "t": "Skala 1–10 daje rozkład bliski normalnemu, a −5…+5 bywa skośna",
+        "c": true
+      },
+      {
+        "t": "Obie skale zawsze dają identyczny rozkład",
+        "c": false
+      },
+      {
+        "t": "Skala −5…+5 zawsze daje rozkład normalny",
+        "c": false
+      },
+      {
+        "t": "Liczba i etykiety punktów skali w ogóle nie wpływają na udzielane odpowiedzi",
+        "c": false
+      }
     ],
-    exp: "Skala 1–10 daje rozkład bliski normalnemu, a skala −5…+5 bywa skośna — wartości ujemne sugerują, że „coś jest nie tak”. Skala narzuca też interpretację „normy” (np. ile dni to długo na książkę z biblioteki)."
+    "exp": "Skala 1–10 daje rozkład bliski normalnemu, a skala −5…+5 bywa skośna — wartości ujemne sugerują, że „coś jest nie tak”. Skala narzuca też interpretację „normy” (np. ile dni to długo na książkę z biblioteki)."
   },
   {
-    q: "Jak filtr aprobaty społecznej zniekształca odpowiedzi w sondażach?",
-    opts: [
-      { t: "Respondenci zawyżają zachowania pożądane — np. o udziale w głosowaniu myli się ok. 25%", c: true },
-      { t: "Respondenci podają wyłącznie odpowiedzi prawdziwe", c: false },
-      { t: "Filtr dotyczy tylko pytań o pogodę", c: false },
-      { t: "Aprobata społeczna zwiększa rzetelność pomiaru", c: false },
+    "q": "Jak filtr aprobaty społecznej zniekształca odpowiedzi w sondażach?",
+    "opts": [
+      {
+        "t": "Respondenci zawyżają zachowania pożądane — o udziale w głosowaniu myli się ok. 25%",
+        "c": true
+      },
+      {
+        "t": "Respondenci podają wyłącznie w pełni szczere i prawdziwe odpowiedzi na każde pytanie",
+        "c": false
+      },
+      {
+        "t": "Filtr dotyczy tylko pytań o pogodę",
+        "c": false
+      },
+      {
+        "t": "Aprobata społeczna zwiększa rzetelność pomiaru",
+        "c": false
+      }
     ],
-    exp: "Filtr aprobaty społecznej skłania do odpowiedzi społecznie pożądanych: o wiek podaje się „okrągłe” liczby, o głosowanie myli się ok. 25%, a o zarobki co najmniej połowa podaje niedokładnie."
+    "exp": "Filtr aprobaty społecznej skłania do odpowiedzi społecznie pożądanych: o wiek podaje się „okrągłe” liczby, o głosowanie myli się ok. 25%, a o zarobki co najmniej połowa podaje niedokładnie."
   },
   {
-    q: "Która metoda zbierania danych pozwala uchwycić reakcje niewerbalne, ale grozi dominacją ekstrawertyków i biasem moderatora?",
-    opts: [
-      { t: "Focus group (zogniskowany wywiad grupowy)", c: true },
-      { t: "Ankieta pocztowa", c: false },
-      { t: "Analiza danych zastanych", c: false },
-      { t: "Obserwacja ukryta", c: false },
+    "q": "Która metoda zbierania danych pozwala uchwycić reakcje niewerbalne, ale grozi dominacją ekstrawertyków i biasem moderatora?",
+    "opts": [
+      {
+        "t": "Focus group (zogniskowany wywiad grupowy)",
+        "c": true
+      },
+      {
+        "t": "Ankieta pocztowa",
+        "c": false
+      },
+      {
+        "t": "Analiza danych zastanych (wtórnych, zebranych wcześniej)",
+        "c": false
+      },
+      {
+        "t": "Obserwacja ukryta",
+        "c": false
+      }
     ],
-    exp: "Focus group (pierwotna, jakościowa) daje dostęp do reakcji i sygnałów niewerbalnych, ale grozi jej bias moderatora i dominacja osób ekstrawertycznych. Obserwacja z kolei nie bada postaw, a dane zastane bywają nieaktualne."
+    "exp": "Focus group (pierwotna, jakościowa) daje dostęp do reakcji i sygnałów niewerbalnych, ale grozi jej bias moderatora i dominacja osób ekstrawertycznych. Obserwacja z kolei nie bada postaw, a dane zastane bywają nieaktualne."
   },
   {
-    q: "Kiedy stosuje się analizę wielopoziomową (HLM)?",
-    opts: [
-      { t: "Gdy dane mają strukturę zagnieżdżoną — jednostki należą do podgrup (np. uczniowie w klasach)", c: true },
-      { t: "Gdy mamy tylko jedną zmienną i jedną grupę", c: false },
-      { t: "Gdy chcemy zsyntetyzować wyniki wielu opublikowanych badań", c: false },
-      { t: "Gdy losujemy osoby do warunków eksperymentalnych", c: false },
+    "q": "Kiedy stosuje się analizę wielopoziomową (HLM)?",
+    "opts": [
+      {
+        "t": "Gdy dane mają strukturę zagnieżdżoną — jednostki należą do podgrup",
+        "c": true
+      },
+      {
+        "t": "Gdy mamy tylko jedną zmienną i jedną grupę",
+        "c": false
+      },
+      {
+        "t": "Gdy chcemy zsyntetyzować liczbowo wyniki wielu wcześniej opublikowanych badań",
+        "c": false
+      },
+      {
+        "t": "Gdy losujemy osoby do warunków eksperymentalnych",
+        "c": false
+      }
     ],
-    exp: "Analiza wielopoziomowa (multilevel / hierarchical linear modeling) służy danym o strukturze zagnieżdżonej — osoby należą do podgrup (uczniowie w klasach/szkołach, pracownicy w oddziałach). Efekty zależą też od kontekstu (nauczyciel, manager, klimat oddziału)."
+    "exp": "Analiza wielopoziomowa (multilevel / hierarchical linear modeling) służy danym o strukturze zagnieżdżonej — osoby należą do podgrup (uczniowie w klasach/szkołach, pracownicy w oddziałach). Efekty zależą też od kontekstu (nauczyciel, manager, klimat oddziału)."
   },
   {
-    q: "Który przykład najlepiej ilustruje dane zagnieżdżone (hierarchiczne)?",
-    opts: [
-      { t: "Uczniowie (poziom 1) należący do klas/szkół (poziom 2)", c: true },
-      { t: "Jedna grupa losowa porównywana z grupą kontrolną", c: false },
-      { t: "Pojedynczy pomiar IQ u jednej osoby", c: false },
-      { t: "Zbiór niezależnych, niepowiązanych obserwacji", c: false },
+    "q": "Który przykład najlepiej ilustruje dane zagnieżdżone (hierarchiczne)?",
+    "opts": [
+      {
+        "t": "Uczniowie (poziom 1) należący do klas/szkół (poziom 2)",
+        "c": true
+      },
+      {
+        "t": "Jedna grupa losowa porównywana z grupą kontrolną",
+        "c": false
+      },
+      {
+        "t": "Pojedynczy pomiar IQ u jednej osoby",
+        "c": false
+      },
+      {
+        "t": "Zbiór całkowicie niezależnych, wzajemnie niepowiązanych obserwacji (bez struktury)",
+        "c": false
+      }
     ],
-    exp: "Dane zagnieżdżone to np. uczniowie (poziom 1) w klasach/szkołach (poziom 2) albo pracownicy w oddziałach firmy w różnych krajach — jednostki są pogrupowane w wyższe poziomy."
+    "exp": "Dane zagnieżdżone to np. uczniowie (poziom 1) w klasach/szkołach (poziom 2) albo pracownicy w oddziałach firmy w różnych krajach — jednostki są pogrupowane w wyższe poziomy."
   },
   {
-    q: "Czym grozi zignorowanie struktury wielopoziomowej i użycie metod tradycyjnych?",
-    opts: [
-      { t: "Błędem I rodzaju — dlatego przy danych zagnieżdżonych stosuje się HLM nawet przy niskim ICC (Nezlek, 2012)", c: true },
-      { t: "Błędem doboru próby i utratą reprezentatywności", c: false },
-      { t: "Wyłącznie spadkiem mocy testu, bez innych skutków", c: false },
-      { t: "Brakiem jakichkolwiek konsekwencji", c: false },
+    "q": "Czym grozi zignorowanie struktury wielopoziomowej i użycie metod tradycyjnych?",
+    "opts": [
+      {
+        "t": "Błędem I rodzaju — dlatego przy danych zagnieżdżonych stosuje się HLM nawet przy niskim ICC",
+        "c": true
+      },
+      {
+        "t": "Błędem doboru próby i utratą reprezentatywności",
+        "c": false
+      },
+      {
+        "t": "Wyłącznie niewielkim spadkiem mocy statystycznej testu, bez żadnych innych skutków ubocznych",
+        "c": false
+      },
+      {
+        "t": "Brakiem jakichkolwiek konsekwencji",
+        "c": false
+      }
     ],
-    exp: "Zignorowanie struktury zagnieżdżonej (mieszanie poziomów analizy) może prowadzić do błędu I rodzaju. Dlatego przy danych zagnieżdżonych stosuje się analizę wielopoziomową nawet przy niskim ICC (Nezlek, 2012)."
+    "exp": "Zignorowanie struktury zagnieżdżonej (mieszanie poziomów analizy) może prowadzić do błędu I rodzaju. Dlatego przy danych zagnieżdżonych stosuje się analizę wielopoziomową nawet przy niskim ICC (Nezlek, 2012)."
   },
   {
-    q: "Na czym polega izolacjonizm jako zagrożenie integracji wiedzy (Śpiewak & Kossowska)?",
-    opts: [
-      { t: "Na zawężaniu badania zjawiska do jednego narzędzia lub tradycji teoretycznej", c: true },
-      { t: "Na sprowadzaniu zjawisk społecznych do elementarnych zjawisk psychicznych", c: false },
-      { t: "Na łączeniu zbyt wielu dziedzin naraz", c: false },
-      { t: "Na rezygnacji z jakiejkolwiek teorii", c: false },
+    "q": "Na czym polega izolacjonizm jako zagrożenie integracji wiedzy (Śpiewak & Kossowska)?",
+    "opts": [
+      {
+        "t": "Na zawężaniu badania zjawiska do jednego narzędzia lub tradycji teoretycznej",
+        "c": true
+      },
+      {
+        "t": "Na sprowadzaniu zjawisk społecznych do elementarnych zjawisk psychicznych",
+        "c": false
+      },
+      {
+        "t": "Na łączeniu zbyt wielu dziedzin naraz",
+        "c": false
+      },
+      {
+        "t": "Na rezygnacji z jakiejkolwiek teorii",
+        "c": false
+      }
     ],
-    exp: "Izolacjonizm to zawężanie badania zjawiska do jednego narzędzia lub jednej tradycji teoretycznej — przeciwieństwo otwartej integracji wiedzy z różnych dziedzin."
+    "exp": "Izolacjonizm to zawężanie badania zjawiska do jednego narzędzia lub jednej tradycji teoretycznej — przeciwieństwo otwartej integracji wiedzy z różnych dziedzin."
   },
   {
-    q: "Na czym polega redukcjonizm jako zagrożenie integracji wiedzy?",
-    opts: [
-      { t: "Na sprowadzaniu fenomenów społecznych do poziomu elementarnych zjawisk psychicznych", c: true },
-      { t: "Na zawężaniu badania do jednego narzędzia", c: false },
-      { t: "Na całkowitym odrzuceniu metod neuronauki", c: false },
-      { t: "Na łączeniu wiedzy bez gubienia poziomu zjawiska", c: false },
+    "q": "Na czym polega redukcjonizm jako zagrożenie integracji wiedzy?",
+    "opts": [
+      {
+        "t": "Na sprowadzaniu fenomenów społecznych do elementarnych zjawisk psychicznych",
+        "c": true
+      },
+      {
+        "t": "Na zawężaniu badania do jednego narzędzia",
+        "c": false
+      },
+      {
+        "t": "Na całkowitym odrzuceniu metod neuronauki",
+        "c": false
+      },
+      {
+        "t": "Na nadmiernym łączeniu różnych rodzajów wiedzy bez gubienia poziomu zjawiska",
+        "c": false
+      }
     ],
-    exp: "Redukcjonizm to sprowadzanie fenomenów społecznych do poziomu elementarnych zjawisk psychicznych — gubi się wtedy specyfika poziomu społecznego."
+    "exp": "Redukcjonizm to sprowadzanie fenomenów społecznych do poziomu elementarnych zjawisk psychicznych — gubi się wtedy specyfika poziomu społecznego."
   },
   {
-    q: "Czym jest „mądra integracja” wiedzy psychologicznej według Śpiewaka i Kossowskiej?",
-    opts: [
-      { t: "Łączeniem wiedzy o społecznych mechanizmach zachowania bez gubienia poziomu zjawiska i bez sztucznej redukcji", c: true },
-      { t: "Stosowaniem wyłącznie narzędzi neuronauki", c: false },
-      { t: "Trzymaniem się jednej tradycji teoretycznej", c: false },
-      { t: "Rezygnacją z łączenia różnych dziedzin", c: false },
+    "q": "Czym jest „mądra integracja” wiedzy psychologicznej według Śpiewaka i Kossowskiej?",
+    "opts": [
+      {
+        "t": "Łączeniem wiedzy o społecznych mechanizmach zachowania bez sztucznej redukcji",
+        "c": true
+      },
+      {
+        "t": "Stosowaniem wyłącznie narzędzi neuronauki",
+        "c": false
+      },
+      {
+        "t": "Konsekwentnym trzymaniem się wyłącznie jednej z góry wybranej tradycji teoretycznej",
+        "c": false
+      },
+      {
+        "t": "Rezygnacją z łączenia różnych dziedzin",
+        "c": false
+      }
     ],
-    exp: "„Mądra integracja” to łączenie wiedzy o społecznych mechanizmach zachowania (z psychofizjologii, neuronauki, psychologii poznawczej) bez gubienia poziomu zjawiska i bez sztucznej redukcji — unika obu skrajności: izolacjonizmu i redukcjonizmu."
+    "exp": "„Mądra integracja” to łączenie wiedzy o społecznych mechanizmach zachowania (z psychofizjologii, neuronauki, psychologii poznawczej) bez gubienia poziomu zjawiska i bez sztucznej redukcji — unika obu skrajności: izolacjonizmu i redukcjonizmu."
   }
-
 ];
 
 // ---- SHUFFLE ----

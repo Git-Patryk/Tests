@@ -313,273 +313,556 @@
 
 <script>
 const ALL_QUESTIONS = [
-
-  // === 1. PO CO METODOLOGIA ===
   {
-    q: "Nauka bywa określana jako „zdyscyplinowana ciekawość”. Na czym polega w tym ujęciu rola metodologii?",
-    opts: [
-      { t: "Zamienia intuicje w testowalne twierdzenia i chroni przed błędami poznawczymi badacza", c: true },
-      { t: "Dostarcza ostatecznych dowodów potwierdzających każdą teorię raz na zawsze", c: false },
-      { t: "Zastępuje teorię, bo liczą się tylko zebrane dane", c: false },
-      { t: "Służy wyłącznie do liczenia statystyk po zakończeniu badania", c: false }
+    "q": "Nauka bywa określana jako „zdyscyplinowana ciekawość”. Na czym polega w tym ujęciu rola metodologii?",
+    "opts": [
+      {
+        "t": "Zamienia intuicje w testowalne twierdzenia i chroni przed błędami poznawczymi badacza",
+        "c": true
+      },
+      {
+        "t": "Dostarcza ostatecznych, rozstrzygających dowodów potwierdzających każdą teorię raz na zawsze",
+        "c": false
+      },
+      {
+        "t": "Zastępuje teorię, bo liczą się tylko zebrane dane",
+        "c": false
+      },
+      {
+        "t": "Służy wyłącznie do liczenia statystyk po zakończeniu badania",
+        "c": false
+      }
     ],
-    exp: "Metodologia łączy teorię z praktyką: pomaga przełożyć teorię na hipotezy, dostarcza narzędzi czyniących badanie rzetelnym i powtarzalnym oraz chroni przed błędami poznawczymi badacza — zamienia intuicje w testowalne twierdzenia."
+    "exp": "Metodologia łączy teorię z praktyką: pomaga przełożyć teorię na hipotezy, dostarcza narzędzi czyniących badanie rzetelnym i powtarzalnym oraz chroni przed błędami poznawczymi badacza — zamienia intuicje w testowalne twierdzenia."
   },
   {
-    q: "Czym według wykładu jest „teoria bez badań”?",
-    opts: [
-      { t: "Filozofią i spekulacją — jak spójna, lecz nietestowana teoria Freuda", c: true },
-      { t: "Najczystszą formą nauki, bo nie zakłócają jej dane", c: false },
-      { t: "Zbieraniem danych bez sensu", c: false },
-      { t: "Replikacją wcześniejszych eksperymentów", c: false }
+    "q": "Czym według wykładu jest „teoria bez badań”?",
+    "opts": [
+      {
+        "t": "Filozofią i spekulacją — jak spójna, lecz nietestowana teoria Freuda",
+        "c": true
+      },
+      {
+        "t": "Najczystszą, wzorcową formą nauki, bo nie zakłócają jej żadne surowe dane",
+        "c": false
+      },
+      {
+        "t": "Zbieraniem danych bez sensu",
+        "c": false
+      },
+      {
+        "t": "Replikacją wcześniejszych eksperymentów",
+        "c": false
+      }
     ],
-    exp: "Teoria bez badań = filozofia, spekulacja. Freud miał spójną teorię, ale brakowało rygorystycznych testów, dlatego dziś jest bardziej inspiracją niż wiedzą naukową."
+    "exp": "Teoria bez badań = filozofia, spekulacja. Freud miał spójną teorię, ale brakowało rygorystycznych testów, dlatego dziś jest bardziej inspiracją niż wiedzą naukową."
   },
   {
-    q: "Czym jest „badanie bez teorii” (np. 1000 ankiet „koty czy psy?”)?",
-    opts: [
-      { t: "Zbieraniem danych bez sensu — sam opis, bez hipotezy i wniosków ogólnych", c: true },
-      { t: "Wzorcowym przykładem nauki dzięki dużej próbie", c: false },
-      { t: "Falsyfikacją teorii", c: false },
-      { t: "Operacjonalizacją konstruktu", c: false }
+    "q": "Czym jest „badanie bez teorii” (np. 1000 ankiet „koty czy psy?”)?",
+    "opts": [
+      {
+        "t": "Zbieraniem danych bez sensu — sam opis, bez hipotezy i wniosków ogólnych",
+        "c": true
+      },
+      {
+        "t": "Wzorcowym przykładem nauki dzięki dużej próbie",
+        "c": false
+      },
+      {
+        "t": "Falsyfikacją teorii",
+        "c": false
+      },
+      {
+        "t": "Operacjonalizacją konstruktu",
+        "c": false
+      }
     ],
-    exp: "Badania bez teorii to zbieranie danych bez sensu — 1000 ankiet „koty czy psy?” daje tylko opis, nie naukę: brak hipotezy i brak wniosków ogólnych. Sama duża próba nie czyni z tego nauki."
+    "exp": "Badania bez teorii to zbieranie danych bez sensu — 1000 ankiet „koty czy psy?” daje tylko opis, nie naukę: brak hipotezy i brak wniosków ogólnych. Sama duża próba nie czyni z tego nauki."
   },
   {
-    q: "Od czego — według wykładu — naprawdę zaczyna się nauka?",
-    opts: [
-      { t: "Od przewidywania, czyli postawienia hipotezy", c: true },
-      { t: "Od zebrania jak największej próby", c: false },
-      { t: "Od analizy statystycznej danych", c: false },
-      { t: "Od publikacji wyników", c: false }
+    "q": "Od czego — według wykładu — naprawdę zaczyna się nauka?",
+    "opts": [
+      {
+        "t": "Od przewidywania, czyli postawienia hipotezy",
+        "c": true
+      },
+      {
+        "t": "Od zebrania jak największej próby",
+        "c": false
+      },
+      {
+        "t": "Od analizy statystycznej danych",
+        "c": false
+      },
+      {
+        "t": "Od publikacji wyników",
+        "c": false
+      }
     ],
-    exp: "Duża próba ≠ nauka. Nauka zaczyna się od przewidywania — od postawienia hipotezy, którą można następnie testować."
-  },
-
-  // === 2. 5 PYTAŃ METODOLOGA ===
-  {
-    q: "Jaka jest poprawna sekwencja „5 pytań metodologa”?",
-    opts: [
-      { t: "Hipoteza → operacjonalizacja → projekt → trafność → wiarygodność/replikowalność", c: true },
-      { t: "Projekt → hipoteza → trafność → operacjonalizacja → publikacja", c: false },
-      { t: "Operacjonalizacja → hipoteza → wiarygodność → projekt → trafność", c: false },
-      { t: "Trafność → hipoteza → projekt → operacjonalizacja → replikacja", c: false }
-    ],
-    exp: "Sekwencja: hipoteza → operacjonalizacja (konstrukty → wskaźniki) → projekt → trafność → wiarygodność/replikowalność."
-  },
-  {
-    q: "Co oznacza pytanie metodologa „Jak to operacjonalizuję?”",
-    opts: [
-      { t: "Jak przełożyć konstrukty na mierzalne wskaźniki", c: true },
-      { t: "Jaki test statystyczny zastosować na końcu", c: false },
-      { t: "Czy wynik da się powtórzyć w innym laboratorium", c: false },
-      { t: "Jak duża powinna być próba badawcza", c: false }
-    ],
-    exp: "Operacjonalizacja to przełożenie konstruktów (np. „stres”, „pamięć”) na konkretne, mierzalne wskaźniki."
-  },
-
-  // === 3. KLASYCZNE BADANIA ===
-  {
-    q: "Co wykazał eksperyment Bushmana, Baumeistera i Stacka (1999) testujący hipotezę katharsis?",
-    opts: [
-      { t: "Osoby bijące w worek bokserski były bardziej agresywne, nie mniej", c: true },
-      { t: "Wyładowanie agresji w worku skutecznie obniżało późniejszą agresję", c: false },
-      { t: "Wyładowanie i spokojne siedzenie dawały identyczny poziom agresji", c: false },
-      { t: "Spokojne siedzenie zwiększało agresję bardziej niż bicie w worek", c: false }
-    ],
-    exp: "Wbrew intuicji „trzeba się wyładować”, prowokowani studenci bijący w worek byli BARDZIEJ agresywni, nie mniej. Pokazuje to, że sama intuicja nie wystarcza — potrzebny jest test empiryczny."
+    "exp": "Duża próba ≠ nauka. Nauka zaczyna się od przewidywania — od postawienia hipotezy, którą można następnie testować."
   },
   {
-    q: "Jaki wniosek o pamięci płynie z badań Bartletta (1932) „Wojna duchów”?",
-    opts: [
-      { t: "Pamięć to rekonstrukcja oparta na schematach, a nie wierny zapis", c: true },
-      { t: "Pamięć to dokładny, fotograficzny zapis zdarzeń", c: false },
-      { t: "Pamięć poprawia się przy kolejnych odtworzeniach", c: false },
-      { t: "Ludzie dodają do wspomnień coraz więcej szczegółów nadprzyrodzonych", c: false }
+    "q": "Jaka jest poprawna sekwencja „5 pytań metodologa”?",
+    "opts": [
+      {
+        "t": "Hipoteza → operacjonalizacja → projekt → trafność → wiarygodność/replikowalność",
+        "c": true
+      },
+      {
+        "t": "Projekt badawczy → postawienie hipotezy → trafność → operacjonalizacja → publikacja wyników",
+        "c": false
+      },
+      {
+        "t": "Operacjonalizacja → hipoteza → wiarygodność → projekt → trafność",
+        "c": false
+      },
+      {
+        "t": "Trafność → hipoteza → projekt → operacjonalizacja → replikacja",
+        "c": false
+      }
     ],
-    exp: "W metodzie odtworzeń seryjnych odtworzenia były skracane („kajak”→„łódź”), usuwano wątki nadprzyrodzone — pamięć to rekonstrukcja oparta na schematach, nie wierny zapis."
+    "exp": "Sekwencja: hipoteza → operacjonalizacja (konstrukty → wskaźniki) → projekt → trafność → wiarygodność/replikowalność."
   },
   {
-    q: "W eksperymencie Festingera i Carlsmitha (1959) kto oceniał nudne zadanie jako ciekawsze?",
-    opts: [
-      { t: "Osoby, które dostały 1 dolara za zachwalanie zadania", c: true },
-      { t: "Osoby, które dostały 20 dolarów za zachwalanie zadania", c: false },
-      { t: "Osoby z grupy kontrolnej bez żadnej zapłaty", c: false },
-      { t: "Wszystkie grupy oceniły zadanie tak samo", c: false }
+    "q": "Co oznacza pytanie metodologa „Jak to operacjonalizuję?”",
+    "opts": [
+      {
+        "t": "Jak przełożyć konstrukty na mierzalne wskaźniki",
+        "c": true
+      },
+      {
+        "t": "Jaki test statystyczny zastosować na końcu",
+        "c": false
+      },
+      {
+        "t": "Czy wynik da się powtórzyć w innym laboratorium",
+        "c": false
+      },
+      {
+        "t": "Jak liczna i reprezentatywna powinna być dobrana próba badawcza",
+        "c": false
+      }
     ],
-    exp: "Osoby płacone tylko 1$ oceniały nudne zadanie jako ciekawsze niż płacone 20$. Mała zapłata nie usprawiedliwia kłamstwa → powstaje dysonans poznawczy → zmiana postawy."
-  },
-
-  // === 4. HUME ===
-  {
-    q: "Według Davida Hume'a, czego tak naprawdę doświadczamy zamiast „przyczyny”?",
-    opts: [
-      { t: "Jedynie następstwa zdarzeń — nie mamy „zmysłu przyczyny”", c: true },
-      { t: "Bezpośrednio obserwowanej siły przyczynowej", c: false },
-      { t: "Statystycznej korelacji między zmiennymi", c: false },
-      { t: "Mechanizmu mediacyjnego łączącego zdarzenia", c: false }
-    ],
-    exp: "Hume twierdził, że nie mamy „zmysłu przyczyny” — widzimy jedynie następstwo zdarzeń, a przyczynowość jest wnioskiem, nie bezpośrednim spostrzeżeniem."
-  },
-  {
-    q: "Które trzy warunki przyczynowości wskazał Hume?",
-    opts: [
-      { t: "Bliskość w czasie i przestrzeni, następstwo czasowe, stała koniunkcja", c: true },
-      { t: "Randomizacja, manipulacja, grupa kontrolna", c: false },
-      { t: "Trafność, rzetelność, replikowalność", c: false },
-      { t: "Zgodność, różnica, zmiany towarzyszące", c: false }
-    ],
-    exp: "Hume wskazał trzy warunki: bliskość w czasie i przestrzeni, następstwo czasowe (X przed Y) oraz stałą koniunkcję (zawsze gdy X, to Y). Zgodność/różnica/zmiany towarzyszące to kanony Milla, nie Hume'a."
+    "exp": "Operacjonalizacja to przełożenie konstruktów (np. „stres”, „pamięć”) na konkretne, mierzalne wskaźniki."
   },
   {
-    q: "Dlaczego warunki Hume'a są „konieczne, ale niewystarczające” (kogut i słońce, lody i utonięcia)?",
-    opts: [
-      { t: "Mogą je spełniać zwykłe korelacje wynikające ze wspólnej trzeciej zmiennej", c: true },
-      { t: "Są zbyt rygorystyczne, by spełnić je w realnych badaniach", c: false },
-      { t: "Wymagają randomizacji, której Hume nie znał", c: false },
-      { t: "Dotyczą tylko zjawisk fizycznych, nie psychologicznych", c: false }
+    "q": "Co wykazał eksperyment Bushmana, Baumeistera i Stacka (1999) testujący hipotezę katharsis?",
+    "opts": [
+      {
+        "t": "Osoby bijące w worek bokserski były bardziej agresywne, nie mniej",
+        "c": true
+      },
+      {
+        "t": "Wyładowanie agresji w worku skutecznie obniżało późniejszą agresję",
+        "c": false
+      },
+      {
+        "t": "Wyładowanie i spokojne siedzenie dawały identyczny poziom agresji",
+        "c": false
+      },
+      {
+        "t": "Spokojne siedzenie zwiększało agresję bardziej niż bicie w worek",
+        "c": false
+      }
     ],
-    exp: "Kogut i wschód słońca oraz sprzedaż lodów i utonięcia spełniają wszystkie trzy warunki, a to tylko korelacja — wspólną przyczyną jest zmienna trzecia (np. upał). Dlatego warunki są konieczne, ale niewystarczające."
-  },
-
-  // === 5. BACON ===
-  {
-    q: "Jaką metodę poznania zaproponował Francis Bacon, nazywany ojcem nowoczesnej metody naukowej?",
-    opts: [
-      { t: "Indukcję eliminacyjną — systematyczne tablice odsiewające kandydatów na przyczynę", c: true },
-      { t: "Dedukcję z aksjomatów na wzór geometrii", c: false },
-      { t: "Falsyfikację hipotez przez kontrprzykłady", c: false },
-      { t: "Introspekcję jako główne źródło wiedzy", c: false }
-    ],
-    exp: "Bacon zaproponował indukcję eliminacyjną: zamiast intuicji — systematyczne tablice, w których przyczynę „odsiewa się” przez eliminację kandydatów. Falsyfikacja to dopiero Popper."
-  },
-  {
-    q: "Jakie trzy tablice gromadził Bacon, by wykryć przyczynę?",
-    opts: [
-      { t: "Obecności, nieobecności i stopniowalności (zjawisko w różnym stopniu)", c: true },
-      { t: "Zgodności, różnicy i reszt", c: false },
-      { t: "Zysków, strat i punktu odniesienia", c: false },
-      { t: "Trafności, rzetelności i mocy", c: false }
-    ],
-    exp: "Bacon gromadził wiedzę w trzech tablicach: obecności (skutek występuje), nieobecności (nie występuje) i stopniowalności (występuje w różnym stopniu)."
-  },
-
-  // === 6. MILL ===
-  {
-    q: "Czym są kanony indukcji Johna Stuarta Milla w stosunku do dorobku Bacona?",
-    opts: [
-      { t: "„Uszczegółowionymi tablicami Bacona” — ścisłymi zasadami wykrywania przyczynowości", c: true },
-      { t: "Całkowitym odrzuceniem podejścia Bacona", c: false },
-      { t: "Pierwszym sformułowaniem zasady falsyfikacji", c: false },
-      { t: "Statystycznym testem istotności różnic", c: false }
-    ],
-    exp: "Kanony Milla to „uszczegółowione tablice Bacona” — ścisłe logiczne zasady wykrywania przyczynowości (zgodności, różnicy, zmian towarzyszących)."
+    "exp": "Wbrew intuicji „trzeba się wyładować”, prowokowani studenci bijący w worek byli BARDZIEJ agresywni, nie mniej. Pokazuje to, że sama intuicja nie wystarcza — potrzebny jest test empiryczny."
   },
   {
-    q: "Na czym polega kanon zgodności Milla?",
-    opts: [
-      { t: "Jeśli w różnych sytuacjach z tym samym zjawiskiem zawsze powtarza się ten sam czynnik, jest on przyczyną", c: true },
-      { t: "Jeśli usunięcie jedynego różniącego czynnika usuwa zjawisko, jest on przyczyną", c: false },
-      { t: "Jeśli zmiana jednej zmiennej pociąga zmianę drugiej, są powiązane przyczynowo", c: false },
-      { t: "Jeśli zjawisko nigdy nie występuje, czynnik jest bez znaczenia", c: false }
+    "q": "Jaki wniosek o pamięci płynie z badań Bartletta (1932) „Wojna duchów”?",
+    "opts": [
+      {
+        "t": "Pamięć to rekonstrukcja oparta na schematach, a nie wierny zapis",
+        "c": true
+      },
+      {
+        "t": "Pamięć to dokładny, fotograficzny zapis zdarzeń",
+        "c": false
+      },
+      {
+        "t": "Pamięć poprawia się przy kolejnych odtworzeniach",
+        "c": false
+      },
+      {
+        "t": "Ludzie dodają do wspomnień coraz więcej szczegółów nadprzyrodzonych",
+        "c": false
+      }
     ],
-    exp: "Kanon zgodności: różne sytuacje, to samo zjawisko, zawsze ten sam czynnik → on jest przyczyną (np. różni ludzie po tej samej potrawie mają zatrucie)."
+    "exp": "W metodzie odtworzeń seryjnych odtworzenia były skracane („kajak”→„łódź”), usuwano wątki nadprzyrodzone — pamięć to rekonstrukcja oparta na schematach, nie wierny zapis."
   },
   {
-    q: "Na czym polega kanon różnicy Milla?",
-    opts: [
-      { t: "Zjawisko jest albo go nie ma, a sytuacje różnią się tylko jednym czynnikiem", c: true },
-      { t: "Różne sytuacje, ale zawsze ten sam wspólny czynnik", c: false },
-      { t: "Im bardziej zmienia się przyczyna, tym bardziej zmienia się skutek", c: false },
-      { t: "Po odjęciu znanych przyczyn pozostaje reszta zjawiska", c: false }
+    "q": "W eksperymencie Festingera i Carlsmitha (1959) kto oceniał nudne zadanie jako ciekawsze?",
+    "opts": [
+      {
+        "t": "Osoby, które dostały 1 dolara za zachwalanie zadania",
+        "c": true
+      },
+      {
+        "t": "Osoby, które dostały 20 dolarów za zachwalanie zadania",
+        "c": false
+      },
+      {
+        "t": "Osoby z grupy kontrolnej bez żadnej zapłaty",
+        "c": false
+      },
+      {
+        "t": "Wszystkie grupy oceniły zadanie tak samo",
+        "c": false
+      }
     ],
-    exp: "Kanon różnicy: porównujemy sytuację, w której zjawisko występuje, z tą, gdzie go nie ma, a różnią się tylko jednym czynnikiem (np. jedna grupa śpi 8h, druga 4h → gorsza pamięć)."
+    "exp": "Osoby płacone tylko 1$ oceniały nudne zadanie jako ciekawsze niż płacone 20$. Mała zapłata nie usprawiedliwia kłamstwa → powstaje dysonans poznawczy → zmiana postawy."
   },
   {
-    q: "Na czym polega kanon zmian towarzyszących Milla?",
-    opts: [
-      { t: "Zmiana jednej zmiennej pociąga za sobą zmianę drugiej", c: true },
-      { t: "Różne sytuacje z tym samym zjawiskiem mają zawsze wspólny czynnik", c: false },
-      { t: "Zjawisko jest albo go nie ma, a sytuacje różnią się jednym czynnikiem", c: false },
-      { t: "Po odjęciu znanych przyczyn pozostaje niewyjaśniona reszta", c: false }
+    "q": "Według Davida Hume'a, czego tak naprawdę doświadczamy zamiast „przyczyny”?",
+    "opts": [
+      {
+        "t": "Jedynie następstwa zdarzeń — nie mamy „zmysłu przyczyny”",
+        "c": true
+      },
+      {
+        "t": "Bezpośrednio obserwowanej siły przyczynowej",
+        "c": false
+      },
+      {
+        "t": "Statystycznej korelacji między zmiennymi",
+        "c": false
+      },
+      {
+        "t": "Mechanizmu mediacyjnego łączącego zdarzenia",
+        "c": false
+      }
     ],
-    exp: "Kanon zmian towarzyszących: gdy zmiana jednej zmiennej pociąga za sobą zmianę drugiej, są one powiązane przyczynowo (np. im dłuższa deprywacja snu, tym gorsze wyniki). To zalążek myślenia korelacyjnego."
+    "exp": "Hume twierdził, że nie mamy „zmysłu przyczyny” — widzimy jedynie następstwo zdarzeń, a przyczynowość jest wnioskiem, nie bezpośrednim spostrzeżeniem."
   },
   {
-    q: "Który kanon Milla stanowi logiczny fundament eksperymentu?",
-    opts: [
-      { t: "Kanon jedynej różnicy — jedyną systematyczną różnicą między grupami jest manipulacja zmienną niezależną", c: true },
-      { t: "Kanon zgodności — wspólny czynnik wielu sytuacji", c: false },
-      { t: "Kanon zmian towarzyszących — współzmienność dwóch zmiennych", c: false },
-      { t: "Kanon reszt — odejmowanie znanych przyczyn", c: false }
+    "q": "Które trzy warunki przyczynowości wskazał Hume?",
+    "opts": [
+      {
+        "t": "Bliskość w czasie i przestrzeni, następstwo czasowe, stała koniunkcja",
+        "c": true
+      },
+      {
+        "t": "Randomizacja, manipulacja zmienną i dobór grupy kontrolnej metodą losową",
+        "c": false
+      },
+      {
+        "t": "Trafność, rzetelność, replikowalność",
+        "c": false
+      },
+      {
+        "t": "Zgodność, różnica, zmiany towarzyszące",
+        "c": false
+      }
     ],
-    exp: "Kanon jedynej różnicy (kanon różnicy) = logiczny fundament eksperymentu: jedyną systematyczną różnicą między grupą eksperymentalną a kontrolną jest manipulacja zmienną niezależną. To historyczny prototyp grupy kontrolnej."
+    "exp": "Hume wskazał trzy warunki: bliskość w czasie i przestrzeni, następstwo czasowe (X przed Y) oraz stałą koniunkcję (zawsze gdy X, to Y). Zgodność/różnica/zmiany towarzyszące to kanony Milla, nie Hume'a."
   },
   {
-    q: "Które ograniczenie kanonów Milla wskazano na wykładzie?",
-    opts: [
-      { t: "Nie uwzględniają losowości i statystyki (np. regresji do średniej) ani mediatorów/moderatorów", c: true },
-      { t: "Wymagają randomizacji uczestników do grup", c: false },
-      { t: "Działają tylko przy bardzo dużych próbach", c: false },
-      { t: "Są stosowalne wyłącznie do zjawisk psychologicznych", c: false }
+    "q": "Dlaczego warunki Hume'a są „konieczne, ale niewystarczające” (kogut i słońce, lody i utonięcia)?",
+    "opts": [
+      {
+        "t": "Mogą je spełniać zwykłe korelacje wynikające ze wspólnej trzeciej zmiennej",
+        "c": true
+      },
+      {
+        "t": "Są zbyt rygorystyczne, by spełnić je w realnych badaniach",
+        "c": false
+      },
+      {
+        "t": "Wymagają starannej randomizacji uczestników, której Hume jeszcze nie znał ani nie stosował",
+        "c": false
+      },
+      {
+        "t": "Dotyczą tylko zjawisk fizycznych, nie psychologicznych",
+        "c": false
+      }
     ],
-    exp: "Kanony zakładają prostą, jednokierunkową przyczynowość; nie uwzględniają mediatorów/moderatorów ani losowości i statystyki (np. regresji do średniej) i wymagają pełnej obserwacji wszystkich warunków, co jest nierealne."
-  },
-
-  // === 7. POPPER ===
-  {
-    q: "Na czym polega kluczowa krytyka indukcji u Karla Poppera?",
-    opts: [
-      { t: "Nie da się „udowodnić” teorii — można jedynie próbować ją obalić (sfalsyfikować)", c: true },
-      { t: "Indukcja jest jedyną pewną drogą do prawdy naukowej", c: false },
-      { t: "Teorie można w 100% potwierdzić dużą liczbą obserwacji", c: false },
-      { t: "Nauka powinna unikać stawiania hipotez", c: false }
-    ],
-    exp: "Popper twierdził, że nie da się udowodnić teorii — można jedynie próbować ją obalić. Nauka to proces stawiania hipotez i prób ich falsyfikacji."
-  },
-  {
-    q: "Co oznacza „asymetria” w koncepcji falsyfikacji Poppera?",
-    opts: [
-      { t: "Jeden kontrprzykład może obalić teorię, lecz żadna liczba potwierdzeń nie dowodzi jej w 100%", c: true },
-      { t: "Jedno potwierdzenie wystarczy, by uznać teorię za prawdziwą", c: false },
-      { t: "Teorie fałszywe i prawdziwe są równie łatwe do wykazania", c: false },
-      { t: "Falsyfikacja jest trudniejsza niż dowodzenie prawdziwości", c: false }
-    ],
-    exp: "Asymetria: możemy pokazać, że teoria jest fałszywa (jeden kontrprzykład — np. jeden wiarygodny mężczyzna obala „na mężczyznach nie można polegać”), ale nigdy nie dowiedziemy jej prawdziwości w 100%."
+    "exp": "Kogut i wschód słońca oraz sprzedaż lodów i utonięcia spełniają wszystkie trzy warunki, a to tylko korelacja — wspólną przyczyną jest zmienna trzecia (np. upał). Dlatego warunki są konieczne, ale niewystarczające."
   },
   {
-    q: "Które twierdzenie jest naukowe według kryterium Poppera?",
-    opts: [
-      { t: "„Stres obniża pamięć krótkotrwałą” — można wskazać obserwację, która je obala", c: true },
-      { t: "„Każde zachowanie wynika z nieświadomych popędów”", c: false },
-      { t: "„Kanapka z serem jest najsmaczniejsza”", c: false },
-      { t: "Twierdzenie, które zawsze da się dopasować do faktów", c: false }
+    "q": "Jaką metodę poznania zaproponował Francis Bacon, nazywany ojcem nowoczesnej metody naukowej?",
+    "opts": [
+      {
+        "t": "Indukcję eliminacyjną — systematyczne tablice odsiewające kandydatów na przyczynę",
+        "c": true
+      },
+      {
+        "t": "Dedukcję logiczną z niepodważalnych aksjomatów na wzór klasycznej geometrii Euklidesa",
+        "c": false
+      },
+      {
+        "t": "Falsyfikację hipotez przez kontrprzykłady",
+        "c": false
+      },
+      {
+        "t": "Introspekcję jako główne źródło wiedzy",
+        "c": false
+      }
     ],
-    exp: "Twierdzenie naukowe można sfalsyfikować — da się wskazać obserwację, która je obala (np. „stres obniża pamięć krótkotrwałą”). Twierdzenia nienaukowe „zawsze się dopasują” i dają wyjaśnienia po fakcie."
+    "exp": "Bacon zaproponował indukcję eliminacyjną: zamiast intuicji — systematyczne tablice, w których przyczynę „odsiewa się” przez eliminację kandydatów. Falsyfikacja to dopiero Popper."
   },
   {
-    q: "Jak — zgodnie z wykładem — uczynić zbyt ogólne twierdzenie testowalnym?",
-    opts: [
-      { t: "Uszczegółowić je, np. „...smaczniejsza dla 9-latków niż z szynką”", c: true },
-      { t: "Sformułować je tak ogólnie, by pasowało do każdej sytuacji", c: false },
-      { t: "Oprzeć je na nieświadomych popędach", c: false },
-      { t: "Usunąć z niego wszelkie warunki i ograniczenia", c: false }
+    "q": "Jakie trzy tablice gromadził Bacon, by wykryć przyczynę?",
+    "opts": [
+      {
+        "t": "Obecności, nieobecności i stopniowalności (zjawisko w różnym stopniu)",
+        "c": true
+      },
+      {
+        "t": "Tablice zgodności, różnicy oraz reszt (po odjęciu znanych czynników zakłócających)",
+        "c": false
+      },
+      {
+        "t": "Zysków, strat i punktu odniesienia",
+        "c": false
+      },
+      {
+        "t": "Trafności, rzetelności i mocy",
+        "c": false
+      }
     ],
-    exp: "Zbyt ogólne twierdzenia („kanapka z serem jest najsmaczniejsza”) są nieweryfikowalne. Uszczegółowienie („...smaczniejsza dla 9-latków niż z szynką”) czyni je testowalnymi."
+    "exp": "Bacon gromadził wiedzę w trzech tablicach: obecności (skutek występuje), nieobecności (nie występuje) i stopniowalności (występuje w różnym stopniu)."
   },
-
-  // === 8. EFEKT BARNUMA ===
   {
-    q: "Czym jest efekt Barnuma (Forer, 1949)?",
-    opts: [
-      { t: "Skłonnością do uznawania ogólnych, nieprecyzyjnych opisów za trafne i osobiste („to dokładnie ja!”)", c: true },
-      { t: "Tendencją do odrzucania wszystkich opisów osobowości jako nietrafnych", c: false },
-      { t: "Powrotem skrajnych wyników do średniej przy powtórnym pomiarze", c: false },
-      { t: "Skłonnością do zapamiętywania tylko negatywnych informacji o sobie", c: false }
+    "q": "Czym są kanony indukcji Johna Stuarta Milla w stosunku do dorobku Bacona?",
+    "opts": [
+      {
+        "t": "„Uszczegółowionymi tablicami Bacona” — ścisłymi zasadami wykrywania przyczynowości",
+        "c": true
+      },
+      {
+        "t": "Całkowitym odrzuceniem podejścia Bacona",
+        "c": false
+      },
+      {
+        "t": "Pierwszym w historii nauki sformułowaniem Popperowskiej zasady falsyfikacji teorii naukowych",
+        "c": false
+      },
+      {
+        "t": "Statystycznym testem istotności różnic",
+        "c": false
+      }
     ],
-    exp: "Efekt Barnuma (Forer, 1949) to skłonność do uznawania ogólnych, nieprecyzyjnych opisów za trafne i spersonalizowane. Bazują na nim horoskopy — działają zdania powszechne, z „ale”, mieszające cechy (np. „Masz potrzebę, by ludzie cię lubili, ale jesteś krytyczny wobec siebie”)."
+    "exp": "Kanony Milla to „uszczegółowione tablice Bacona” — ścisłe logiczne zasady wykrywania przyczynowości (zgodności, różnicy, zmian towarzyszących)."
+  },
+  {
+    "q": "Na czym polega kanon zgodności Milla?",
+    "opts": [
+      {
+        "t": "Jeśli w różnych sytuacjach z tym samym zjawiskiem zawsze powtarza się ten sam czynnik, jest on przyczyną",
+        "c": true
+      },
+      {
+        "t": "Jeśli usunięcie jedynego różniącego się czynnika za każdym razem usuwa całe badane zjawisko, jest on jego przyczyną",
+        "c": false
+      },
+      {
+        "t": "Jeśli zmiana jednej zmiennej pociąga zmianę drugiej, są powiązane przyczynowo",
+        "c": false
+      },
+      {
+        "t": "Jeśli zjawisko nigdy nie występuje, czynnik jest bez znaczenia",
+        "c": false
+      }
+    ],
+    "exp": "Kanon zgodności: różne sytuacje, to samo zjawisko, zawsze ten sam czynnik → on jest przyczyną (np. różni ludzie po tej samej potrawie mają zatrucie)."
+  },
+  {
+    "q": "Na czym polega kanon różnicy Milla?",
+    "opts": [
+      {
+        "t": "Zjawisko jest albo go nie ma, a sytuacje różnią się tylko jednym czynnikiem",
+        "c": true
+      },
+      {
+        "t": "Różne sytuacje, ale zawsze ten sam wspólny czynnik",
+        "c": false
+      },
+      {
+        "t": "Im bardziej zmienia się domniemana przyczyna, tym wyraźniej zmienia się obserwowany skutek",
+        "c": false
+      },
+      {
+        "t": "Po odjęciu znanych przyczyn pozostaje reszta zjawiska",
+        "c": false
+      }
+    ],
+    "exp": "Kanon różnicy: porównujemy sytuację, w której zjawisko występuje, z tą, gdzie go nie ma, a różnią się tylko jednym czynnikiem (np. jedna grupa śpi 8h, druga 4h → gorsza pamięć)."
+  },
+  {
+    "q": "Na czym polega kanon zmian towarzyszących Milla?",
+    "opts": [
+      {
+        "t": "Zmiana jednej zmiennej pociąga za sobą zmianę drugiej",
+        "c": true
+      },
+      {
+        "t": "Różne sytuacje z tym samym zjawiskiem mają zawsze wspólny czynnik",
+        "c": false
+      },
+      {
+        "t": "Zjawisko jest albo go nie ma, a sytuacje różnią się jednym czynnikiem",
+        "c": false
+      },
+      {
+        "t": "Po odjęciu znanych przyczyn pozostaje niewyjaśniona reszta",
+        "c": false
+      }
+    ],
+    "exp": "Kanon zmian towarzyszących: gdy zmiana jednej zmiennej pociąga za sobą zmianę drugiej, są one powiązane przyczynowo (np. im dłuższa deprywacja snu, tym gorsze wyniki). To zalążek myślenia korelacyjnego."
+  },
+  {
+    "q": "Który kanon Milla stanowi logiczny fundament eksperymentu?",
+    "opts": [
+      {
+        "t": "Kanon jedynej różnicy — jedyną systematyczną różnicą między grupami jest manipulacja zmienną niezależną",
+        "c": true
+      },
+      {
+        "t": "Kanon zgodności — wspólny czynnik wielu sytuacji",
+        "c": false
+      },
+      {
+        "t": "Kanon zmian towarzyszących — regularna współzmienność dwóch obserwowanych zmiennych w kolejnych pomiarach",
+        "c": false
+      },
+      {
+        "t": "Kanon reszt — odejmowanie znanych przyczyn",
+        "c": false
+      }
+    ],
+    "exp": "Kanon jedynej różnicy (kanon różnicy) = logiczny fundament eksperymentu: jedyną systematyczną różnicą między grupą eksperymentalną a kontrolną jest manipulacja zmienną niezależną. To historyczny prototyp grupy kontrolnej."
+  },
+  {
+    "q": "Które ograniczenie kanonów Milla wskazano na wykładzie?",
+    "opts": [
+      {
+        "t": "Nie uwzględniają losowości i statystyki (np. regresji do średniej) ani mediatorów/moderatorów",
+        "c": true
+      },
+      {
+        "t": "Wymagają randomizacji (losowego przydziału) uczestników do grup",
+        "c": false
+      },
+      {
+        "t": "Działają tylko przy bardzo dużych próbach",
+        "c": false
+      },
+      {
+        "t": "Są stosowalne wyłącznie do zjawisk psychologicznych",
+        "c": false
+      }
+    ],
+    "exp": "Kanony zakładają prostą, jednokierunkową przyczynowość; nie uwzględniają mediatorów/moderatorów ani losowości i statystyki (np. regresji do średniej) i wymagają pełnej obserwacji wszystkich warunków, co jest nierealne."
+  },
+  {
+    "q": "Na czym polega kluczowa krytyka indukcji u Karla Poppera?",
+    "opts": [
+      {
+        "t": "Nie da się „udowodnić” teorii — można jedynie próbować ją obalić (sfalsyfikować)",
+        "c": true
+      },
+      {
+        "t": "Indukcja jest jedyną pewną drogą do prawdy naukowej",
+        "c": false
+      },
+      {
+        "t": "Teorie można w 100% potwierdzić (ostatecznie udowodnić) odpowiednio dużą liczbą obserwacji",
+        "c": false
+      },
+      {
+        "t": "Nauka powinna unikać stawiania hipotez",
+        "c": false
+      }
+    ],
+    "exp": "Popper twierdził, że nie da się udowodnić teorii — można jedynie próbować ją obalić. Nauka to proces stawiania hipotez i prób ich falsyfikacji."
+  },
+  {
+    "q": "Co oznacza „asymetria” w koncepcji falsyfikacji Poppera?",
+    "opts": [
+      {
+        "t": "Jeden kontrprzykład może obalić teorię, lecz żadna liczba potwierdzeń nie dowodzi jej w 100%",
+        "c": true
+      },
+      {
+        "t": "Jedno potwierdzenie wystarczy, by uznać teorię za prawdziwą",
+        "c": false
+      },
+      {
+        "t": "Teorie fałszywe i prawdziwe są równie łatwe do wykazania",
+        "c": false
+      },
+      {
+        "t": "Falsyfikacja teorii jest znacznie trudniejsza i mniej pewna niż empiryczne dowodzenie jej prawdziwości",
+        "c": false
+      }
+    ],
+    "exp": "Asymetria: możemy pokazać, że teoria jest fałszywa (jeden kontrprzykład — np. jeden wiarygodny mężczyzna obala „na mężczyznach nie można polegać”), ale nigdy nie dowiedziemy jej prawdziwości w 100%."
+  },
+  {
+    "q": "Które twierdzenie jest naukowe według kryterium Poppera?",
+    "opts": [
+      {
+        "t": "„Stres obniża pamięć krótkotrwałą” — można wskazać obserwację, która je obala",
+        "c": true
+      },
+      {
+        "t": "„Każde zachowanie wynika z nieświadomych popędów”",
+        "c": false
+      },
+      {
+        "t": "„Kanapka z serem jest najsmaczniejsza”",
+        "c": false
+      },
+      {
+        "t": "Twierdzenie, które zawsze da się dopasować do faktów",
+        "c": false
+      }
+    ],
+    "exp": "Twierdzenie naukowe można sfalsyfikować — da się wskazać obserwację, która je obala (np. „stres obniża pamięć krótkotrwałą”). Twierdzenia nienaukowe „zawsze się dopasują” i dają wyjaśnienia po fakcie."
+  },
+  {
+    "q": "Jak — zgodnie z wykładem — uczynić zbyt ogólne twierdzenie testowalnym?",
+    "opts": [
+      {
+        "t": "Uszczegółowić je, np. „...smaczniejsza dla 9-latków niż z szynką”",
+        "c": true
+      },
+      {
+        "t": "Sformułować je tak ogólnie, by pasowało do każdej sytuacji",
+        "c": false
+      },
+      {
+        "t": "Oprzeć je na nieświadomych popędach",
+        "c": false
+      },
+      {
+        "t": "Usunąć z niego wszelkie warunki i ograniczenia",
+        "c": false
+      }
+    ],
+    "exp": "Zbyt ogólne twierdzenia („kanapka z serem jest najsmaczniejsza”) są nieweryfikowalne. Uszczegółowienie („...smaczniejsza dla 9-latków niż z szynką”) czyni je testowalnymi."
+  },
+  {
+    "q": "Czym jest efekt Barnuma (Forer, 1949)?",
+    "opts": [
+      {
+        "t": "Skłonnością do uznawania ogólnych, nieprecyzyjnych opisów za trafne i osobiste („to dokładnie ja!”)",
+        "c": true
+      },
+      {
+        "t": "Tendencją do odrzucania wszystkich ogólnikowych opisów osobowości (nawet tych trafnych) jako bezużytecznych",
+        "c": false
+      },
+      {
+        "t": "Powrotem skrajnych wyników do średniej przy powtórnym pomiarze",
+        "c": false
+      },
+      {
+        "t": "Skłonnością do zapamiętywania tylko negatywnych informacji o sobie",
+        "c": false
+      }
+    ],
+    "exp": "Efekt Barnuma (Forer, 1949) to skłonność do uznawania ogólnych, nieprecyzyjnych opisów za trafne i spersonalizowane. Bazują na nim horoskopy — działają zdania powszechne, z „ale”, mieszające cechy (np. „Masz potrzebę, by ludzie cię lubili, ale jesteś krytyczny wobec siebie”)."
   }
-
 ];
 
 // ---- SHUFFLE ----

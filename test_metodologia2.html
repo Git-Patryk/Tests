@@ -313,258 +313,556 @@
 
 <script>
 const ALL_QUESTIONS = [
-
   {
-    q: "Co jest celem badań opisowych (w odróżnieniu od wyjaśniających)?",
-    opts: [
-      { t: "Opisać zjawisko — jak często występuje, jak wygląda, jak się rozkłada", c: true },
-      { t: "Ustalić przyczyny i mechanizmy zjawiska", c: false },
-      { t: "Udowodnić związek przyczynowo-skutkowy", c: false },
-      { t: "Sfalsyfikować istniejącą teorię", c: false },
+    "q": "Co jest celem badań opisowych (w odróżnieniu od wyjaśniających)?",
+    "opts": [
+      {
+        "t": "Opisać zjawisko — jak często występuje, jak wygląda, jak się rozkłada",
+        "c": true
+      },
+      {
+        "t": "Ustalić przyczyny i wyjaśnić mechanizmy leżące u podstaw badanego zjawiska",
+        "c": false
+      },
+      {
+        "t": "Udowodnić związek przyczynowo-skutkowy",
+        "c": false
+      },
+      {
+        "t": "Sfalsyfikować istniejącą teorię",
+        "c": false
+      }
     ],
-    exp: "Badania opisowe odpowiadają na pytania „Jak często? Jak wygląda? Jak się rozkłada?” — opisują zjawisko (sondaże, badania przekrojowe, studium przypadku, dzienniczki). Ustalanie przyczyn i mechanizmów to cel badań wyjaśniających."
+    "exp": "Badania opisowe odpowiadają na pytania „Jak często? Jak wygląda? Jak się rozkłada?” — opisują zjawisko (sondaże, badania przekrojowe, studium przypadku, dzienniczki). Ustalanie przyczyn i mechanizmów to cel badań wyjaśniających."
   },
   {
-    q: "Które pytania są typowe dla badań wyjaśniających?",
-    opts: [
-      { t: "„Dlaczego? Co wpływa na co? Jaki jest mechanizm?”", c: true },
-      { t: "„Jak często to występuje?”", c: false },
-      { t: "„Jak rozkłada się ta cecha w populacji?”", c: false },
-      { t: "„Jak wygląda to zjawisko?”", c: false },
+    "q": "Które pytania są typowe dla badań wyjaśniających?",
+    "opts": [
+      {
+        "t": "„Dlaczego? Co wpływa na co? Jaki jest mechanizm?”",
+        "c": true
+      },
+      {
+        "t": "„Jak często to występuje?”",
+        "c": false
+      },
+      {
+        "t": "„Jak często i jak równomiernie rozkłada się ta cecha w populacji?”",
+        "c": false
+      },
+      {
+        "t": "„Jak wygląda to zjawisko?”",
+        "c": false
+      }
     ],
-    exp: "Badania wyjaśniające pytają „Dlaczego? Co wpływa na co? Jaki mechanizm?” i posługują się eksperymentami, modelami statystycznymi i badaniami podłużnymi."
+    "exp": "Badania wyjaśniające pytają „Dlaczego? Co wpływa na co? Jaki mechanizm?” i posługują się eksperymentami, modelami statystycznymi i badaniami podłużnymi."
   },
   {
-    q: "Który z trzech schematów badawczych jako jedyny pozwala wnioskować o przyczynowości?",
-    opts: [
-      { t: "Eksperymentalny", c: true },
-      { t: "Quasi-eksperymentalny", c: false },
-      { t: "Korelacyjny", c: false },
-      { t: "Przekrojowy (sondażowy)", c: false },
+    "q": "Który z trzech schematów badawczych jako jedyny pozwala wnioskować o przyczynowości?",
+    "opts": [
+      {
+        "t": "Eksperymentalny",
+        "c": true
+      },
+      {
+        "t": "Quasi-eksperymentalny",
+        "c": false
+      },
+      {
+        "t": "Korelacyjny",
+        "c": false
+      },
+      {
+        "t": "Przekrojowy (sondażowy)",
+        "c": false
+      }
     ],
-    exp: "Tylko schemat eksperymentalny — badacz manipuluje zmienną niezależną i kontroluje warunki — pozwala wnioskować o przyczynowości. Quasi-eksperyment i korelacja dają słabe lub żadne wnioskowanie przyczynowe."
+    "exp": "Tylko schemat eksperymentalny — badacz manipuluje zmienną niezależną i kontroluje warunki — pozwala wnioskować o przyczynowości. Quasi-eksperyment i korelacja dają słabe lub żadne wnioskowanie przyczynowe."
   },
   {
-    q: "Co charakteryzuje schemat quasi-eksperymentalny?",
-    opts: [
-      { t: "Oddziaływanie jest poza kontrolą badacza (np. porównanie wypalonych i niewypalonych pracowników)", c: true },
-      { t: "Badacz losowo przydziela osoby do warunków", c: false },
-      { t: "Badacz w pełni manipuluje zmienną niezależną", c: false },
-      { t: "Bada się wyłącznie korelacje między dwiema zmiennymi", c: false },
+    "q": "Co charakteryzuje schemat quasi-eksperymentalny?",
+    "opts": [
+      {
+        "t": "Oddziaływanie jest poza kontrolą badacza — grupy powstały naturalnie",
+        "c": true
+      },
+      {
+        "t": "Badacz losowo przydziela osoby do warunków",
+        "c": false
+      },
+      {
+        "t": "Badacz w pełni manipuluje zmienną niezależną",
+        "c": false
+      },
+      {
+        "t": "Bada się wyłącznie liniowe korelacje między dwiema mierzonymi zmiennymi ilościowymi",
+        "c": false
+      }
     ],
-    exp: "W quasi-eksperymencie oddziaływanie jest poza kontrolą badacza (porównuje się istniejące grupy, np. wypaleni vs niewypaleni). Dlatego nie pozwala on na pewne wnioskowanie o przyczynie i skutku."
+    "exp": "W quasi-eksperymencie oddziaływanie jest poza kontrolą badacza (porównuje się istniejące grupy, np. wypaleni vs niewypaleni). Dlatego nie pozwala on na pewne wnioskowanie o przyczynie i skutku."
   },
   {
-    q: "Czym cechuje się schemat korelacyjny?",
-    opts: [
-      { t: "Szuka relacji między zmiennymi (predyktor → zmienna przewidywana), ze słabym wnioskowaniem przyczynowym", c: true },
-      { t: "Pozwala pewnie ustalić, co jest przyczyną, a co skutkiem", c: false },
-      { t: "Wymaga manipulacji zmienną niezależną", c: false },
-      { t: "Wymaga losowego przydziału do warunków eksperymentalnych", c: false },
+    "q": "Czym cechuje się schemat korelacyjny?",
+    "opts": [
+      {
+        "t": "Szuka relacji między zmiennymi przy słabym wnioskowaniu przyczynowym",
+        "c": true
+      },
+      {
+        "t": "Pozwala pewnie i jednoznacznie ustalić, co jest przyczyną, a co skutkiem w badaniu",
+        "c": false
+      },
+      {
+        "t": "Wymaga manipulacji zmienną niezależną",
+        "c": false
+      },
+      {
+        "t": "Wymaga losowego przydziału do warunków eksperymentalnych",
+        "c": false
+      }
     ],
-    exp: "Schemat korelacyjny szuka relacji między zmiennymi (predyktor → zmienna przewidywana). Ma słabe możliwości wnioskowania przyczynowego — korelacja nie przesądza o kierunku ani o braku trzeciej zmiennej."
+    "exp": "Schemat korelacyjny szuka relacji między zmiennymi (predyktor → zmienna przewidywana). Ma słabe możliwości wnioskowania przyczynowego — korelacja nie przesądza o kierunku ani o braku trzeciej zmiennej."
   },
   {
-    q: "Studium przypadku (np. pacjent H.M.) to przykład metody przede wszystkim:",
-    opts: [
-      { t: "Opisowej", c: true },
-      { t: "Eksperymentalnej", c: false },
-      { t: "Wyjaśniającej z manipulacją", c: false },
-      { t: "Meta-analitycznej", c: false },
+    "q": "Studium przypadku (np. pacjent H.M.) to przykład metody przede wszystkim:",
+    "opts": [
+      {
+        "t": "Opisowej",
+        "c": true
+      },
+      {
+        "t": "Eksperymentalnej",
+        "c": false
+      },
+      {
+        "t": "Wyjaśniającej z manipulacją",
+        "c": false
+      },
+      {
+        "t": "Meta-analitycznej",
+        "c": false
+      }
     ],
-    exp: "Studium przypadku (np. H.M.) należy do metod opisowych — obok sondaży, badań przekrojowych i dzienniczków. Służy opisowi zjawiska, nie ustalaniu przyczyn przez manipulację."
+    "exp": "Studium przypadku (np. H.M.) należy do metod opisowych — obok sondaży, badań przekrojowych i dzienniczków. Służy opisowi zjawiska, nie ustalaniu przyczyn przez manipulację."
   },
   {
-    q: "Co modyfikuje oddziaływanie (manipulacja) w eksperymencie?",
-    opts: [
-      { t: "Poziom zmiennej niezależnej", c: true },
-      { t: "Poziom zmiennej zależnej", c: false },
-      { t: "Wielkość próby badawczej", c: false },
-      { t: "Rodzaj testu statystycznego", c: false },
+    "q": "Co modyfikuje oddziaływanie (manipulacja) w eksperymencie?",
+    "opts": [
+      {
+        "t": "Poziom zmiennej niezależnej",
+        "c": true
+      },
+      {
+        "t": "Poziom zmiennej zależnej",
+        "c": false
+      },
+      {
+        "t": "Wielkość próby badawczej",
+        "c": false
+      },
+      {
+        "t": "Rodzaj testu statystycznego",
+        "c": false
+      }
     ],
-    exp: "Oddziaływanie (manipulacja) modyfikuje poziom zmiennej niezależnej — to ona jest celowo zmieniana przez badacza, by zaobserwować efekt na zmiennej zależnej."
+    "exp": "Oddziaływanie (manipulacja) modyfikuje poziom zmiennej niezależnej — to ona jest celowo zmieniana przez badacza, by zaobserwować efekt na zmiennej zależnej."
   },
   {
-    q: "Które grupy wymieniono jako typowe w eksperymencie?",
-    opts: [
-      { t: "Eksperymentalna, kontrolna, placebo, nocebo", c: true },
-      { t: "Losowa, warstwowa, klastrowa, kwotowa", c: false },
-      { t: "Opisowa, wyjaśniająca, korelacyjna, quasi", c: false },
-      { t: "Mediacyjna, moderacyjna, predyktorowa, kryterialna", c: false },
+    "q": "Które grupy wymieniono jako typowe w eksperymencie?",
+    "opts": [
+      {
+        "t": "Eksperymentalna, kontrolna, placebo, nocebo",
+        "c": true
+      },
+      {
+        "t": "Losowa, warstwowa, klastrowa, kwotowa",
+        "c": false
+      },
+      {
+        "t": "Opisowa, wyjaśniająca, korelacyjna, quasi",
+        "c": false
+      },
+      {
+        "t": "Mediacyjna, moderacyjna, predyktorowa, kryterialna",
+        "c": false
+      }
     ],
-    exp: "Typowe grupy w eksperymencie to: eksperymentalna, kontrolna, placebo i nocebo. (Losowa/warstwowa/klastrowa/kwotowa to rodzaje doboru próby.)"
+    "exp": "Typowe grupy w eksperymencie to: eksperymentalna, kontrolna, placebo i nocebo. (Losowa/warstwowa/klastrowa/kwotowa to rodzaje doboru próby.)"
   },
   {
-    q: "Czym często jest w praktyce grupa kontrolna w badaniach klinicznych?",
-    opts: [
-      { t: "Dotychczasowym (standardowym) leczeniem, a nie „brakiem oddziaływania”", c: true },
-      { t: "Zawsze grupą całkowicie bez żadnego oddziaływania", c: false },
-      { t: "Grupą otrzymującą nowy, badany lek", c: false },
-      { t: "Grupą dobraną nielosowo spoza populacji", c: false },
+    "q": "Czym często jest w praktyce grupa kontrolna w badaniach klinicznych?",
+    "opts": [
+      {
+        "t": "Dotychczasowym, standardowym leczeniem, a nie „brakiem oddziaływania”",
+        "c": true
+      },
+      {
+        "t": "Zawsze grupą pozostawioną całkowicie bez żadnego aktywnego oddziaływania",
+        "c": false
+      },
+      {
+        "t": "Grupą otrzymującą nowy, badany lek",
+        "c": false
+      },
+      {
+        "t": "Grupą dobraną nielosowo spoza populacji",
+        "c": false
+      }
     ],
-    exp: "Grupa kontrolna nie zawsze oznacza „brak oddziaływania” — często jest to dotychczasowe, standardowe leczenie, względem którego porównuje się nową interwencję."
+    "exp": "Grupa kontrolna nie zawsze oznacza „brak oddziaływania” — często jest to dotychczasowe, standardowe leczenie, względem którego porównuje się nową interwencję."
   },
   {
-    q: "Czym różni się badanie typu superiority od non-inferiority?",
-    opts: [
-      { t: "Superiority dowodzi, że oddziaływanie jest istotnie lepsze; non-inferiority — że jest przynajmniej nie gorsze", c: true },
-      { t: "Superiority dowodzi, że jest nie gorsze; non-inferiority — że jest lepsze", c: false },
-      { t: "Oba dowodzą dokładnie tego samego", c: false },
-      { t: "Superiority dotyczy placebo, non-inferiority dotyczy nocebo", c: false },
+    "q": "Czym różni się badanie typu superiority od non-inferiority?",
+    "opts": [
+      {
+        "t": "Superiority dowodzi, że oddziaływanie jest istotnie lepsze; non-inferiority — że nie gorsze",
+        "c": true
+      },
+      {
+        "t": "Superiority dowodzi, że oddziaływanie jest nie gorsze, a non-inferiority — że jest wyraźnie lepsze od komparatora",
+        "c": false
+      },
+      {
+        "t": "Oba dowodzą dokładnie tego samego",
+        "c": false
+      },
+      {
+        "t": "Superiority dotyczy placebo, non-inferiority dotyczy nocebo",
+        "c": false
+      }
     ],
-    exp: "Superiority ma wykazać, że nasze oddziaływanie jest istotnie lepsze. Non-inferiority — że jest przynajmniej nie gorsze (np. aktywność minimalna: rozmowa zamiast pełnej psychoterapii)."
+    "exp": "Superiority ma wykazać, że nasze oddziaływanie jest istotnie lepsze. Non-inferiority — że jest przynajmniej nie gorsze (np. aktywność minimalna: rozmowa zamiast pełnej psychoterapii)."
   },
   {
-    q: "Czemu służy randomizacja I stopnia (losowy dobór osób z populacji do badania)?",
-    opts: [
-      { t: "Reprezentatywności próby → trafności zewnętrznej", c: true },
-      { t: "Równoważności grup → trafności wewnętrznej", c: false },
-      { t: "Zwiększeniu mocy testu statystycznego", c: false },
-      { t: "Ukryciu celu badania przed uczestnikami", c: false },
+    "q": "Czemu służy randomizacja I stopnia (losowy dobór osób z populacji do badania)?",
+    "opts": [
+      {
+        "t": "Reprezentatywności próby → trafności zewnętrznej",
+        "c": true
+      },
+      {
+        "t": "Równoważności grup → trafności wewnętrznej",
+        "c": false
+      },
+      {
+        "t": "Zwiększeniu mocy testu statystycznego",
+        "c": false
+      },
+      {
+        "t": "Ukryciu celu badania przed uczestnikami",
+        "c": false
+      }
     ],
-    exp: "Randomizacja I stopnia to losowy dobór osób z populacji do badania — daje reprezentatywność, a więc trafność zewnętrzną (możliwość uogólnienia wyników)."
+    "exp": "Randomizacja I stopnia to losowy dobór osób z populacji do badania — daje reprezentatywność, a więc trafność zewnętrzną (możliwość uogólnienia wyników)."
   },
   {
-    q: "Czemu służy randomizacja II stopnia (losowy dobór do warunków eksperymentalnych)?",
-    opts: [
-      { t: "Równoważności grup → trafności wewnętrznej", c: true },
-      { t: "Reprezentatywności próby → trafności zewnętrznej", c: false },
-      { t: "Zmniejszeniu liczby potrzebnych uczestników", c: false },
-      { t: "Eliminacji efektu zmęczenia i uczenia", c: false },
+    "q": "Czemu służy randomizacja II stopnia (losowy dobór do warunków eksperymentalnych)?",
+    "opts": [
+      {
+        "t": "Równoważności grup → trafności wewnętrznej",
+        "c": true
+      },
+      {
+        "t": "Reprezentatywności próby → trafności zewnętrznej",
+        "c": false
+      },
+      {
+        "t": "Zmniejszeniu liczby potrzebnych uczestników",
+        "c": false
+      },
+      {
+        "t": "Eliminacji efektu zmęczenia i uczenia",
+        "c": false
+      }
     ],
-    exp: "Randomizacja II stopnia to losowy przydział do warunków eksperymentalnych — zapewnia równoważność grup, a więc trafność wewnętrzną (że różnica wynika z manipulacji)."
+    "exp": "Randomizacja II stopnia to losowy przydział do warunków eksperymentalnych — zapewnia równoważność grup, a więc trafność wewnętrzną (że różnica wynika z manipulacji)."
   },
   {
-    q: "Czy randomizacja I stopnia jest warunkiem definicyjnym eksperymentu?",
-    opts: [
-      { t: "Nie — w psychologii rzadko ją spełniamy (studenci, ochotnicy), a wciąż są to eksperymenty z ograniczoną trafnością zewnętrzną", c: true },
-      { t: "Tak — bez niej badanie nie jest eksperymentem", c: false },
-      { t: "Tak — jest ważniejsza niż randomizacja II stopnia", c: false },
-      { t: "Nie — bo eksperymenty w ogóle nie wymagają losowania", c: false },
+    "q": "Czy randomizacja I stopnia jest warunkiem definicyjnym eksperymentu?",
+    "opts": [
+      {
+        "t": "Nie — w psychologii rzadko ją spełniamy, badając studentów i ochotników, a to wciąż eksperymenty",
+        "c": true
+      },
+      {
+        "t": "Tak — bez niej badanie nie jest eksperymentem",
+        "c": false
+      },
+      {
+        "t": "Tak — jest ważniejsza niż randomizacja II stopnia",
+        "c": false
+      },
+      {
+        "t": "Nie — ponieważ prawdziwe eksperymenty w ogóle nie wymagają żadnego losowego doboru osób z populacji",
+        "c": false
+      }
     ],
-    exp: "Randomizacja I stopnia NIE jest warunkiem definicyjnym eksperymentu. W psychologii rzadko ją spełniamy (badamy studentów, ochotników), a mimo to są to eksperymenty — tyle że z ograniczoną trafnością zewnętrzną. Definicyjny jest losowy przydział do warunków (II stopnia)."
+    "exp": "Randomizacja I stopnia NIE jest warunkiem definicyjnym eksperymentu. W psychologii rzadko ją spełniamy (badamy studentów, ochotników), a mimo to są to eksperymenty — tyle że z ograniczoną trafnością zewnętrzną. Definicyjny jest losowy przydział do warunków (II stopnia)."
   },
   {
-    q: "Kto i czym powinien przygotować dobór losowy?",
-    opts: [
-      { t: "Osoba trzecia z użyciem narzędzia zewnętrznego (np. Randomizer.org) — człowiek nie generuje liczb losowych", c: true },
-      { t: "Sam eksperymentator z pamięci, dla zachowania kontroli", c: false },
-      { t: "Uczestnicy badania, losując samodzielnie", c: false },
-      { t: "Nikt — kolejność zgłoszeń jest wystarczająco losowa", c: false },
+    "q": "Kto i czym powinien przygotować dobór losowy?",
+    "opts": [
+      {
+        "t": "Osoba trzecia z użyciem zewnętrznego narzędzia losującego — człowiek nie generuje liczb losowych",
+        "c": true
+      },
+      {
+        "t": "Sam eksperymentator, przydzielając osoby z pamięci, by zachować pełną kontrolę nad całym procesem doboru",
+        "c": false
+      },
+      {
+        "t": "Uczestnicy badania, losując samodzielnie",
+        "c": false
+      },
+      {
+        "t": "Nikt — kolejność zgłoszeń jest wystarczająco losowa",
+        "c": false
+      }
     ],
-    exp: "Dobór losowy przygotowuje osoba trzecia + narzędzie zewnętrzne, bo człowiek nie generuje liczb losowych (pojawia się wzorzec). Losować trzeba też z zapasem na dropout (odpadnięcie uczestników)."
+    "exp": "Dobór losowy przygotowuje osoba trzecia + narzędzie zewnętrzne, bo człowiek nie generuje liczb losowych (pojawia się wzorzec). Losować trzeba też z zapasem na dropout (odpadnięcie uczestników)."
   },
   {
-    q: "Co cechuje eksperyment laboratoryjny?",
-    opts: [
-      { t: "Silną kontrolę zmiennych, ale niską trafność ekologiczną (sytuacja sztuczna)", c: true },
-      { t: "Słabą kontrolę zmiennych, ale wysoką trafność ekologiczną", c: false },
-      { t: "Brak możliwości manipulacji zmienną niezależną", c: false },
-      { t: "Automatyczną reprezentatywność próby", c: false },
+    "q": "Co cechuje eksperyment laboratoryjny?",
+    "opts": [
+      {
+        "t": "Silną kontrolę zmiennych, ale niską trafność ekologiczną",
+        "c": true
+      },
+      {
+        "t": "Słabą kontrolę zmiennych, ale wysoką trafność ekologiczną",
+        "c": false
+      },
+      {
+        "t": "Brak możliwości manipulacji zmienną niezależną",
+        "c": false
+      },
+      {
+        "t": "Automatyczną reprezentatywność próby",
+        "c": false
+      }
     ],
-    exp: "Eksperyment laboratoryjny daje silną kontrolę zmiennych, ale kosztem niskiej trafności ekologicznej — sytuacja jest sztuczna, oderwana od warunków naturalnych."
+    "exp": "Eksperyment laboratoryjny daje silną kontrolę zmiennych, ale kosztem niskiej trafności ekologicznej — sytuacja jest sztuczna, oderwana od warunków naturalnych."
   },
   {
-    q: "Co cechuje eksperyment naturalny?",
-    opts: [
-      { t: "Słabą kontrolę zmiennych, ale wysoką trafność ekologiczną", c: true },
-      { t: "Silną kontrolę zmiennych i niską trafność ekologiczną", c: false },
-      { t: "Pełną randomizację I stopnia", c: false },
-      { t: "Brak zmiennej niezależnej", c: false },
+    "q": "Co cechuje eksperyment naturalny?",
+    "opts": [
+      {
+        "t": "Słabą kontrolę zmiennych, ale wysoką trafność ekologiczną",
+        "c": true
+      },
+      {
+        "t": "Silną, ścisłą kontrolę wszystkich zmiennych i bardzo niską trafność ekologiczną",
+        "c": false
+      },
+      {
+        "t": "Pełną randomizację I stopnia",
+        "c": false
+      },
+      {
+        "t": "Brak zmiennej niezależnej",
+        "c": false
+      }
     ],
-    exp: "Eksperyment naturalny ma słabą kontrolę zmiennych, ale wysoką trafność ekologiczną — przebiega w realnych, naturalnych warunkach, co ułatwia uogólnianie."
+    "exp": "Eksperyment naturalny ma słabą kontrolę zmiennych, ale wysoką trafność ekologiczną — przebiega w realnych, naturalnych warunkach, co ułatwia uogólnianie."
   },
   {
-    q: "Które ograniczenie eksperymentu ma charakter etyczny?",
-    opts: [
-      { t: "Nie wolno go prowadzić, gdy oddziaływanie szkodzi (np. wyuczona bezradność, badanie Zimbardo)", c: true },
-      { t: "Sztuczność sytuacji laboratoryjnej", c: false },
-      { t: "Mało reprezentatywne próby", c: false },
-      { t: "Efekt oczekiwań eksperymentatora", c: false },
+    "q": "Które ograniczenie eksperymentu ma charakter etyczny?",
+    "opts": [
+      {
+        "t": "Nie wolno go prowadzić, gdy oddziaływanie realnie szkodzi uczestnikom",
+        "c": true
+      },
+      {
+        "t": "Nadmierna sztuczność sytuacji laboratoryjnej i oderwanie od realnego życia",
+        "c": false
+      },
+      {
+        "t": "Mało reprezentatywne próby",
+        "c": false
+      },
+      {
+        "t": "Efekt oczekiwań eksperymentatora",
+        "c": false
+      }
     ],
-    exp: "Ograniczenia etyczne to bariera, gdy oddziaływanie mogłoby szkodzić uczestnikom (np. wywoływanie wyuczonej bezradności, więzienny eksperyment Zimbardo). Sztuczność, mała reprezentatywność i efekty oczekiwań to wady, ale nie natury etycznej."
+    "exp": "Ograniczenia etyczne to bariera, gdy oddziaływanie mogłoby szkodzić uczestnikom (np. wywoływanie wyuczonej bezradności, więzienny eksperyment Zimbardo). Sztuczność, mała reprezentatywność i efekty oczekiwań to wady, ale nie natury etycznej."
   },
   {
-    q: "Co charakteryzuje pomiar międzyosobowy (między osobami)?",
-    opts: [
-      { t: "Zmienna definiuje przynależność do grupy — grupy są niezależne, rozłączne (np. udział w terapii: tak/nie)", c: true },
-      { t: "Te same osoby są mierzone wielokrotnie w czasie", c: false },
-      { t: "Mierzy się różne aspekty u tej samej osoby (analiza profili)", c: false },
-      { t: "Każda osoba przechodzi przez wszystkie warunki", c: false },
+    "q": "Co charakteryzuje pomiar międzyosobowy (między osobami)?",
+    "opts": [
+      {
+        "t": "Zmienna definiuje przynależność do grupy — grupy są niezależne i rozłączne",
+        "c": true
+      },
+      {
+        "t": "Te same osoby są mierzone wielokrotnie w czasie",
+        "c": false
+      },
+      {
+        "t": "Mierzy się różne aspekty psychiki u jednej i tej samej osoby (analiza profili indywidualnych)",
+        "c": false
+      },
+      {
+        "t": "Każda osoba przechodzi przez wszystkie warunki",
+        "c": false
+      }
     ],
-    exp: "W pomiarze międzyosobowym zmienna definiuje przynależność do grupy — grupy są niezależne i rozłączne (np. uczestnictwo w terapii: tak/nie). To porównanie różnych osób."
+    "exp": "W pomiarze międzyosobowym zmienna definiuje przynależność do grupy — grupy są niezależne i rozłączne (np. uczestnictwo w terapii: tak/nie). To porównanie różnych osób."
   },
   {
-    q: "Co charakteryzuje pomiar wewnątrzosobowy (wewnątrz osób)?",
-    opts: [
-      { t: "Wielokrotny pomiar tych samych osób (np. IQ co pół roku) lub pomiar różnych aspektów", c: true },
-      { t: "Porównanie rozłącznych, niezależnych grup osób", c: false },
-      { t: "Losowy przydział różnych osób do różnych warunków", c: false },
-      { t: "Pomiar wyłącznie jednorazowy", c: false },
+    "q": "Co charakteryzuje pomiar wewnątrzosobowy (wewnątrz osób)?",
+    "opts": [
+      {
+        "t": "Wielokrotny pomiar tych samych osób lub pomiar różnych aspektów",
+        "c": true
+      },
+      {
+        "t": "Porównanie rozłącznych, niezależnych grup osób",
+        "c": false
+      },
+      {
+        "t": "Losowy przydział zupełnie różnych osób do różnych warunków eksperymentalnych",
+        "c": false
+      },
+      {
+        "t": "Pomiar wyłącznie jednorazowy",
+        "c": false
+      }
     ],
-    exp: "Pomiar wewnątrzosobowy to wielokrotny pomiar tych samych osób (powtarzany pomiar, np. IQ co pół roku) albo pomiar różnych aspektów u jednej osoby (analiza profili)."
+    "exp": "Pomiar wewnątrzosobowy to wielokrotny pomiar tych samych osób (powtarzany pomiar, np. IQ co pół roku) albo pomiar różnych aspektów u jednej osoby (analiza profili)."
   },
   {
-    q: "Która cecha jest zaletą schematu wewnątrzosobowego?",
-    opts: [
-      { t: "Potrzeba mniej osób i większa kontrola zmiennych zakłócających", c: true },
-      { t: "Brak efektu zmęczenia i uczenia", c: false },
-      { t: "Łatwiej ukryć cel badania", c: false },
-      { t: "Większa reprezentatywność próby", c: false },
+    "q": "Która cecha jest zaletą schematu wewnątrzosobowego?",
+    "opts": [
+      {
+        "t": "Potrzeba mniej osób i większa kontrola zmiennych zakłócających",
+        "c": true
+      },
+      {
+        "t": "Brak efektu zmęczenia i uczenia",
+        "c": false
+      },
+      {
+        "t": "Łatwiej ukryć cel badania",
+        "c": false
+      },
+      {
+        "t": "Większa reprezentatywność próby",
+        "c": false
+      }
     ],
-    exp: "Schemat wewnątrzosobowy wymaga mniej osób i daje większą kontrolę zmiennych zakłócających (te same osoby są swoją „kontrolą”). Brak efektu zmęczenia/uczenia i łatwiejsze ukrycie celu to zalety schematu MIĘDZYosobowego."
+    "exp": "Schemat wewnątrzosobowy wymaga mniej osób i daje większą kontrolę zmiennych zakłócających (te same osoby są swoją „kontrolą”). Brak efektu zmęczenia/uczenia i łatwiejsze ukrycie celu to zalety schematu MIĘDZYosobowego."
   },
   {
-    q: "Która cecha jest wadą schematu wewnątrzosobowego?",
-    opts: [
-      { t: "Efekt zmęczenia i uczenia oraz trudniej ukryć cel badania", c: true },
-      { t: "Potrzeba znacznie większej liczby badanych", c: false },
-      { t: "Mniejsza kontrola zmiennych zakłócających", c: false },
-      { t: "Brak możliwości powtarzanego pomiaru", c: false },
+    "q": "Która cecha jest wadą schematu wewnątrzosobowego?",
+    "opts": [
+      {
+        "t": "Efekt zmęczenia i uczenia oraz trudniej ukryć cel badania",
+        "c": true
+      },
+      {
+        "t": "Potrzeba znacznie większej liczby badanych",
+        "c": false
+      },
+      {
+        "t": "Mniejsza kontrola zmiennych zakłócających",
+        "c": false
+      },
+      {
+        "t": "Brak możliwości powtarzanego pomiaru",
+        "c": false
+      }
     ],
-    exp: "Wadą schematu wewnątrzosobowego jest efekt zmęczenia i uczenia (wielokrotny pomiar tych samych osób) oraz to, że trudniej ukryć cel badania. Większa liczba badanych i mniejsza kontrola to wady schematu MIĘDZYosobowego."
+    "exp": "Wadą schematu wewnątrzosobowego jest efekt zmęczenia i uczenia (wielokrotny pomiar tych samych osób) oraz to, że trudniej ukryć cel badania. Większa liczba badanych i mniejsza kontrola to wady schematu MIĘDZYosobowego."
   },
   {
-    q: "Na jakie pytanie odpowiada mediator?",
-    opts: [
-      { t: "DLACZEGO zależność występuje (mechanizm pośredniczący)", c: true },
-      { t: "KIEDY i na kogo efekt działa", c: false },
-      { t: "JAK SILNY jest efekt w liczbach", c: false },
-      { t: "CZY efekt jest istotny statystycznie", c: false },
+    "q": "Na jakie pytanie odpowiada mediator?",
+    "opts": [
+      {
+        "t": "DLACZEGO zależność występuje (mechanizm pośredniczący)",
+        "c": true
+      },
+      {
+        "t": "KIEDY i na kogo efekt działa (warunki graniczne)",
+        "c": false
+      },
+      {
+        "t": "JAK SILNY jest efekt w liczbach",
+        "c": false
+      },
+      {
+        "t": "CZY efekt jest istotny statystycznie",
+        "c": false
+      }
     ],
-    exp: "Mediator odpowiada na pytanie DLACZEGO zależność występuje — to zmienna pośrednicząca (proces, stan), kluczowa dla budowania teorii i planowania interwencji (X → M → Y)."
+    "exp": "Mediator odpowiada na pytanie DLACZEGO zależność występuje — to zmienna pośrednicząca (proces, stan), kluczowa dla budowania teorii i planowania interwencji (X → M → Y)."
   },
   {
-    q: "Na jakie pytanie odpowiada moderator?",
-    opts: [
-      { t: "KIEDY / na kogo efekt działa — wskazuje warunki graniczne i siłę/kierunek zależności", c: true },
-      { t: "DLACZEGO zależność występuje", c: false },
-      { t: "Jaki jest mechanizm pośredniczący", c: false },
-      { t: "Jak operacjonalizować zmienną zależną", c: false },
+    "q": "Na jakie pytanie odpowiada moderator?",
+    "opts": [
+      {
+        "t": "KIEDY / na kogo efekt działa — wskazuje warunki graniczne i siłę/kierunek zależności",
+        "c": true
+      },
+      {
+        "t": "DLACZEGO zależność występuje",
+        "c": false
+      },
+      {
+        "t": "Jaki jest mechanizm pośredniczący",
+        "c": false
+      },
+      {
+        "t": "Jak dokładnie operacjonalizować i mierzyć zmienną zależną w kolejnych warunkach badania",
+        "c": false
+      }
     ],
-    exp: "Moderator odpowiada na pytanie KIEDY / NA KOGO efekt działa — decyduje o sile lub kierunku zależności i wyznacza jej warunki graniczne (znaczenie praktyczne)."
+    "exp": "Moderator odpowiada na pytanie KIEDY / NA KOGO efekt działa — decyduje o sile lub kierunku zależności i wyznacza jej warunki graniczne (znaczenie praktyczne)."
   },
   {
-    q: "„Efekt jest szczególnie wyraźny u osób o niskiej samoocenie” — o jakiej roli zmiennej to świadczy?",
-    opts: [
-      { t: "Moderacja — samoocena moderuje siłę efektu", c: true },
-      { t: "Mediacja — samoocena wyjaśnia mechanizm", c: false },
-      { t: "Operacjonalizacja zmiennej zależnej", c: false },
-      { t: "Randomizacja II stopnia", c: false },
+    "q": "„Efekt jest szczególnie wyraźny u osób o niskiej samoocenie” — o jakiej roli zmiennej to świadczy?",
+    "opts": [
+      {
+        "t": "Moderacja — samoocena moderuje siłę efektu",
+        "c": true
+      },
+      {
+        "t": "Mediacja — samoocena wyjaśnia mechanizm",
+        "c": false
+      },
+      {
+        "t": "Operacjonalizacja zmiennej zależnej",
+        "c": false
+      },
+      {
+        "t": "Randomizacja II stopnia",
+        "c": false
+      }
     ],
-    exp: "Sformułowania typu „efekt szczególnie wyraźny u osób z…”, „zależy od poziomu…” wskazują na moderację — zmienna (tu: samoocena) modyfikuje siłę/kierunek zależności."
+    "exp": "Sformułowania typu „efekt szczególnie wyraźny u osób z…”, „zależy od poziomu…” wskazują na moderację — zmienna (tu: samoocena) modyfikuje siłę/kierunek zależności."
   },
   {
-    q: "„Stres skraca sen, a to właśnie krótszy sen pogarsza pamięć” — jaki to schemat?",
-    opts: [
-      { t: "Mediacja — łańcuch X → M → Y (krótszy sen jest mediatorem)", c: true },
-      { t: "Moderacja — sen wyznacza warunki graniczne efektu", c: false },
-      { t: "Korelacja pozorna bez mechanizmu", c: false },
-      { t: "Efekt placebo", c: false },
+    "q": "„Stres skraca sen, a to właśnie krótszy sen pogarsza pamięć” — jaki to schemat?",
+    "opts": [
+      {
+        "t": "Mediacja — łańcuch X → M → Y (krótszy sen jest mediatorem)",
+        "c": true
+      },
+      {
+        "t": "Moderacja — poziom snu wyznacza warunki graniczne i siłę całego efektu (interakcja)",
+        "c": false
+      },
+      {
+        "t": "Korelacja pozorna bez mechanizmu",
+        "c": false
+      },
+      {
+        "t": "Efekt placebo",
+        "c": false
+      }
     ],
-    exp: "To mediacja: łańcuch X (stres) → M (krótszy sen) → Y (gorsza pamięć). Mediator wyjaśnia DLACZEGO stres pogarsza pamięć — przez skrócenie snu."
+    "exp": "To mediacja: łańcuch X (stres) → M (krótszy sen) → Y (gorsza pamięć). Mediator wyjaśnia DLACZEGO stres pogarsza pamięć — przez skrócenie snu."
   }
-
 ];
 
 // ---- SHUFFLE ----
