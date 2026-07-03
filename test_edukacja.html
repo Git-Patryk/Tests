@@ -257,7 +257,7 @@
     </div>
     <div class="note">
       <strong style="display:block;margin-bottom:.3rem">Uwaga:</strong>
-      Pytania i odpowiedzi przepisane są wiernie z arkusza. Poprawne odpowiedzi i wyjaśnienia zostały ustalone na podstawie wiedzy przedmiotowej — przy pytaniach oznaczonych <strong>⚠️</strong> warto zweryfikować klucz z materiałami wykładowymi.
+      Pytania przepisane są wiernie z arkusza, a poprawne odpowiedzi <strong>zweryfikowane z oficjalnym kluczem odpowiedzi</strong> (klucz 41/41).
     </div>
     <p>Kolejność pytań jest losowana; kolejność odpowiedzi (A–D) jest stała, bo niektóre pytania odwołują się do „powyższych" / „b i c".</p>
     <button class="btn" id="startBtn">Rozpocznij test</button>
@@ -310,19 +310,19 @@
 // Pytania przepisane wiernie z arkusza egzaminacyjnego (1-41).
 // Kolejność odpowiedzi (A-D) NIE jest losowana, bo część pytań odwołuje się do pozycji
 // ("wszystkie powyższe", "poprawne odpowiedzi b i c", "żaden z powyższych").
-// "c: true" oznacza odpowiedź ustaloną jako poprawna. ⚠️ = odpowiedź sporna / do weryfikacji.
+// "c: true" oznacza poprawną odpowiedź zgodną z oficjalnym kluczem odpowiedzi (41/41).
 const ALL_QUESTIONS = [
 
   // 1
   {
     q: "Lokalna polityka zdrowotna to:",
     opts: [
-      { t: "realizowanie programów promocji zdrowia przez samorządy", c: false },
-      { t: "ogół działań z zakresu szeroko rozumianego zdrowia, które mają na celu wywarcie określonego wpływu, osiągnięcie określonego stanu zdrowotności całości społeczeństwa", c: true },
+      { t: "realizowanie programów promocji zdrowia przez samorządy", c: true },
+      { t: "ogół działań z zakresu szeroko rozumianego zdrowia, które mają na celu wywarcie określonego wpływu, osiągnięcie określonego stanu zdrowotności całości społeczeństwa", c: false },
       { t: "proces umożliwiający jednostkom i grupom społecznym zwiększenie kontroli nad uwarunkowaniami zdrowia", c: false },
       { t: "zaplanowany proces oparty na dowodach naukowych mający na celu edukację zdrowotną społeczności lokalnych", c: false }
     ],
-    exp: "⚠️ Polityka zdrowotna to ogół działań nakierowanych na osiągnięcie określonego stanu zdrowotności społeczeństwa (odp. B). Odp. C to definicja promocji zdrowia (Karta Ottawska). Pytanie sporne — zweryfikuj z wykładem."
+    exp: "Poprawna: A — lokalna polityka zdrowotna to realizowanie programów promocji zdrowia przez samorządy (to szczebel lokalny/samorządowy). Zgodnie z oficjalnym kluczem odpowiedzi."
   },
   // 2
   {
@@ -421,7 +421,7 @@ const ALL_QUESTIONS = [
       { t: "2024–2030", c: false },
       { t: "2022–2028", c: false }
     ],
-    exp: "⚠️ Narodowy Program Zdrowia był realizowany na lata 2021–2025; w arkuszu brak tej opcji, najbliższa to 2021–2026. Koniecznie zweryfikuj klucz — możliwa różnica w roczniku."
+    exp: "Poprawna: B (2021–2026) — zgodnie z oficjalnym kluczem. Pozostałe przedziały lat nie odpowiadają obecnie realizowanemu Narodowemu Programowi Zdrowia."
   },
   // 11
   {
@@ -443,7 +443,7 @@ const ALL_QUESTIONS = [
       { t: "środowisko fizyczne", c: false },
       { t: "wszystkie odpowiedzi są prawidłowe", c: true }
     ],
-    exp: "⚠️ Najczęściej wskazywaną odpowiedzią jest „wszystkie” (społeczne, polityczne i fizyczne jako środowiska wspierające zdrowie). Sprawdź, czy wykład nie wyłącza środowiska politycznego."
+    exp: "Poprawna: D — wszystkie odpowiedzi są prawidłowe (środowisko społeczne, polityczne i fizyczne to podstawowe środowiska wspierające zdrowie). Zgodnie z oficjalnym kluczem."
   },
   // 13
   {
@@ -476,7 +476,7 @@ const ALL_QUESTIONS = [
       { t: "prezes Rady Ministrów", c: false },
       { t: "Kuratorium Oświaty", c: false }
     ],
-    exp: "⚠️ Podstawę programową nowego przedmiotu przygotował zespół ekspertów działający przy MEN. Zweryfikuj dokładne sformułowanie z wykładu."
+    exp: "Poprawna: B — międzyresortowy zespół działający przy Ministerstwie Edukacji Narodowej. Zgodnie z oficjalnym kluczem."
   },
   // 16
   {
@@ -520,7 +520,7 @@ const ALL_QUESTIONS = [
       { t: "w skali globalnej wynikają z uwarunkowań genetycznych", c: false },
       { t: "w skali krajowej są możliwe do zlikwidowania", c: false }
     ],
-    exp: "⚠️ Nierówności zdrowotne wynikają z uwarunkowań społeczno-ekonomicznych (nie genetycznych) i w skali globalnej nie da się ich całkowicie zlikwidować. Zweryfikuj z wykładem."
+    exp: "Poprawna: B — nierówności w zdrowiu nie są możliwe do całkowitego zlikwidowania w skali globalnej. Zgodnie z oficjalnym kluczem."
   },
   // 20
   {
@@ -531,7 +531,7 @@ const ALL_QUESTIONS = [
       { t: "zwiększenie samowystarczalności osób starszych", c: true },
       { t: "poprawne odpowiedzi b i c", c: false }
     ],
-    exp: "⚠️ Głównym celem polityki senioralnej jest wspieranie samodzielności/samowystarczalności i aktywnego starzenia się. Sprawdź, czy klucz nie wskazuje „b i c”."
+    exp: "Poprawna: C — zwiększenie samowystarczalności (samodzielności) osób starszych. Zgodnie z oficjalnym kluczem."
   },
   // 21
   {
@@ -585,7 +585,7 @@ const ALL_QUESTIONS = [
       { t: "Prawda", c: true },
       { t: "Fałsz", c: false }
     ],
-    exp: "⚠️ Opis pasuje do charakterystyki wieku przedszkolnego (myślenie konkretno-wyobrażeniowe, zabawy tematyczne, rozwój samodzielności) — zaznaczono Prawda. Zweryfikuj z wykładem."
+    exp: "Prawda — zgodnie z oficjalnym kluczem. Opis odpowiada charakterystyce wieku przedszkolnego (myślenie konkretno-wyobrażeniowe, zabawy tematyczne i konstrukcyjne, rozwój samodzielności)."
   },
   // 27
   {
@@ -603,7 +603,7 @@ const ALL_QUESTIONS = [
       { t: "Prawda", c: true },
       { t: "Fałsz", c: false }
     ],
-    exp: "⚠️ Metafora „zamykających się drzwi” (poczucie kurczących się możliwości/czasu) wiązana jest ze średnią dorosłością — zaznaczono Prawda. Zweryfikuj z wykładem."
+    exp: "Prawda — zgodnie z oficjalnym kluczem. Metafora „zamykających się drzwi” (poczucie kurczących się możliwości/czasu) wiązana jest ze średnią dorosłością."
   },
   // 29
   {
@@ -627,10 +627,10 @@ const ALL_QUESTIONS = [
   {
     q: "Dokonując wyboru metod i technik nauczania-uczenia się, należy kierować się przede wszystkim doświadczeniami, przekonaniami i preferencjami uczestników.",
     opts: [
-      { t: "Prawda", c: false },
-      { t: "Fałsz", c: true }
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
     ],
-    exp: "⚠️ Wybór metod powinien wynikać przede wszystkim z celów edukacyjnych i tematu (z uwzględnieniem uczestników), a nie wyłącznie z ich preferencji — zaznaczono Fałsz. Zweryfikuj z wykładem."
+    exp: "Prawda — zgodnie z oficjalnym kluczem. We współczesnym (podmiotowym) podejściu do nauczania-uczenia się dobór metod i technik opiera się przede wszystkim na doświadczeniach, przekonaniach i preferencjach uczestników."
   },
   // 32
   {
@@ -654,10 +654,10 @@ const ALL_QUESTIONS = [
   {
     q: "Ewaluacja procesu to sprawdzanie, czy i w jakim stopniu osiągnęliśmy ustalone cele programu edukacji zdrowotnej.",
     opts: [
-      { t: "Prawda", c: false },
-      { t: "Fałsz", c: true }
+      { t: "Prawda", c: true },
+      { t: "Fałsz", c: false }
     ],
-    exp: "Fałsz — to opis ewaluacji wyników. Ewaluacja procesu dotyczy tego, JAK program był realizowany (przebieg, jakość wdrożenia)."
+    exp: "Prawda — zgodnie z oficjalnym kluczem odpowiedzi. Ewaluacja procesu odnosi się do sprawdzania stopnia osiągnięcia założonych celów programu edukacji zdrowotnej."
   },
   // 35
   {
@@ -675,7 +675,7 @@ const ALL_QUESTIONS = [
       { t: "Prawda", c: true },
       { t: "Fałsz", c: false }
     ],
-    exp: "⚠️ Brak jednego powszechnie obowiązującego kodeksu etyki edukatora zdrowotnego — zaznaczono Prawda. Zweryfikuj z wykładem."
+    exp: "Prawda — zgodnie z oficjalnym kluczem. W Polsce nie istnieje obecnie jeden powszechnie obowiązujący kodeks etyki edukatora zdrowotnego."
   },
   // 37
   {
@@ -711,7 +711,7 @@ const ALL_QUESTIONS = [
       { t: "Prawda", c: true },
       { t: "Fałsz", c: false }
     ],
-    exp: "⚠️ Puzzle (układanka) i metaplan to różne techniki aktywizujące (współpracy / dyskusyjno-graficzna) — zaznaczono Prawda. Zweryfikuj z wykładem."
+    exp: "Prawda — zgodnie z oficjalnym kluczem. Puzzle (układanka) i metaplan to techniki należące do różnych metod aktywizujących nauczania-uczenia się."
   },
   // 41
   {
