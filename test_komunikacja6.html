@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 5 – Komunikacja i perswazja (egzamin)</title>
+<style>
+  :root {
+    --vio:    #8b5cf6;
+    --vio2:   #7c3aed;
+    --vio3:   #c4b5fd;
+    --vio4:   #ede9fe;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #495057;
+    --light:  #f7f5ff;
+    --border: #e3dcf5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f6f3ff;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #5b21b6 0%, var(--vio2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 600;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+    padding: .5rem 1.15rem;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 999px;
+    transition: background .2s, border-color .2s, transform .1s;
+  }
+  header .back-link:hover { background: rgba(255,255,255,.28); border-color: #fff; transform: translateY(-1px); }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(124,58,237,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--vio2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #f1ecfe;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #ddd0fb;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--vio2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--vio2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--vio2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #5b21b6; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--vio2), var(--vio3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(124,58,237,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--vio2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--vio3); background: #f1ecfe; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--vio2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--vio4); border-color: var(--vio2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #5b21b6; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--vio4); border-left: 4px solid var(--vio2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(124,58,237,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--vio2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5b21b6, var(--vio2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(124,58,237,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #5b21b6; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--vio4); border-left: 3px solid var(--vio2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="komunikacja-testy.html">← Wróć do listy testów</a>
+  <h1>Komunikacja i perswazja</h1>
+  <p>Test 6 · Uzupełnienie · 23 pytania</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">UZUPEŁNIENIE</div>
+    <h2>Test 6 — tematy rzadziej poruszane (z lektur)</h2>
+    <p>Zestaw pytań <strong>w stylu egzaminacyjnym</strong>, domykający zakres sylabusa w obszarach słabiej reprezentowanych w testach 1–5. Uwaga: to pytania opracowane na podstawie lektur i wykładu, <strong>nie</strong> autentyczne pytania egzaminacyjne.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>pre-swazja Cialdiniego (moment przed przekazem, kierowanie uwagą, siódma reguła jedności, bodźce przyciągające uwagę, model lęku Tannera) · Doliński &amp; Grzyb cz. V–VII (dotyk 79/51 i 37/19, strefy dystansu Halla, presja czasu, „dziękuję”, mimikra werbalna, small talk, phubbing) · marketing polityczny (perspektywa wyborcy Cwaliny &amp; Falkowskiego, wieloznaczność strategiczna, bazy dyskursu Bennetta, Create–Communicate–Deliver) · storytelling (struktura opowieści, 3 × „i”, storyfitting, reguła Rives'a)</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>23 pytania</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 25</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/25</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {
+    q: "Na czym — według Cialdiniego (2016) — polega istota pre-swazji?",
+    opts: [
+      { t: "kierowaniu uwagi odbiorcy jeszcze przed właściwym przekazem", c: true },
+      { t: "wielokrotnym powtarzaniu przekazu aż do jego zapamiętania", c: false },
+      { t: "przedstawieniu najmocniejszego argumentu na samym końcu wypowiedzi", c: false },
+      { t: "dołączaniu drobnego prezentu do każdej prośby o przysługę", c: false },
+    ],
+    exp: "Pre-swazja = przygotowanie gruntu: kierując uwagę odbiorcy na wybrany element (np. bezpieczeństwo), czynimy go uprzywilejowanym w umyśle, zanim padnie właściwa propozycja. Powtarzanie to zwykła ekspozycja; kolejność argumentów i prezent (wzajemność) to inne mechanizmy."
+  },
+  {
+    q: "Która reguła wpływu została dodana przez Cialdiniego dopiero w „Pre-swazji” (2016)?",
+    opts: [
+      { t: "reguła jedności", c: true },
+      { t: "reguła wzajemności", c: false },
+      { t: "reguła autorytetu", c: false },
+      { t: "reguła niedostępności", c: false },
+    ],
+    exp: "Sześć klasycznych reguł (wzajemność, zaangażowanie/konsekwencja, dowód społeczny, autorytet, lubienie, niedostępność) pochodzi z „Wywierania wpływu”. Siódma — jedność („My”, wspólna tożsamość) — została dodana w „Pre-swazji” (2016)."
+  },
+  {
+    q: "Kiedy bodziec seksualny w reklamie realnie wspiera zapamiętanie MARKI?",
+    opts: [
+      { t: "gdy jest treściowo powiązany z reklamowanym produktem", c: true },
+      { t: "zawsze — sam z siebie gwarantuje zapamiętanie reklamowanej marki", c: false },
+      { t: "gdy jest maksymalnie dosłowny i szokujący", c: false },
+      { t: "gdy pojawia się na końcu spotu", c: false },
+    ],
+    exp: "Bodziec seksualny działa na markę tylko wtedy, gdy jest z nią związany; w przeciwnym razie widz zapamiętuje reklamę, ale nie markę. Sama obecność, szok czy pozycja w spocie tego nie zapewniają."
+  },
+  {
+    q: "Reklama odwołująca się do lęku/zagrożenia działa skutecznie, gdy…",
+    opts: [
+      { t: "podaje też skuteczną rekomendację, jak uniknąć zagrożenia", c: true },
+      { t: "całkowicie pomija jakiekolwiek sposoby poradzenia sobie z zagrożeniem", c: false },
+      { t: "poziom lęku jest maksymalnie wysoki", c: false },
+      { t: "zagrożenie dotyczy odległej przyszłości", c: false },
+    ],
+    exp: "Wg modelu Tannera i in. (1991) sam lęk nie wystarcza — potrzebna jasna, wykonalna rekomendacja, jak zagrożenia uniknąć. Maksymalny lęk bez rozwiązania budzi reaktancję lub paraliż; pominięcie rady osłabia efekt."
+  },
+  {
+    q: "Zjawisko „cocktail party” w psychologii reklamy pokazuje, że szczególnie silnie przyciąga nas przekaz…",
+    opts: [
+      { t: "dotyczący nas samych i spersonalizowany", c: true },
+      { t: "powtarzany monotonnie bardzo wiele razy z rzędu", c: false },
+      { t: "pozbawiony jakichkolwiek emocji", c: false },
+      { t: "napisany drobnym drukiem", c: false },
+    ],
+    exp: "Efekt cocktail party = z szumu wyłapujemy to, co nas dotyczy (np. własne imię). Dlatego trafna personalizacja przyciąga uwagę. Brak emocji, monotonia czy drobny druk raczej uwagę usypiają."
+  },
+  {
+    q: "W badaniu Smith, Gier i Willis (1982) lekki dotyk ramienia klienta w markecie…",
+    opts: [
+      { t: "zwiększył odsetek osób próbujących i kupujących produkt", c: true },
+      { t: "nie miał żadnego wpływu na zachowanie badanych klientów", c: false },
+      { t: "zniechęcił klientów i obniżył sprzedaż", c: false },
+      { t: "działał tylko na klientów płci męskiej", c: false },
+    ],
+    exp: "Dotyk podniósł próbowanie (79% vs 51%) i zakup (37% vs 19%). ⚠️ W kulturze polskiej normy dystansu są inne — technika bywa odebrana jako naruszenie granic."
+  },
+  {
+    q: "Rozmowa z nowo poznanym współpracownikiem toczy się zwykle w strefie… (wg E. Halla)",
+    opts: [
+      { t: "osobistej (ok. 46 cm–1,2 m)", c: true },
+      { t: "społecznej (ok. 1,2–3,6 m)", c: false },
+      { t: "intymnej (0–46 cm)", c: false },
+      { t: "publicznej (powyżej 3,6 m)", c: false },
+    ],
+    exp: "Strefa osobista (≈0,46–1,2 m) to dystans rozmów ze znajomymi. Intymna jest zarezerwowana dla najbliższych, społeczna dla kontaktów formalnych, a publiczna dla wystąpień przed audytorium."
+  },
+  {
+    q: "Zwrot „Potrzebuję tego na już” to przykład werbalnej techniki wpływu opartej na…",
+    opts: [
+      { t: "wywołaniu u odbiorcy silnej presji czasu i pilności", c: true },
+      { t: "budowaniu wspólnej tożsamości grupowej", c: false },
+      { t: "odwołaniu do autorytetu eksperta", c: false },
+      { t: "społecznym dowodzie słuszności", c: false },
+    ],
+    exp: "„Na już” tworzy poczucie pilności (niedostępność czasowa) i skłania do szybkiej zgody. To nie autorytet, nie tożsamość „my” ani nie dowód społeczny."
+  },
+  {
+    q: "Dlaczego — wg Dolińskiego i Grzyba — powiedzenie „dziękuję” zwiększa szansę, że ktoś dalej się zaangażuje?",
+    opts: [
+      { t: "bo sygnalizuje ważność jego wkładu i zobowiązuje do dalszej pracy", c: true },
+      { t: "bo całkowicie zwalnia go z jakichkolwiek dalszych zobowiązań", c: false },
+      { t: "bo obniża znaczenie tego, co zrobił", c: false },
+      { t: "bo uruchamia u niego reaktancję", c: false },
+    ],
+    exp: "„Dziękuję” sygnalizuje, że praca jest ważna, zobowiązuje do dalszego wysiłku i zwiększa dostępność poznawczą (pamiętamy, za co nam dziękują). Nie zwalnia z zobowiązań, nie deprecjonuje wkładu i nie wywołuje oporu."
+  },
+  {
+    q: "Kelner powtarzający zamówienie gościa słowo w słowo („Ok, jedno wino, herbata”) stosuje…",
+    opts: [
+      { t: "mimikrę werbalną", c: true },
+      { t: "technikę niskiej piłki", c: false },
+      { t: "regułę niedostępności", c: false },
+      { t: "strategiczną wieloznaczność", c: false },
+    ],
+    exp: "Dosłowne powtórzenie zamówienia to mimikra werbalna („klej społeczny”) — zwiększa sympatię i wysokość napiwku (Kulesza i in., 2019). Niska piłka, niedostępność i wieloznaczność to inne mechanizmy."
+  },
+  {
+    q: "„Efekt kameleona” w interakcji perswazyjnej to…",
+    opts: [
+      { t: "mimowolne naśladowanie gestów i mowy rozmówcy", c: true },
+      { t: "celowe zaprzeczanie słowom rozmówcy", c: false },
+      { t: "unikanie kontaktu wzrokowego dla zbudowania dystansu", c: false },
+      { t: "mówienie trzech rzeczy naraz, by nic nie powiedzieć", c: false },
+    ],
+    exp: "Efekt kameleona = nieświadome dopasowanie postawy, gestów i mowy do rozmówcy; działa jak klej społeczny i zwiększa sympatię oraz uległość. Pozostałe opisy to co innego (m.in. wieloznaczność strategiczna)."
+  },
+  {
+    q: "Krótka, „nic nieznacząca” pogawędka (small talk) przed prośbą…",
+    opts: [
+      { t: "zwiększa wpływ, bo buduje relację i poczucie znajomości", c: true },
+      { t: "jest zupełnie obojętna dla skuteczności każdej prośby", c: false },
+      { t: "osłabia wpływ, bo rozprasza odbiorcę", c: false },
+      { t: "działa wyłącznie w komunikacji pisemnej", c: false },
+    ],
+    exp: "„Small talk & big influence” — osobom znajomym ulegamy chętniej niż obcym, więc pogawędka buduje relację i zwiększa siłę wpływu (zwłaszcza twarzą w twarz). Nie jest obojętna ani nie rozprasza w tym sensie."
+  },
+  {
+    q: "Phubbing podczas rozmowy oznacza…",
+    opts: [
+      { t: "ignorowanie rozmówcy na rzecz zaglądania w telefon", c: true },
+      { t: "utrzymywanie bardzo intensywnego kontaktu wzrokowego", c: false },
+      { t: "mówienie rozmówcy prosto do prawego ucha", c: false },
+      { t: "powtarzanie słów rozmówcy dla zbudowania więzi", c: false },
+    ],
+    exp: "Phubbing = lekceważenie rozmówcy przez zajmowanie się telefonem; osłabia relację i odbiór przekazu. Pozostałe opisują inne zachowania, często sprzyjające wpływowi (kontakt wzrokowy, „prawe ucho”, mimikra)."
+  },
+  {
+    q: "Wg Cwaliny i Falkowskiego (2006) skuteczne budowanie wizerunku polityka wymaga przede wszystkim…",
+    opts: [
+      { t: "przyjęcia perspektywy wyborcy — jego oczekiwań i myślenia", c: true },
+      { t: "skupienia się wyłącznie na tym, co sam kandydat chce powiedzieć", c: false },
+      { t: "maksymalnego uszczegółowienia programu wyborczego", c: false },
+      { t: "unikania jakichkolwiek badań opinii", c: false },
+    ],
+    exp: "„Konieczne jest przyjęcie perspektywy wyborcy” (s. 154) — liczy się, czego oczekuje i jak myśli odbiorca, nie „co ja chcę powiedzieć”. Nadmierny szczegół programu wystawia na atak, a rezygnacja z badań opinii jest przeciwskuteczna."
+  },
+  {
+    q: "Cwalina i Koniak (2014) wyróżniają dwie FUNKCJE strategicznej wieloznaczności. Są to funkcje…",
+    opts: [
+      { t: "prewencyjna i promocyjna", c: true },
+      { t: "semantyczna i argumentacyjna", c: false },
+      { t: "rytualna i pragmatyczna", c: false },
+      { t: "informacyjna i normatywna", c: false },
+    ],
+    exp: "Funkcje wieloznaczności to prewencyjna/defensywna (obrona wizerunku) i promocyjna/strategiczna (budowa poparcia). Semantyczna i argumentacyjna to RODZAJE wieloznaczności; rytualna i pragmatyczna to bazy dyskursu (Bennett); informacyjna i normatywna to typy wpływu społecznego."
+  },
+  {
+    q: "Wypowiedź „Sytuacja w służbie zdrowia musi się zmienić” — brzmiąca jak stanowisko, a niczego nierozstrzygająca — to wieloznaczność…",
+    opts: [
+      { t: "semantyczna", c: true },
+      { t: "argumentacyjna", c: false },
+      { t: "pragmatyczna", c: false },
+      { t: "rytualna", c: false },
+    ],
+    exp: "Wieloznaczność semantyczna = ogólniki i banały pozorujące ustosunkowanie się. Argumentacyjna to ważenie „za i przeciw” bez opowiedzenia się; pragmatyczna i rytualna to bazy dyskursu Bennetta, nie rodzaje wieloznaczności."
+  },
+  {
+    q: "Wg Bennetta (1977) gesty, symbole i budowanie wspólnoty to element bazy… dyskursu kampanijnego.",
+    opts: [
+      { t: "rytualnej", c: true },
+      { t: "pragmatycznej", c: false },
+      { t: "semantycznej", c: false },
+      { t: "prewencyjnej", c: false },
+    ],
+    exp: "Baza rytualna = symbole, gesty, poczucie wspólnoty; baza pragmatyczna = konkret i zobowiązania. Semantyczna to rodzaj wieloznaczności, a prewencyjna to jej funkcja."
+  },
+  {
+    q: "W modelu tworzenia wartości (Create → Communicate → Deliver) „wartość” (value) powstaje, gdy…",
+    opts: [
+      { t: "obietnica z komunikacji pokrywa się z realnym dostarczeniem", c: true },
+      { t: "sama komunikacja marketingowa jest wystarczająco głośna i częsta", c: false },
+      { t: "produkt jest jak najtaniej wyprodukowany", c: false },
+      { t: "klient nie ma porównania z konkurencją", c: false },
+    ],
+    exp: "Value = efekt „opłacało się, wrócę” — rodzi się, gdy to, co obiecano (Communicate), pokrywa się z tym, co klient realnie dostaje (Deliver). Niski koszt wytworzenia, sam hałas komunikacyjny czy brak porównania nie tworzą wartości."
+  },
+  {
+    q: "„Jak nie może istnieć pięć gwiazd polarnych, tak nie może być pięciu najważniejszych celów” (Heath & Heath, 2020). Myśl ta zaleca, by przekaz…",
+    opts: [
+      { t: "skupiał się na jednym, jasnym przesłaniu przewodnim", c: true },
+      { t: "zawierał jak najwięcej równorzędnych haseł jednocześnie", c: false },
+      { t: "był celowo wieloznaczny i mglisty", c: false },
+      { t: "unikał wszelkich konkretów i przykładów", c: false },
+    ],
+    exp: "„Jeśli mówisz trzy rzeczy naraz, nic nie mówisz” — jeden wyraźny przekaz przewodni bije wiele rozmytych. Mnożenie haseł, mglistość czy brak konkretów osłabiają komunikat."
+  },
+  {
+    q: "Które elementy tworzą szkielet dobrej narracji perswazyjnej (story)?",
+    opts: [
+      { t: "bohater, wartości, cele i przeciwności", c: true },
+      { t: "przypadkowy zbiór niepowiązanych faktów", c: false },
+      { t: "wyłącznie dane liczbowe i wykresy", c: false },
+      { t: "lista argumentów bez żadnej postaci", c: false },
+    ],
+    exp: "Story = bohater (do utożsamienia), jego wartości, cele oraz przeciwności/wróg budujące napięcie. Sama lista argumentów lub dane bez narracji działają słabiej — fakty mają wzmacniać historię, nie ją zastępować."
+  },
+  {
+    q: "Cel dobrej historii ujmuje się jako „3 × i”. Co kryje się pod tymi trzema „i”?",
+    opts: [
+      { t: "information, insight, inspiration", c: true },
+      { t: "information, instruction, intimidation", c: false },
+      { t: "imitation, illusion, immersion", c: false },
+      { t: "insight, interest, interruption", c: false },
+    ],
+    exp: "3 × „i” = information (przekazać informację), insight (dać wgląd/pogląd) i inspiration (zainspirować odbiorcę). Pozostałe zestawy to dystraktory."
+  },
+  {
+    q: "Zjawisko „storyfitting” polega na tym, że…",
+    opts: [
+      { t: "nowe informacje dopasowujemy do gotowej opowieści, którą już mamy w głowie", c: true },
+      { t: "budujemy zupełnie nową opowieść od zera dla każdej nowej informacji", c: false },
+      { t: "odrzucamy wszelkie informacje niezgodne z faktami", c: false },
+      { t: "skracamy wystąpienie o 10% wg reguły Rives'a", c: false },
+    ],
+    exp: "Storyfitting = nowy fakt staje się „kolejnym dowodem” na to, w co już wierzymy (dopasowanie do gotowego szablonu). To nie interpretacja od zera ani chłodna weryfikacja faktów; reguła Rives'a dotyczy czasu wystąpienia."
+  },
+  {
+    q: "Zgodnie z regułą Rives'a, przygotowując 20-minutowe wystąpienie, treść planujesz na…",
+    opts: [
+      { t: "około 18 minut (20 × 0,9)", c: true },
+      { t: "około 22 minuty (20 × 1,1)", c: false },
+      { t: "dokładnie 20 minut (20 × 1,0)", c: false },
+      { t: "około 10 minut (20 × 0,5)", c: false },
+    ],
+    exp: "Reguła Rives'a: planowany czas × 0,9 (20 × 0,9 = 18 min). Resztę i tak zajmą reakcje publiczności — oklaski, śmiech, pytania. Pozostałe przeliczniki są błędne."
+  },
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#6d28d9'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#7c3aed'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#8b5cf6'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#d97706'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
