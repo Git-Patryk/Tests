@@ -252,7 +252,7 @@
 <header>
   <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
   <h1>Zaawansowana metodologia badań</h1>
-  <p>Test 9 · Pytania egzaminacyjne · 31 pytań</p>
+  <p>Test 9 · Pytania egzaminacyjne · 35 pytań</p>
 </header>
 
 <div id="start-screen">
@@ -264,7 +264,7 @@
       <strong>Zakres pytań:</strong>
       <p>Plany badawcze (wewnątrzgrupowe, quasi) · trafność wewnętrzna vs zewnętrzna · qui pro quo · moc a priori/post hoc · błędy I/II rodzaju · p-value i istotność · d Cohena a istotność · mediacja i moderacja · korelacja vs przyczynowość · prerejestracja, HARKing, p-hacking · SMAR · abdukcja · TCM (Borsboom) · model Rescorli-Wagnera</p>
     </div>
-    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>31 pytań</strong>.</p>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>35 pytań</strong>.</p>
     <button class="btn" id="startBtn">Rozpocznij test</button>
   </div>
 </div>
@@ -994,6 +994,94 @@ const ALL_QUESTIONS = [
       }
     ],
     "exp": "W modelu Rescorli-Wagnera uczenie napędza „błąd predykcji” — rozbieżność między oczekiwanym a otrzymanym wzmocnieniem. Uczymy się najwięcej, gdy wzmocnienie jest ZASKAKUJĄCE; gdy jest w pełni przewidziane, przyrost uczenia dąży do zera."
+  },
+  {
+    "q": "Badacz sprawdzał, jak aktywizacja stereotypu wpływa na ocenę kandydatów do pracy, oraz czy tę zależność modyfikuje płeć kandydata. Jak nazwiemy w tym badaniu zmienną „płeć kandydata”?",
+    "opts": [
+      {
+        "t": "zmienna moderująca",
+        "c": true
+      },
+      {
+        "t": "zmienna mediująca",
+        "c": false
+      },
+      {
+        "t": "zmienna niezależna",
+        "c": false
+      },
+      {
+        "t": "zmienna zależna",
+        "c": false
+      }
+    ],
+    "exp": "Płeć kandydata zmienia SIŁĘ związku między aktywizacją stereotypu (ZN) a oceną kandydata (ZZ) — to zmienna moderująca (moderator). Mediator byłby ogniwem pośrednim w łańcuchu X→M→Y; zmienną niezależną jest tu sama aktywizacja stereotypu, a zależną — ocena kandydatów."
+  },
+  {
+    "q": "Który z poniższych przykładów najlepiej ilustruje zjawisko regresji do średniej?",
+    "opts": [
+      {
+        "t": "Osoby z najwyższym stresem w pierwszym pomiarze miały niższe wyniki w drugim, choć program mógł nie działać",
+        "c": true
+      },
+      {
+        "t": "Badani poprawiają wyniki przy drugim podejściu, bo nauczyli się szybciej rozwiązywać zadania testu",
+        "c": false
+      },
+      {
+        "t": "Badacz znajduje istotną statystycznie korelację między dwiema zmiennymi zmierzonymi w bardzo licznej próbie",
+        "c": false
+      },
+      {
+        "t": "Uczestnicy uzyskują niemal identyczne wyniki w dwóch kolejnych pomiarach tego samego narzędzia",
+        "c": false
+      }
+    ],
+    "exp": "Regresja do średniej: skrajny wynik w pierwszym pomiarze (tu najwyższy stres) jest po części dziełem losowych fluktuacji, więc w drugim pomiarze naturalnie zbliża się do średniej — nawet bez realnego wpływu interwencji. Poprawa dzięki wprawie to efekt uczenia; sama istotna korelacja to nie regresja; a niemal identyczne wyniki w dwóch pomiarach świadczą o wysokiej rzetelności test-retest."
+  },
+  {
+    "q": "W badaniu sprawdzano poziom zaufania do rządu wśród obywateli Polski pozostających bez pracy. Jaką próbę należy zastosować, aby możliwie dokładnie odpowiedzieć na to pytanie badawcze?",
+    "opts": [
+      {
+        "t": "kwotową",
+        "c": true
+      },
+      {
+        "t": "losową",
+        "c": false
+      },
+      {
+        "t": "dobraną metodą „kuli śnieżnej”",
+        "c": false
+      },
+      {
+        "t": "trudno powiedzieć",
+        "c": false
+      }
+    ],
+    "exp": "Aby próba możliwie wiernie odwzorowała strukturę populacji bezrobotnych Polek i Polaków (płeć, wiek, region), stosuje się dobór kwotowy — buduje się „mini-populację” według znanych proporcji cech. Próba losowa kusi hasłem „dokładnie”, lecz wymaga pełnego operatu do losowania; kula śnieżna dotyczy populacji ukrytych/trudno dostępnych, a „trudno powiedzieć” to unik."
+  },
+  {
+    "q": "Jeśli w badaniu wykorzystujemy narzędzia (np. kwestionariusze) składające się z wielu prób (pytań), to badanie będzie się cechować:",
+    "opts": [
+      {
+        "t": "wysoką rzetelnością pomiaru",
+        "c": true
+      },
+      {
+        "t": "niską trafnością wewnętrzną",
+        "c": false
+      },
+      {
+        "t": "wysoką replikowalnością",
+        "c": false
+      },
+      {
+        "t": "wysoką trafnością zewnętrzną",
+        "c": false
+      }
+    ],
+    "exp": "Więcej pozycji mierzących ten sam konstrukt uśrednia błąd losowy i podnosi spójność wewnętrzną narzędzia, czyli jego rzetelność (por. α Cronbacha, wzór Spearmana-Browna). Liczba pytań sama w sobie nie przesądza o trafności wewnętrznej ani zewnętrznej, nie decyduje też o replikowalności."
   }
 ];
 
