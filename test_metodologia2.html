@@ -252,7 +252,7 @@
 <header>
   <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
   <h1>🔬 Zaawansowana metodologia badań</h1>
-  <p>Test 2 · Poziom 2 · 25 pytań</p>
+  <p>Test 2 · Poziom 2 · 26 pytań</p>
 </header>
 
 <div id="start-screen">
@@ -264,7 +264,7 @@
       <strong>Zakres pytań:</strong>
       <p>badania opisowe vs wyjaśniające · trzy schematy (eksperyment / quasi / korelacja) · oddziaływanie i grupy (kontrolna, placebo, nocebo, superiority/non-inferiority) · randomizacja I i II stopnia · eksperyment lab vs naturalny · pomiar między- vs wewnątrzosobowy · mediatory (DLACZEGO) i moderatory (KIEDY)</p>
     </div>
-    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>26 pytań</strong>.</p>
     <button class="btn" id="startBtn">Rozpocznij test</button>
   </div>
 </div>
@@ -862,6 +862,28 @@ const ALL_QUESTIONS = [
       }
     ],
     "exp": "To mediacja: łańcuch X (stres) → M (krótszy sen) → Y (gorsza pamięć). Mediator wyjaśnia DLACZEGO stres pogarsza pamięć — przez skrócenie snu."
+  },
+  {
+    "q": "Badacz sprawdzał, jak aktywizacja stereotypu wpływa na ocenę kandydatów do pracy, oraz czy tę zależność modyfikuje płeć kandydata. Jak nazwiemy w tym badaniu zmienną „płeć kandydata”?",
+    "opts": [
+      {
+        "t": "zmienna moderująca",
+        "c": true
+      },
+      {
+        "t": "zmienna mediująca",
+        "c": false
+      },
+      {
+        "t": "zmienna niezależna",
+        "c": false
+      },
+      {
+        "t": "zmienna zależna",
+        "c": false
+      }
+    ],
+    "exp": "Płeć kandydata zmienia SIŁĘ związku między aktywizacją stereotypu (ZN) a oceną kandydata (ZZ) — to zmienna moderująca (moderator). Mediator byłby ogniwem pośrednim w łańcuchu X→M→Y; zmienną niezależną jest tu sama aktywizacja stereotypu, a zależną — ocena kandydatów."
   }
 ];
 

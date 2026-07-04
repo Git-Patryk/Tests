@@ -252,7 +252,7 @@
 <header>
   <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
   <h1>🔬 Zaawansowana metodologia badań</h1>
-  <p>Test 3 · Poziom 3 · 25 pytań</p>
+  <p>Test 3 · Poziom 3 · 27 pytań</p>
 </header>
 
 <div id="start-screen">
@@ -264,7 +264,7 @@
       <strong>Zakres pytań:</strong>
       <p>trafność vs rzetelność · 4 rodzaje trafności · trafność treściowa / zbieżna-różnicowa / kryterialna · błąd pomiaru (X = T + E, Spearman) · błąd losowy vs systematyczny · α Cronbacha, test-retest, ICC, SEM · qui pro quo · placebo i nocebo (Bąbel) · balanced placebo design (Marlatt) · regresja do średniej · Rosenhan i etykietowanie · błąd I i II rodzaju</p>
     </div>
-    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>27 pytań</strong>.</p>
     <button class="btn" id="startBtn">Rozpocznij test</button>
   </div>
 </div>
@@ -862,6 +862,50 @@ const ALL_QUESTIONS = [
       }
     ],
     "exp": "Przy H₀ „wszyscy zdrowi”: I część — wszędzie widziano chorobę = odrzucenie prawdziwej H₀ = błąd I rodzaju. II część — po ostrzeżeniu uznano 41 z 193 prawdziwych pacjentów za symulantów (choć Rosenhan nikogo nie wysłał) = niedostrzeżenie choroby = błąd II rodzaju."
+  },
+  {
+    "q": "Który z poniższych przykładów najlepiej ilustruje zjawisko regresji do średniej?",
+    "opts": [
+      {
+        "t": "Osoby z najwyższym stresem w pierwszym pomiarze miały niższe wyniki w drugim, choć program mógł nie działać",
+        "c": true
+      },
+      {
+        "t": "Badani poprawiają wyniki przy drugim podejściu, bo nauczyli się szybciej rozwiązywać zadania testu",
+        "c": false
+      },
+      {
+        "t": "Badacz znajduje istotną statystycznie korelację między dwiema zmiennymi zmierzonymi w bardzo licznej próbie",
+        "c": false
+      },
+      {
+        "t": "Uczestnicy uzyskują niemal identyczne wyniki w dwóch kolejnych pomiarach tego samego narzędzia",
+        "c": false
+      }
+    ],
+    "exp": "Regresja do średniej: skrajny wynik w pierwszym pomiarze (tu najwyższy stres) jest po części dziełem losowych fluktuacji, więc w drugim pomiarze naturalnie zbliża się do średniej — nawet bez realnego wpływu interwencji. Poprawa dzięki wprawie to efekt uczenia; sama istotna korelacja to nie regresja; a niemal identyczne wyniki w dwóch pomiarach świadczą o wysokiej rzetelności test-retest."
+  },
+  {
+    "q": "Jeśli w badaniu wykorzystujemy narzędzia (np. kwestionariusze) składające się z wielu prób (pytań), to badanie będzie się cechować:",
+    "opts": [
+      {
+        "t": "wysoką rzetelnością pomiaru",
+        "c": true
+      },
+      {
+        "t": "niską trafnością wewnętrzną",
+        "c": false
+      },
+      {
+        "t": "wysoką replikowalnością",
+        "c": false
+      },
+      {
+        "t": "wysoką trafnością zewnętrzną",
+        "c": false
+      }
+    ],
+    "exp": "Więcej pozycji mierzących ten sam konstrukt uśrednia błąd losowy i podnosi spójność wewnętrzną narzędzia, czyli jego rzetelność (por. α Cronbacha, wzór Spearmana-Browna). Liczba pytań sama w sobie nie przesądza o trafności wewnętrznej ani zewnętrznej, nie decyduje też o replikowalności."
   }
 ];
 

@@ -113,6 +113,47 @@
     margin-top: 2rem; font-size: .78rem; color: var(--muted); text-align: center; line-height: 1.6;
   }
 
+  /* --- rozdzielenie grup testów --- */
+  .group-head { margin-bottom: 1.2rem; }
+  .group-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .84rem; font-weight: 800; letter-spacing: .01em;
+    padding: .45rem .85rem; border-radius: 10px;
+  }
+  .group-easy .group-badge {
+    background: var(--ng); color: var(--nc);
+    border: 1px solid color-mix(in srgb, var(--nc) 32%, transparent);
+  }
+  .group-hard .group-badge {
+    background: rgba(239,68,68,.12); color: #f87171;
+    border: 1px solid rgba(239,68,68,.38);
+  }
+  .group-desc { font-size: .8rem; color: var(--muted); margin-top: .55rem; line-height: 1.5; }
+
+  .group-divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 3rem 0 2rem; color: #f87171;
+    font-size: .68rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
+  }
+  .group-divider::before, .group-divider::after {
+    content: ''; height: 1px; flex: 1;
+    background: linear-gradient(90deg, transparent, rgba(239,68,68,.45), transparent);
+  }
+
+  /* trudniejsza grupa: czerwony akcent zamiast niebieskiego */
+  .tests-list.hard .test-num {
+    color: #f87171; background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.30);
+  }
+  .tests-list.hard .test-tag {
+    background: rgba(239,68,68,.13); color: #f87171; border-color: rgba(239,68,68,.32);
+  }
+  .tests-list.hard .test-card::before { background: rgba(239,68,68,.10); }
+  .tests-list.hard .test-card:hover {
+    border-color: #f87171; box-shadow: 0 0 24px rgba(239,68,68,.18);
+  }
+  .tests-list.hard .test-arrow { color: #f87171; }
+  .tests-list.hard .test-card:hover .test-arrow { color: #f87171; }
+
   footer {
     position: relative; z-index: 10; text-align: center; padding: 1.5rem;
     color: var(--muted); font-size: .73rem; border-top: 1px solid var(--border); margin-top: auto;
@@ -146,8 +187,11 @@
     <div class="page-sub">9 testów · pełny zakres wykładów i lektur + 4 testy z oryginalnymi pytaniami egzaminacyjnymi</div>
   </div>
 
-  <div class="section-label">Dostępne testy</div>
-  <div class="tests-list">
+  <div class="group-head group-easy">
+    <span class="group-badge">📘 Materiał z prezentacji i wykładów</span>
+    <div class="group-desc">Testy tematyczne ułożone pod wykłady i lektury — pokrywają cały zakres egzaminu, przystępniejszy poziom.</div>
+  </div>
+  <div class="tests-list easy">
 
     <a class="test-card" href="test_metodologia.html">
       <div class="test-num">1</div>
@@ -164,7 +208,7 @@
       <div class="test-info">
         <span class="test-tag">SCHEMATY I ZMIENNE</span>
         <div class="test-title">Test 2 — Schematy i zmienne</div>
-        <div class="test-meta">25 pytań · badania opisowe vs wyjaśniające, trzy schematy (eksperyment / quasi / korelacja), oddziaływanie i grupy (kontrolna, placebo, nocebo, superiority), randomizacja I i II stopnia, lab vs naturalny, pomiar między- vs wewnątrzosobowy, mediatory i moderatory</div>
+        <div class="test-meta">26 pytań · badania opisowe vs wyjaśniające, trzy schematy (eksperyment / quasi / korelacja), oddziaływanie i grupy (kontrolna, placebo, nocebo, superiority), randomizacja I i II stopnia, lab vs naturalny, pomiar między- vs wewnątrzosobowy, mediatory i moderatory</div>
       </div>
       <span class="test-arrow">→</span>
     </a>
@@ -174,7 +218,7 @@
       <div class="test-info">
         <span class="test-tag">TRAFNOŚĆ I RZETELNOŚĆ</span>
         <div class="test-title">Test 3 — Trafność, rzetelność i artefakty</div>
-        <div class="test-meta">25 pytań · trafność vs rzetelność, 4 rodzaje trafności, błąd pomiaru (X=T+E, Spearman, losowy/systematyczny), α Cronbacha / test-retest / ICC / SEM, qui pro quo, placebo i balanced placebo design (Marlatt), regresja do średniej, Rosenhan i etykietowanie, błąd I/II rodzaju</div>
+        <div class="test-meta">27 pytań · trafność vs rzetelność, 4 rodzaje trafności, błąd pomiaru (X=T+E, Spearman, losowy/systematyczny), α Cronbacha / test-retest / ICC / SEM, qui pro quo, placebo i balanced placebo design (Marlatt), regresja do średniej, Rosenhan i etykietowanie, błąd I/II rodzaju</div>
       </div>
       <span class="test-arrow">→</span>
     </a>
@@ -194,10 +238,20 @@
       <div class="test-info">
         <span class="test-tag">SONDAŻE I LEKTURY</span>
         <div class="test-title">Test 5 — Sondaże, dobór próby i lektury</div>
-        <div class="test-meta">25 pytań · badania samoopisowe/omnibus/CAPI-CATI, list przewodni, dobór próby (losowa/warstwowa/klastrowa/kwotowa Gallup/kula śnieżna/ważenie), sztuka pytań (efekt świeżości i pierwszeństwa, aprobata społeczna), metody zbierania, analiza wielopoziomowa (Łaguna), integracja wiedzy (Śpiewak &amp; Kossowska)</div>
+        <div class="test-meta">26 pytań · badania samoopisowe/omnibus/CAPI-CATI, list przewodni, dobór próby (losowa/warstwowa/klastrowa/kwotowa Gallup/kula śnieżna/ważenie), sztuka pytań (efekt świeżości i pierwszeństwa, aprobata społeczna), metody zbierania, analiza wielopoziomowa (Łaguna), integracja wiedzy (Śpiewak &amp; Kossowska)</div>
       </div>
       <span class="test-arrow">→</span>
     </a>
+
+  </div>
+
+  <div class="group-divider">trudniejsze ↓</div>
+
+  <div class="group-head group-hard">
+    <span class="group-badge">🔴 Pytania z egzaminów z poprzednich lat</span>
+    <div class="group-desc">Autentyczne pytania egzaminacyjne od innych prowadzących — wyższy poziom trudności. Test 9 pochodzi z najświeższej sesji 2024/2025.</div>
+  </div>
+  <div class="tests-list hard">
 
     <a class="test-card" href="test_metodologia6.html">
       <div class="test-num">6</div>

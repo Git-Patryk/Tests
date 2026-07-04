@@ -252,7 +252,7 @@
 <header>
   <a class="back-link" href="metodologia-testy.html">← Wróć do listy testów</a>
   <h1>🔬 Zaawansowana metodologia badań</h1>
-  <p>Test 5 · Poziom 5 · 25 pytań</p>
+  <p>Test 5 · Poziom 5 · 26 pytań</p>
 </header>
 
 <div id="start-screen">
@@ -264,7 +264,7 @@
       <strong>Zakres pytań:</strong>
       <p>formy badań samoopisowych · sondaż omnibus · CAPI/CATI · list przewodni · rama doboru · dobór losowy prosty / warstwowy / klastrowy / kwotowy (Gallup) / kula śnieżna · ważenie · konstruowanie pytań (podwójne, negacje) · efekt świeżości i pierwszeństwa · skale · aprobata społeczna · metody zbierania danych · analiza wielopoziomowa (HLM, Łaguna) · integracja wiedzy: izolacjonizm i redukcjonizm (Śpiewak &amp; Kossowska)</p>
     </div>
-    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>25 pytań</strong>.</p>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z wyjaśnieniem. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>26 pytań</strong>.</p>
     <button class="btn" id="startBtn">Rozpocznij test</button>
   </div>
 </div>
@@ -862,6 +862,28 @@ const ALL_QUESTIONS = [
       }
     ],
     "exp": "„Mądra integracja” to łączenie wiedzy o społecznych mechanizmach zachowania (z psychofizjologii, neuronauki, psychologii poznawczej) bez gubienia poziomu zjawiska i bez sztucznej redukcji — unika obu skrajności: izolacjonizmu i redukcjonizmu."
+  },
+  {
+    "q": "W badaniu sprawdzano poziom zaufania do rządu wśród obywateli Polski pozostających bez pracy. Jaką próbę należy zastosować, aby możliwie dokładnie odpowiedzieć na to pytanie badawcze?",
+    "opts": [
+      {
+        "t": "kwotową",
+        "c": true
+      },
+      {
+        "t": "losową",
+        "c": false
+      },
+      {
+        "t": "dobraną metodą „kuli śnieżnej”",
+        "c": false
+      },
+      {
+        "t": "trudno powiedzieć",
+        "c": false
+      }
+    ],
+    "exp": "Aby próba możliwie wiernie odwzorowała strukturę populacji bezrobotnych Polek i Polaków (płeć, wiek, region), stosuje się dobór kwotowy — buduje się „mini-populację” według znanych proporcji cech. Próba losowa kusi hasłem „dokładnie”, lecz wymaga pełnego operatu do losowania; kula śnieżna dotyczy populacji ukrytych/trudno dostępnych, a „trudno powiedzieć” to unik."
   }
 ];
 
