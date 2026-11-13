@@ -6,6 +6,7 @@ window.RECALL_DECK = {
     icon: "🎲",
     accent: "#14b8a6",
     accent2: "#0d9488",
+    crumbs: [["swps.html","SWPS"],["swps-rok4.html","Rok 4"]],
     hub: "swps-decyzje.html",
     hubName: "Decyzje i ryzyko",
     key: "decyzje_recall_v1",

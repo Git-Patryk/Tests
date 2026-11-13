@@ -6,6 +6,7 @@ window.RECALL_DECK = {
     icon: "🗣️",
     accent: "#8b5cf6",
     accent2: "#7c3aed",
+    crumbs: [["swps.html","SWPS"],["swps-rok4.html","Rok 4"]],
     hub: "swps-komunikacja.html",
     hubName: "Komunikacja i perswazja",
     key: "komunikacja_recall_v1",

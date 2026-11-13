@@ -39,6 +39,7 @@
   document.title = M.title + ' – Nauka (active recall)';
   $('nav').innerHTML =
     '<a href="index.html">🔭 StudyZone</a><span class="sep">/</span>'+
+    (M.crumbs||[]).map(function(c){return '<a href="'+c[0]+'">'+esc(c[1])+'</a><span class="sep">/</span>';}).join('')+
     '<a href="'+M.hub+'">'+esc(M.hubName)+'</a><span class="sep">/</span>'+
     '<span class="current">Nauka (active recall)</span>';
 

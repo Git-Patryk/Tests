@@ -6,6 +6,7 @@ window.RECALL_DECK = {
     icon: "📏",
     accent: "#f97316",
     accent2: "#ea580c",
+    crumbs: [["swps.html","SWPS"],["swps-rok4.html","Rok 4"]],
     hub: "swps-psychometria.html",
     hubName: "Psychometria",
     key: "psychometria_recall_v1",

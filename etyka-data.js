@@ -5,6 +5,7 @@ window.RECALL_DECK = {
   "icon": "⚖️",
   "accent": "#b44fff",
   "accent2": "#9333ea",
+  "crumbs": [["swps.html","SWPS"],["swps-rok4.html","Rok 4"]],
   "hub": "swps-etyka.html",
   "hubName": "Etyka",
   "key": "etyka_recall_v1",

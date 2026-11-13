@@ -129,6 +129,22 @@
   @media (max-width: 580px) {
     .subjects-grid { grid-template-columns: 1fr; }
   }
+
+  .sem-block { margin-bottom: 2.6rem; }
+  .sem-head { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.2rem; }
+  .sem-head .section-label { margin-bottom: 0; white-space: nowrap; }
+  .sem-head .sem-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+  .sem-divider { height: 2px; margin: .4rem 0 2.4rem; border-radius: 2px;
+    background: linear-gradient(90deg, transparent, var(--nc) 20%, var(--nc2) 80%, transparent); opacity: .55; }
+  .sem-empty { border: 1px dashed var(--border); border-radius: 16px; padding: 1.6rem;
+    text-align: center; color: var(--muted); font-size: .85rem; background: rgba(18,18,26,.45); }
+  .subj-card.c-wsp { --nc2: #f472b6; --ng2: rgba(244,114,182,.10); }
+  .year-num { font-size: 2.4rem; font-weight: 900; line-height: 1; position: relative; z-index: 1;
+    background: linear-gradient(90deg, #fff 20%, var(--nc2)); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text; }
+  .year-desc { font-size: .8rem; color: rgba(232,232,240,.6); line-height: 1.5; position: relative; z-index: 1; }
+  .subj-card.y4 { --nc2: #b44fff; --ng2: rgba(180,79,255,.10); }
+  .subj-card.y5 { --nc2: #ff6b35; --ng2: rgba(255,107,53,.10); }
 </style>
 </head>
 <body>
@@ -147,40 +163,22 @@
   <div class="page-header">
     <div class="page-icon">🧬</div>
     <div class="page-title">Uniwersytet SWPS</div>
-    <div class="page-sub">Wybierz przedmiot</div>
+    <div class="page-sub">Wybierz rok studiów</div>
   </div>
 
-  <div class="section-label">Przedmioty</div>
+  <div class="section-label">Rok studiów</div>
   <div class="subjects-grid">
 
-    <a class="subj-card available" href="swps-etyka.html">
-      <div class="subj-icon">⚖️</div>
-      <div class="subj-name">Etyka w zastosowaniach psychologii</div>
-      <div class="subj-meta"><span class="subj-tag">Dostępne</span><span class="subj-arrow">→</span></div>
+    <a class="subj-card available y5" href="swps-rok5.html">
+      <div class="year-num">Rok 5</div>
+      <div class="year-desc">2026/27 · semestr zimowy i letni</div>
+      <div class="subj-meta"><span class="subj-tag">1 przedmiot</span><span class="subj-arrow">→</span></div>
     </a>
 
-    <a class="subj-card available" href="swps-decyzje.html">
-      <div class="subj-icon">🎲</div>
-      <div class="subj-name">Decyzje i ryzyko</div>
-      <div class="subj-meta"><span class="subj-tag">Dostępne</span><span class="subj-arrow">→</span></div>
-    </a>
-
-    <a class="subj-card available" href="swps-komunikacja.html">
-      <div class="subj-icon">🗣️</div>
-      <div class="subj-name">Komunikacja i perswazja</div>
-      <div class="subj-meta"><span class="subj-tag">Dostępne</span><span class="subj-arrow">→</span></div>
-    </a>
-
-    <a class="subj-card available" href="swps-psychometria.html">
-      <div class="subj-icon">📏</div>
-      <div class="subj-name">Zaawansowana psychometria</div>
-      <div class="subj-meta"><span class="subj-tag">Dostępne</span><span class="subj-arrow">→</span></div>
-    </a>
-
-    <a class="subj-card available" href="swps-metodologia.html">
-      <div class="subj-icon">🔬</div>
-      <div class="subj-name">Zaawansowana metodologia badań</div>
-      <div class="subj-meta"><span class="subj-tag">Dostępne</span><span class="subj-arrow">→</span></div>
+    <a class="subj-card available y4" href="swps-rok4.html">
+      <div class="year-num">Rok 4</div>
+      <div class="year-desc">2025/26 · etyka, decyzje, komunikacja, psychometria, metodologia</div>
+      <div class="subj-meta"><span class="subj-tag">5 przedmiotów</span><span class="subj-arrow">→</span></div>
     </a>
 
   </div>

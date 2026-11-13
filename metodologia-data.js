@@ -6,6 +6,7 @@ window.RECALL_DECK = {
     icon: "🔬",
     accent: "#3b82f6",
     accent2: "#2563eb",
+    crumbs: [["swps.html","SWPS"],["swps-rok4.html","Rok 4"]],
     hub: "swps-metodologia.html",
     hubName: "Metodologia",
     key: "metodologia_recall_v1",
