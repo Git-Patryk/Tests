@@ -10,6 +10,7 @@ window.RECALL_DECK = {
     hub: "swps-wspieranie.html",
     hubName: "Wspieranie rozwoju dziecka",
     key: "wspieranie_recall_v1",
+    testHref: "wspieranie-testy.html",
     cats: [
       {id:"W1", label:"1 · Zdrowie psychiczne i modele"},
       {id:"W2", label:"2 · Drażniące, niepożądane, zaburzenia"},

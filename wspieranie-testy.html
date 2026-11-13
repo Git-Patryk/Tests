@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wspieranie rozwoju dziecka – Testy</title>
+<style>
+  :root {
+    --bg:    #00000c;
+    --card:  rgba(18,18,26,.85);
+    --border:#1e1e2e;
+    --text:  #e8e8f0;
+    --muted: #6b6b8a;
+    --nc:    #ec4899;
+    --ng:    rgba(236,72,153,.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #stars-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  #center-veil {
+    position: fixed; inset: 0; pointer-events: none; z-index: 2;
+    background: radial-gradient(ellipse 62% 110% at 50% 50%, rgba(0,0,14,.82) 0%, rgba(0,0,14,.50) 55%, transparent 100%);
+  }
+  #edge-veil {
+    position: fixed; inset: 0; pointer-events: none; z-index: 2;
+    background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,14,.65) 100%);
+  }
+
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    padding: 1rem 1.5rem;
+    background: rgba(8,8,15,.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 2px solid var(--nc);
+    display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
+  }
+  nav a { color: #c4c4dc; text-decoration: none; font-size: .9rem; font-weight: 500; transition: color .2s; }
+  nav a:hover { color: var(--nc); }
+  nav .sep { color: var(--nc); opacity: .5; font-size: .9rem; }
+  nav .current { color: var(--text); font-weight: 700; font-size: .9rem; }
+
+  .page {
+    position: relative; z-index: 10;
+    max-width: 820px; margin: 0 auto;
+    padding: 3rem 1.5rem 5rem; width: 100%;
+  }
+
+  .page-header { text-align: center; margin-bottom: 2.8rem; }
+  .page-icon { font-size: 3rem; filter: drop-shadow(0 0 14px var(--nc)); margin-bottom: .8rem; }
+  .page-title {
+    font-size: clamp(1.4rem, 4.5vw, 2rem); font-weight: 900;
+    background: linear-gradient(90deg, #fff 30%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: .4rem;
+  }
+  .page-sub { font-size: .85rem; color: var(--muted); }
+
+  .section-label {
+    font-size: .68rem; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem;
+  }
+
+  .tests-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .test-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.5rem 1.7rem; display: flex; align-items: center; gap: 1.3rem;
+    text-decoration: none; color: inherit; position: relative; overflow: hidden;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    transition: border-color .2s, transform .15s, box-shadow .2s;
+  }
+  .test-card::before {
+    content: ''; position: absolute; inset: 0; background: var(--ng);
+    opacity: 0; transition: opacity .25s; border-radius: 14px;
+  }
+  .test-card:hover { border-color: var(--nc); transform: translateX(4px); box-shadow: 0 0 24px rgba(236,72,153,.18); }
+  .test-card:hover::before { opacity: 1; }
+
+  .test-num {
+    width: 50px; height: 50px; border-radius: 12px;
+    background: var(--ng); border: 1px solid color-mix(in srgb, var(--nc) 25%, transparent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 900; color: var(--nc); flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+  .test-info { flex: 1; position: relative; z-index: 1; }
+  .test-title { font-size: 1rem; font-weight: 700; margin-bottom: .25rem; }
+  .test-meta { font-size: .8rem; color: var(--muted); line-height: 1.5; }
+  .test-tag {
+    display: inline-block; font-size: .66rem; font-weight: 700; letter-spacing: .04em;
+    padding: .16rem .55rem; border-radius: 20px; margin-bottom: .4rem;
+    background: color-mix(in srgb, var(--nc) 15%, transparent); color: var(--nc);
+    border: 1px solid color-mix(in srgb, var(--nc) 28%, transparent);
+  }
+  .test-arrow { color: var(--nc); font-size: 1.2rem; transition: transform .2s; position: relative; z-index: 1; }
+  .test-card:hover .test-arrow { transform: translateX(4px); }
+
+  .test-card.soon { opacity: .4; pointer-events: none; }
+  .test-card.soon .test-num { color: var(--muted); border-color: rgba(107,107,138,.3); background: rgba(107,107,138,.08); }
+  .test-card.soon .test-tag { background: rgba(107,107,138,.12); color: var(--muted); border-color: rgba(107,107,138,.25); }
+  .test-card.soon .test-arrow { color: var(--muted); }
+
+  .hint {
+    margin-top: 2rem; font-size: .78rem; color: var(--muted); text-align: center; line-height: 1.6;
+  }
+
+  /* --- rozdzielenie grup testów --- */
+  .group-head { margin-bottom: 1.2rem; }
+  .group-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .84rem; font-weight: 800; letter-spacing: .01em;
+    padding: .45rem .85rem; border-radius: 10px;
+  }
+  .group-easy .group-badge {
+    background: var(--ng); color: var(--nc);
+    border: 1px solid color-mix(in srgb, var(--nc) 32%, transparent);
+  }
+  .group-hard .group-badge {
+    background: rgba(239,68,68,.12); color: #f87171;
+    border: 1px solid rgba(239,68,68,.38);
+  }
+  .group-desc { font-size: .8rem; color: var(--muted); margin-top: .55rem; line-height: 1.5; }
+
+  .group-divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 3rem 0 2rem; color: #f87171;
+    font-size: .68rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
+  }
+  .group-divider::before, .group-divider::after {
+    content: ''; height: 1px; flex: 1;
+    background: linear-gradient(90deg, transparent, rgba(239,68,68,.45), transparent);
+  }
+
+  /* trudniejsza grupa: czerwony akcent zamiast niebieskiego */
+  .tests-list.hard .test-num {
+    color: #f87171; background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.30);
+  }
+  .tests-list.hard .test-tag {
+    background: rgba(239,68,68,.13); color: #f87171; border-color: rgba(239,68,68,.32);
+  }
+  .tests-list.hard .test-card::before { background: rgba(239,68,68,.10); }
+  .tests-list.hard .test-card:hover {
+    border-color: #f87171; box-shadow: 0 0 24px rgba(239,68,68,.18);
+  }
+  .tests-list.hard .test-arrow { color: #f87171; }
+  .tests-list.hard .test-card:hover .test-arrow { color: #f87171; }
+
+  footer {
+    position: relative; z-index: 10; text-align: center; padding: 1.5rem;
+    color: var(--muted); font-size: .73rem; border-top: 1px solid var(--border); margin-top: auto;
+  }
+
+  @media (max-width: 480px) {
+    .test-card { padding: 1.1rem 1.2rem; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+<div id="center-veil"></div>
+<div id="edge-veil"></div>
+
+<nav>
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <a href="swps.html">SWPS</a>
+  <span class="sep">/</span>
+  <a href="swps-rok5.html">Rok 5</a>
+  <span class="sep">/</span>
+  <a href="swps-wspieranie.html">Wspieranie rozwoju dziecka</a>
+  <span class="sep">/</span>
+  <span class="current">Testy</span>
+</nav>
+
+<div class="page">
+  <div class="page-header">
+    <div class="page-icon">🧸</div>
+    <div class="page-title">Wspieranie rozwoju dziecka — Testy</div>
+    <div class="page-sub">6 testów po 20 pytań jednokrotnego wyboru · format jak na zaliczeniu</div>
+  </div>
+
+  <div class="group-head group-easy">
+    <span class="group-badge">📘 Testy tematyczne</span>
+    <div class="group-desc">Cztery testy ułożone pod bloki notatki — dobre do nauki zagadnienie po zagadnieniu.</div>
+  </div>
+  <div class="tests-list easy">
+
+    <a class="test-card" href="test_wspieranie.html">
+      <div class="test-num">1</div>
+      <div class="test-info">
+        <span class="test-tag">ZDROWIE PSYCHICZNE</span>
+        <div class="test-title">Test 1 — Zdrowie psychiczne i jego modele</div>
+        <div class="test-meta">20 pytań · definicja WHO i jej krytyka, model tradycyjny, zrównoważony, transdiagnostyczny i sieciowy, zachowania drażniące / niepożądane / zaburzenia, ocena zdrowia psychicznego ucznia</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+    <a class="test-card" href="test_wspieranie2.html">
+      <div class="test-num">2</div>
+      <div class="test-info">
+        <span class="test-tag">ŚRODOWISKO I ZGODA</span>
+        <div class="test-title">Test 2 — Bronfenbrenner, punkty zwrotne i zgoda na terapię</div>
+        <div class="test-meta">20 pytań · systemy Bronfenbrennera, wpływy bezpośrednie i pośrednie, przesunięcia ekologiczne, oferty Gibsona, punkty zwrotne Ruttera, potrzeby rozwojowe, consent i assent, trauma-informed ABA</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+    <a class="test-card" href="test_wspieranie3.html">
+      <div class="test-num">3</div>
+      <div class="test-info">
+        <span class="test-tag">PSYCHOPATOLOGIA ROZWOJOWA</span>
+        <div class="test-title">Test 3 — Psychopatologia rozwojowa, odporność i podatność</div>
+        <div class="test-meta">20 pytań · założenia psychopatologii rozwojowej, mediatory i moderatory, model transakcyjno-interakcyjny i łańcuchy reakcji, ekwipotencjalność i ekwifinalność, odporność, zasoby, podatność, czynniki ryzyka</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+    <a class="test-card" href="test_wspieranie4.html">
+      <div class="test-num">4</div>
+      <div class="test-info">
+        <span class="test-tag">WIĘŹ, TRAUMA, MÓZG</span>
+        <div class="test-title">Test 4 — Więź, trauma i neuroplastyczność</div>
+        <div class="test-meta">20 pytań · style przywiązania, więź bezpieczna i pozabezpieczna, zachowania opiekunów, trauma typu I i złożona, cPTSD, traumatyczny rozwój, neuroplastyczność, epigenetyka</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+  </div>
+
+  <div class="group-divider">sprawdzian ↓</div>
+
+  <div class="group-head group-hard">
+    <span class="group-badge">🎯 Egzaminy próbne</span>
+    <div class="group-desc">Mieszane pytania ze wszystkich 11 zagadnień, 20 pytań jednokrotnego wyboru — tak jak na teście na ostatnich zajęciach.</div>
+  </div>
+  <div class="tests-list hard">
+
+    <a class="test-card" href="test_wspieranie5.html">
+      <div class="test-num">5</div>
+      <div class="test-info">
+        <span class="test-tag">EGZAMIN PRÓBNY</span>
+        <div class="test-title">Test 5 — Egzamin próbny A</div>
+        <div class="test-meta">20 pytań · wszystkie 11 zagadnień egzaminacyjnych w proporcjach jak na zaliczeniu, z przewagą pytań o przykłady i sytuacje</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+    <a class="test-card" href="test_wspieranie6.html">
+      <div class="test-num">6</div>
+      <div class="test-info">
+        <span class="test-tag">EGZAMIN PRÓBNY</span>
+        <div class="test-title">Test 6 — Egzamin próbny B</div>
+        <div class="test-meta">20 pytań · wszystkie 11 zagadnień, inne pytania niż w egzaminie A — dobry na ostatnią powtórkę przed testem</div>
+      </div>
+      <span class="test-arrow">→</span>
+    </a>
+
+  </div>
+
+</div>
+
+<footer>StudyZone &mdash; materiały pomocnicze do nauki</footer>
+
+<script>
+(function () {
+  var canvas = document.getElementById('stars-canvas');
+  var ctx = canvas.getContext('2d');
+  var stars = [], W, H;
+  var PAL = ['#ffffff','#ffffff','#ffffff','#cce8ff','#cce8ff','#a8d8ff','#ffe8a0','#e0c8ff','#ffd0a0','#ffb8c8'];
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  function mkStars() {
+    stars = [];
+    var n = Math.floor(W * H / 2600);
+    for (var i = 0; i < n; i++) {
+      var big = Math.random() > 0.93;
+      stars.push({ x: Math.random()*W, y: Math.random()*H, r: big ? Math.random()*1.3+1.5 : Math.random()*0.85+0.15,
+        base: Math.random()*0.35+0.15, amp: Math.random()*0.5+0.25, spd: Math.random()*0.5+0.08,
+        phi: Math.random()*Math.PI*2, col: PAL[Math.floor(Math.random()*PAL.length)], big: big });
+    }
+  }
+  function spike(x,y,r,col,a) {
+    var len=r*6; ctx.save(); ctx.lineWidth=r*0.3; ctx.lineCap='round';
+    [[x-len,y,x+len,y],[x,y-len,x,y+len]].forEach(function(l){
+      var g=ctx.createLinearGradient(l[0],l[1],l[2],l[3]);
+      g.addColorStop(0,'transparent'); g.addColorStop(0.5,col); g.addColorStop(1,'transparent');
+      ctx.strokeStyle=g; ctx.globalAlpha=a*0.5;
+      ctx.beginPath(); ctx.moveTo(l[0],l[1]); ctx.lineTo(l[2],l[3]); ctx.stroke();
+    }); ctx.restore();
+  }
+  var nebula = document.createElement('canvas');
+  function mkNebula() {
+    nebula.width=W; nebula.height=H; var nc=nebula.getContext('2d');
+    [[W*.12,H*.22,W*.30,'rgba(70,15,130,0.06)'],[W*.85,H*.14,W*.24,'rgba(0,50,110,0.055)'],
+     [W*.6,H*.78,W*.27,'rgba(50,8,90,0.05)'],[W*.9,H*.62,W*.19,'rgba(0,70,90,0.045)'],
+     [W*.25,H*.88,W*.21,'rgba(90,20,50,0.04)']].forEach(function(b){
+      var g=nc.createRadialGradient(b[0],b[1],0,b[0],b[1],b[2]);
+      g.addColorStop(0,b[3]); g.addColorStop(1,'transparent');
+      nc.fillStyle=g; nc.beginPath(); nc.arc(b[0],b[1],b[2],0,Math.PI*2); nc.fill();
+    });
+  }
+  var t=0;
+  function draw() {
+    ctx.clearRect(0,0,W,H); ctx.drawImage(nebula,0,0); t+=0.016;
+    for (var i=0;i<stars.length;i++) {
+      var s=stars[i], a=Math.max(0.04,Math.min(1,s.base+s.amp*Math.sin(t*s.spd+s.phi)));
+      ctx.save();
+      var g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*4);
+      g.addColorStop(0,s.col); g.addColorStop(1,'transparent');
+      ctx.globalAlpha=a*0.35; ctx.fillStyle=g; ctx.beginPath(); ctx.arc(s.x,s.y,s.r*4,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=Math.min(a*1.4,1); ctx.fillStyle=s.col; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+      ctx.restore(); if(s.big) spike(s.x,s.y,s.r,s.col,a);
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); mkStars(); mkNebula(); draw();
+  window.addEventListener('resize',function(){resize();mkStars();mkNebula();});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 5 – Wspieranie poznawczego i emocjonalnego rozwoju dziecka</title>
+<style>
+  :root {
+    --blue:   #ec4899;
+    --blue2:  #db2777;
+    --blue3:  #f9a8d4;
+    --blue4:  #fce7f3;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #fff7fb;
+    --border: #f1dbe6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #fdf2f8;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #9d174d 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 600;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+    padding: .5rem 1.15rem;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 999px;
+    transition: background .2s, border-color .2s, transform .1s;
+  }
+  header .back-link:hover { background: rgba(255,255,255,.28); border-color: #fff; transform: translateY(-1px); }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(219,39,119,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #fdf2f8;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #fbcfe8;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #9d174d; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(219,39,119,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #fdf2f8; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #9d174d; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(219,39,119,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9d174d, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(219,39,119,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #9d174d; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="wspieranie-testy.html">← Wróć do listy testów</a>
+  <h1>🧸 Wspieranie poznawczego i emocjonalnego rozwoju dziecka</h1>
+  <p>Test 5 · Egzamin próbny A · 20 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">EGZAMIN PRÓBNY</div>
+    <h2>Test 5 — Egzamin próbny A</h2>
+    <p>Pytania jednokrotnego wyboru w formacie zaliczenia (20 pytań), oparte na notatce: prezentacjach z zajęć i literaturze wskazanej w zagadnieniach egzaminacyjnych.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>wszystkie 11 zagadnień egzaminacyjnych w proporcjach jak na zaliczeniu, z przewagą pytań o przykłady i sytuacje</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>20 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 20</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/20</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Który zestaw najlepiej streszcza definicję zdrowia psychicznego WHO?", "opts": [{"t": "brak zaburzeń + realizacja zdolności, radzenie sobie ze stresem, produktywność, wkład w społeczność", "c": true}, {"t": "brak zaburzeń + wysoka inteligencja, sukces zawodowy, stabilny związek małżeński i dobre zdrowie fizyczne", "c": false}, {"t": "brak chorób somatycznych + brak stresu, brak konfliktów i stałe poczucie szczęścia", "c": false}, {"t": "brak diagnozy psychiatrycznej + niski poziom lęku i depresji w badaniu przesiewowym", "c": false}], "exp": "WHO (2004): nieobecność zaburzeń oraz optymalny stan umożliwiający realizację zdolności, radzenie sobie z normalnym stresem, produktywność i wkład w życie społeczności."},
+  {"q": "Zarzut, że definicja WHO patrzy na zdrowie „tylko z jednej perspektywy”, dotyczy pominięcia:", "opts": [{"t": "albo perspektywy obiektywnej, albo subiektywnej", "c": true}, {"t": "perspektywy rodziców i nauczycieli dziecka", "c": false}, {"t": "perspektywy kulturowej krajów rozwijających się", "c": false}, {"t": "perspektywy biologicznej i genetycznej", "c": false}], "exp": "Trzeci zarzut ze slajdu: spojrzenie tylko z perspektywy obiektywnej („oni”, teoretycy) lub subiektywnej („ja”, osoby doświadczające trudności)."},
+  {"q": "Psycholog osobno wzmacnia u ucznia mocne strony i osobno pracuje nad redukcją objawów lęku. Działa zgodnie z modelem:", "opts": [{"t": "zrównoważonym (kompletnym)", "c": true}, {"t": "tradycyjnym (kategorialnym)", "c": false}, {"t": "sieciowym", "c": false}, {"t": "ekologicznym Bronfenbrennera", "c": false}], "exp": "Model zrównoważony: dobrostan wzmacniamy, psychopatologię leczymy — dwa odrębne wymiary pracy."},
+  {"q": "Terapeuta celuje w poczucie bezradności, bo jest najsilniej powiązane z innymi objawami, licząc na „rozpad zaburzenia od środka”. To logika modelu:", "opts": [{"t": "sieciowego", "c": true}, {"t": "zrównoważonego", "c": false}, {"t": "tradycyjnego", "c": false}, {"t": "transakcyjnego", "c": false}], "exp": "Model sieciowy: redukcja symptomu o największej liczbie powiązań może rozbić sieć zaburzenia."},
+  {"q": "Szesnastolatek łamie reguły, nawet te korzystne dla siebie, co otoczenie odbiera jako poważny problem. To przykład zachowania:", "opts": [{"t": "niepożądanego", "c": true}, {"t": "drażniącego", "c": false}, {"t": "normatywnego", "c": false}, {"t": "adaptacyjnego", "c": false}], "exp": "Przykład z podręcznika: zachowanie nieadekwatne do wieku i odbierane jako problematyczne = niepożądane."},
+  {"q": "Trzynastolatek jeden raz uciekł z kolegami z lekcji. Według podziału Kołakowskiego i Pisuli to zachowanie:", "opts": [{"t": "drażniące", "c": true}, {"t": "niepożądane", "c": false}, {"t": "zaburzenie zachowania", "c": false}, {"t": "objaw antyspołeczny", "c": false}], "exp": "Jednorazowe, adekwatne do wieku i sytuacji = zachowanie drażniące (przykład z podręcznika)."},
+  {"q": "W klasycznym ujęciu Bronfenbrennera relacja między domem a szkołą dziecka należy do:", "opts": [{"t": "mezosystemu", "c": true}, {"t": "mikrosystemu", "c": false}, {"t": "egzosystemu", "c": false}, {"t": "makrosystemu", "c": false}], "exp": "Mezosystem to powiązania między mikrosystemami, w których dziecko uczestniczy (np. dom–szkoła)."},
+  {"q": "Rodzina dziecka przeprowadza się do innego miasta i dziecko zmienia szkołę. W języku Bronfenbrennera to:", "opts": [{"t": "przesunięcie ekologiczne", "c": true}, {"t": "wpływ makrosystemu", "c": false}, {"t": "oferta fizyczna", "c": false}, {"t": "kaskada rozwojowa", "c": false}], "exp": "Zmiana siedlisk = przesunięcie (przejście) ekologiczne, kluczowy moment rozwoju."},
+  {"q": "Po kilku latach bycia jedynakiem dziecko doczekało się rodzeństwa, co trwale zmieniło jego funkcjonowanie. To przykład:", "opts": [{"t": "punktu zwrotnego", "c": true}, {"t": "zachowania drażniącego", "c": false}, {"t": "wpływu pośredniego", "c": false}, {"t": "traumy typu I", "c": false}], "exp": "Przykład z podręcznika: zdarzenie zmieniające oczekiwania otoczenia i bieg życia (ocenione ex post) = punkt zwrotny."},
+  {"q": "Kto ma prawo udzielić CONSENT na terapię siedmiolatka?", "opts": [{"t": "rodzic lub opiekun prawny dziecka", "c": true}, {"t": "samo dziecko, jeśli rozumie cel terapii", "c": false}, {"t": "wychowawca klasy za zgodą dyrektora", "c": false}, {"t": "terapeuta po przeprowadzeniu diagnozy", "c": false}], "exp": "Consent = zgoda osoby, która zgodnie z prawem może jej udzielić. Dziecko wyraża assent, który jest dodatkiem do zgody opiekunów."},
+  {"q": "Uczeń sam sięga po pomoce i układa je zgodnie z instrukcją. W ujęciu Breaux i Smith to:", "opts": [{"t": "niewerbalne udzielenie zgody", "c": true}, {"t": "werbalne udzielenie zgody", "c": false}, {"t": "niewerbalne wycofanie zgody", "c": false}, {"t": "formalny consent rodzica", "c": false}], "exp": "Sięganie po pomoce, układanie ich zgodnie z instrukcją, siadanie obok terapeuty to przykłady niewerbalnej zgody."},
+  {"q": "Która definicja odporności jest zgodna ze slajdem z zajęć?", "opts": [{"t": "proces radzenia sobie z trudnością prowadzący do pozytywnej adaptacji", "c": true}, {"t": "brak reakcji emocjonalnej na stres dzięki wrodzonej sile układu nerwowego", "c": false}, {"t": "stała cecha osobowości mierzona kwestionariuszem w wieku szkolnym", "c": false}, {"t": "zdolność do unikania wszystkich trudnych sytuacji w dzieciństwie", "c": false}], "exp": "Odporność to wieloczynnikowy proces, w którym czynniki ochrony wchodzą w interakcję z czynnikami ryzyka."},
+  {"q": "Dobra jakość opieki i dostępność emocjonalna rodziców to według slajdu zasoby:", "opts": [{"t": "rodzinne", "c": true}, {"t": "indywidualne", "c": false}, {"t": "środowiskowe", "c": false}, {"t": "transdiagnostyczne", "c": false}], "exp": "Zasoby rodzinne: dobra jakość opieki, bezpieczeństwo fizyczne, dostępność emocjonalna rodziców, dobre warunki życia."},
+  {"q": "Kumulacja kilku czynników ryzyka w porównaniu z działaniem pojedynczego czynnika:", "opts": [{"t": "ma silniejsze oddziaływanie patologiczne", "c": true}, {"t": "ma takie samo oddziaływanie", "c": false}, {"t": "osłabia działanie każdego z czynników", "c": false}, {"t": "ma znaczenie tylko w okresie prenatalnym", "c": false}], "exp": "Czynniki ryzyka zwykle współwystępują i piętrzą się; kumulacja działa silniej niż pojedynczy czynnik (Luthar)."},
+  {"q": "Drażliwe dziecko nasila zdenerwowanie rodziców, ci reagują mniej troskliwie, a to zwrotnie nasila rozdrażnienie dziecka. Ten mechanizm opisuje:", "opts": [{"t": "model transakcyjno-interakcyjny i łańcuchy reakcji", "c": true}, {"t": "model zrównoważony zdrowia psychicznego", "c": false}, {"t": "zasada ekwipotencjalności z teorii systemów Bertalanffy’ego", "c": false}, {"t": "koncepcja ofert Gibsona", "c": false}], "exp": "Dwukierunkowe wpływy dziecko ⇄ środowisko i ich kumulacja to istota modelu transakcyjnego (łańcuchy reakcji — Rutter)."},
+  {"q": "Depresja u różnych nastolatków rozwinęła się z przemocy w domu, z przemocy rówieśniczej i z obciążenia genetycznego. To ilustracja zasady:", "opts": [{"t": "ekwifinalności", "c": true}, {"t": "ekwipotencjalności", "c": false}, {"t": "transakcyjności", "c": false}, {"t": "ciągłości homotypowej", "c": false}], "exp": "Różne warunki początkowe → ten sam rezultat = ekwifinalność."},
+  {"q": "Który styl przywiązania jest czynnikiem chroniącym?", "opts": [{"t": "bezpieczny", "c": true}, {"t": "unikający", "c": false}, {"t": "lękowo-ambiwalentny", "c": false}, {"t": "zdezorganizowany", "c": false}], "exp": "Bezpieczne przywiązanie wspiera regulację emocji, eksplorację, relacje i radzenie sobie z trudnościami — jest zasobem odporności."},
+  {"q": "Matka często błędnie odczytuje sygnały emocjonalne dziecka i skupia się głównie na własnych przeżyciach. To ryzyko rozwoju:", "opts": [{"t": "więzi pozabezpiecznej", "c": true}, {"t": "przywiązania bezpiecznego", "c": false}, {"t": "zachowań drażniących", "c": false}, {"t": "nadmiernej autonomii", "c": false}], "exp": "Błędne rozpoznawanie sygnałów i koncentracja na sobie to zachowania opiekunów prowadzące do więzi pozabezpiecznej."},
+  {"q": "Która cecha odróżnia traumę złożoną od traumy typu I?", "opts": [{"t": "przewlekłość i relacyjny charakter, wpływający na kształtującą się osobowość", "c": true}, {"t": "jednorazowość zdarzenia, np. wypadku komunikacyjnego, pożaru lub klęski żywiołowej", "c": false}, {"t": "brak jakichkolwiek objawów w okresie dzieciństwa i adolescencji", "c": false}, {"t": "występowanie wyłącznie u osób dorosłych po trzydziestym roku życia", "c": false}], "exp": "Trauma złożona (Herman) jest powtarzalna, najczęściej relacyjna i od dzieciństwa — wpływa na strukturę psychiczną."},
+  {"q": "Mechanizmem neuroplastyczności NIE jest:", "opts": [{"t": "trwała niezmienność połączeń neuronalnych po narodzinach", "c": true}, {"t": "długotrwałe wzmocnienie synaptyczne (LTP) w hipokampie i korze", "c": false}, {"t": "przycinanie nieużywanych synaps", "c": false}, {"t": "neurogeneza w zakręcie zębatym hipokampa", "c": false}], "exp": "Neuroplastyczność oznacza zmienność połączeń przez całe życie: LTP/LTD, synaptogeneza i przycinanie, neurogeneza, mielinizacja, BDNF."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#9d174d'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#db2777'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#ec4899'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>
