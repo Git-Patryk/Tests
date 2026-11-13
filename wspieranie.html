@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wspieranie rozwoju dziecka – Notatki</title>
+<style>
+  :root {
+    --bg:       #0b0609;
+    --card:     #170c13;
+    --border:   #2a1623;
+    --text:     #e6edf6;
+    --muted:    #8c7184;
+
+    /* pink accent */
+    --nc:       #ec4899;
+    --nc-dim:   rgba(236,72,153,.13);
+    --nc-glow:  rgba(236,72,153,.30);
+    --nc-border:rgba(236,72,153,.32);
+
+    /* light content area */
+    --c-bg:     #fff7fb;
+    --c-text:   #2a1222;
+    --c-muted:  #7a5a6e;
+    --c-border: #f6d3e5;
+    --c-head:   #be185d;
+    --c-head2:  #db2777;
+    --c-row:    #fdeef6;
+
+    /* status colors */
+    --green:  #4ade80;
+    --blue:   #60a5fa;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(236,72,153,.020) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(236,72,153,.020) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    padding: 1rem 1.5rem;
+    background: rgba(8,8,15,.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 2px solid var(--nc);
+    display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
+  }
+  nav a { color: #c4c4dc; text-decoration: none; font-size: .9rem; font-weight: 500; transition: color .2s; }
+  nav a:hover { color: var(--nc); }
+  nav .sep { color: var(--nc); opacity: .5; font-size: .9rem; }
+  nav .current { color: var(--text); font-weight: 700; font-size: .9rem; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2.8rem;
+    align-items: start;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    position: sticky; top: 60px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 1.4rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .toc::-webkit-scrollbar { width: 3px; }
+  .toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .toc-title {
+    font-size: .63rem; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted);
+    padding-bottom: .7rem; border-bottom: 1px solid var(--border); margin-bottom: .9rem;
+  }
+  .toc-group { margin-bottom: 1.1rem; }
+  .toc-group-label {
+    font-size: .6rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--nc); opacity: .75; margin-bottom: .3rem;
+  }
+  .toc a {
+    display: block; padding: .28rem .55rem; border-radius: 5px;
+    font-size: .78rem; color: var(--muted); text-decoration: none; line-height: 1.4;
+    transition: color .15s, background .15s;
+  }
+  .toc a:hover { color: var(--text); background: var(--nc-dim); }
+  .toc a.active { color: var(--nc); background: var(--nc-dim); font-weight: 600; }
+
+  /* ── MAIN ── */
+  .content { min-width: 0; padding: 2.2rem 0; }
+
+  /* Page header */
+  .page-header { margin-bottom: 2.4rem; }
+  .subject-icon { font-size: 2.6rem; margin-bottom: .7rem; filter: drop-shadow(0 0 14px var(--nc)); }
+  .subject-tag {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    border-radius: 20px; padding: .22rem .8rem;
+    font-size: .7rem; font-weight: 700; color: var(--nc);
+    text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem;
+  }
+  .page-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 800; line-height: 1.2; margin-bottom: .5rem;
+    background: linear-gradient(90deg, #fff 45%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .page-header .subtitle { color: var(--muted); font-size: .88rem; max-width: 640px; line-height: 1.6; }
+  .accent-line { width: 44px; height: 2px; background: var(--nc); box-shadow: 0 0 8px var(--nc); border-radius: 2px; margin: 1rem 0; }
+
+  /* Exam strip */
+  .exam-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: .7rem; margin-bottom: 2.2rem; }
+  .exam-badge { background: var(--card); border: 1px solid var(--border); border-radius: 11px; padding: .9rem 1.1rem; }
+  .exam-badge .label { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .25rem; }
+  .exam-badge .value { font-size: .92rem; font-weight: 700; color: var(--text); }
+  .exam-badge.hi { border-color: var(--nc-border); background: var(--nc-dim); }
+  .exam-badge.hi .value { color: var(--nc); }
+
+  /* Group divider */
+  .group-divider { display: flex; align-items: center; gap: 1rem; margin: 2.8rem 0 1.8rem; }
+  .group-divider-label {
+    font-size: .66rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; white-space: nowrap;
+    padding: .28rem .85rem; border-radius: 20px;
+  }
+  .gdl-fund     { background: rgba(96,165,250,.12); color: var(--blue);   border: 1px solid rgba(96,165,250,.25); }
+  .gdl-core     { background: var(--nc-dim);          color: var(--nc);    border: 1px solid var(--nc-border); }
+  .gdl-valid    { background: rgba(52,211,153,.1);     color: #34d399;     border: 1px solid rgba(52,211,153,.22); }
+  .gdl-stat     { background: rgba(74,222,128,.1);     color: var(--green); border: 1px solid rgba(74,222,128,.22); }
+  .gdl-exam     { background: rgba(251,146,60,.14);   color: var(--orange);border: 1px solid rgba(251,146,60,.3); }
+  .gdl-lit      { background: rgba(138,117,96,.14);    color: var(--muted); border: 1px solid rgba(138,117,96,.3); }
+  .group-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── SECTION ── */
+  section { margin-bottom: 3rem; scroll-margin-top: 72px; }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: .9rem;
+    margin-bottom: 1.2rem; padding-bottom: .9rem; border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 900; color: var(--nc);
+  }
+  .section-header-text h2 { font-size: 1.1rem; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: .18rem; }
+  .section-header-text .src-tag { font-size: .7rem; color: var(--muted); font-style: italic; }
+  .section-header-text .src-tag span { color: var(--nc); opacity: .85; font-style: normal; }
+
+  /* ── LIGHT CONTENT CARD ── */
+  .lcard {
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 13px;
+    padding: 1.5rem 1.7rem;
+    margin-bottom: .9rem;
+    color: var(--c-text);
+  }
+
+  .lcard h3 {
+    font-size: .97rem; font-weight: 800;
+    color: var(--c-head); margin-bottom: .85rem;
+    padding-bottom: .5rem; border-bottom: 2px solid #fbd3e7;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .lcard h4 {
+    font-size: .88rem; font-weight: 700;
+    color: var(--c-head2); margin: 1rem 0 .5rem;
+  }
+  .lcard > p { font-size: .875rem; line-height: 1.68; color: var(--c-text); margin-bottom: .6rem; }
+
+  /* Arrow list */
+  .alist { list-style: none; padding: 0; }
+  .alist li {
+    position: relative; padding: .38rem .4rem .38rem 1.5rem;
+    font-size: .875rem; line-height: 1.68; color: var(--c-text);
+    border-bottom: 1px solid rgba(236,72,153,.1);
+  }
+  .alist li:last-child { border-bottom: none; }
+  .alist li::before { content: '→'; position: absolute; left: 0; top: .38rem; color: var(--nc); font-weight: 700; }
+  .alist li strong { color: var(--c-head); }
+  .alist li em { color: var(--c-muted); font-style: italic; }
+
+  /* Numbered list */
+  .nlist { padding-left: 1.3rem; }
+  .nlist li {
+    font-size: .875rem; line-height: 1.7; color: var(--c-text);
+    padding: .25rem 0; border-bottom: 1px solid rgba(236,72,153,.07);
+  }
+  .nlist li:last-child { border-bottom: none; }
+  .nlist li strong { color: var(--c-head); }
+
+  /* Table */
+  .ltable { width: 100%; border-collapse: collapse; font-size: .835rem; margin: .6rem 0; border-radius: 10px; overflow: hidden; }
+  .ltable th {
+    text-align: left; padding: .55rem .85rem;
+    background: var(--nc); color: #fff;
+    font-size: .73rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .ltable td { padding: .5rem .85rem; color: var(--c-text); border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; }
+  .ltable tr:last-child td { border-bottom: none; }
+  .ltable tr:nth-child(even) td { background: rgba(236,72,153,.05); }
+  .ltable tr:hover td { background: rgba(236,72,153,.09); }
+  .ltable td strong { color: var(--c-head); }
+
+  /* Two-col grid */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-bottom: .8rem; }
+
+  /* Pill */
+  .pill { display: inline-block; padding: .12rem .5rem; border-radius: 5px; font-size: .73rem; font-weight: 700; }
+  .pill-v { background: var(--nc-dim); color: var(--nc); border: 1px solid var(--nc-border); }
+  .pill-g { background: rgba(74,222,128,.1); color: #15803d; border: 1px solid rgba(74,222,128,.2); }
+  .pill-b { background: rgba(96,165,250,.1); color: #be185d; border: 1px solid rgba(96,165,250,.2); }
+  .pill-y { background: rgba(251,191,36,.1); color: #b8860b; border: 1px solid rgba(251,191,36,.2); }
+  .pill-r { background: rgba(220,38,38,.1); color: #dc2626; border: 1px solid rgba(220,38,38,.25); }
+
+  /* Callout */
+  .callout {
+    border-radius: 9px; padding: .85rem 1.1rem;
+    margin: .7rem 0; font-size: .855rem; line-height: 1.72;
+    display: flex; gap: .75rem; align-items: flex-start;
+    color: var(--text);
+  }
+  .callout .ci { font-size: .95rem; flex-shrink: 0; margin-top: .05rem; }
+  .callout.exam  { background: rgba(236,72,153,.16); border-left: 3px solid var(--nc); }
+  .callout.tip   { background: rgba(74,222,128,.13);  border-left: 3px solid var(--green); }
+  .callout.warn  { background: rgba(251,191,36,.14);  border-left: 3px solid var(--yellow); }
+  .callout.info  { background: rgba(96,165,250,.13);  border-left: 3px solid var(--blue); }
+  .callout strong { color: #fff; }
+
+  /* Callout wewnątrz jasnych kart — ciemny tekst */
+  .lcard .callout { color: var(--c-text); }
+  .lcard .callout strong { color: var(--c-head); }
+  .lcard .callout.exam { background: rgba(236,72,153,.12); }
+  .lcard .callout.tip  { background: rgba(74,222,128,.12); }
+  .lcard .callout.warn { background: rgba(251,191,36,.16); }
+  .lcard .callout.info { background: rgba(96,165,250,.12); }
+
+  /* Formula box */
+  .formula {
+    background: #1f0f19; border: 1px solid var(--nc-border); border-radius: 9px;
+    padding: .8rem 1.1rem; margin: .7rem 0; text-align: center;
+    font-size: 1.05rem; font-weight: 700; color: var(--nc); letter-spacing: .02em;
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+  }
+  .lcard .formula {
+    background: #fdebf5; color: var(--c-head); border-color: var(--c-border);
+  }
+  .formula small { display: block; font-size: .72rem; font-weight: 500; color: var(--c-muted); margin-top: .35rem; letter-spacing: 0; font-family: 'Segoe UI', sans-serif; }
+
+  /* Section summary box */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(236,72,153,.12), rgba(219,39,119,.06));
+    border: 1px solid var(--nc-border); border-radius: 13px;
+    padding: 1.3rem 1.5rem; margin-top: 1rem;
+  }
+  .summary-box h4 { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--nc); margin-bottom: .8rem; }
+  .summary-box ul { list-style: none; padding: 0; }
+  .summary-box li { font-size: .855rem; line-height: 1.6; color: var(--text); padding: .25rem 0 .25rem 1.4rem; position: relative; }
+  .summary-box li::before { content: '◆'; position: absolute; left: 0; color: var(--nc); font-size: .7rem; top: .45rem; }
+  .summary-box li strong { color: #fff; }
+
+  /* Summary-box wewnątrz jasnych kart — ciemny tekst na jasnym tle */
+  .lcard .summary-box {
+    background: linear-gradient(135deg, rgba(236,72,153,.10), rgba(219,39,119,.04));
+    border: 1px solid var(--c-border);
+  }
+  .lcard .summary-box h4 { color: var(--c-head); }
+  .lcard .summary-box li { color: var(--c-text); }
+  .lcard .summary-box li strong { color: var(--c-head); }
+
+  /* Exam Q&A item */
+  .qitem { border-bottom: 1px solid var(--c-border); padding: .85rem 0; }
+  .qitem:last-child { border-bottom: none; }
+  .qitem .q { font-size: .88rem; font-weight: 700; color: var(--c-head); margin-bottom: .4rem; }
+  .qitem .q b { color: var(--nc); margin-right: .35rem; }
+  .qopts { list-style: none; padding: 0; margin: .4rem 0 0; }
+  .qopts li {
+    font-size: .84rem; line-height: 1.5; color: var(--c-text);
+    padding: .32rem .55rem .32rem 1.7rem; position: relative;
+    border-radius: 6px; margin-bottom: .22rem; border: 1px solid transparent;
+  }
+  .qopts li::before { content: '○'; position: absolute; left: .5rem; top: .34rem; color: var(--c-muted); font-size: .7rem; }
+  .qopts li.ok {
+    background: rgba(74,222,128,.14); color: #15803d; font-weight: 700;
+    border-color: rgba(74,222,128,.4);
+  }
+  .qopts li.ok::before { content: '✓'; color: #15803d; font-weight: 900; font-size: .78rem; left: .45rem; }
+  .qitem .note { font-size: .8rem; color: var(--c-muted); font-style: italic; padding-left: 1.7rem; margin-top: .35rem; }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 2rem; color: var(--muted); font-size: .72rem; border-top: 1px solid var(--border); }
+
+  /* Mobile */
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 0 1rem 4rem; }
+    .toc { position: static; max-height: none; overflow: visible; border: 1px solid var(--border); border-radius: 12px; background: var(--card); padding: 1rem 1.2rem; margin: 1rem 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .exam-strip { grid-template-columns: 1fr 1fr; }
+    .ltable { font-size: .78rem; }
+    .ltable th, .ltable td { padding: .4rem .6rem; }
+  }
+  @media (max-width: 480px) {
+    .exam-strip { grid-template-columns: 1fr; }
+  }
+  /* ── SEMANTIC COLOR HELPERS ── */
+  .zysk   { color: #15803d; font-weight: 700; }   /* zysk / pozytyw */
+  .strata { color: #dc2626; font-weight: 700; }   /* strata / błąd */
+  .term   { color: #be185d; font-weight: 700; }   /* termin kluczowy */
+  .uwaga  { color: #c2410e; font-weight: 700; }   /* uwaga / wyjątek */
+  .gdl-a { background: rgba(74,222,128,.1); color: #4ade80; border: 1px solid rgba(74,222,128,.22); }
+  .gdl-b { background: rgba(251,191,36,.1); color: #fbbf24; border: 1px solid rgba(251,191,36,.25); }
+  .gdl-c { background: var(--nc-dim); color: var(--nc); border: 1px solid var(--nc-border); }
+  .gdl-d { background: rgba(167,139,250,.12); color: #a78bfa; border: 1px solid rgba(167,139,250,.28); }
+  .gdl-e { background: rgba(96,165,250,.12); color: #60a5fa; border: 1px solid rgba(96,165,250,.25); }
+  .gdl-f { background: rgba(45,212,191,.1); color: #2dd4bf; border: 1px solid rgba(45,212,191,.25); }
+  .lcard a { color: var(--c-head2); font-weight: 600; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <a href="swps.html">SWPS</a>
+  <span class="sep">/</span>
+  <a href="swps-rok5.html">Rok 5</a>
+  <span class="sep">/</span>
+  <a href="swps-wspieranie.html">Wspieranie rozwoju dziecka</a>
+  <span class="sep">/</span>
+  <span class="current">Notatki</span>
+</nav>
+
+<div class="layout">
+
+<!-- ── TOC ── -->
+<aside class="toc">
+  <div class="toc-title">Spis treści</div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">⚡ O przedmiocie</div>
+    <a href="#info">Zakres i zaliczenie</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">💚 Zdrowie psychiczne</div>
+    <a href="#S1">1 · Definicja WHO i jej krytyka</a>
+    <a href="#S2">2 · Model tradycyjny vs zrównoważony</a>
+    <a href="#S3">3 · Model transdiagnostyczny</a>
+    <a href="#S4">4 · Model sieciowy · porównanie</a>
+    <a href="#S5">5 · Drażniące · niepożądane · zaburzenia</a>
+    <a href="#S6">6 · Ocena zdrowia psychicznego ucznia</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🪆 Środowisko rozwoju</div>
+    <a href="#S7">7 · Bronfenbrenner: systemy</a>
+    <a href="#S8">8 · Przesunięcia ekologiczne · oferty · punkty zwrotne</a>
+    <a href="#S9">9 · Potrzeby a przebieg rozwoju</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🧬 Psychopatologia rozwojowa</div>
+    <a href="#S10">10 · Założenia psychopatologii rozwojowej</a>
+    <a href="#S11">11 · Model transakcyjno-interakcyjny</a>
+    <a href="#S12">12 · Odporność i zasoby</a>
+    <a href="#S13">13 · Podatność i czynniki ryzyka</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🤝 Więź i trauma</div>
+    <a href="#S14">14 · Przywiązanie i style więzi</a>
+    <a href="#S15">15 · Więź pozabezpieczna jako ryzyko</a>
+    <a href="#S16">16 · Trauma relacyjna i traumatyczny rozwój</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">⚖️ Etyka i terapia</div>
+    <a href="#S17">17 · Zgoda na terapię: consent i assent</a>
+    <a href="#S18">18 · Trauma w terapii (trauma-informed ABA)</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">🧠 Mózg</div>
+    <a href="#S19">19 · Neuroplastyczność</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📝 Egzamin</div>
+    <a href="#S20">20 · 11 zagadnień w pigułce</a>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-label">📚 Literatura</div>
+    <a href="#lit">Zestawienie</a>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="content">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="subject-icon">🧸</div>
+    <div class="subject-tag">SWPS · Rok 5 · Semestr zimowy</div>
+    <h1>Wspieranie poznawczego i emocjonalnego rozwoju dziecka</h1>
+    <div class="accent-line"></div>
+    <p class="subtitle">Czym jest zdrowie psychiczne i jak je modelować (zrównoważony, transdiagnostyczny, sieciowy), jak odróżnić zachowanie drażniące od niepożądanego i od zaburzenia, w jakim środowisku rozwija się dziecko (Bronfenbrenner, oferty, punkty zwrotne), skąd biorą się podatność i odporność, jak działają łańcuchy reakcji, jaką rolę pełni więź i trauma, jak zbierać zgodę na terapię oraz czym jest neuroplastyczność.</p>
+  </div>
+
+  <!-- INFO -->
+  <div class="exam-strip" id="info">
+    <div class="exam-badge hi">
+      <div class="label">Sprawdzian</div>
+      <div class="value">20 pytań jednokrotnego wyboru</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Termin A</div>
+      <div class="value">ostatnie zajęcia</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Termin B</div>
+      <div class="value">egzamin ustny</div>
+    </div>
+    <div class="exam-badge">
+      <div class="label">Prowadząca</div>
+      <div class="value">dr Katarzyna Konopka</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ci">ℹ️</span><div>Notatka powstała na podstawie <strong>5 prezentacji z zajęć</strong> oraz literatury wskazanej w zagadnieniach: <strong>Grzegorzewska, Cierpiałkowska, Borkowska (2020) – rozdz. 3 i 5</strong>, <strong>Trzebińska i Kuźmicz (2023) – rozdz. 7 w „Psychologii edukacyjnej”</strong> oraz 4 tekstów uzupełniających. Test obejmuje <strong>wykład i wskazany zakres literatury</strong>. Kolejność sekcji idzie za <strong>11 zagadnieniami egzaminacyjnymi</strong> — ich skrót znajdziesz w sekcji 20. Oprócz testu przedmiot zaliczają <strong>projekt grupowy</strong> (prezentacja metody terapeutycznej) i <strong>praca pisemna</strong> (program zajęć na bazie studium przypadku).</div>
+  </div>
+
+  <!-- ══════════ BLOK ZDROWIE PSYCHICZNE ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-a">💚 Zdrowie psychiczne — definicje i modele</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S1 -->
+  <section id="S1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-header-text">
+        <h2>Definicja zdrowia psychicznego WHO i jej krytyka</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 1 · Trzebińska i Kuźmicz 2023 (r. 7.1) · Szredzińska 2022</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Definicja WHO (2004) — dwa człony</h3>
+      <p>Zdrowie psychiczne to <span class="term">nieobecność zaburzeń psychicznych</span> <strong>oraz</strong> <span class="term">optymalny stan psychiczny</span>, który umożliwia:</p>
+      <ol class="nlist">
+        <li><strong>realizację własnych zdolności</strong> (potencjału),</li>
+        <li><strong>radzenie sobie z normalnym stresem życiowym</strong>,</li>
+        <li><strong>produktywność i skuteczność w działaniu</strong>,</li>
+        <li><strong>wnoszenie wkładu w życie społeczności</strong>, do której się należy.</li>
+      </ol>
+      <div class="callout exam"><span class="ci">🎯</span><div>Zapamiętaj strukturę: <strong>brak zaburzeń + 4 przejawy dobrego funkcjonowania</strong> (zdolności · stres · produktywność · wkład w społeczność). Definicja opisuje tzw. <strong>dobre zdrowie psychiczne</strong> — jego przejawy i obszary życia, w których się ujawnia. Inne sformułowanie tej samej definicji (WHO 2001): „stan dobrego samopoczucia, w którym jednostka może realizować swój potencjał, radzić sobie z normalnymi stresami życia, pracować produktywnie i wnosić wkład w społeczność”.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Zarzuty wobec definicji WHO (slajd z zajęć)</h3>
+      <table class="ltable">
+        <tr><th>Zarzut</th><th>Na czym polega</th><th>Co proponują krytycy</th></tr>
+        <tr><td><strong>Zbyt ogólna</strong></td><td>podaje przejawy i skutki dobrej kondycji, ale nie mówi, <em>jakie właściwości psychiczne</em> się na nią składają</td><td>definicje bardziej szczegółowe, w języku psychologii (np. Agencja Zdrowia Publicznego Kanady, PHAC 2006 — zdolność odczuwania, myślenia i działania pozwalająca cieszyć się życiem i radzić sobie z wyzwaniami)</td></tr>
+        <tr><td><strong>Zbyt szczegółowa</strong></td><td>zdrowie to konstrukt tak <em>dynamiczny i skomplikowany</em>, że nie da się go opisać listą atrybutów</td><td>wskazać samą istotę: zdolność do <strong>adaptacji i samoregulacji</strong>, w psychice = <strong>poczucie koherencji</strong> (Huber i in., 2011)</td></tr>
+        <tr><td><strong>Jedna perspektywa</strong></td><td>patrzy tylko z perspektywy obiektywnej („oni”, teoretycy) albo tylko subiektywnej („ja”, osoby doświadczające trudności)</td><td>osoby z doświadczeniem kryzysu stawiają na czele <strong>samorealizację, autonomię, działanie na rzecz własnych celów</strong> (Manwell i in., 2015)</td></tr>
+      </table>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Dodatkowy zarzut z literatury: <strong>przesadna pozytywność</strong> definicji WHO — gdy rozbudowuje się opis sukcesów życiowych, zjawiska nieprawidłowe zostają zmarginalizowane i zbanalizowane (Palumbo i Galderisi, 2020).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Propozycja nowej definicji — Galderisi i wsp. (2017)</h3>
+      <p>Zdrowie psychiczne to <span class="term">dynamiczny stan wewnętrznej równowagi</span>, który pozwala jednostce korzystać ze swoich zdolności <strong>w zgodzie z uniwersalnymi wartościami społecznymi</strong>. Równowagę zapewniają podstawowe umiejętności poznawcze i społeczne:</p>
+      <ul class="alist">
+        <li><strong>rozpoznawanie, wyrażanie i modulowanie własnych emocji</strong> oraz empatia,</li>
+        <li><strong>plastyczność i skuteczność</strong> w radzeniu sobie z przeciwnościami,</li>
+        <li><strong>pełnienie ról społecznych</strong>,</li>
+        <li><strong>harmonijna relacja ciała i umysłu</strong>.</li>
+      </ul>
+      <p>Każdy z tych czynników jest <strong>mierzalny</strong> i może mieć różne nasilenie u różnych osób lub u tej samej osoby w różnych momentach życia. Stąd naukowa neutralność tej definicji.</p>
+      <div class="callout info"><span class="ci">ℹ️</span><div>NFZ (2021): zdrowie psychiczne to dobrostan psychiczny, fizyczny i społeczny oraz zdolność do rozwoju i samorealizacji, czyli nie tylko brak chorób, ale też poczucie własnej wartości i umiejętność czerpania radości z życia.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Dlaczego to ważny problem — liczby</h3>
+      <ul class="alist">
+        <li>ok. <strong>25%</strong> ludzi w jakimś momencie życia ma zaburzenia psychiczne, ok. <strong>10%</strong> — przewlekłe; zaburzenia psychiczne to ok. <strong>15%</strong> wszystkich zachorowań (tyle co choroby serca czy nowotwory)</li>
+        <li>osoby z zaburzeniami żyją przeciętnie <strong>10–20 lat krócej</strong>; w Europie na zdrowie psychiczne wydaje się ok. <strong>1%</strong> budżetu zdrowia</li>
+        <li><strong>ponad 50%</strong> zaburzeń psychicznych zaczyna się <strong>przed 14. rokiem życia</strong>; ok. 20% nastolatków ma nieprawidłowości rozwojowe lub problemy emocjonalne/z zachowaniem, ok. 12% — zaburzenia psychiczne</li>
+        <li>Światowy Dzień Zdrowia Psychicznego — <strong>10 października</strong> (od 1992 r.)</li>
+        <li>Polska (EZOP II): opieką w ramach NFZ objętych jest <strong>mniej niż 20%</strong> dzieci, które jej potrzebują; najczęstsze rozpoznania u dzieci leczonych ambulatoryjnie to <strong>zaburzenia rozwojowe</strong> (65%)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- S2 -->
+  <section id="S2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-header-text">
+        <h2>Model tradycyjny i model zrównoważony (kompletny)</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 1 · Trzebińska i Kuźmicz 2023 (r. 7.1.2)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Punkt wyjścia: tradycyjny model psychopatologiczny</h3>
+      <p>Opiera się na dwóch pojęciach:</p>
+      <ul class="alist">
+        <li><strong>symptom psychopatologiczny</strong> — nieprawidłowy stan psychiczny lub zachowanie, które w znaczący sposób narusza jakość życia jednostki i/lub jej otoczenia;</li>
+        <li><strong>zaburzenie psychiczne</strong> — zespół względnie regularnie współwystępujących symptomów; opisane w <span class="term">ICD-11</span> (WHO, 2022) i <span class="term">DSM-5</span> (APA, 2013).</li>
+      </ul>
+      <h4>Cztery zarzuty wobec modelu tradycyjnego</h4>
+      <ol class="nlist">
+        <li><strong>Ujęcie kategorialne</strong> — ostre oddzielenie „chorych” od „zdrowych” na podstawie umownych, niestabilnych i nieuniwersalnych kryteriów.</li>
+        <li><strong>Brak miejsca na korzystne aspekty</strong> funkcjonowania osoby.</li>
+        <li><strong>Brak miejsca na niekorzystne aspekty</strong>, które nie należą do objawów przypisanego zaburzenia.</li>
+        <li><strong>Brak możliwości śledzenia dynamiki</strong> — zaburzenie „albo jest, albo go nie ma”, nie widać narastania ani ustępowania objawów.</li>
+      </ol>
+    </div>
+
+    <div class="lcard">
+      <h3>Model zrównoważony = kompletny (Keyes 2013; Bohlmeijer i Westerhof 2021)</h3>
+      <p>Odpowiedź na ograniczenia modelu tradycyjnego. Badania pokazują, że psychopatologia i dobre zdrowie psychiczne korelują na poziomie ok. <span class="term">r ≈ −0,50</span>, a więc są <strong>względnie odrębne</strong>. Dlatego model przyjmuje <strong>dwa oddzielne wymiary</strong>:</p>
+      <div class="two-col">
+        <div class="callout tip"><span class="ci">🌱</span><div><strong>Dobrostan → WZMACNIAMY</strong><br>przejawy emocjonalne, psychologiczne i relacyjne (Keyes i Waterman), osobiste lub środowiskowe (Snyder i Elliott), mocne strony charakteru (Peterson i Seligman)</div></div>
+        <div class="callout warn"><span class="ci">🩹</span><div><strong>Psychopatologia → LECZYMY</strong><br>opisana jak w modelu tradycyjnym, z uwzględnieniem uporczywości, szkodliwości, dotkliwości i nieadekwatności objawów</div></div>
+      </div>
+      <p>Ocena polega na umieszczeniu osoby <strong>jednocześnie na obu wymiarach</strong>: jakościowo (jakie przejawy są obecne) i ilościowo (jakie jest nasilenie).</p>
+      <table class="ltable">
+        <tr><th>Dobrostan</th><th>Psychopatologia</th><th>Zdrowie psychiczne</th></tr>
+        <tr><td>wysoki</td><td>niska</td><td><strong>dobre (optymalne)</strong></td></tr>
+        <tr><td>umiarkowany</td><td>umiarkowana</td><td><strong>przeciętne</strong></td></tr>
+        <tr><td>niski</td><td>wysoka</td><td><strong>słabe</strong></td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>Konsekwencja praktyczna: można <strong>oddzielnie</strong> pracować nad poprawą dobrostanu i nad redukcją psychopatologii oraz monitorować zmiany w każdym wymiarze. W ocenie ucznia (Bednarek) model wyróżnia formy zdrowia: <strong>optymalne, niepełne, słabe, zaburzenie</strong>. To model najlepiej pasujący do roli <strong>psychologa szkolnego jako promotora zdrowia psychicznego</strong>.</div></div>
+    </div>
+  </section>
+
+  <!-- S3 -->
+  <section id="S3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-header-text">
+        <h2>Model (podejście) transdiagnostyczny — „ponad DSM”</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 1 · Trzebińska i Kuźmicz 2023</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Główna idea</h3>
+      <p>Symptomy to <span class="term">nieprawidłowe zjawiska psychiczne</span> (procesy), a <strong>nie elementy przypisane do konkretnego zaburzenia</strong>. O ich znaczeniu decyduje to, jaki proces jest zaburzony, a nie etykieta diagnostyczna (Dalgleish i wsp., 2020; Barch, 2020).</p>
+      <ul class="alist">
+        <li><strong>Urojenia</strong> to symptom nieprawidłowego <em>rozumowania</em>, a nie „schizofrenii”.</li>
+        <li><strong>Anhedonia</strong> to symptom nadmiernie wysokiego progu pobudzenia mózgowego <em>układu nagrody</em>, a nie „depresji”.</li>
+        <li>Ten sam zaburzony proces może należeć do różnych syndromów, co wyjaśnia <strong>współwystępowanie zaburzeń</strong>.</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div>Zasada terapii: <strong>oddziaływania dobiera się do procesów, a nie do zaburzeń</strong>. „Naprawiając” zaburzony proces, poprawiamy stan we wszystkich zaburzeniach, w których ten symptom występował. Leczymy <em>urojenia, a nie schizofrenię; anhedonię, a nie depresję</em>.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Wymiary i czynniki transdiagnostyczne (Cuthbert, 2014)</h3>
+      <p>W pełnej wersji podejście ustala, które procesy i zachowania są związane ze zdrowiem psychicznym (<span class="term">wymiary transdiagnostyczne</span>), a następnie które ich formy są psychopatologiczne, a które należą do dobrostanu (<span class="term">czynniki transdiagnostyczne</span> niekorzystne i korzystne).</p>
+      <table class="ltable">
+        <tr><th>Wymiar</th><th>Czynniki niekorzystne</th><th>Czynniki korzystne</th></tr>
+        <tr><td><strong>samoocena</strong></td><td>zaniżona, zawyżona, niespójna, niestabilna</td><td>adekwatna, spójna, stabilna</td></tr>
+      </table>
+      <p>Terapia polega na przejściu od czynników psychopatologicznych do czynników dobrostanu w danym wymiarze (np. od samooceny niestabilnej do stabilnej). Przedrostek „trans” oznacza, że wymiary rozpatruje się w odniesieniu do zdrowia psychicznego <strong>ogólnie, ponad kategoriami diagnostycznymi</strong>. Tradycyjne zaburzenia tracą tu realność psychologiczną i schodzą na dalszy plan.</p>
+      <div class="callout tip"><span class="ci">🔗</span><div>Model transdiagnostyczny jest <strong>kompatybilny z modelem zrównoważonym</strong>: te same procesy w formie zaburzonej to symptomy, a w formie prawidłowej składają się na dobrostan.</div></div>
+    </div>
+  </section>
+
+  <!-- S4 -->
+  <section id="S4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-header-text">
+        <h2>Model sieciowy i porównanie trzech modeli</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 1 · Trzebińska i Kuźmicz 2023 (Fried i in. 2017; Borsboom)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Założenia modelu sieciowego</h3>
+      <ul class="alist">
+        <li><strong>Zaburzenie psychiczne to proces biopsychiczno-behawioralny</strong>, czyli sieć wzajemnie powiązanych niekorzystnych zjawisk, a nie prosty zbiór objawów.</li>
+        <li><strong>Symptom jest czynnikiem aktywnym, a nie biernym elementem</strong>: objawy wywołują się nawzajem i dlatego współwystępują tak regularnie, że nazwano te układy zaburzeniami.</li>
+        <li><strong>Różne sieci = współwystępowanie zaburzeń</strong>: ten sam symptom może wchodzić w różne sieci (różne zaburzenia).</li>
+        <li>W przeciwieństwie do podejścia transdiagnostycznego zaburzenia <strong>odzyskują centralną pozycję</strong>, ale rozumiane procesualnie i dynamicznie.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Przykład: depresja jako sieć</h3>
+      <p><strong>Ujęcie tradycyjne:</strong> razem występują myśli samobójcze, problemy z koncentracją, złość, smutek, bezsenność, anhedonia, bezradność, wyczerpanie.</p>
+      <p><strong>Ujęcie sieciowe:</strong> <span class="term">bezsenność</span> → wyczerpanie → problemy z koncentracją → <span class="term">poczucie bezradności</span> → smutek, anhedonia, myśli samobójcze → które <em>zwrotnie</em> nasilają bezradność.</p>
+      <h4>Implikacje praktyczne (slajd)</h4>
+      <table class="ltable">
+        <tr><th>Implikacja</th><th>Na czym polega</th></tr>
+        <tr><td><strong>Prognozowanie</strong></td><td>skoro symptom współtworzy zaburzenie, na podstawie jednego zaburzenia można przewidywać współwystępowanie lub pojawienie się w przyszłości innego, w którego sieci ten symptom też gra rolę</td></tr>
+        <tr><td><strong>Wpływ na jeden symptom zmienia cały system</strong></td><td>redukcja symptomu o <strong>największej liczbie powiązań</strong> (tu: bezradności) może spowodować rozpad zaburzenia „od środka”</td></tr>
+        <tr><td><strong>Łatwiejszy symptom</strong></td><td>redukcja objawu łatwiejszego do zmiany może pociągnąć redukcję trudniejszego</td></tr>
+        <tr><td><strong>Początek łańcucha</strong></td><td>wczesne wsparcie przy symptomie na początku łańcucha (tu: leczenie bezsenności) może powstrzymać formujące się zaburzenie, a nawet kolejne</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Model sieciowy otwiera drogę do <strong>profilaktyki</strong>: eliminowanie czynników, które mogą inicjować lub podtrzymywać sieci psychopatologiczne. Z czasem ma objąć też „sieci” korzystnych czynników, które mogą stanowić podstawę <strong>odporności</strong>.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Porównanie modeli — podobieństwa i różnice</h3>
+      <table class="ltable">
+        <tr><th>Cecha</th><th>Zrównoważony</th><th>Transdiagnostyczny</th><th>Sieciowy</th></tr>
+        <tr><td><strong>Jednostka analizy</strong></td><td>dwa wymiary: dobrostan i psychopatologia</td><td>procesy psychiczne (wymiary transdiagnostyczne)</td><td>symptomy i ich wzajemne powiązania</td></tr>
+        <tr><td><strong>Status zaburzeń</strong></td><td>psychopatologia opisana jak w modelu tradycyjnym</td><td>zaburzenia schodzą na dalszy plan („ponad DSM”)</td><td>zaburzenia wracają, ale jako sieci (procesy)</td></tr>
+        <tr><td><strong>Rola symptomu</strong></td><td>przejaw na wymiarze psychopatologii</td><td>przejaw zaburzonego procesu</td><td>aktywny czynnik, który wywołuje inne objawy</td></tr>
+        <tr><td><strong>Co robi terapia</strong></td><td>wzmacnia dobrostan i osobno leczy psychopatologię</td><td>zmienia zaburzony proces</td><td>celuje w kluczowy symptom (centralny / na początku łańcucha)</td></tr>
+        <tr><td><strong>Współwystępowanie</strong></td><td>—</td><td>ten sam proces w różnych syndromach</td><td>ten sam symptom w różnych sieciach</td></tr>
+      </table>
+      <div class="summary-box">
+        <h4>Wspólne dla wszystkich trzech</h4>
+        <ul>
+          <li>odchodzą od <strong>sztywnego, kategorialnego</strong> ujęcia (jest zaburzenie / nie ma) na rzecz ujęcia <strong>wymiarowego i dynamicznego</strong>,</li>
+          <li>pozwalają <strong>śledzić zmianę</strong> stanu psychicznego w czasie,</li>
+          <li>są ze sobą <strong>kompatybilne</strong> — autorzy radzą nie przeciwstawiać ich sobie, tylko czerpać z każdego jego specyficzną perspektywę,</li>
+          <li>wspierają <strong>kompetencję w zakresie zdrowia psychicznego</strong> (<em>mental health literacy</em>): wiedzę o zaburzeniach i dobrostanie, rozpoznawanie czynników ryzyka, wiedzę, kiedy i jak szukać pomocy.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5 -->
+  <section id="S5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-header-text">
+        <h2>Zachowania drażniące, niepożądane i zaburzenia</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 1 · Trzebińska i Kuźmicz 2023 (za: Kołakowski i Pisula, 2020)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Trzystopniowy podział niepokojących zachowań</h3>
+      <p>Podział <span class="term">Kołakowskiego i Pisuli (2020)</span> stopniuje problematyczne zachowania. Granice między „normalnym” a „nienormalnym” są płynne, ale da się je określić. Można go stosować także do stanów psychicznych, nie tylko zachowań.</p>
+      <table class="ltable">
+        <tr><th>Kategoria</th><th>Cechy</th><th>Przykłady</th></tr>
+        <tr><td><strong>Drażniące (niepokojące)</strong></td><td>• <strong>adekwatne do wieku i poziomu rozwoju</strong><br>• raczej <strong>sporadyczne</strong><br>• wzbudzają niepokój dorosłych, ale <strong>przyczyny leżą najczęściej po stronie dorosłych</strong> (zbyt wysokie oczekiwania, brak wiedzy o rozwoju, nieumiejętność radzenia sobie z zachowaniem)<br>• <strong>adekwatne do sytuacji</strong></td><td>3-latek w adaptacji przedszkolnej przez kilka dni kontaktuje się tylko z rodzicami; 6-latek w złości niszczy źle wykonaną pracę i głośno płacze (sytuacja sporadyczna); 13-latek <em>jednorazowo</em> ucieka z lekcji</td></tr>
+        <tr><td><strong>Niepożądane</strong></td><td>• <strong>nieodpowiednie do wieku i poziomu rozwoju</strong><br>• najbliższe otoczenie (czasem samo dziecko) <strong>spostrzega je jako problematyczne/trudne</strong></td><td>7-latek płacze i krzyczy przy <em>każdym</em> niepowodzeniu; 8-latek po każdej przegranej obraża się i wyzywa kolegów; 13-latek ciągle mówi o sobie „głupi, niepotrzebny”; 16-latek łamie nawet korzystne dla siebie zasady</td></tr>
+        <tr><td><strong>Zaburzenia</strong></td><td>zespoły <strong>względnie regularnie współwystępujących symptomów psychopatologicznych</strong>, czyli nieprawidłowych stanów psychicznych i zachowań, które <strong>w znaczący sposób naruszają jakość życia</strong> jednostki i jej otoczenia; opisane w <strong>ICD-11 i DSM-5</strong></td><td>np. depresja, zaburzenia lękowe, ADHD</td></tr>
+      </table>
+      <div class="callout exam"><span class="ci">🎯</span><div>Z punktu widzenia oceny zdrowia psychicznego <strong>kluczową kategorią są zachowania niepożądane</strong>: to one <strong>zwiększają ryzyko pogorszenia lub utraty zdrowia</strong>. Zaburzenia świadczą już o jego utracie.</div></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Łatwo przeoczyć „ciche” sygnały: <strong>obniżenie nastroju, wycofanie z relacji rówieśniczych, negatywne przekonania o sobie, myśli rezygnacyjne, rozdrażnienie</strong>. Samookaleczenia, wybuchy złości czy napady lęku są wyraziste, a te pierwsze bywają „niedocenione” przez dorosłych.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Kryteria pomocnicze — Seligman, Walker i Rosenhan (2003)</h3>
+      <p>Czy dana właściwość psychiczna:</p>
+      <ul class="alist">
+        <li>jest <strong>źródłem lub formą cierpienia</strong>,</li>
+        <li><strong>utrudnia przystosowanie</strong>,</li>
+        <li>jest <strong>irracjonalna</strong>,</li>
+        <li>świadczy o <strong>nieprzewidywalności lub braku kontroli</strong>,</li>
+        <li>jest <strong>rzadka lub niekonwencjonalna</strong>,</li>
+        <li><strong>budzi dyskomfort u obserwatora</strong>,</li>
+        <li><strong>narusza przyjęte normy</strong>.</li>
+      </ul>
+      <p>Spełnienie któregoś kryterium może świadczyć o „nienormalności”. Pamiętaj o kontekście: to samo zachowanie bywa adaptacyjne w jednym środowisku, a nieadaptacyjne w innym (np. kłamstwo), a zachowanie naturalne u małego dziecka (szukanie pomocy głównie u rodzica) w wieku szkolnym może być już niekorzystne.</p>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Psychopatologia rozwojowa dodaje: wiele dzieci w pewnych okresach (np. <strong>bunt trzylatka</strong>) lub sytuacjach normatywnych (pierwsze dni przedszkola) i nienormatywnych (sytuacja przedrozwodowa) przejawia objawy niepokojące rodziców, które z punktu widzenia rozwoju są <strong>typowe i nie wymagają interwencji</strong>.</div></div>
+    </div>
+  </section>
+
+  <!-- S6 -->
+  <section id="S6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-header-text">
+        <h2>Ocena zdrowia psychicznego ucznia — praktyka w szkole</h2>
+        <div class="src-tag">Źródło: <span>Trzebińska i Kuźmicz 2023 (r. 7.3–7.4)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Schemat oceny zdrowia psychicznego</h3>
+      <ol class="nlist">
+        <li><strong>Zgłoszenie lub zaobserwowanie problemu</strong>, które budzi niepokój.</li>
+        <li><strong>Pytanie kluczowe:</strong> „czy i jak zdrowie psychiczne tego dziecka jest / może być zagrożone?”</li>
+        <li><strong>Analiza funkcjonowania</strong> według modelu kompletnego: nieprawidłowe procesy i zachowania <em>oraz</em> przejawy dobrostanu.</li>
+        <li><strong>Hipoteza</strong> o aktualnym stanie zdrowia, potem informacja zwrotna, wsparcie i ewentualne rekomendacje pomocy profesjonalnej.</li>
+        <li><strong>Monitoring</strong> stanu zdrowia psychicznego dziecka.</li>
+      </ol>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>Ocena ≠ diagnoza.</strong> Ocena to <em>wstępne rozeznanie</em> zagrożenia; może ją zainicjować każdy przygotowany dorosły (nauczyciel, rodzic). <strong>Diagnoza</strong> to procedura zastrzeżona dla specjalisty (psycholog, psychiatra), daje wyczerpujący opis i rekomendacje. Ocena nie jest „minidiagnozą” i nie zastępuje pomocy profesjonalnej.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Co zbieramy — zasada zrównoważonego pozyskiwania danych</h3>
+      <table class="ltable">
+        <tr><th></th><th>Osoba</th><th>Środowisko</th></tr>
+        <tr><td><strong>Dobrostan</strong></td><td><strong>zasoby psychiczne</strong> — właściwości pomagające radzić sobie i realizować zamierzenia</td><td><strong>zasoby społeczne</strong> — elementy sytuacji życiowej, które pomagają</td></tr>
+        <tr><td><strong>Trudności</strong></td><td><strong>czynniki wewnętrzne</strong> zwiększające ryzyko problemów i zaburzeń</td><td><strong>czynniki zewnętrzne</strong> (środowiskowe) zwiększające ryzyko</td></tr>
+      </table>
+      <p>Na zasoby trzeba się <strong>świadomie nastawić</strong>, bo to, co złe, silniej przykuwa uwagę niż to, co dobre (<em>bad is stronger than good</em> — Baumeister i in., 2001). Dysproporcja na niekorzyść zasobów to sygnał jeszcze poważniejszego zagrożenia niż samo nasilenie dysfunkcji.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Trzy przypadki z podręcznika</h3>
+      <table class="ltable">
+        <tr><th>Dziecko</th><th>Sygnał</th><th>Zasoby</th><th>Działanie</th></tr>
+        <tr><td><strong>Antek, 14 l.</strong></td><td>wycofanie, absencja w nauce zdalnej, obniżony nastrój</td><td>zaangażowani rodzice i wychowawca, świadomość problemu i chęć zmiany</td><td>spotkania z psychologiem → własny plan nauki i odpoczynku + rozmowy z wychowawcą + rutyna dnia</td></tr>
+        <tr><td><strong>Maja, 6 l.</strong></td><td>nieśmiałość, unikanie kontaktów mimo chęci relacji</td><td>życzliwa grupa przedszkolna, zmotywowana wychowawczyni</td><td>prosty program behawioralny (pytanie „czy mogę się z wami bawić?”, wypowiedzi na forum); diagnoza okazała się zbędna</td></tr>
+        <tr><td><strong>Ania, nastolatka</strong></td><td>powrót do szkoły po hospitalizacji z powodu depresji, liczne lęki</td><td>gotowy wychowawca, współpracujący rodzice, motywacja Ani</td><td>psychoedukacja klasy, pomysły dzieci na wsparcie, scenariusze powrotu, wskazówki od specjalistów dla nauczycieli</td></tr>
+      </table>
+      <div class="callout tip"><span class="ci">💡</span><div>Morał: losy tych dzieci <strong>mogły potoczyć się inaczej</strong> (rozwój jest probabilistyczny). Kluczowe było zadanie pytania o zdrowie psychiczne i uporządkowane działanie: <strong>rozmowa → nazwanie trudności → plan dostosowany do okoliczności</strong>.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Informacja zwrotna i wsparcie w szkole</h3>
+      <ul class="alist">
+        <li><strong>Prawo do informacji zwrotnej</strong> mają dziecko i rodzice; innym osobom (np. nauczycielom) przekazuje się ją <strong>tylko za ich zgodą</strong>.</li>
+        <li>Informację przekazuje się na <strong>spotkaniu indywidualnym</strong>, językiem dostosowanym do odbiorcy; <strong>dziecko jest podmiotem</strong> na każdym etapie.</li>
+        <li>Każdy kontakt psychologa z dzieckiem to <strong>interwencja</strong>, więc wymaga <strong>świadomej zgody dziecka oraz rodziców/opiekunów prawnych</strong>.</li>
+        <li>Rodzaje wsparcia (Kubacka-Jasiecka): <strong>emocjonalne, informacyjne, instytucjonalne, rzeczowe, duchowe</strong>.</li>
+        <li>Psycholog szkolny jako <strong>„lekarz pierwszego kontaktu”</strong> dla rodziców (Cierpka, 2010).</li>
+        <li>Czynniki chroniące związane ze szkołą (Szymańska, 2014): <strong>poczucie przynależności, pozytywny klimat szkoły, prospołeczna grupa rówieśnicza, wymaganie odpowiedzialności i wzajemnej pomocy, okazje do sukcesu, zdecydowana niezgoda szkoły na przemoc</strong>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK ŚRODOWISKO ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-b">🪆 Środowisko rozwoju — Bronfenbrenner i jego kontynuacje</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S7 -->
+  <section id="S7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-header-text">
+        <h2>Ekologiczna koncepcja rozwoju Bronfenbrennera — systemy</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 1 · Brzezińska (r. 3.2, 3.4.1) i Borkowska (ryc. 3.5) w: Grzegorzewska i in. 2020</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Środowisko jak matrioszki</h3>
+      <p><span class="term">Urie Bronfenbrenner</span> (1979, 1993) ujmował środowisko jako układ wzajemnie zależnych podsystemów <strong>zagnieżdżonych jeden w drugim „jak rosyjskie lalki-matrioszki”</strong>. Dla rozwoju kluczowa jest <strong>progresywna, wzajemna akomodacja</strong> między aktywnym, rozwijającym się człowiekiem a zmieniającymi się właściwościami <span class="term">siedlisk</span> (<em>settings</em>), w których żyje. Wpływają na nią relacje między siedliskami i szerszy kontekst społeczny.</p>
+      <p><strong>Siedlisko</strong> to podstawowe środowisko socjalizacji, w którym dziecko bezpośrednio uczestniczy: dom, żłobek, przedszkole, szkoła, drużyna sportowa, grupa harcerska.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Cztery konteksty analizy rozwoju (Borkowska 2020, ryc. 3.5 — slajd)</h3>
+      <table class="ltable">
+        <tr><th>System</th><th>Przestrzeń</th><th>Co obejmuje / jakie zmiany</th></tr>
+        <tr><td><strong>Makrosystem</strong></td><td>przestrzeń <strong>kulturowa</strong></td><td>kultura globalna, wzorce, <strong>megatrendy</strong> (globalne trendy cywilizacyjne)</td></tr>
+        <tr><td><strong>Egzosystem</strong></td><td>przestrzeń <strong>społeczności</strong></td><td>warunki życia w regionie i społeczności lokalnej; <strong>regionalne i lokalne trendy zmian</strong></td></tr>
+        <tr><td><strong>Mezosystem</strong></td><td>przestrzeń <strong>grupowa</strong></td><td>siedliska i powiązania między nimi; <strong>zmiany relacji międzypokoleniowych</strong></td></tr>
+        <tr><td><strong>Mikrosystem</strong></td><td>przestrzeń <strong>jednostkowa</strong></td><td>bezpośrednie relacje i interakcje dziecka; <strong>zmiany relacji interpersonalnych</strong></td></tr>
+      </table>
+      <p>W centrum jest <strong>rozwój jednostki</strong>. Pośrednie oddziaływania makro- i egzosystemu widać głównie w <strong>regulacjach prawnych i warunkach życia</strong>; zmiany na poziomie mezosystemu docierają do różnych pokoleń głównie przez <strong>media</strong>; na poziomie mikrosystemu pośrednikami są <strong>ludzie</strong>, z którymi dziecko wchodzi w interakcje (także przez internet).</p>
+      <div class="callout info"><span class="ci">ℹ️</span><div><strong>Klasyczne definicje Bronfenbrennera</strong> (dla porządku): <strong>mikrosystem</strong> = bezpośrednie otoczenie i relacje (rodzina, klasa); <strong>mezosystem</strong> = powiązania między mikrosystemami (np. dom–szkoła); <strong>egzosystem</strong> = siedliska, w których dziecko nie uczestniczy, ale które na nie wpływają (np. praca rodzica); <strong>makrosystem</strong> = kultura, wartości, prawo. Później autor dodał <strong>chronosystem</strong>, czyli wymiar czasu i zmian w biegu życia.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Ważne pojęcia w koncepcji Bronfenbrennera (slajd)</h3>
+      <h4>1. Spostrzeganie i interpretowanie środowiska</h4>
+      <p>Każdy człowiek <strong>w indywidualny sposób spostrzega i interpretuje</strong> swoje otoczenie. To zawsze „jego rzeczywistość”, więc każdy rozwija się w innym kontekście psychologicznym, nawet w tej samej rodzinie.</p>
+      <h4>2. Wpływy bezpośrednie i pośrednie</h4>
+      <div class="two-col">
+        <div class="callout tip"><span class="ci">👥</span><div><strong>Bezpośrednie</strong> — z kim i w jakie interakcje dziecko wchodzi w danym siedlisku (relacje, przeżycia, doświadczenia). Zakładają fizyczny kontakt w tym samym miejscu i czasie. Działają w obie strony: dziecko też wpływa na dorosłych. Bornstein: interakcje <strong>społeczne</strong> („oferty społeczne”, budowanie więzi) i <strong>dydaktyczne</strong> („oferty fizyczne”, manipulowanie przedmiotami).</div></div>
+        <div class="callout info"><span class="ci">📡</span><div><strong>Pośrednie</strong> — zdarzenia w siedliskach, w których dziecko nie uczestniczy. Dwie drogi: <strong>(1) przekaz przez pośredników</strong>, którzy w nich byli (dziecko „zna” kolegów brata czy pracę rodziców); <strong>(2) konsekwencje zdarzeń w jednym siedlisku dla innych</strong> (np. strzelanina w szkole → szkolenia rodziców w pracy i dzieci w szkole).</div></div>
+      </div>
+      <p>Siedliska mają też swoją <strong>historię</strong> (rodziny, szkoły, regionu), przekazywaną ustnie lub przez ślady materialne, która również wpływa pośrednio na rozwój.</p>
+      <h4>3. Przesunięcia ekologiczne</h4>
+      <p>Omówione w następnej sekcji razem z ofertami i punktami zwrotnymi.</p>
+    </div>
+  </section>
+
+  <!-- S8 -->
+  <section id="S8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-header-text">
+        <h2>Przesunięcia ekologiczne · oferty (Gibson) · punkty zwrotne (Rutter)</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 1 · Brzezińska w: Grzegorzewska i in. 2020 (r. 3.4.1, blok 3.3)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Przesunięcia (przejścia) ekologiczne</h3>
+      <p>W dzieciństwie i dorastaniu dziecko <strong>wiele razy zmienia siedliska</strong>: żłobek → przedszkole → kolejne szkoły; przeprowadzka, rozwód rodziców, emigracja; obozy, zajęcia dodatkowe. W każdym zajmuje inną pozycję, uczy się nowych ról i wchodzi w nowe interakcje. Bronfenbrenner nazywa takie zmiany otoczenia <span class="term">przejściami / przesunięciami ekologicznymi</span> (<em>ecological transition/shift</em>) i traktuje je jako <strong>kluczowe momenty w rozwoju</strong>.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Oferty (affordances) — James Gibson</h3>
+      <p>Słowo-klucz do oceny jakości środowiska fizycznego i społecznego to <span class="term">oferta</span> (ang. <em>affordance</em>; spolszczana też jako „afordancja” lub „dostarczant”). Według Normana oferty w sensie Gibsona to <strong>„spostrzegane i rzeczywiste właściwości rzeczy, które sprawiają, że mogą być wykorzystane w określony sposób”</strong>. Dotyczą środowiska fizycznego (przedmioty, aranżacja) i społecznego (ludzie, relacje, interakcje).</p>
+      <p>O wartości oferty dla rozwoju decyduje to, czy jest:</p>
+      <ul class="alist">
+        <li><strong>atrakcyjna</strong> dla dziecka (stanowi wyzwanie),</li>
+        <li><strong>możliwa do realizacji</strong> (daje nadzieję na cel lub choćby przyjemność funkcjonalną — Bühler),</li>
+        <li>dostępna w <strong>bezpiecznych warunkach</strong> do samodzielnej eksploracji,</li>
+        <li>wsparta <strong>obecnością dorosłych</strong>, którzy pomogą w razie trudności.</li>
+      </ul>
+      <p>Dobrze zorganizowane środowisko to <strong>„zaproszenie do działania”</strong> (korzystanie z nabytych kompetencji, transfer) i <strong>„zaproszenie do uczenia się”</strong> (wyzwania, ciekawość, myślenie twórcze).</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Punkty zwrotne (Hareven i Masaoka 1988; Rutter 1996)</h3>
+      <p>Badacze trajektorii życiowych zauważyli, że niektóre zdarzenia <strong>stabilizują</strong> dotychczasową ścieżkę, a inne powodują <strong>gwałtowną zmianę, przerwanie lub odwrócenie</strong> biegu życia. Te drugie to <span class="term">punkty zwrotne</span>. Często wiążą się z przejściem do innego siedliska.</p>
+      <ol class="nlist">
+        <li>Są <strong>indywidualne, a nie normatywne</strong>, więc trudno je przewidzieć i przygotować się na nie.</li>
+        <li>Mogą powodować <strong>pojawianie się nowych ofert</strong> lub modyfikację dotychczasowych.</li>
+        <li>Mogą <strong>zmieniać sposób poszukiwania i realizacji ofert</strong>.</li>
+        <li>Wywołują <strong>zmiany w dotychczasowej trajektorii życia</strong> (w zachowaniu, stosunku do siebie, relacjach).</li>
+        <li>Ich konsekwencje mogą być <strong>tylko pozytywne, pozytywne i negatywne lub tylko negatywne</strong>.</li>
+        <li>Są <strong>dużo głębsze i trwalsze niż stresowe zdarzenie życiowe</strong>: zmieniają strukturę i funkcje osobowości, nie są chwilowym zachwianiem równowagi.</li>
+      </ol>
+      <div class="callout tip"><span class="ci">💡</span><div>Przykłady: dziecko po ciężkim wypadku spędza miesiące w szpitalu i szpitalnej szkole (zmiana siedliska); narodziny rodzeństwa po latach bycia jedynakiem; śmierć dziadków, którzy byli głównymi opiekunami; nowy uczeń przejmuje wysoką pozycję w klasie. Punkt zwrotny ocenia się <strong>ex post</strong>, czyli po fakcie.</div></div>
+    </div>
+  </section>
+
+  <!-- S9 -->
+  <section id="S9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-header-text">
+        <h2>Potrzeby a przebieg rozwoju — źródła wsparcia i ryzyka</h2>
+        <div class="src-tag">Źródło: <span>Brzezińska w: Grzegorzewska i in. 2020 (r. 3.2, 3.4.2–3.4.4)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Założenie: rozwój = interakcja jednostki z otoczeniem</h3>
+      <p>Rozdział 3 opiera się na czterech teoriach: <strong>ekologicznej</strong> (Bronfenbrenner), <strong>samodeterminacji</strong> (Ryan i Deci), <strong>rozwoju psychospołecznego</strong> (Erikson) i <strong>systemów dynamicznych</strong>. <strong>Aktywność człowieka jest podstawowym źródłem rozwoju</strong>, a jej poziom zależy od zaspokojenia trzech grup potrzeb:</p>
+      <table class="ltable">
+        <tr><th>Potrzeby</th><th>Źródło</th><th>Treść</th></tr>
+        <tr><td><strong>Uniwersalne</strong></td><td>Ryan i Deci — teoria samodeterminacji</td><td><strong>więź (relacje), autonomia, kompetencja</strong>; ich deprywacja leży u podstaw wielu form psychopatologii</td></tr>
+        <tr><td><strong>Specyficzne dla etapu</strong></td><td>Erikson</td><td>potrzeby związane z kryzysem rozwojowym danego etapu (np. zaufanie we wczesnym dzieciństwie)</td></tr>
+        <tr><td><strong>Indywidualne (specjalne)</strong></td><td>Brzezińska; Obuchowski (nawykowe)</td><td>wynikają z <strong>deficytów i nadmiarów</strong> w sferach <em>soma</em>, <em>psyche</em> i <em>polis</em></td></tr>
+      </table>
+      <ul class="alist">
+        <li><strong>Autonomia ≠ niezależność</strong>: to działanie zgodne z własną wolą; można być autonomicznym i jednocześnie zależnym od innych.</li>
+        <li><strong>Kompetencję</strong> łatwo stłumić: zbyt duże wyzwania, częsta negatywna informacja zwrotna, krytyka osoby, porównania społeczne.</li>
+        <li><strong>Więź</strong> ma kluczowe znaczenie dla internalizacji standardów zachowania; <strong>autonomia</strong> jest czynnikiem krytycznym dla przekształcenia cudzych wartości we własne.</li>
+        <li>Nadmiary też bywają problemem (np. bardzo wysoka inteligencja, duże zapotrzebowanie na stymulację). Gdy skutki pierwotne deficytu/nadmiaru nie zostaną zrównoważone, pojawiają się <strong>skutki wtórne</strong>.</li>
+      </ul>
+      <div class="callout exam"><span class="ci">🎯</span><div>Niedopasowanie oferty wychowawczej, edukacyjnej i pomocowej do potrzeb dziecka na danym etapie to według Brzezińskiej <strong>podstawowy czynnik ryzyka</strong>. Trafne rozpoznanie potrzeb i wspieranie ich zaspokajania to <strong>czynnik wsparcia</strong>.</div></div>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK PSYCHOPATOLOGIA ROZWOJOWA ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-c">🧬 Psychopatologia rozwojowa — ścieżki, odporność, podatność</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S10 -->
+  <section id="S10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-header-text">
+        <h2>Psychopatologia rozwojowa jako subdyscyplina integracyjna</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 3 · Grzegorzewska i Cierpiałkowska 2020 (r. 5.1)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Czym jest psychopatologia rozwojowa</h3>
+      <p>Dziedzina, która <strong>uwzględnia zasady prawidłowego rozwoju i wykorzystuje je do zrozumienia przyczyn, przebiegu i skutków adaptacji</strong> dzieci, młodzieży i dorosłych do różnych okoliczności i wymagań życiowych (Cicchetti, 2006). Zapoczątkowana artykułami <strong>Sroufe’a i Ruttera</strong> oraz <strong>Cicchettiego</strong> (1984). Jest podejściem <strong>bardziej integrującym niż paradygmatycznym</strong>: łączy psychologię rozwojową, społeczną, kliniczną i zdrowia, poznawczą, edukacji oraz biologiczne podstawy zachowania.</p>
+      <h4>Cztery podstawowe założenia (slajd)</h4>
+      <ol class="nlist">
+        <li><strong>Przenikanie się normalnego i zaburzonego rozwoju</strong> — te same procesy i reguły leżą u podłoża zdrowia i zaburzeń.</li>
+        <li><strong>Wzajemność i transakcyjność procesów rozwojowych</strong> (sekcja 11).</li>
+        <li><strong>Zróżnicowanie ścieżek adaptacyjnych</strong> (ekwifinalność, ekwipotencjalność).</li>
+        <li><strong>Wielopoziomowość i złożoność analiz</strong> procesów psychopatologicznych (od genów do kultury).</li>
+      </ol>
+    </div>
+
+    <div class="lcard">
+      <h3>Kluczowe twierdzenia</h3>
+      <ul class="alist">
+        <li>O adaptacji lub dezadaptacji decydują <strong>dynamiczne interakcje czynników ryzyka z potencjałem osobistym i środowiskowym</strong>.</li>
+        <li><strong>Mediatory</strong> odpowiadają na pytanie <em>jak i dlaczego</em> czynnik (np. alkoholizm rodzica) wpływa na rozwój; <strong>moderatory</strong> — <em>kto jest narażony i kiedy</em> (siła i kierunek związku).</li>
+        <li>Proste modele liniowe zastępuje się modelami <strong>nieliniowymi, probabilistycznymi i dynamicznymi</strong>.</li>
+        <li>Psychopatologię lepiej ujmować <strong>wymiarowo niż kategorialnie</strong>: problem „diagnozuje się”, gdy widać <strong>odchylenie od zdrowego przebiegu rozwoju</strong>, a nie dopiero gdy dziecko spełnia kryteria zaburzenia. Kluczowe pytanie: <em>kiedy i jak prawidłowa ścieżka zmieniła trajektorię w stronę nieprzystosowania?</em></li>
+        <li>Istotnym predyktorem zdrowia lub zaburzeń jest <strong>poziom realizacji zadań rozwojowych</strong>.</li>
+      </ul>
+      <div class="callout tip"><span class="ci">💡</span><div><strong>Przykłady z podręcznika:</strong> agresja jest <strong>normatywna w wieku 2–4 lat</strong>, potem maleje (Tremblay), więc u starszych dzieci pytamy, dlaczego <em>nie wykształciły się alternatywne sposoby radzenia sobie ze złością</em>. Zależność działa też odwrotnie: badania osób z autyzmem rozwinęły wiedzę o <strong>teorii umysłu</strong> u zdrowych dzieci. W badaniach <strong>rumuńskich sierot</strong> im dłuższa deprywacja, tym gorsze funkcjonowanie; dobra opieka zastępcza chroniła zwłaszcza wtedy, gdy deprywacja trwała <strong>krócej niż 6 miesięcy</strong>.</div></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div><strong>Brak cierpienia nie zawsze oznacza zdrowie.</strong> W zaburzeniach eksternalizacyjnych cierpi głównie otoczenie, a dziecko ma małą świadomość problemu. I odwrotnie: wielu nastolatków <strong>maskuje cierpienie</strong> i spełnia oczekiwania dorosłych mimo samookaleczeń czy myśli samobójczych.</div></div>
+    </div>
+  </section>
+
+  <!-- S11 -->
+  <section id="S11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div class="section-header-text">
+        <h2>Transakcyjno-interakcyjny model procesów rozwojowych · łańcuchy reakcji</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 3 · Grzegorzewska i Cierpiałkowska 2020 (r. 5.1.2)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Istota modelu</h3>
+      <p>W odróżnieniu od podejścia <strong>linearnego</strong> (dziecko i środowisko względnie niezależne) psychopatologia rozwojowa zakłada, że procesy rozwojowe są <span class="term">interakcyjne i transakcyjne</span>: przebieg rozwoju wyznaczają <strong>zarówno cechy dziecka, jak i cechy środowiska</strong> (Sameroff, 2014). Jednostka sama jest systemem i jednocześnie elementem szerszego systemu. Wzajemne wpływy są <strong>dwukierunkowe</strong> i zachodzą na wielu poziomach, „od neuronów do sąsiedztwa”.</p>
+      <p>Rozwój to <strong>kumulacja konsekwencji tych transakcji</strong>. Ich rozprzestrzenianie się nazywa się <span class="term">kaskadami rozwojowymi</span> (Dodge, Masten) lub <span class="term">łańcuchami reakcji</span> (<em>chain reactions</em>, <strong>Rutter 1999</strong>).</p>
+      <div class="formula">zachowanie jednostki ⇄ środowisko ⇄ zdolności adaptacyjne<small>Schemat łańcucha reakcji ze slajdu: zachowanie kształtują zdolności adaptacyjne, a te zależą od środowiska, które reaguje na zachowanie</small></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div>Konsekwencja: trudne zachowanie dziecka może być <strong>błędnie uznane za nieadaptacyjne</strong>, choć jest dostosowaniem do <strong>nieprawidłowego środowiska</strong> (np. dysocjacja u maltretowanych dzieci).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Badania nad interakcjami niemowląt i matek (Lewis i Feiring, 1981)</h3>
+      <ol class="nlist">
+        <li>Obserwacja: 3-miesięczne dzieci <strong>nadopiekuńczych (intruzywnych) matek</strong> częściej mają pozabezpieczne przywiązanie około 1. roku życia.</li>
+        <li>Ale: dotyczyło to tylko niemowląt, które w 3. miesiącu były <strong>słabo zorientowane na kontakt społeczny</strong> i wolały zabawki od ludzi. Tylko takie dzieci miały nadmiernie angażujące się matki.</li>
+        <li>Wniosek: <strong>wczesna cecha dziecka</strong> (tzw. niespołeczność) wywołała nadmierne zaangażowanie matki, a to doprowadziło do pozabezpiecznego wzorca. Wpływ biegnie <strong>w obie strony</strong>.</li>
+      </ol>
+      <p>Wzorce przywiązania mogą się zmieniać: pozabezpieczny może przejść w bezpieczny dzięki responsywnemu środowisku i odwrotnie. Przykład pętli: <strong>drażliwe, niespokojne dziecko</strong> nasila negatywne emocje dorosłych → ich reakcje są mniej spokojne i troskliwe → to zwrotnie nasila rozdrażnienie dziecka (Lewis, 2015).</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Ścieżki rozwojowe są probabilistyczne, nie deterministyczne</h3>
+      <p><strong>Ścieżki (trajektorie) rozwojowe</strong> to sekwencyjne, trwające w czasie wzorce zachowania, które cechuje zarówno ciągłość, jak i zmienność. Są „rdzeniem” psychopatologii rozwojowej. Zmiana jest <strong>zawsze możliwa</strong>, ale im wcześniej dziecko wejdzie na ścieżkę patologiczną, tym większe prawdopodobieństwo nieprzystosowania.</p>
+      <div class="two-col">
+        <div class="callout exam"><span class="ci">🔀</span><div><strong>Ekwipotencjalność</strong> (wielofinalność): <strong>podobne warunki początkowe → różne efekty</strong>. Np. rodzeństwo wychowane w tej samej rodzinie z uzależnieniem: jedno rozwija zaburzenia, drugie dobrze się adaptuje.</div></div>
+        <div class="callout exam"><span class="ci">🎯</span><div><strong>Ekwifinalność</strong>: <strong>różne warunki początkowe → ten sam rezultat</strong>. Np. depresja u nastolatka może wyrosnąć z przemocy w domu, z prześladowania rówieśniczego albo z obciążenia genetycznego.</div></div>
+      </div>
+      <p>Pojęcie ekwifinalności pochodzi z <strong>teorii systemów Bertalanffy’ego</strong>: stan końcowy systemu otwartego można osiągnąć z wielu stanów początkowych i różnymi drogami.</p>
+      <div class="callout info"><span class="ci">ℹ️</span><div><strong>Ciągłość zaburzeń w czasie</strong>: u dzieci maltretowanych w przedszkolu i wczesnej szkole występują zaburzenia lękowe, a w adolescencji zaburzenia zachowania. Ścieżka antyspołeczna: drażliwość i wybuchy złości w przedszkolu → impulsywność i agresja w szkole → ukryte lub jawne zachowania antyspołeczne w adolescencji → przestępczy styl życia w dorosłości. <strong>Pozornie różne zachowania wyrażają ten sam wzorzec.</strong> W literaturze nazywa się to ciągłością <em>heterotypową</em> (zmienia się obraz, trwa rdzeń), a ciągłością <em>homotypową</em> utrzymywanie się tych samych objawów. Uwaga: podręcznik używa tych etykiet niekonsekwentnie (raz zgodnie ze standardem, raz odwrotnie), więc bezpieczniej zapamiętać przykłady niż same nazwy.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Przykład wielopoziomowości: model impulsywności Beauchaine’a</h3>
+      <p>Biologiczna, temperamentalna podatność: <strong>niedostymulowany mezolimbiczny układ dopaminowy</strong> (niska dopamina, słaba reaktywność na nagrodę) → niezadowolenie, drażliwość, złość → <strong>impulsywne poszukiwanie pobudzenia</strong> (chwilowo podnosi dopaminę). Ta podatność wchodzi w interakcję ze środowiskowymi czynnikami ryzyka (zaburzone relacje w rodzinie, niepowodzenia szkolne), co zwiększa ryzyko nasilenia zachowań antyspołecznych.</p>
+    </div>
+  </section>
+
+  <!-- S12 -->
+  <section id="S12">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div class="section-header-text">
+        <h2>Odporność psychiczna i zasoby (czynniki ochronne)</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 3 · Grzegorzewska i Cierpiałkowska 2020 (r. 5.2) · Szredzińska 2022 (za: Arango i in. 2018) · Trzebińska i Kuźmicz 2023</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Definicja odporności (slajd + podręcznik)</h3>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Odporność</strong> to <strong>„złożony, wieloczynnikowy proces efektywnego radzenia sobie z trudną sytuacją życiową, prowadzący do pozytywnej adaptacji. Indywidualne, rodzinne i pozarodzinne czynniki ochrony podlegają interakcji z czynnikami ryzyka, redukując lub kompensując ich negatywny wpływ”</strong>.</div></div>
+      <p>Definicja zakłada <strong>dwa konieczne warunki</strong>:</p>
+      <ol class="nlist">
+        <li><strong>ekspozycję na niekorzystne zdarzenia</strong> życiowe,</li>
+        <li><strong>pozytywną adaptację mimo</strong> poważnych zakłóceń procesu rozwojowego.</li>
+      </ol>
+      <p>Odporność to <strong>proces, a nie cecha</strong>; koncepcja skupia się na <strong>zasobach zamiast deficytów</strong>. Przełomem były badania <strong>Emmy Werner (1984) nad dziećmi z wyspy Kauai na Hawajach</strong>: część dzieci wychowywanych w bardzo trudnych warunkach rozwijała się dobrze, co podważyło model deterministyczny.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Zasoby — trzy poziomy (slajd)</h3>
+      <table class="ltable">
+        <tr><th>Indywidualne</th><th>Rodzinne</th><th>Środowiskowe</th></tr>
+        <tr><td>pewność siebie<br>spokojny temperament<br>zdolność do rozwiązywania problemów<br>umiejętności społeczne</td><td>dobra jakość opieki<br>bezpieczeństwo fizyczne<br>dostępność emocjonalna rodziców<br>dobre warunki życia</td><td>sukcesy szkolne<br>pozytywne grupy rówieśnicze<br>dobry klimat szkoły<br>znacząca osoba dorosła</td></tr>
+      </table>
+      <div class="callout tip"><span class="ci">💡</span><div>Szersza lista z Bednarka obejmuje m.in.: skuteczną regulację emocji, poczucie humoru, nadzieję, <strong>bezpieczny styl przywiązania</strong>, optymizm, pozytywną samoocenę, empatię; w rodzinie <strong>demokratyczny styl wychowania</strong>, bliskość, otwartą komunikację, wspólny czas i rytuały; w szkole pozytywny klimat i dobre relacje z nauczycielami. Dobra relacja z <strong>przynajmniej jednym rodzicem</strong> (zwłaszcza z ojcem) chroni przed próbami samobójczymi.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Kompetencje i pozytywna adaptacja</h3>
+      <ul class="alist">
+        <li><strong>Kompetencje</strong> to skuteczne radzenie sobie z <strong>zadaniami rozwojowymi</strong> odpowiednio do wieku i kontekstu (Luthar, 2003): edukacyjne (sukcesy szkolne), społeczne (satysfakcjonujące relacje rówieśnicze), behawioralne (przestrzeganie reguł).</li>
+        <li><strong>Pozytywna adaptacja</strong> to wielowymiarowy proces przystosowania do wymagań kolejnych faz rozwoju („bycie OK”).</li>
+        <li>Kryteria pozytywnej adaptacji (Luthar i Ziegler, 1991), od najbardziej wymagającego: <strong>(1)</strong> bardzo dobre funkcjonowanie we wszystkich sferach; <strong>(2)</strong> dobry poziom w jednej sferze; <strong>(3)</strong> brak objawów psychopatologicznych.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Czynniki ochronne w cyklu życia (Arango i in. 2018 za: Szredzińska 2022)</h3>
+      <table class="ltable">
+        <tr><th>Poziom</th><th>Przykłady działań ochronnych</th></tr>
+        <tr><td><strong>Cała populacja</strong></td><td>obniżenie nierówności w dochodach i bezrobocia; poprawa edukacji i opieki nad dziećmi; redukowanie stygmatyzacji osób z zaburzeniami; zwiększanie świadomości społecznej i profesjonalistów</td></tr>
+        <tr><td><strong>Od poczęcia do narodzin</strong></td><td>opieka okołoporodowa, właściwe żywienie</td></tr>
+        <tr><td><strong>Wczesne dzieciństwo</strong></td><td><strong>wzmacnianie więzi z opiekunami</strong>, rzetelne poradnictwo, właściwe stymulowanie rozwoju</td></tr>
+        <tr><td><strong>Wczesne dojrzewanie</strong></td><td><strong>obiady rodzinne</strong>, osiągnięcia szkolne i klimat społeczny, przeciwdziałanie przemocy rówieśniczej, żywienie i aktywność fizyczna</td></tr>
+        <tr><td><strong>Późny okres nastoletni</strong></td><td>posiłki z młodszymi, klimat szkoły, przeciwdziałanie przemocy, <strong>profilaktyka substancji psychoaktywnych</strong></td></tr>
+        <tr><td><strong>Grupy ryzyka</strong></td><td>wsparcie nastoletnich matek, poprawa stanu psychicznego rodziców, wczesna intensywna pomoc dzieciom ze spektrum autyzmu, szkolenia dla rodziców, profilaktyka wskazująca przy objawach subklinicznych</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- S13 -->
+  <section id="S13">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <div class="section-header-text">
+        <h2>Podatność i czynniki ryzyka</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 3 · Grzegorzewska i Cierpiałkowska 2020 (r. 5.2) · Szredzińska 2022 · artykuły o epigenetyce</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Definicje</h3>
+      <div class="callout exam"><span class="ci">🎯</span><div><strong>Podatność</strong> to <strong>„wypadkowa czynników genetycznych, psychologicznych i środowiskowych”</strong>, czyli zwiększone ryzyko pojawienia się zaburzeń wynikające z działania wielu czynników biologicznych, indywidualnych i środowiskowych.<br><strong>Czynniki ryzyka</strong> zwiększają <strong>prawdopodobieństwo wystąpienia objawów</strong>.</div></div>
+      <ul class="alist">
+        <li>Czynnik można uznać za źródło ryzyka, jeśli <strong>wystąpi przed</strong> negatywnymi efektami rozwojowymi.</li>
+        <li>Ryzyko rośnie, gdy dziecko jest narażone <strong>długo</strong> i przy <strong>braku czynników ochronnych</strong>.</li>
+        <li>Krytyczne znaczenie mają <strong>wiek dziecka, czas działania czynników i ich liczba</strong>.</li>
+        <li><strong>Kumulacja</strong> czynników ryzyka działa silniej niż pojedynczy czynnik (Luthar, 2003); czynniki zwykle współwystępują i piętrzą się.</li>
+        <li>Czynniki <strong>specyficzne dla okresu</strong> (prenatalnie: adaptacja matki do ciąży; wczesne dzieciństwo: zaburzenia więzi; później: szkoła i rówieśnicy) oraz <strong>niespecyficzne</strong>, działające w całym życiu (trudny temperament, impulsywność, niska samoocena, wykluczenie, dyskryminacja).</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Czynniki ryzyka — trzy poziomy (slajd)</h3>
+      <table class="ltable">
+        <tr><th>Indywidualne</th><th>Rodzinne</th><th>Środowiskowe</th></tr>
+        <tr><td>niska samoocena<br>trudny temperament<br>zaburzenia w komunikacji<br>uzależnienia</td><td>uzależnienia w rodzinie<br>niska jakość opieki<br>zaniedbania<br>przemoc rodzinna</td><td>niepowodzenia szkolne<br>niekorzystne środowisko lokalne</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Czynniki ryzyka w cyklu życia (Arango i in. 2018 za: Szredzińska 2022)</h3>
+      <table class="ltable">
+        <tr><th>Grupa</th><th>Przykłady</th></tr>
+        <tr><td><strong>Genetyczne</strong></td><td>historia zaburzeń psychicznych w rodzinie; warianty SNV/CNV w DNA, np. <strong>zespół delecji 22q11.2</strong></td></tr>
+        <tr><td><strong>Biologiczne</strong></td><td>zakażenia odmatczyne, wcześniactwo i powikłania okołoporodowe, złe żywienie, ekspozycja na narkotyki i niektóre leki, urazy mózgu, <strong>zmiany epigenetyczne w transporterach serotoniny i glikokortykoidów</strong>, zmiany w mózgu i hormonalne, substancje psychoaktywne</td></tr>
+        <tr><td><strong>Rodzinne</strong></td><td><strong>depresja okołoporodowa</strong>, zaniedbanie, przemoc wobec dziecka, choroby psychiczne rodziców</td></tr>
+        <tr><td><strong>Społeczne</strong></td><td>przemoc rówieśnicza, brak właściwej stymulacji, niekorzystna sytuacja społeczno-ekonomiczna, stresujące środowisko miejskie, imigracja, izolacja, <strong>stygmatyzowanie</strong></td></tr>
+      </table>
+      <div class="callout warn"><span class="ci">📊</span><div>Dane z raportu „Dzieci się liczą 2022”: osoby z <strong>4 lub więcej</strong> negatywnymi doświadczeniami w dzieciństwie <strong>17 razy częściej</strong> podejmowały próby samobójcze i <strong>11 razy częściej</strong> się samookaleczały. Najsilniej z zachowaniami autodestrukcyjnymi wiązały się <strong>krzywdzenie i zaniedbanie emocjonalne</strong>. Duży lub bardzo duży stres szkolny odczuwa <strong>ponad 2/5</strong> uczniów (HBSC 2018).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Wybrane czynniki biologiczne i temperamentalne</h3>
+      <ul class="alist">
+        <li><strong>Teratogeny</strong> — czynniki zewnętrzne działające na płód (biologiczne, chemiczne, fizyczne); najbardziej wrażliwy okres to <strong>3.–8. tydzień ciąży</strong>, ale żaden okres nie jest całkiem bezpieczny; np. alkohol → <strong>FASD</strong>.</li>
+        <li><strong>Temperament</strong> (reaktywność i samoregulacja) wpływa na przystosowanie <strong>bezpośrednio</strong>, <strong>pośrednio</strong> (przez reakcje otoczenia) i <strong>interakcyjnie</strong>: trudny temperament prowadzi do niedostosowania głównie wtedy, gdy rodzice reagują silną konfrontacją lub uległością.</li>
+        <li><strong>Impulsywność</strong> — szybkie, nieplanowane reagowanie bez zważania na konsekwencje; leży u podstaw zaburzeń eksternalizacyjnych (ADHD, zaburzenia zachowania, uzależnienia), ale wiąże się też z depresją i samookaleczeniami. Mniej więcej <strong>połowa</strong> impulsywnych przedszkolaków ma później poważne zaburzenia, zwłaszcza przy kumulacji ryzyka. W stabilnym środowisku z czynnikami ochronnymi impulsywne dziecko może zbudować odporność.</li>
+        <li><strong>Trudny temperament</strong> (Thomas i Chess): nieregularność funkcji fizjologicznych, wycofywanie się, trudności w przystosowaniu, intensywne reakcje, negatywny afekt. Dziś częściej mówi się o <strong>niezrównoważonym typie temperamentu</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Epigenetyka — jak środowisko „wchodzi pod skórę” (literatura uzupełniająca)</h3>
+      <p><span class="term">Epigenetyka</span> bada <strong>dziedziczne zmiany ekspresji genów, które nie wynikają ze zmian sekwencji DNA</strong> (termin wprowadził Waddington w 1942 r.). Mechanizmy epigenetyczne są <strong>ogniwem łączącym geny i środowisko</strong> i wyjaśniają różnice nawet między bliźniętami jednojajowymi.</p>
+      <ul class="alist">
+        <li><strong>Metylacja DNA</strong> — dołączenie grupy metylowej do cytozyny; metylacja promotora zwykle <strong>obniża lub wycisza ekspresję genu</strong>.</li>
+        <li><strong>Modyfikacje histonów</strong> (np. acetylacja) zmieniają dostępność DNA; trzecim mechanizmem są niekodujące RNA.</li>
+        <li><strong>Zaburzona opieka rodzicielska we wczesnym okresie życia</strong> zmienia metylację genu receptora glukokortykoidowego (<strong>NR3C1</strong>, oś HPA) w hipokampie. Zwiększoną metylację NR3C1 stwierdzano u osób maltretowanych w dzieciństwie; jej poziom rósł z nasileniem traumy.</li>
+        <li><strong>BDNF</strong> to jeden z najważniejszych mediatorów neuroplastyczności; w depresji jego stężenie jest obniżone, prawdopodobnie przez zwiększoną metylację jego genu.</li>
+        <li>Zmiany epigenetyczne są <strong>potencjalnie odwracalne</strong>, co może tłumaczyć epizodyczność zaburzeń i spontaniczne remisje.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK WIĘŹ I TRAUMA ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-d">🤝 Więź i trauma</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S14 -->
+  <section id="S14">
+    <div class="section-header">
+      <div class="section-num">14</div>
+      <div class="section-header-text">
+        <h2>Przywiązanie i style więzi — więź bezpieczna jako czynnik chroniący</h2>
+        <div class="src-tag">Źródło: <span>Wykład (trauma) · Grzegorzewska i Cierpiałkowska 2020 (r. 5.3.1) · Melka-Roszczyk 2021</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Teoria przywiązania i wewnętrzne modele operacyjne</h3>
+      <p><span class="term">John Bowlby</span>: każdy człowiek ma biologicznie uwarunkowaną skłonność do tworzenia silnych więzi emocjonalnych; pierwszą i najważniejszą jest relacja dziecka z matką (opiekunem). Przywiązanie to <strong>trwała więź między ludźmi</strong>; obiekt przywiązania jawi się jako silniejszy lub mądrzejszy.</p>
+      <p>Style przywiązania to inaczej <span class="term">wewnętrzne operacyjne modele (reprezentacje) więzi</span> (WMO). Wpływają na:</p>
+      <ol class="nlist">
+        <li><strong>zdolność do regulacji emocji</strong>,</li>
+        <li><strong>możliwość poznawania i eksploracji siebie i świata</strong>,</li>
+        <li><strong>zdolność do utrzymywania relacji interpersonalnych</strong>,</li>
+        <li><strong>zdolność do radzenia sobie z przeciwnościami i zagrożeniem</strong>.</li>
+      </ol>
+      <p>WMO powstają w pierwszych miesiącach życia, <strong>stabilizują się około 4. roku życia</strong> i, jeśli relacje nie zmienią się diametralnie, są względnie trwałe do wczesnej dorosłości. Mogą jednak ulec zmianie, gdy opiekunowie stają się bardziej lub mniej dopasowani do potrzeb dziecka.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Bezpieczny model przywiązania → odporność</h3>
+      <div class="formula">opiekun dostępny emocjonalnie, czuły, wrażliwy na potrzeby → bezpieczne przywiązanie<small>→ optymalny rozwój zdolności do poznawania świata, autonomii, nawiązywania bezpiecznych relacji i plastycznego reagowania w sytuacjach trudnych</small></div>
+      <p>Reprezentacja ufnego opiekuna jako źródła komfortu i bezpieczeństwa to <strong>dobra baza do radzenia sobie z przeszkodami</strong> w kolejnych zadaniach rozwojowych. Dlatego <strong>bezpieczny styl przywiązania jest czynnikiem chroniącym</strong> i jednym z zasobów odporności psychicznej. Bezpiecznie przywiązane matki trafniej rozpoznają emocje i potrzeby dziecka; osoby bezpiecznie przywiązane lepiej akceptują i integrują emocje pozytywne i negatywne.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Style przywiązania (Ainsworth 1978; Main i Solomon 1990)</h3>
+      <table class="ltable">
+        <tr><th>Styl</th><th>Zachowanie opiekuna</th><th>Dziecko</th><th>Przekonanie o sobie / innych</th></tr>
+        <tr><td><strong>Bezpieczny</strong></td><td>częsty kontakt, responsywny, adekwatnie reaguje na sygnały, dostępny fizycznie i emocjonalnie</td><td>szuka bliskości, ale swobodnie eksploruje; w stresie szybko się uspokaja („bezpieczna przystań”)</td><td>zasługuję na miłość; inni nie są zagrożeniem</td></tr>
+        <tr><td><strong>Unikający</strong></td><td>w sytuacjach dystresu <strong>niedostępny</strong>, nie koi</td><td>pozornie obojętne na nieobecność opiekuna; w dystresie równie chętnie zwraca się do obcego</td><td>nie jestem godny miłości; inni są niedostępni i niepomocni</td></tr>
+        <tr><td><strong>Lękowo-ambiwalentny</strong></td><td><strong>niestabilny, nieprzewidywalny</strong> — pojawia się i znika</td><td>złość i silny lęk przed rozstaniem; trzyma się blisko, mało eksploruje; jednocześnie szuka kontaktu i go odrzuca</td><td>inni są nieprzewidywalni; utrata wiary we własną skuteczność</td></tr>
+        <tr><td><strong>Zdezorganizowany</strong></td><td><strong>krzywdzi lub zaniedbuje</strong>, albo sam ma nieprzepracowaną traumę; bywa przerażający lub przerażony</td><td>sprzeczne, chaotyczne zachowania; ciągła czujność i kontrola; nie wie, czy zbliżać się, czy unikać</td><td>opiekun jest jednocześnie źródłem bezpieczeństwa i zagrożenia („przerażenie bez rozwiązania” — Main)</td></tr>
+      </table>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Hazan i Shaver (1987): wzorce przywiązania przenoszą się na <strong>związki dorosłych</strong>. Osoby bezpieczne czerpią satysfakcję z bliskości, unikające mają trudność z zaufaniem, a lękowo-ambiwalentne niepokoją się o trwałość związku. W artykule Melki-Roszczyk opisano przypadek Jana: dzieciństwo z nieprzewidywalną, pijącą matką → przejęcie roli opiekuna (parentyfikacja) → w dorosłości wybór krzywdzących partnerek.</div></div>
+    </div>
+  </section>
+
+  <!-- S15 -->
+  <section id="S15">
+    <div class="section-header">
+      <div class="section-num">15</div>
+      <div class="section-header-text">
+        <h2>Więź pozabezpieczna jako czynnik ryzyka</h2>
+        <div class="src-tag">Źródło: <span>Wykład (trauma) · Grzegorzewska i Cierpiałkowska 2020 (r. 5.3.1)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Zachowania i postawy opiekunów, które prowadzą do więzi pozabezpiecznej</h3>
+      <p>Źródłem jest <span class="term">niedostępność emocjonalna opiekuna</span>. Przybiera ona formy od jawnych (krzywdzenie, agresja, odrzucenie) po subtelne (obojętność, niewrażliwość, pomijanie, unieważnianie). Lista ze slajdu:</p>
+      <ul class="alist">
+        <li><strong>błędne rozpoznawanie potrzeb</strong> dziecka,</li>
+        <li><strong>błędne rozpoznawanie sygnałów emocjonalnych</strong>,</li>
+        <li><strong>niereagowanie w sytuacjach, gdy dziecko wymaga ukojenia</strong>,</li>
+        <li><strong>nieangażowanie się w relację</strong> z dzieckiem,</li>
+        <li><strong>koncentrowanie się tylko na własnych przeżyciach</strong>.</li>
+      </ul>
+      <p>Gdy takie zachowania się powtarzają, u dziecka pojawia się obezwładniające poczucie zagrożenia w obecności ludzi. Dziecko staje się albo nastawione na <strong>unikanie relacji</strong>, albo na <strong>przywieranie</strong> do każdego, kto wydaje się „dobrym opiekunem”.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Skutki pozabezpiecznych modeli więzi</h3>
+      <div class="two-col">
+        <div class="callout warn"><span class="ci">📉</span><div><strong>Cechy (slajd):</strong><br>• słaba kontrola emocji<br>• niska samoocena<br>• skłonność do negatywnych stanów<br>• skłonność do nasilonych reakcji agresywnych<br>• ograniczona zdolność empatycznego rozumienia innych<br>• większa emocjonalna zależność od dorosłych</div></div>
+        <div class="callout warn"><span class="ci">⚙️</span><div><strong>Mechanizmy reagowania (Greenberg, 1999):</strong><br>1. gotowość do reagowania w stresie negatywnymi emocjami, zwłaszcza <strong>lękiem lub złością</strong><br>2. <strong>utrata zaufania</strong> do siebie w kontaktach z innymi<br>3. deficyty regulacji emocji → <strong>impulsywność</strong> (zahamowanie rozwoju kontroli)<br>4. wadliwa motywacja w relacjach: <strong>nasilona rywalizacja albo podporządkowanie i uległość</strong></div></div>
+      </div>
+      <p>Te mechanizmy zniekształcają percepcję, podtrzymują sztywne przekonania i stają się bazą dla zaburzeń emocjonalnych i osobowości oraz problemów eksternalizacyjnych i internalizacyjnych. Szczególną rolę odgrywają style <strong>unikający i zdezorganizowany</strong>.</p>
+      <div class="callout exam"><span class="ci">🎯</span><div>Związek przywiązania z psychopatologią jest <strong>probabilistyczny, a nie deterministyczny</strong>. Więź pozabezpieczna <strong>sama w sobie nie jest zaburzeniem</strong> ani bezpośrednią przyczyną objawów: to <strong>czynnik ryzyka</strong>, który inicjuje ścieżki rozwojowe, a ich ostateczny kształt zależy od predyspozycji dziecka i jakości środowiska.</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Wskaźniki przywiązania zdezorganizowanego (Main i Solomon, 1990)</h3>
+      <ul class="alist">
+        <li>sekwencyjne sprzeczne zachowania: „przyleganie” do opiekuna i nagłe oddalenie, zastyganie na jego widok,</li>
+        <li>jednoczesne sprzeczne zachowania: silne unikanie z intensywnym szukaniem kontaktu,</li>
+        <li>niekierowane, niepełne, „zatrzymywane” ruchy; stereotypie; potykanie się tylko przy rodzicu,</li>
+        <li>zamrażanie i spowolnienie ekspresji; wyraźny lęk przy rodzicu (zgarbienie, zalękniona twarz),</li>
+        <li>dezorientacja: nagłe, zaskakujące zmiany zachowania.</li>
+      </ul>
+      <p>Przykład z podręcznika: <strong>Adam</strong> — w pierwszych 2 latach 4 zmiany miejsca pobytu, w wieku 4 lat adopcja; brak kontaktu z rodzicami adopcyjnymi przy „lepkości” wobec obcych, agresja, brak empatii.</p>
+    </div>
+  </section>
+
+  <!-- S16 -->
+  <section id="S16">
+    <div class="section-header">
+      <div class="section-num">16</div>
+      <div class="section-header-text">
+        <h2>Trauma relacyjna i koncepcja „traumatycznego rozwoju”</h2>
+        <div class="src-tag">Źródło: <span>Wykład (trauma) · Grzegorzewska i Cierpiałkowska 2020 (r. 5.3)</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Rodzaje traumy</h3>
+      <table class="ltable">
+        <tr><th>Jednorazowa</th><th>Przewlekła / złożona / relacyjna</th></tr>
+        <tr><td><strong>Trauma typu I</strong> — przeciążające doświadczenie jednorazowe (wypadek, trzęsienie ziemi)<br>→ <strong>zespół stresu pourazowego (PTSD)</strong></td><td><strong>Trauma złożona</strong> (Judith <strong>Herman, 1992</strong>) — powtarzająca się, nie do uniknięcia, najczęściej w relacji z opiekunem i od wczesnego dzieciństwa<br>→ <strong>złożony zespół stresu pourazowego (PTSDc)</strong> lub <strong>DESNOS</strong> (zaburzenie po ekstremalnym stresie niesklasyfikowanym gdzie indziej)</td></tr>
+      </table>
+      <ul class="alist">
+        <li>Trauma przewlekła wpływa <strong>na kształtującą się strukturę psychiczną i osobowość</strong>, a nie tylko na obraz objawów.</li>
+        <li>Pojęcie traumy złożonej <strong>włączyło do świadomości społecznej</strong> myślenie o urazowych doświadczeniach z dzieciństwa doznanych w relacji z dorosłymi i ich konsekwencjach.</li>
+        <li><strong>ICD-11</strong> wprowadza rozpoznanie <span class="term">złożonego PTSD (6B41, cPTSD)</span>; DSM-5 trafniej niż wcześniej rozróżnia traumę pojedynczą i złożoną.</li>
+        <li>Definicja ze slajdu o terapii: trauma to <strong>doświadczenia wywołujące intensywne fizyczne i psychiczne reakcje stresowe</strong> o trwałym negatywnym wpływie; jest <strong>wysoce zindywidualizowana</strong> — co traumatyczne dla jednego, nie musi być dla drugiego.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Koncepcja „traumatycznego rozwoju” (Liotti i Farina, 2016)</h3>
+      <p>Pytanie wyjściowe: <em>jak funkcjonuje umysł dziecka, które musi radzić sobie z negatywnymi emocjami, zwłaszcza przerażeniem i niemocą znalezienia rozwiązania</em>, w chwilach aktywowania się modelu przywiązania? Kluczowe zjawisko to <span class="term">dysocjacja</span>, rozumiana na dwa sposoby: jako <strong>mechanizm obronny</strong> albo jako <strong>wrażliwość</strong> wynikająca z uwewnętrznienia niespójnych doświadczeń z rodzicem (Barach).</p>
+      <div class="two-col">
+        <div class="callout info"><span class="ci">🫥</span><div><strong>Oddzielanie (alienacja, <em>detachment</em>)</strong> — zaburzenie świadomości siebie „w pierwszej osobie” → <strong>depersonalizacja</strong> (poczucie odłączenia od ciała), derealizacja.</div></div>
+        <div class="callout info"><span class="ci">🧩</span><div><strong>Fragmentaryzacja (<em>compartmentalization</em>)</strong> — zaburzenie świadomości „dostępu”, czyli spójnej narracji o sobie → amnezja i fuga dysocjacyjna, niezintegrowane stany Ja.</div></div>
+      </div>
+      <h4>Trzy ścieżki rozwoju dziecka z przywiązaniem zdezorganizowanym</h4>
+      <ol class="nlist">
+        <li>Relacje z rodzicami stają się <strong>bardziej spójne</strong> → dziecko identyfikuje się z bezpieczniejszym aspektem modelu.</li>
+        <li>Relacje <strong>dalej niespójne, ale bez poważnych traum</strong> → dysocjacja tylko w ekstremalnym stresie.</li>
+        <li><strong>Ciągły ekstremalny stres</strong> (opiekun naprzemiennie kojący i przerażający) → silna dysocjacja, fragmentaryzacja tożsamości.</li>
+      </ol>
+      <h4>Trzy strategie kontrolujące (radzenie sobie z aktywacją modelu przywiązania)</h4>
+      <table class="ltable">
+        <tr><th>Strategia</th><th>Na czym polega</th><th>Ryzyko</th></tr>
+        <tr><td><strong>Kontrolująco-karząca</strong></td><td>bunt, opozycyjność, krytykowanie, wyśmiewanie i poniżanie rodzica; dziecko „straszy” agresywnego opiekuna</td><td><strong>eksternalizacyjne</strong>: zaburzenia opozycyjno-buntownicze, potem zaburzenia zachowania</td></tr>
+        <tr><td><strong>Kontrolująco-opiekuńcza</strong></td><td>dziecko pociesza i uspokaja przerażonego lub krzywdzącego rodzica → <strong>odwrócenie ról = parentyfikacja</strong></td><td><strong>internalizacyjne</strong>: zaburzenia lękowe, afektywne, psychosomatyczne</td></tr>
+        <tr><td><strong>Inne</strong> (np. seksualizacja relacji)</td><td>kontrola relacji przez erotyzację</td><td>przekraczanie granic intymności, wykorzystanie seksualne</td></tr>
+      </table>
+      <p>Strategie mają charakter <strong>kompensacyjny</strong> i powtarzalnie się załamują, narażając dziecko na kolejne traumy. W efekcie pojawia się sprzeczny stan: <strong>przerażający lęk przed bliskością i ogromna obawa przed utratą nadziei na nią</strong>.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Przywiązanie, regulacja emocji i mentalizacja</h3>
+      <ul class="alist">
+        <li><strong>Mentalizacja</strong> to wyobrażeniowa aktywność umysłu: rozumienie zachowania własnego i cudzego w kategoriach stanów umysłu (potrzeb, uczuć, przekonań, zamiarów). Kształtuje się w relacji przywiązania i obok samoregulacji emocji i kontroli uwagi jest kluczowym czynnikiem organizacji <em>self</em>.</li>
+        <li>Rozwój od <strong>równoważności psychicznej</strong> (wewnętrzne = zewnętrzne), przez <strong>tryb „na niby”</strong>, do <strong>funkcji refleksyjnej</strong>. Deficyty mentalizacji to podwaliny zaburzeń osobowości.</li>
+        <li>Regulacja emocji dziecka służy <strong>utrzymaniu bliskości z opiekunem</strong>. Odrzucane dziecko albo staje się przesadnie przyjazne, albo nasila złość i rozpacz, żeby zwrócić uwagę niedostępnego opiekuna.</li>
+        <li>Na regulację emocji dziecka wpływają: <strong>model przywiązania matki</strong>, <strong>depresja matki</strong> (błędnie odczytuje emocje, np. złość jako smutek), <strong>jej stosunek do emocji</strong> i <strong>samo dziecko</strong> (trafniej rozumiejące swoje emocje lepiej je komunikuje).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK ETYKA I TERAPIA ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-e">⚖️ Etyka i prawo w terapii dziecka</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S17 -->
+  <section id="S17">
+    <div class="section-header">
+      <div class="section-num">17</div>
+      <div class="section-header-text">
+        <h2>Zgoda na terapię — dwa rodzaje: consent i assent</h2>
+        <div class="src-tag">Źródło: <span>Zajęcia 2 (Breaux i Smith, 2023) · Trzebińska i Kuźmicz 2023</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Dwa rodzaje zgody</h3>
+      <div class="two-col">
+        <div class="callout exam"><span class="ci">📜</span><div><strong>CONSENT</strong> — zgoda od osoby, która <strong>zgodnie z prawem może jej udzielić</strong> (u dziecka: rodzic / opiekun prawny).</div></div>
+        <div class="callout exam"><span class="ci">🙋</span><div><strong>ASSENT</strong> — zgoda od uczestnika, który <strong>w świetle prawa sam o sobie nie decyduje</strong> (samo dziecko).</div></div>
+      </div>
+      <p>Motto zajęć: <em>„Rules Without Relationships Lead to Rebellion”</em> — zasady bez relacji prowadzą do buntu.</p>
+      <h4>Cechy assent (z artykułów)</h4>
+      <ul class="alist">
+        <li><strong>wyraźna, pozytywna zgoda</strong> na uczestnictwo, <strong>a nie tylko brak odmowy</strong>,</li>
+        <li><strong>dobrowolna</strong>: dziecko podchodzi do zadań chętnie i uczy się bez przymusu,</li>
+        <li><strong>dodatek do zgody opiekunów prawnych</strong>, a nie jej zastępstwo,</li>
+        <li>wyrażenie akceptacji przez kogoś, kto <strong>nie ma zdolności prawnej</strong> do udzielenia zgody,</li>
+        <li><strong>może być odwołana w każdym momencie</strong>.</li>
+      </ul>
+      <div class="callout info"><span class="ci">ℹ️</span><div>Literatura: każdy kontakt psychologa z dzieckiem jest interwencją, dlatego wymaga <strong>świadomej zgody dziecka oraz rodziców/opiekunów prawnych</strong>, a kontrakt powinien chronić szacunek, podmiotowość i samostanowienie ucznia (prawo do informacji zwrotnej, prawo odmowy, poufność). W polskim prawie medycznym od <strong>16. roku życia</strong> potrzebna jest zgoda <strong>zarówno przedstawiciela ustawowego, jak i samego małoletniego</strong> (tzw. zgoda kumulatywna).</div></div>
+    </div>
+
+    <div class="lcard">
+      <h3>Interwencja oparta na zgodzie dziecka (<em>assent-based intervention</em>)</h3>
+      <ul class="alist">
+        <li><strong>podkreśla i aktywnie szuka</strong> zgody ucznia,</li>
+        <li>sposoby udzielania i wycofywania zgody są <strong>indywidualnie zdefiniowane</strong> dla ucznia, oceniane i poddawane refleksji,</li>
+        <li>dane o udzieleniu i wycofaniu zgody, umiejętności wyboru i komunikowania są <strong>zbierane, analizowane i uwzględniane przy planowaniu sesji</strong>.</li>
+      </ul>
+      <table class="ltable">
+        <tr><th></th><th>Werbalne</th><th>Niewerbalne</th></tr>
+        <tr><td><strong>Udzielenie zgody</strong></td><td>mówi „tak” lub synonim; dotyka ikony „start” / „tak”</td><td>wchodzi do gabinetu, siada obok terapeuty; pochyla się ku pomocom i terapeucie, uśmiecha się; sięga po pomoce; układa je zgodnie z instrukcją</td></tr>
+        <tr><td><strong>Wycofanie zgody</strong></td><td>„nie”, „stop” lub synonim; negatywne stwierdzenia o zadaniu, terapeucie, sesji; ciągłe próby zmiany tematu; dotyka ikony „stop” / „nie”</td><td>kręci głową; ignoruje, nie odpowiada; odsuwa się, odchyla; rozrzuca pomoce; ucieka z miejsca terapii; odwraca wzrok</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Co może powodować wycofanie zgody i jak reagować (Breaux i Smith, 2023, tab. 3)</h3>
+      <table class="ltable">
+        <tr><th>Sytuacja</th><th>Przykładowe reakcje terapeuty</th></tr>
+        <tr><td><strong>Nie chce wejść do gabinetu</strong></td><td>zwiększ pozytywne wzmocnienia w środowisku terapii; usuń elementy awersyjne; zapewnij dostęp do preferowanych aktywności i przedmiotów; <strong>zbuduj relację</strong></td></tr>
+        <tr><td><strong>Zbyt trudne zadania</strong></td><td>zaproponuj pomoc lub przerwę; zredukuj kryteria i liczbę powtórzeń; zwiększ wzmocnienia po zadaniu</td></tr>
+        <tr><td><strong>Nie rozumie zadania</strong></td><td>procedury ułatwiające zrozumienie (np. <strong>modelowanie</strong>); pomoce audiowizualne; wzmacniaj pozostawanie w zadaniu</td></tr>
+        <tr><td><strong>Nie zgadza się na niektóre elementy terapii</strong></td><td><strong>nie dotykaj ucznia</strong>; zmodyfikuj przestrzeń dla maksymalnego komfortu</td></tr>
+        <tr><td><strong>Nie zgadza się na interakcję z terapeutą</strong></td><td>znacznie obniż wymagania; zwiększ bezwarunkowy dostęp do obiektów; <strong>zabawa równoległa</strong>; skup się na relacji; więcej aktywności proponowanych przez ucznia</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- S18 -->
+  <section id="S18">
+    <div class="section-header">
+      <div class="section-num">18</div>
+      <div class="section-header-text">
+        <h2>Uwzględnianie traumy w terapii — trauma-informed ABA</h2>
+        <div class="src-tag">Źródło: <span>Wykład (trauma w terapii) · Rajaraman i in. 2022</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Dlaczego terapia behawioralna (SAZ/ABA) bierze pod uwagę traumę</h3>
+      <p>Gdy dziecko ma trudności w zachowaniu i ma za sobą traumatyczne doświadczenia, potrzebne jest <strong>wrażliwe, zindywidualizowane podejście</strong>. Cele i strategie terapii uwzględniają <strong>wyjątkową historię dziecka, jego mocne strony i wyzwania</strong>. Osoby z niepełnosprawnością są bardziej narażone na zdarzenia traumatyczne.</p>
+      <ul class="alist">
+        <li><strong>charakterystyka pacjentów</strong>: historia hospitalizacji, trudności komunikacyjne, szczególne potrzeby, wysoka wrażliwość,</li>
+        <li><strong>dobór wzmocnień</strong> i <strong>dobór metod</strong> (np. <em>time-out</em> a historia zaniedbań),</li>
+        <li><strong>zgeneralizowane reakcje</strong> (lęk), <strong>wycofywanie zgody</strong>, <strong>wyzwalacze i wrażliwość</strong>.</li>
+      </ul>
+      <h4>Sześć elementów podejścia trauma-informed</h4>
+      <ol class="nlist">
+        <li><strong>Wsparcie sensoryczne</strong> — przerwy sensoryczne, środowisko przyjazne zmysłom, narzędzia do przetwarzania bodźców.</li>
+        <li><strong>Nawiązanie relacji.</strong></li>
+        <li><strong>Nauczanie regulacji emocji</strong> — dziecko zyskuje poczucie sprawczości.</li>
+        <li><strong>Dokonywanie wyborów i posiadanie kontroli</strong> — wybór zajęć tam, gdzie to możliwe.</li>
+        <li><strong>Język wrażliwy na traumę</strong> — uważność na słowa, które mogą wywołać reakcję.</li>
+        <li><strong>Pozytywne wzmocnienie</strong> i koncentracja na mocnych stronach → poczucie wartości i odporność.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK MÓZG ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-f">🧠 Mózg — neuroplastyczność</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S19 -->
+  <section id="S19">
+    <div class="section-header">
+      <div class="section-num">19</div>
+      <div class="section-header-text">
+        <h2>Neuroplastyczność — zagadnienia ogólne</h2>
+        <div class="src-tag">Źródło: <span>Wykład prof. M. Kossut (YouTube, wskazany w zagadnieniach) · Kossut 2018 · Dmitrzak-Węglarz i Hauser 2009 · Chmielewska i in. 2019 · wiedza ogólna</span></div>
+      </div>
+    </div>
+
+    <div class="callout warn"><span class="ci">⚠️</span><div>W materiałach nie ma tekstu o neuroplastyczności, zagadnienia odsyłają tylko do wykładu prof. Małgorzaty Kossut na YouTube. Ta sekcja zbiera <strong>podstawową, podręcznikową wiedzę</strong>. Warto obejrzeć wykład i dopisać akcenty prowadzącej.</div></div>
+
+    <div class="lcard">
+      <h3>Definicja</h3>
+      <p><span class="term">Neuroplastyczność</span> to <strong>zdolność układu nerwowego do zmian strukturalnych i funkcjonalnych pod wpływem doświadczenia, uczenia się, zmian środowiska i uszkodzeń</strong>. Mózg nie jest „zadrutowany na stałe” — reorganizuje się przez całe życie, choć najsilniej w dzieciństwie. Prof. <strong>Małgorzata Kossut</strong> (Instytut Nenckiego) badała m.in. plastyczność kory czuciowej u gryzoni (tzw. <strong>kora baryłkowa</strong>, która odbiera bodźce z wąsów).</p>
+    </div>
+
+    <div class="lcard">
+      <h3>Rodzaje plastyczności</h3>
+      <table class="ltable">
+        <tr><th>Rodzaj</th><th>Na czym polega</th><th>Przykład</th></tr>
+        <tr><td><strong>Rozwojowa</strong></td><td>kształtowanie się mózgu w dzieciństwie: nadprodukcja synaps, potem <strong>przycinanie</strong> tych nieużywanych</td><td>zasada „use it or lose it”</td></tr>
+        <tr><td><strong>Związana z uczeniem się i doświadczeniem</strong></td><td>wzmacnianie i osłabianie połączeń, zmiany map korowych</td><td>powiększony hipokamp u londyńskich taksówkarzy; większa reprezentacja palców u muzyków</td></tr>
+        <tr><td><strong>Kompensacyjna (naprawcza)</strong></td><td>przejmowanie funkcji uszkodzonych obszarów przez inne</td><td>rehabilitacja po udarze lub urazie</td></tr>
+        <tr><td><strong>Nieadaptacyjna</strong></td><td>zmiany, które utrwalają problem</td><td>ból fantomowy, uzależnienia, utrwalony lęk</td></tr>
+      </table>
+    </div>
+
+    <div class="lcard">
+      <h3>Mechanizmy</h3>
+      <ul class="alist">
+        <li><strong>Plastyczność synaptyczna</strong>: <em>długotrwałe wzmocnienie</em> (LTP) i osłabienie (LTD) synaps; reguła Hebba: <em>„neurony, które razem pobudzają się, łączą się ze sobą”</em>.</li>
+        <li><strong>Synaptogeneza i przycinanie synaps</strong> (<em>pruning</em>), zmiany kolców dendrytycznych.</li>
+        <li><strong>Neurogeneza</strong> u dorosłych, m.in. w <strong>zakręcie zębatym hipokampa</strong>.</li>
+        <li><strong>Mielinizacja</strong> — trwa do wczesnej dorosłości (najpóźniej kora przedczołowa).</li>
+        <li><strong>Czynniki neurotroficzne</strong>, zwłaszcza <strong>BDNF</strong> — kluczowy mediator neuroplastyczności (obniżony w depresji).</li>
+        <li><strong>Epigenetyka</strong> (artykuł Dmitrzak-Węglarz i Hauser): utrwalenie śladu pamięciowego wymaga zmian transkrypcji genów (np. CREB → BDNF); metylacja DNA i acetylacja histonów regulują LTP i pamięć w hipokampie.</li>
+      </ul>
+    </div>
+
+    <div class="lcard">
+      <h3>Okresy krytyczne i wrażliwe — znaczenie dla wspierania rozwoju</h3>
+      <ul class="alist">
+        <li><strong>Okres krytyczny</strong> — czas, w którym określone doświadczenie jest <em>niezbędne</em> do rozwoju funkcji (Hubel i Wiesel: zasłonięcie oka u kociąt trwale upośledzało widzenie). <strong>Okres wrażliwy</strong> — czas, w którym doświadczenie działa najsilniej, ale później zmiana jest nadal możliwa.</li>
+        <li><strong>Środowisko wzbogacone</strong> (u zwierząt) zwiększa liczbę połączeń; <strong>deprywacja</strong> je zubaża. Rumuńskie sieroty: im dłuższa deprywacja, tym gorsze efekty (sekcja 10).</li>
+        <li>Wysoka plastyczność wczesnego dzieciństwa uzasadnia <strong>wczesne wspomaganie rozwoju (WWR)</strong> i wczesną interwencję: im wcześniej, tym większa szansa kompensacji.</li>
+        <li>Plastyczność działa <strong>w obie strony</strong>: przewlekły stres i trauma też zmieniają mózg (oś HPA, hipokamp, epigenetyka), ale terapia i bezpieczna relacja mogą te zmiany częściowo odwracać.</li>
+      </ul>
+      <div class="callout tip"><span class="ci">🔗</span><div>Łączy się z: <strong>zasobami i odpornością</strong> (sekcja 12), <strong>epigenetyką</strong> (sekcja 13), <strong>traumą</strong> (sekcja 16) i z sensem całego przedmiotu: wspieranie rozwoju działa, bo mózg dziecka jest plastyczny.</div></div>
+    </div>
+  </section>
+
+  <!-- ══════════ BLOK EGZAMIN ══════════ -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-exam">📝 Egzamin — 11 zagadnień w pigułce</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <!-- S20 -->
+  <section id="S20">
+    <div class="section-header">
+      <div class="section-num">20</div>
+      <div class="section-header-text">
+        <h2>Zagadnienia egzaminacyjne — krótkie odpowiedzi</h2>
+        <div class="src-tag">Źródło: <span>zagadnienia od prowadzącej · cała notatka</span></div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <h3>Ściąga do szybkiej powtórki</h3>
+      <table class="ltable">
+        <tr><th>Zagadnienie</th><th>Odpowiedź w skrócie</th></tr>
+        <tr><td><strong>1. Zdrowie psychiczne wg WHO</strong></td><td>nieobecność zaburzeń + optymalny stan umożliwiający realizację zdolności, radzenie sobie ze stresem, produktywność, wkład w społeczność; zarzuty: zbyt ogólna, zbyt szczegółowa, jedna perspektywa → <a href="#S1">sekcja 1</a></td></tr>
+        <tr><td><strong>2. Modele zdrowia</strong></td><td>zrównoważony: dwa wymiary, dobrostan wzmacniamy, psychopatologię leczymy; transdiagnostyczny: symptom = zaburzony proces, „ponad DSM”; sieciowy: symptomy aktywne i powiązane, zaburzenie = proces; wspólne odejście od ujęcia kategorialnego → <a href="#S4">sekcje 2–4</a></td></tr>
+        <tr><td><strong>3. Drażniące / niepożądane / zaburzenia</strong></td><td>drażniące: adekwatne do wieku, sporadyczne, przyczyny po stronie dorosłych; niepożądane: nieadekwatne do wieku, otoczenie widzi je jako problem; zaburzenia: zespoły symptomów naruszające jakość życia (ICD-11, DSM-5) → <a href="#S5">sekcja 5</a></td></tr>
+        <tr><td><strong>4. Bronfenbrenner i Rutter</strong></td><td>mikro- (jednostkowa), mezo- (grupowa), egzo- (społeczności), makrosystem (kulturowa); wpływy bezpośrednie i pośrednie; przesunięcia ekologiczne = zmiany siedlisk; oferty (Gibson); punkty zwrotne: indywidualne, zmieniają trajektorię, głębsze niż stres → <a href="#S7">sekcje 7–8</a></td></tr>
+        <tr><td><strong>5. Dwa rodzaje zgód</strong></td><td>consent — od osoby uprawnionej prawnie (rodzic); assent — od dziecka, które prawnie samo nie decyduje: wyraźna, dobrowolna, dodatkowa, odwoływalna w każdej chwili → <a href="#S17">sekcja 17</a></td></tr>
+        <tr><td><strong>6. Odporność i zasoby</strong></td><td>proces efektywnego radzenia sobie z trudną sytuacją prowadzący do pozytywnej adaptacji; warunki: ekspozycja na ryzyko + pozytywna adaptacja; zasoby osobiste, rodzinne, środowiskowe → <a href="#S12">sekcja 12</a></td></tr>
+        <tr><td><strong>7. Podatność i czynniki ryzyka</strong></td><td>wypadkowa czynników genetycznych, psychologicznych i środowiskowych; czynniki ryzyka zwiększają prawdopodobieństwo objawów; liczą się wiek, czas, liczba, kumulacja → <a href="#S13">sekcja 13</a></td></tr>
+        <tr><td><strong>8. Model transakcyjno-interakcyjny</strong></td><td>dziecko i środowisko wpływają na siebie dwukierunkowo; łańcuchy reakcji (Rutter 1999), kaskady rozwojowe; badanie Lewisa i Feiring; ścieżki probabilistyczne, ekwipotencjalność, ekwifinalność → <a href="#S11">sekcja 11</a></td></tr>
+        <tr><td><strong>9. Więź jako ochrona lub ryzyko</strong></td><td>bezpieczna (opiekun dostępny, czuły) → odporność; pozabezpieczna (unikająca, ambiwalentna, zdezorganizowana) → ryzyko; zachowania opiekunów: błędne rozpoznawanie potrzeb i sygnałów, brak ukojenia, brak zaangażowania, skupienie na sobie → <a href="#S15">sekcje 14–15</a></td></tr>
+        <tr><td><strong>10. Trauma</strong></td><td>typ I → PTSD; złożona, relacyjna (Herman) → PTSDc / DESNOS, w ICD-11 cPTSD 6B41; traumatyczny rozwój (Liotti i Farina) → <a href="#S16">sekcja 16</a></td></tr>
+        <tr><td><strong>11. Neuroplastyczność</strong></td><td>zdolność mózgu do zmian strukturalnych i funkcjonalnych pod wpływem doświadczenia; LTP, przycinanie synaps, neurogeneza, BDNF; okresy krytyczne i wrażliwe → <a href="#S19">sekcja 19</a></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- LIT -->
+  <div class="group-divider">
+    <span class="group-divider-label gdl-lit">📚 Literatura</span>
+    <div class="group-divider-line"></div>
+  </div>
+
+  <section id="lit">
+    <div class="lcard">
+      <h3>Literatura do egzaminu</h3>
+      <h4>Obowiązkowa (wg zagadnień)</h4>
+      <ul class="alist">
+        <li>Grzegorzewska, I., Cierpiałkowska, L., Borkowska, A. R. (red.) (2020/2025). <em>Psychologia kliniczna dzieci i młodzieży</em>. PWN — <strong>rozdz. 3</strong> (Brzezińska: środowisko rozwoju, czynniki wsparcia i ryzyka) i <strong>rozdz. 5</strong> (psychopatologia rozwojowa, podatność i odporność, trauma).</li>
+        <li>Trzebińska, E., Kuźmicz, T. (2023). Zdrowie psychiczne z perspektywy psychologii edukacji. W: D. Bednarek, H. Bednarek (red.), <em>Psychologia edukacyjna</em> (<strong>rozdz. 7</strong>). PWN.</li>
+        <li>Neuroplastyczność: wykład prof. Małgorzaty Kossut (YouTube); w sylabusie także Kossut, M. (2018). <em>Neuroplastyczność</em>. Medyk.</li>
+      </ul>
+      <h4>Uzupełniająca</h4>
+      <ul class="alist">
+        <li>Dmitrzak-Węglarz, M., Hauser, J. (2009). Mechanizmy epigenetyczne w chorobach psychicznych i zaburzeniach funkcji poznawczych. <em>Psychiatria</em>, 6(2), 51–60.</li>
+        <li>Chmielewska, N., Szyndler, J., Maciejak, P., Płaźnik, A. (2019). Epigenetic mechanisms of stress and depression. <em>Psychiatria Polska</em>, 53(6), 1413–1428.</li>
+        <li>Melka-Roszczyk, M. (2021). Znaczenie stylu przywiązania w rozwoju i życiu człowieka. <em>Psychologia w praktyce</em>, 5, 5–9.</li>
+        <li>Szredzińska, R. (2022). Zdrowie psychiczne dzieci i młodzieży. W: <em>Dzieci się liczą 2022</em>. Fundacja Dajemy Dzieciom Siłę.</li>
+        <li>Prezentacje: Breaux i Smith (2023) o assent; Rajaraman i in. (2022) o trauma-informed ABA; Draczyńska (2024) o traumie relacyjnej.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<footer>StudyZone &mdash; Wspieranie poznawczego i emocjonalnego rozwoju dziecka · notatka na podstawie prezentacji z zajęć i literatury wskazanej w zagadnieniach · materiał pomocniczy do nauki</footer>
+
+<script>
+// Podświetlanie aktywnej sekcji w spisie treści
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) map[id] = a;
+  });
+  var sections = Object.keys(map).map(function (id) { return document.getElementById(id); });
+  function onScroll() {
+    var pos = window.scrollY + 90;
+    var current = null;
+    sections.forEach(function (s) { if (s.offsetTop <= pos) current = s.id; });
+    links.forEach(function (a) { a.classList.remove('active'); });
+    if (current && map[current]) map[current].classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+<!-- ── TRYB POWTÓRKI: zasłoń i sprawdź ── -->
+<style>
+  .recall-fab { position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+    display: flex; flex-direction: column; align-items: flex-end; gap: .5rem;
+    font-family: 'Segoe UI', system-ui, sans-serif; }
+  .recall-fab button { border: none; cursor: pointer; border-radius: 22px;
+    padding: .6rem 1.1rem; font-size: .85rem; font-weight: 700; color: #fff;
+    background: linear-gradient(135deg, var(--c-head), var(--c-head2));
+    box-shadow: 0 4px 16px var(--nc-glow); transition: transform .12s, box-shadow .2s; }
+  .recall-fab button:hover { transform: translateY(-1px); box-shadow: 0 6px 22px var(--nc-glow); }
+  .recall-fab .recall-sub { display: none; gap: .4rem; }
+  body.recall-on .recall-fab .recall-sub { display: flex; }
+  .recall-fab .recall-sub button { font-size: .75rem; padding: .42rem .8rem;
+    background: #fff; color: var(--c-head); border: 1.5px solid var(--nc-border); box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+  .recall-fab .recall-sub button:hover { background: var(--nc-dim); }
+
+  body.recall-on .recall-hide { filter: blur(6px); background: var(--nc-dim);
+    border-radius: 4px; cursor: pointer; transition: filter .12s, background .12s;
+    -webkit-user-select: none; user-select: none; }
+  body.recall-on .recall-hide:hover { filter: blur(3px); }
+  body.recall-on .recall-hide.revealed { filter: none; background: transparent;
+    cursor: default; -webkit-user-select: auto; user-select: auto; }
+
+  @media print { .recall-fab { display: none; } body.recall-on .recall-hide { filter: none; background: transparent; } }
+</style>
+
+<div class="recall-fab" id="recallFab">
+  <div class="recall-sub">
+    <button type="button" data-recall="reveal">Odsłoń wszystko</button>
+    <button type="button" data-recall="hide">Zasłoń ponownie</button>
+  </div>
+  <button type="button" data-recall="toggle" id="recallToggle">🙈 Tryb powtórki</button>
+</div>
+
+<script>
+(function () {
+  var SEL = '.content .term, .content .ltable td:not(:first-child), .content .alist li > strong, .content .nlist li > strong, .content .alist li > em, .content .value, .content .exam-badge, .content .pill, .content .qopts li.ok, .content .formula';
+  var body = document.body, on = false, prepared = false;
+  function prepare() {
+    if (prepared) return;
+    document.querySelectorAll(SEL).forEach(function (el) {
+      if (!el.closest('.recall-hide')) el.classList.add('recall-hide');
+    });
+    prepared = true;
+  }
+  function setOn(v) {
+    on = v;
+    if (on) prepare();
+    body.classList.toggle('recall-on', on);
+    document.getElementById('recallToggle').textContent = on ? '\u{1F441}️ Wyłącz powt\xf3rkę' : '\u{1F648} Tryb powt\xf3rki';
+  }
+  document.getElementById('recallFab').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var a = b.getAttribute('data-recall');
+    if (a === 'toggle') setOn(!on);
+    else if (a === 'reveal') document.querySelectorAll('.recall-hide').forEach(function (el){ el.classList.add('revealed'); });
+    else if (a === 'hide') document.querySelectorAll('.recall-hide').forEach(function (el){ el.classList.remove('revealed'); });
+  });
+  var content = document.querySelector('.content');
+  if (content) content.addEventListener('click', function (e) {
+    if (!on) return;
+    var t = e.target.closest('.recall-hide'); if (!t) return;
+    t.classList.toggle('revealed');
+  });
+})();
+</script>
+
+</body>
+</html>
