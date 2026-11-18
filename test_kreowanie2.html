@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 2 — Obietnice, koncepcje kampanii i segmentacja – Kreowanie wizerunku w polityce</title>
+<style>
+  :root {
+    --blue:   #1f4e8c;
+    --blue2:  #173d6e;
+    --blue3:  #9cbbe3;
+    --blue4:  #e4eefb;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f6f9fe;
+    --border: #d5e0ee;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f1f6fd;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #123a6b 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 600;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+    padding: .5rem 1.15rem;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 999px;
+    transition: background .2s, border-color .2s, transform .1s;
+  }
+  header .back-link:hover { background: rgba(255,255,255,.28); border-color: #fff; transform: translateY(-1px); }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,78,140,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #f1f6fd;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #c7d9f0;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #123a6b; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(31,78,140,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #f1f6fd; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #123a6b; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,78,140,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #123a6b, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(31,78,140,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #123a6b; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="kreowanie-testy.html">← Wróć do listy testów</a>
+  <h1>🗳️ Kreowanie wizerunku w polityce</h1>
+  <p>Zagadnienie 1: Marka w polityce · 21 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">OBIETNICE, KAMPANIA, SEGMENTACJA</div>
+    <h2>Test 2 — Obietnice, koncepcje kampanii i segmentacja</h2>
+    <p>Pytania jednokrotnego wyboru (jedna poprawna z czterech), jak na sprawdzianie testowym. Oparte na notatce z zagadnienia 1: slajdach, Twoich notatkach z wykładu i literaturze obowiązkowej.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>typy obietnic i zaangażowanie polityczne, komunikowanie obietnic, koncepcje kampanii Newmana, marketingowa krótkowzroczność, mapa marketingowa Kotlerów, zaawansowany model marketingu politycznego, permanentna kampania, segmentacja, wyborcy niezdecydowani, „uciekający” elektorat</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>21 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 21</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/21</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Program „500 plus” to przykład obietnicy:", "opts": [{"t": "funkcjonalnej", "c": true}, {"t": "symbolicznej", "c": false}, {"t": "doświadczalnej", "c": false}, {"t": "emocjonalnej", "c": false}], "exp": "Anker i in. (2012): obietnica funkcjonalna to reforma lub konkretny program (500+, wejście do UE i NATO, 3 × 15)."},
+  {"q": "Hasło „Make America Great Again” to przykład obietnicy:", "opts": [{"t": "symbolicznej", "c": true}, {"t": "funkcjonalnej", "c": false}, {"t": "doświadczalnej", "c": false}, {"t": "racjonalnej", "c": false}], "exp": "Obietnica symboliczna kojarzy markę z pożądanym wizerunkiem lub tożsamością (indywidualną albo grupową), np. „Jestem prawdziwym patriotą”, „Change”."},
+  {"q": "Wywieszenie plakatu wyborczego czy udział w demonstracji to realizacja obietnicy:", "opts": [{"t": "doświadczalnej", "c": true}, {"t": "funkcjonalnej", "c": false}, {"t": "symbolicznej", "c": false}, {"t": "behawioralnej", "c": false}], "exp": "Obietnica doświadczalna = wyborca sam aktywnie działa na rzecz marki (plakat, demonstracje, miesięcznice)."},
+  {"q": "Jakie trzy wymiary ma zaangażowanie polityczne?", "opts": [{"t": "behawioralny, afektywny i czasowy", "c": true}, {"t": "poznawczy, emocjonalny i behawioralny", "c": false}, {"t": "funkcjonalny, symboliczny i doświadczalny", "c": false}, {"t": "racjonalny, społeczny i sytuacyjny", "c": false}], "exp": "Behawioralny (głosuję na partię), afektywny (stopień sympatii), czasowy (chcę utrzymać partię/polityka u władzy). Trzecia opcja to typy obietnic, czwarta — typy wyborców Newmana."},
+  {"q": "Dlaczego partie muszą jasno i czytelnie komunikować swoje obietnice?", "opts": [{"t": "wyborcy rzadko czytają programy i nie wiedzą, ile zrealizowano", "c": true}, {"t": "prawo wyborcze nakazuje publikować rozliczenie obietnic", "c": false}, {"t": "media nie relacjonują obietnic wyborczych partii rządzącej", "c": false}, {"t": "obietnice niezakomunikowane w mediach nie wchodzą do platformy kampanii", "c": false}], "exp": "Pétry i Collette (2009): wyborcy rzadko czytają programy, więc sami nie ocenią realizacji. Stąd zadanie partii: jasno komunikować obietnice w kampanii i po przejęciu władzy."},
+  {"q": "Który krok cyklu komunikowania obietnic następuje bezpośrednio po ich spełnieniu?", "opts": [{"t": "powiedz, że spełniłeś", "c": true}, {"t": "obiecaj ponownie", "c": false}, {"t": "zmierz poparcie w sondażu", "c": false}, {"t": "przypomnij rywalom ich obietnice", "c": false}], "exp": "Cykl: obiecaj → przypomnij → spełnij → powiedz, że spełniłeś → przypomnij. Działa dzięki efektowi czystej ekspozycji i familiarności."},
+  {"q": "Według Smitha (2009) rynek polityczny nie daje markom równych szans, ponieważ:", "opts": [{"t": "tylko partia z większością może realnie spełnić obietnice", "c": true}, {"t": "opozycja ma ustawowo mniej czasu antenowego w mediach publicznych", "c": false}, {"t": "nowe partie nie mogą zgłaszać kandydatów w wyborach", "c": false}, {"t": "partia rządząca nie może prowadzić kampanii wyborczej", "c": false}], "exp": "„Partia z większością miejsc w parlamencie ma faktyczną moc wprowadzenia obietnic w życie, podczas gdy opozycja może tylko mówić o potencjalnych działaniach” (Cwalina, Drzewiecka, 2022)."},
+  {"q": "Co jest osią koncepcji marketingowej organizacji kampanii według Newmana?", "opts": [{"t": "wyborca", "c": true}, {"t": "partia", "c": false}, {"t": "kandydat", "c": false}, {"t": "lider partyjny", "c": false}], "exp": "Ewolucja: koncepcja partyjna (oś: partia) → produktu (kandydat) → sprzedaży (kandydat i jego opakowanie) → marketingowa (wyborca)."},
+  {"q": "Co wyróżnia koncepcję sprzedaży w organizacji kampanii?", "opts": [{"t": "zewnętrzni konsultanci i eksperci od mediów", "c": true}, {"t": "kampania kierowana przez szefa partii", "c": false}, {"t": "kandydat całkowicie zależny od partii", "c": false}, {"t": "strategia oparta na badaniach potrzeb", "c": false}], "exp": "W koncepcji sprzedaży liczy się reakcja wyborców i „opakowanie” kandydata w mediach (np. Nixon); dopuszcza się zewnętrznych konsultantów. Badania potrzeb i dopasowanie oferty to już koncepcja marketingowa."},
+  {"q": "W koncepcji partyjnej kampanii:", "opts": [{"t": "szef sztabu jest zwykle szefem partii", "c": true}, {"t": "kampanię prowadzą eksperci od marketingu", "c": false}, {"t": "osią kampanii są potrzeby wyborców", "c": false}, {"t": "struktura sztabu jest zdecentralizowana", "c": false}], "exp": "Koncepcja partyjna: kampania oparta na strukturach partii, scentralizowana, kandydat zależy od partii (np. PZPR w PRL). Pozostałe cechy opisują koncepcję marketingową."},
+  {"q": "Marketingowa krótkowzroczność (Levitt) polega na tym, że:", "opts": [{"t": "liczy się produkt, a nie funkcja, którą ma pełnić", "c": true}, {"t": "firma za często bada potrzeby swoich klientów", "c": false}, {"t": "kandydat zbyt szybko zmienia swój program", "c": false}, {"t": "sztab skupia się wyłącznie na wyborcach niezdecydowanych", "c": false}], "exp": "Krótkowzroczność = definiowanie działalności przedmiotowo („robię produkt”) zamiast funkcjonalnie („zaspokajam potrzebę”). W polityce: kandydat widzi tylko własną ideologię, choć ta może nie przyciągać wyborców."},
+  {"q": "Od czego zaczyna się mapa marketingowa kandydata według Kotlerów?", "opts": [{"t": "od badań środowiska wyborczego", "c": true}, {"t": "od ustalenia celów i strategii", "c": false}, {"t": "od planowania komunikacji", "c": false}, {"t": "od wyboru kluczowych rynków", "c": false}], "exp": "6 etapów: badania środowiska → analiza wewnętrzna i zewnętrzna → marketing strategiczny → cele i strategia → planowanie komunikacji, dystrybucji i organizacji → kluczowe rynki."},
+  {"q": "Który element zaawansowanego modelu marketingu politycznego należy do „budowania relacji”?", "opts": [{"t": "budowanie wzajemnego zaufania", "c": true}, {"t": "segmentacja pierwotna wyborców", "c": false}, {"t": "analiza konkurencji politycznej", "c": false}, {"t": "kampania osobista z wolontariuszami", "c": false}], "exp": "Budowanie relacji: dostarczenie platformy, budowanie wzajemnego zaufania, permanentna komunikacja, lobbing. Segmentacja i analiza konkurencji to rozwijanie przekazu, kampania osobista — rozpowszechnianie."},
+  {"q": "Permanentna kampania polityczna oznacza, że:", "opts": [{"t": "marketing trwa przed, w trakcie i po kampanii", "c": true}, {"t": "kampania wyborcza trwa ustawowo cały rok", "c": false}, {"t": "partie mogą prowadzić tylko kampanie negatywne", "c": false}, {"t": "wybory odbywają się częściej niż co cztery lata", "c": false}], "exp": "W zaawansowanym modelu (Cwalina, Falkowski, Newman, 2015): przed kampanią → kampania ⇄ po kampanii. Po wygranej marketing przechodzi w budowanie relacji."},
+  {"q": "Kiedy według Newmana cel kampanii jest naprawdę zrealizowany?", "opts": [{"t": "gdy obietnice z kampanii zostaną spełnione", "c": true}, {"t": "w dniu ogłoszenia wyników wyborów", "c": false}, {"t": "gdy kandydat obejmie urząd", "c": false}, {"t": "gdy sondaże pokażą wzrost poparcia", "c": false}], "exp": "Krytyka koncepcji marketingowej: po wygranej kandydaci często nie spełniają obietnic. Dlatego cel jest zrealizowany dopiero po spełnieniu obietnic („usługi posprzedażowe”)."},
+  {"q": "Segmentacja pierwotna dzieli wyborców według:", "opts": [{"t": "identyfikacji partyjnej i jej siły", "c": true}, {"t": "cech geograficznych i demograficznych", "c": false}, {"t": "stylu życia i wyznawanych wartości", "c": false}, {"t": "reakcji na reklamy w mediach", "c": false}], "exp": "Segmentacja pierwotna (a priori): identyfikacja partyjna (konkretna partia lub niezależni) i siła identyfikacji (od zdecydowanych po niezdecydowanych). Cechy geograficzne, demograficzne, behawioralne i psychograficzne to segmentacja wtórna."},
+  {"q": "W którym marketingu segmentacja demograficzna i psychograficzna sprawdza się lepiej?", "opts": [{"t": "w konsumenckim", "c": true}, {"t": "w politycznym", "c": false}, {"t": "w obu tak samo dobrze", "c": false}, {"t": "w żadnym z nich", "c": false}], "exp": "Pytanie ze slajdu 26. Cwalina i Falkowski: ani demograficzna, ani psychograficzna nie daje w polityce oczekiwanych wyników; najbardziej obiecujący jest podział według czasu i pewności decyzji."},
+  {"q": "Wyborcy emocjonalni w segmentacji Newmana kierują się głównie:", "opts": [{"t": "uczuciami, jakie budzi kandydat", "c": true}, {"t": "programem gospodarczym kandydata", "c": false}, {"t": "grupą, z którą kojarzy się kandydat", "c": false}, {"t": "najnowszymi wydarzeniami w kraju", "c": false}], "exp": "Newman: racjonalni (problemy i program), emocjonalni (uczucia), społeczni (skojarzenie kandydata z grupą społeczną), sytuacyjni (bieżące wydarzenia)."},
+  {"q": "Na czym polega paradoks medialny wyborców niezdecydowanych?", "opts": [{"t": "są podatni na media, ale nie śledzą polityki", "c": true}, {"t": "ufają mediom, ale nigdy nie chodzą na wybory", "c": false}, {"t": "śledzą politykę, ale nie ufają żadnym mediom", "c": false}, {"t": "decydują wcześnie, ale zmieniają zdanie w urnie", "c": false}], "exp": "Niezdecydowani najłatwiej ulegają przekazom, ale najmniej zwracają uwagę na wiadomości polityczne — więc przekaz do nich nie dociera (Chaffee, Choe; Hayes, McAllister)."},
+  {"q": "Wallace w 1968 r. programowo pasował do najbardziej konserwatywnych wyborców, a zagłosowało na niego tylko 14% z nich. Co to pokazuje?", "opts": [{"t": "znaczenie wizerunku, a nie tylko programu", "c": true}, {"t": "siłę segmentacji demograficznej", "c": false}, {"t": "przewagę reklamy nad debatami", "c": false}, {"t": "skuteczność strategii zmylenia", "c": false}], "exp": "Johnson: mapa percepcji obejmowała tylko problematykę. Wallace mógł zostać odrzucony za wizerunek — prezentacja osobowości ma duże znaczenie w wyborach."},
+  {"q": "Jaka strategia wynika z badań nad „uciekającym” elektoratem (AWS, 1997)?", "opts": [{"t": "przejmować wyborców partii centrowych zamiast atakować głównego rywala", "c": true}, {"t": "koncentrować cały przekaz na najtwardszym elektoracie głównego rywala politycznego", "c": false}, {"t": "pomijać elektorat rezerwowy i zabiegać wyłącznie o niezdecydowanych", "c": false}, {"t": "zmienić program tak, aby był identyczny z programem głównego rywala", "c": false}], "exp": "Wnioski: utrzymać własny elektorat, zabiegać o elektoraty możliwe do przejęcia (często centrowe — UW, Liberalni Demokraci), nie walczyć wprost z głównym przeciwnikiem (bariera światopoglądowa; tylko 2% wyborców AWS brało pod uwagę SLD)."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#123a6b'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#173d6e'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#1f4e8c'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

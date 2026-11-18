@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 3 — Atrybucja i błędy w ocenie polityków – Kreowanie wizerunku w polityce</title>
+<style>
+  :root {
+    --blue:   #1f4e8c;
+    --blue2:  #173d6e;
+    --blue3:  #9cbbe3;
+    --blue4:  #e4eefb;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f6f9fe;
+    --border: #d5e0ee;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f1f6fd;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #123a6b 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 600;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+    padding: .5rem 1.15rem;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 999px;
+    transition: background .2s, border-color .2s, transform .1s;
+  }
+  header .back-link:hover { background: rgba(255,255,255,.28); border-color: #fff; transform: translateY(-1px); }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,78,140,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #f1f6fd;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #c7d9f0;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #123a6b; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(31,78,140,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #f1f6fd; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #123a6b; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,78,140,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #123a6b, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(31,78,140,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #123a6b; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="kreowanie-testy.html">← Wróć do listy testów</a>
+  <h1>🗳️ Kreowanie wizerunku w polityce</h1>
+  <p>Zagadnienie 2: Percepcja społeczna a ocena polityków · 22 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">ATRYBUCJA</div>
+    <h2>Test 3 — Atrybucja i błędy w ocenie polityków</h2>
+    <p>Pytania jednokrotnego wyboru (jedna poprawna z czterech), jak na sprawdzianie testowym. Oparte na notatce z zagadnienia 2: slajdach, Twoich notatkach z wykładu i literaturze obowiązkowej.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>atrybucja i jej funkcje, Heider, wnioski marketingowe, przykłady tłumaczenia wpadek, Jones i Davis, Kelley, Weiner, konsekwencje odpowiedzialności, model Gilberta, podstawowy błąd atrybucji, egotyzm, egocentryzm, fałszywa powszechność, Argyle</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>22 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 22</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/22</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Atrybucja to:", "opts": [{"t": "zdroworozsądkowy wniosek o przyczynie zachowania lub zdarzenia", "c": true}, {"t": "trwała cecha osobowości ujawniająca się w podobnych sytuacjach", "c": false}, {"t": "uporządkowana wiedza o typowym przebiegu jakiegoś zdarzenia", "c": false}, {"t": "skłonność do przeceniania roli sytuacji w cudzym zachowaniu", "c": false}], "exp": "Teorie atrybucji opisują, jak ludzie odpowiadają na pytanie „Dlaczego?”. Uporządkowana wiedza o przebiegu zdarzeń to skrypt (rodzaj schematu)."},
+  {"q": "Pytanie „dlaczego?” zadajemy najczęściej, gdy zdarzenie jest:", "opts": [{"t": "nieoczekiwane lub negatywne", "c": true}, {"t": "oczekiwane i pozytywne", "c": false}, {"t": "powtarzalne i neutralne", "c": false}, {"t": "dobrze nam znane", "c": false}], "exp": "Wong i Weiner, Weiner (Lewicka): nietypowość i negatywny charakter zdarzenia pobudzają „ciekawość atrybucyjną”."},
+  {"q": "Która z wymienionych jest funkcją procesów atrybucji według Lewickiej?", "opts": [{"t": "przewidywanie zdarzeń", "c": true}, {"t": "kategoryzacja społeczna", "c": false}, {"t": "segmentacja elektoratu", "c": false}, {"t": "dekodowanie przekazów", "c": false}], "exp": "Funkcje atrybucji: kontrola, przewidywanie oraz funkcja egotystyczna (ochrona samooceny)."},
+  {"q": "Według Heidera przyczyny osobowe zachowania to:", "opts": [{"t": "intencja, zdolności i motywacja", "c": true}, {"t": "trudność zadania, okoliczności i szczęście", "c": false}, {"t": "spójność, wybiórczość i powszechność", "c": false}, {"t": "umiejscowienie, stabilność i kontrolowalność", "c": false}], "exp": "Przyczyny osobowe: intencja („chce”), zdolności („potrafi”), motywacja („usiłuje”). Trudności, okoliczności i szczęście to przyczyny środowiskowe. Pozostałe opcje to Kelley i Weiner."},
+  {"q": "Które zachowanie Heider zaliczyłby do nieintencjonalnych (przyczynowość nieosobowa)?", "opts": [{"t": "kichanie", "c": true}, {"t": "wygłoszenie przemówienia", "c": false}, {"t": "zgłoszenie kandydatury", "c": false}, {"t": "wzięcie dziecka na ręce", "c": false}], "exp": "Zachowania nieintencjonalne to np. kichanie, smutek, zdarzenia fizyczne jak powódź. Pozostałe są zamierzonymi działaniami."},
+  {"q": "Jaki wniosek dla specjalistów od wizerunku płynie z teorii Heidera?", "opts": [{"t": "sukcesy pokazywać jako zasługę polityka, a wpadki tłumaczyć okolicznościami", "c": true}, {"t": "sukcesy przypisywać okolicznościom, a wpadki zawsze szczerze i otwarcie brać na siebie", "c": false}, {"t": "wszystkie zachowania polityka tłumaczyć wyłącznie presją sytuacji", "c": false}, {"t": "unikać pokazywania polityka w sytuacjach spontanicznych i z dziećmi", "c": false}], "exp": "Cwalina i Falkowski: pozytywne zachowania pokazywać jako naturalne i osobiste (przyczyna wewnętrzna), a „wpadki” jako skutek zmęczenia, choroby czy wrogiej publiczności (przyczyna zewnętrzna)."},
+  {"q": "PiS tłumaczący przegraną debatę Kaczyńskiego z Tuskiem (2007) „niesprzyjającą publicznością” wskazuje przyczynę:", "opts": [{"t": "zewnętrzną (sytuacyjną)", "c": true}, {"t": "wewnętrzną (osobową) i stałą", "c": false}, {"t": "wewnętrzną i zmienną", "c": false}, {"t": "kontrolowalną przez kandydata", "c": false}], "exp": "To klasyczne przypisanie wpadki okolicznościom — zgodnie z marketingowym wnioskiem z teorii atrybucji. Podobnie „pourazowy zespół przeciążeniowy goleni” Kwaśniewskiego."},
+  {"q": "Według Jonesa i Davisa zachowanie uznajemy za intencjonalne, gdy osoba:", "opts": [{"t": "wiedziała o jego skutkach i mogła je wywołać", "c": true}, {"t": "zachowała się zgodnie ze swoją rolą społeczną", "c": false}, {"t": "zachowała się tak samo jak większość ludzi", "c": false}, {"t": "działała pod naciskiem przełożonych", "c": false}], "exp": "Intencjonalność wymaga wiedzy o skutkach i swobody/możliwości działania. Zachowanie wymuszone nie pozwala przejść do wniosku o cesze."},
+  {"q": "Które zachowania najwięcej mówią o cechach człowieka według teorii wniosków korespondentnych?", "opts": [{"t": "niezgodne z oczekiwaniami społecznymi", "c": true}, {"t": "zgodne z pełnioną rolą społeczną", "c": false}, {"t": "wymuszone przez sytuację", "c": false}, {"t": "typowe dla większości ludzi", "c": false}], "exp": "To, co „się robi”, mało mówi o człowieku. Zachowania nieoczekiwane (i negatywne) prowadzą do silniejszych wniosków o cechach."},
+  {"q": "Badanie Jonesa i Harrisa z esejami o Castro pokazało, że badani:", "opts": [{"t": "przypisywali autorowi poglądy z eseju, nawet wiedząc o przymusie", "c": true}, {"t": "nie przypisywali autorowi żadnych poglądów, gdy pisał pod przymusem", "c": false}, {"t": "oceniali autora wyłącznie na podstawie jego wyglądu i stylu pisania", "c": false}, {"t": "uznawali poglądy popularne za lepszy wskaźnik postaw niż niepopularne", "c": false}], "exp": "Informacja o presji sytuacji w niewielkim stopniu osłabiała atrybucję postaw — to ilustracja niedoceniania sytuacji (podstawowego błędu atrybucji). Silniejsze wnioski dotyczyły zresztą poglądów niepopularnych."},
+  {"q": "Jaki wniosek dla sztabu wynika z teorii wniosków korespondentnych?", "opts": [{"t": "jeden „wyskok” może zburzyć wizerunek, więc trzeba go planować i monitorować", "c": true}, {"t": "wizerunek wystarczy zbudować raz, na samym początku kariery politycznej, i potem go nie ruszać", "c": false}, {"t": "wyborcy oceniają polityka głównie po jego zachowaniach typowych", "c": false}, {"t": "negatywny obraz polityka łatwiej zmienić niż obraz pozytywny", "c": false}], "exp": "Cwalina i Falkowski: planowanie wizerunku to zadanie rozłożone w czasie i stale monitorowane. Wyskok przyciąga uwagę i może zmienić percepcję — bardziej obrazu pozytywnego niż negatywnego."},
+  {"q": "W modelu Kelleya pytanie „Czy polityk zachowuje się tak tylko wobec tego dziennikarza, a wobec innych nie?” dotyczy:", "opts": [{"t": "wybiórczości", "c": true}, {"t": "spójności", "c": false}, {"t": "powszechności", "c": false}, {"t": "intencjonalności", "c": false}], "exp": "Spójność: czy osoba zawsze tak się zachowuje wobec obiektu. Wybiórczość: czy tylko wobec tego bodźca. Powszechność: czy inni zachowują się podobnie wobec tego obiektu."},
+  {"q": "Polityk P jest zawsze miły dla dziennikarzy, ale agresywny wobec dziennikarza X, a inni też są agresywni wobec X. Gdzie leży przyczyna według Kelleya?", "opts": [{"t": "w dziennikarzu X", "c": true}, {"t": "w polityku P", "c": false}, {"t": "w okolicznościach wywiadu", "c": false}, {"t": "w mediach ogólnie", "c": false}], "exp": "Zachowanie spójne, wybiórcze i powszechne → przyczyną jest obiekt, którego dotyczy (dziennikarz X)."},
+  {"q": "Polityk P jest miły dla wszystkich dziennikarzy, także dla X, choć inni politycy są wobec X agresywni. Gdzie leży przyczyna?", "opts": [{"t": "w polityku P", "c": true}, {"t": "w dziennikarzu X", "c": false}, {"t": "w okolicznościach wywiadu", "c": false}, {"t": "w innych politykach", "c": false}], "exp": "Zachowanie spójne, niewybiórcze i niepowszechne → przyczyną są dyspozycje osoby (P jest uprzejmy i miły)."},
+  {"q": "Którą informację z modelu Kelleya ludzie biorą pod uwagę najsilniej?", "opts": [{"t": "spójność", "c": true}, {"t": "wybiórczość", "c": false}, {"t": "powszechność", "c": false}, {"t": "typowość", "c": false}], "exp": "McArthur: spójność wyjaśniała 20% atrybucji, wybiórczość 10%, powszechność tylko 3%. Stąd wniosek o kluczowej roli spójności wizerunku."},
+  {"q": "Pytanie „Na ile polityk mógł to kontrolować?” dotyczy w teorii Weinera wymiaru:", "opts": [{"t": "kontrolowalności", "c": true}, {"t": "umiejscowienia", "c": false}, {"t": "stabilności", "c": false}, {"t": "powszechności", "c": false}], "exp": "Weiner: umiejscowienie (aktor czy sytuacja?), kontrolowalność (czy mógł kontrolować — zdolności vs wysiłek), stabilność (czy się powtarza?)."},
+  {"q": "Gdy przyczyną zdarzenia jest zaniedbanie (przyczyna kontrolowalna), obserwatorzy zwykle:", "opts": [{"t": "uznają sprawcę za odpowiedzialnego i reagują naganą lub potępieniem", "c": true}, {"t": "zwalniają sprawcę z odpowiedzialności, bo działał pod presją okoliczności", "c": false}, {"t": "przypisują zdarzenie pechowi i szybko o nim zapominają", "c": false}, {"t": "uznają zdarzenie za przypadek i nie oceniają sprawcy", "c": false}], "exp": "Slajdy 42–43: kontrolowalność → odpowiedzialny: TAK → nagana, potępienie, odwet. Przy przyczynie niekontrolowalnej (choroba, klimat) tych reakcji nie ma."},
+  {"q": "Podstawowy błąd atrybucji polega na:", "opts": [{"t": "przypisywaniu cudzych zachowań cechom osoby, a nie sytuacji", "c": true}, {"t": "przypisywaniu sobie sukcesów, a porażek okolicznościom", "c": false}, {"t": "przecenianiu, ilu ludzi podziela nasze własne poglądy", "c": false}, {"t": "przecenianiu własnego wkładu we wspólnie osiągnięty wynik grupy", "c": false}], "exp": "Ross (1977). Pozostałe opcje to egotyzm atrybucyjny, efekt fałszywej powszechności i egocentryzm atrybucyjny."},
+  {"q": "Polityk po przegranej obwinia niedojrzałych wyborców i stronnicze media, a po wygranej chwali siebie i swój program. To:", "opts": [{"t": "egotyzm atrybucyjny", "c": true}, {"t": "egocentryzm atrybucyjny", "c": false}, {"t": "efekt fałszywej powszechności", "c": false}, {"t": "asymetria aktor–obserwator", "c": false}], "exp": "Egotyzm atrybucyjny: sukcesy przypisujemy sobie, porażki czynnikom zewnętrznym — dla ochrony samooceny (ten sam przykład podaje Lewicka)."},
+  {"q": "Zaskoczenie wyborców tym, że „ich” partia wypadła tak słabo, choć czytali sondaże, ilustruje:", "opts": [{"t": "efekt fałszywej powszechności", "c": true}, {"t": "podstawowy błąd atrybucji", "c": false}, {"t": "egotyzm atrybucyjny", "c": false}, {"t": "efekt pierwszeństwa", "c": false}], "exp": "Przeceniamy, jak wielu ludzi myśli tak jak my — stąd „zimny prysznic” w wieczór wyborczy (Lewicka)."},
+  {"q": "Według Gilberta podstawowy błąd atrybucji powstaje, bo:", "opts": [{"t": "poprawka na sytuację wymaga wysiłku i zanika, gdy umysł jest zajęty", "c": true}, {"t": "identyfikacja zachowania wymaga wysiłku, a wniosek o cesze powstaje sam", "c": false}, {"t": "ludzie świadomie lekceważą informacje o presji sytuacji", "c": false}, {"t": "obserwatorzy zawsze znają przyczyny sytuacyjne zachowania", "c": false}], "exp": "Trzy etapy: identyfikacja zachowania → automatyczny wniosek o cesze → kontrolowana poprawka na sytuację. Gdy zasoby są zajęte (np. drugim zadaniem), poprawki brakuje."},
+  {"q": "Według Argyle'a błędem w spostrzeganiu ludzi jest m.in.:", "opts": [{"t": "zakładanie, że „dobre rzeczy chodzą w parze”", "c": true}, {"t": "dokładne analizowanie cech każdej poznanej osoby", "c": false}, {"t": "uwzględnianie wpływu sytuacji na zachowanie", "c": false}, {"t": "ostrożność w ocenianiu na podstawie wyglądu", "c": false}], "exp": "Argyle: zakładanie, że ktoś zachowa się tak samo w innych sytuacjach, budowanie na siłę spójnego obrazu („jest wykształcony, więc zna języki”), wpływ pierwszego wrażenia i stereotypów, faworyzowanie „swoich”."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#123a6b'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#173d6e'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#1f4e8c'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

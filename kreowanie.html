@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kreowanie wizerunku w polityce – Notatki</title>
+<style>
+  :root {
+    --bg:       #06080f;
+    --card:     #0e1220;
+    --border:   #1c2338;
+    --text:     #e6edf6;
+    --muted:    #7d86a3;
+
+    /* navy accent */
+    --nc:       #6b8cff;
+    --nc-dim:   rgba(107,140,255,.13);
+    --nc-glow:  rgba(107,140,255,.30);
+    --nc-border:rgba(107,140,255,.32);
+
+    /* light content area */
+    --c-bg:     #f7f9fe;
+    --c-text:   #141a2b;
+    --c-muted:  #5a6580;
+    --c-border: #d6deef;
+    --c-head:   #1e3a8a;
+    --c-head2:  #1d4ed8;
+    --c-row:    #eef3fc;
+
+    /* status colors */
+    --green:  #4ade80;
+    --blue:   #60a5fa;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(107,140,255,.020) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(107,140,255,.020) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    padding: 1rem 1.5rem;
+    background: rgba(8,8,15,.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 2px solid var(--nc);
+    display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
+  }
+  nav a { color: #c4c4dc; text-decoration: none; font-size: .9rem; font-weight: 500; transition: color .2s; }
+  nav a:hover { color: var(--nc); }
+  nav .sep { color: var(--nc); opacity: .5; font-size: .9rem; }
+  nav .current { color: var(--text); font-weight: 700; font-size: .9rem; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2.8rem;
+    align-items: start;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    position: sticky; top: 60px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 1.4rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .toc::-webkit-scrollbar { width: 3px; }
+  .toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .toc-title {
+    font-size: .63rem; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted);
+    padding-bottom: .7rem; border-bottom: 1px solid var(--border); margin-bottom: .9rem;
+  }
+  .toc-group { margin-bottom: 1.1rem; }
+  .toc-group-label {
+    font-size: .6rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--nc); opacity: .75; margin-bottom: .3rem;
+  }
+  .toc a {
+    display: block; padding: .28rem .55rem; border-radius: 5px;
+    font-size: .78rem; color: var(--muted); text-decoration: none; line-height: 1.4;
+    transition: color .15s, background .15s;
+  }
+  .toc a:hover { color: var(--text); background: var(--nc-dim); }
+  .toc a.active { color: var(--nc); background: var(--nc-dim); font-weight: 600; }
+
+  /* ── MAIN ── */
+  .content { min-width: 0; padding: 2.2rem 0; }
+
+  /* Page header */
+  .page-header { margin-bottom: 2.4rem; }
+  .subject-icon { font-size: 2.6rem; margin-bottom: .7rem; filter: drop-shadow(0 0 14px var(--nc)); }
+  .subject-tag {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    border-radius: 20px; padding: .22rem .8rem;
+    font-size: .7rem; font-weight: 700; color: var(--nc);
+    text-transform: uppercase; letter-spacing: .1em; margin-bottom: .9rem;
+  }
+  .page-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 800; line-height: 1.2; margin-bottom: .5rem;
+    background: linear-gradient(90deg, #fff 45%, var(--nc));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .page-header .subtitle { color: var(--muted); font-size: .88rem; max-width: 640px; line-height: 1.6; }
+  .accent-line { width: 44px; height: 2px; background: var(--nc); box-shadow: 0 0 8px var(--nc); border-radius: 2px; margin: 1rem 0; }
+
+  /* Exam strip */
+  .exam-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: .7rem; margin-bottom: 2.2rem; }
+  .exam-badge { background: var(--card); border: 1px solid var(--border); border-radius: 11px; padding: .9rem 1.1rem; }
+  .exam-badge .label { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .25rem; }
+  .exam-badge .value { font-size: .92rem; font-weight: 700; color: var(--text); }
+  .exam-badge.hi { border-color: var(--nc-border); background: var(--nc-dim); }
+  .exam-badge.hi .value { color: var(--nc); }
+
+  /* Group divider */
+  .group-divider { display: flex; align-items: center; gap: 1rem; margin: 2.8rem 0 1.8rem; }
+  .group-divider-label {
+    font-size: .66rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; white-space: nowrap;
+    padding: .28rem .85rem; border-radius: 20px;
+  }
+  .gdl-fund     { background: rgba(96,165,250,.12); color: var(--blue);   border: 1px solid rgba(96,165,250,.25); }
+  .gdl-core     { background: var(--nc-dim);          color: var(--nc);    border: 1px solid var(--nc-border); }
+  .gdl-valid    { background: rgba(52,211,153,.1);     color: #34d399;     border: 1px solid rgba(52,211,153,.22); }
+  .gdl-stat     { background: rgba(74,222,128,.1);     color: var(--green); border: 1px solid rgba(74,222,128,.22); }
+  .gdl-exam     { background: rgba(251,146,60,.14);   color: var(--orange);border: 1px solid rgba(251,146,60,.3); }
+  .gdl-lit      { background: rgba(138,117,96,.14);    color: var(--muted); border: 1px solid rgba(138,117,96,.3); }
+  .group-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── SECTION ── */
+  section { margin-bottom: 3rem; scroll-margin-top: 72px; }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: .9rem;
+    margin-bottom: 1.2rem; padding-bottom: .9rem; border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+    background: var(--nc-dim); border: 1px solid var(--nc-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 900; color: var(--nc);
+  }
+  .section-header-text h2 { font-size: 1.1rem; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: .18rem; }
+  .section-header-text .src-tag { font-size: .7rem; color: var(--muted); font-style: italic; }
+  .section-header-text .src-tag span { color: var(--nc); opacity: .85; font-style: normal; }
+
+  /* ── LIGHT CONTENT CARD ── */
+  .lcard {
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 13px;
+    padding: 1.5rem 1.7rem;
+    margin-bottom: .9rem;
+    color: var(--c-text);
+  }
+
+  .lcard h3 {
+    font-size: .97rem; font-weight: 800;
+    color: var(--c-head); margin-bottom: .85rem;
+    padding-bottom: .5rem; border-bottom: 2px solid #cfdcf5;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .lcard h4 {
+    font-size: .88rem; font-weight: 700;
+    color: var(--c-head2); margin: 1rem 0 .5rem;
+  }
+  .lcard > p { font-size: .875rem; line-height: 1.68; color: var(--c-text); margin-bottom: .6rem; }
+
+  /* Arrow list */
+  .alist { list-style: none; padding: 0; }
+  .alist li {
+    position: relative; padding: .38rem .4rem .38rem 1.5rem;
+    font-size: .875rem; line-height: 1.68; color: var(--c-text);
+    border-bottom: 1px solid rgba(107,140,255,.1);
+  }
+  .alist li:last-child { border-bottom: none; }
+  .alist li::before { content: '→'; position: absolute; left: 0; top: .38rem; color: var(--nc); font-weight: 700; }
+  .alist li strong { color: var(--c-head); }
+  .alist li em { color: var(--c-muted); font-style: italic; }
+
+  /* Numbered list */
+  .nlist { padding-left: 1.3rem; }
+  .nlist li {
+    font-size: .875rem; line-height: 1.7; color: var(--c-text);
+    padding: .25rem 0; border-bottom: 1px solid rgba(107,140,255,.07);
+  }
+  .nlist li:last-child { border-bottom: none; }
+  .nlist li strong { color: var(--c-head); }
+
+  /* Table */
+  .ltable { width: 100%; border-collapse: collapse; font-size: .835rem; margin: .6rem 0; border-radius: 10px; overflow: hidden; }
+  .ltable th {
+    text-align: left; padding: .55rem .85rem;
+    background: var(--nc); color: #fff;
+    font-size: .73rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .ltable td { padding: .5rem .85rem; color: var(--c-text); border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; }
+  .ltable tr:last-child td { border-bottom: none; }
+  .ltable tr:nth-child(even) td { background: rgba(107,140,255,.05); }
+  .ltable tr:hover td { background: rgba(107,140,255,.09); }
+  .ltable td strong { color: var(--c-head); }
+
+  /* Two-col grid */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-bottom: .8rem; }
+
+  /* Pill */
+  .pill { display: inline-block; padding: .12rem .5rem; border-radius: 5px; font-size: .73rem; font-weight: 700; }
+  .pill-v { background: var(--nc-dim); color: var(--nc); border: 1px solid var(--nc-border); }
+  .pill-g { background: rgba(74,222,128,.1); color: #15803d; border: 1px solid rgba(74,222,128,.2); }
+  .pill-b { background: rgba(96,165,250,.1); color: #1e3a8a; border: 1px solid rgba(96,165,250,.2); }
+  .pill-y { background: rgba(251,191,36,.1); color: #b8860b; border: 1px solid rgba(251,191,36,.2); }
+  .pill-r { background: rgba(220,38,38,.1); color: #dc2626; border: 1px solid rgba(220,38,38,.25); }
+
+  /* Callout */
+  .callout {
+    border-radius: 9px; padding: .85rem 1.1rem;
+    margin: .7rem 0; font-size: .855rem; line-height: 1.72;
+    display: flex; gap: .75rem; align-items: flex-start;
+    color: var(--text);
+  }
+  .callout .ci { font-size: .95rem; flex-shrink: 0; margin-top: .05rem; }
+  .callout.exam  { background: rgba(107,140,255,.16); border-left: 3px solid var(--nc); }
+  .callout.tip   { background: rgba(74,222,128,.13);  border-left: 3px solid var(--green); }
+  .callout.warn  { background: rgba(251,191,36,.14);  border-left: 3px solid var(--yellow); }
+  .callout.info  { background: rgba(96,165,250,.13);  border-left: 3px solid var(--blue); }
+  .callout strong { color: #fff; }
+
+  /* Callout wewnątrz jasnych kart — ciemny tekst */
+  .lcard .callout { color: var(--c-text); }
+  .lcard .callout strong { color: var(--c-head); }
+  .lcard .callout.exam { background: rgba(107,140,255,.12); }
+  .lcard .callout.tip  { background: rgba(74,222,128,.12); }
+  .lcard .callout.warn { background: rgba(251,191,36,.16); }
+  .lcard .callout.info { background: rgba(96,165,250,.12); }
+
+  /* Formula box */
+  .formula {
+    background: #0f1424; border: 1px solid var(--nc-border); border-radius: 9px;
+    padding: .8rem 1.1rem; margin: .7rem 0; text-align: center;
+    font-size: 1.05rem; font-weight: 700; color: var(--nc); letter-spacing: .02em;
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+  }
+  .lcard .formula {
+    background: #eaf0fc; color: var(--c-head); border-color: var(--c-border);
+  }
+  .formula small { display: block; font-size: .72rem; font-weight: 500; color: var(--c-muted); margin-top: .35rem; letter-spacing: 0; font-family: 'Segoe UI', sans-serif; }
+
+  /* Section summary box */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(107,140,255,.12), rgba(29,78,216,.06));
+    border: 1px solid var(--nc-border); border-radius: 13px;
+    padding: 1.3rem 1.5rem; margin-top: 1rem;
+  }
+  .summary-box h4 { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--nc); margin-bottom: .8rem; }
+  .summary-box ul { list-style: none; padding: 0; }
+  .summary-box li { font-size: .855rem; line-height: 1.6; color: var(--text); padding: .25rem 0 .25rem 1.4rem; position: relative; }
+  .summary-box li::before { content: '◆'; position: absolute; left: 0; color: var(--nc); font-size: .7rem; top: .45rem; }
+  .summary-box li strong { color: #fff; }
+
+  /* Summary-box wewnątrz jasnych kart — ciemny tekst na jasnym tle */
+  .lcard .summary-box {
+    background: linear-gradient(135deg, rgba(107,140,255,.10), rgba(29,78,216,.04));
+    border: 1px solid var(--c-border);
+  }
+  .lcard .summary-box h4 { color: var(--c-head); }
+  .lcard .summary-box li { color: var(--c-text); }
+  .lcard .summary-box li strong { color: var(--c-head); }
+
+  /* Exam Q&A item */
+  .qitem { border-bottom: 1px solid var(--c-border); padding: .85rem 0; }
+  .qitem:last-child { border-bottom: none; }
+  .qitem .q { font-size: .88rem; font-weight: 700; color: var(--c-head); margin-bottom: .4rem; }
+  .qitem .q b { color: var(--nc); margin-right: .35rem; }
+  .qopts { list-style: none; padding: 0; margin: .4rem 0 0; }
+  .qopts li {
+    font-size: .84rem; line-height: 1.5; color: var(--c-text);
+    padding: .32rem .55rem .32rem 1.7rem; position: relative;
+    border-radius: 6px; margin-bottom: .22rem; border: 1px solid transparent;
+  }
+  .qopts li::before { content: '○'; position: absolute; left: .5rem; top: .34rem; color: var(--c-muted); font-size: .7rem; }
+  .qopts li.ok {
+    background: rgba(74,222,128,.14); color: #15803d; font-weight: 700;
+    border-color: rgba(74,222,128,.4);
+  }
+  .qopts li.ok::before { content: '✓'; color: #15803d; font-weight: 900; font-size: .78rem; left: .45rem; }
+  .qitem .note { font-size: .8rem; color: var(--c-muted); font-style: italic; padding-left: 1.7rem; margin-top: .35rem; }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 2rem; color: var(--muted); font-size: .72rem; border-top: 1px solid var(--border); }
+
+  /* Mobile */
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 0 1rem 4rem; }
+    .toc { position: static; max-height: none; overflow: visible; border: 1px solid var(--border); border-radius: 12px; background: var(--card); padding: 1rem 1.2rem; margin: 1rem 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .exam-strip { grid-template-columns: 1fr 1fr; }
+    .ltable { font-size: .78rem; }
+    .ltable th, .ltable td { padding: .4rem .6rem; }
+  }
+  @media (max-width: 480px) {
+    .exam-strip { grid-template-columns: 1fr; }
+  }
+  /* ── SEMANTIC COLOR HELPERS ── */
+  .zysk   { color: #15803d; font-weight: 700; }   /* zysk / pozytyw */
+  .strata { color: #dc2626; font-weight: 700; }   /* strata / błąd */
+  .term   { color: #1e3a8a; font-weight: 700; }   /* termin kluczowy */
+  .uwaga  { color: #c2410e; font-weight: 700; }   /* uwaga / wyjątek */
+  .gdl-a { background: rgba(74,222,128,.1); color: #4ade80; border: 1px solid rgba(74,222,128,.22); }
+  .gdl-b { background: rgba(251,191,36,.1); color: #fbbf24; border: 1px solid rgba(251,191,36,.25); }
+  .gdl-c { background: var(--nc-dim); color: var(--nc); border: 1px solid var(--nc-border); }
+  .gdl-d { background: rgba(167,139,250,.12); color: #a78bfa; border: 1px solid rgba(167,139,250,.28); }
+  .gdl-e { background: rgba(96,165,250,.12); color: #60a5fa; border: 1px solid rgba(96,165,250,.25); }
+  .gdl-f { background: rgba(45,212,191,.1); color: #2dd4bf; border: 1px solid rgba(45,212,191,.25); }
+  .lcard a { color: var(--c-head2); font-weight: 600; }
+
+  /* ── UKŁAD CORNELLA (notatki z Kampanii) ── */
+  .ck { --fiolet: var(--c-head); --fiolet-jasny: var(--c-row); --zloto: #f59e0b; --noc: #1e3a8a; }
+  .ck .cornell { display: grid; grid-template-columns: minmax(140px, 27%) minmax(0, 1fr); border: 1px solid var(--c-border); border-radius: 11px; overflow: hidden; background: #fff; }
+  .ck .haslo { background: var(--c-row); padding: .95rem 1rem; border-top: 1px solid var(--c-border); font-weight: 800; font-size: .9rem; line-height: 1.3; color: var(--c-head); display: flex; flex-direction: column; gap: .35rem; }
+  .ck .haslo .ikona { font-size: 1.45rem; line-height: 1; }
+  .ck .haslo small { font-weight: 500; font-size: .74rem; color: var(--c-muted); }
+  .ck .tresc { padding: .95rem 1.15rem; border-top: 1px solid var(--c-border); border-left: 2px solid var(--c-border); display: flex; flex-direction: column; gap: .65rem; min-width: 0; font-size: .875rem; line-height: 1.68; color: var(--c-text); }
+  .ck .cornell > :nth-child(1), .ck .cornell > :nth-child(2) { border-top: 0; }
+  .ck .tresc p { margin: 0; }
+  .ck .tresc ul, .ck .tresc ol { padding-left: 1.25rem; }
+  .ck .tresc li { margin: .18rem 0; }
+  .ck .tresc b, .ck .tresc strong { color: var(--c-head); }
+  .ck table { width: 100%; border-collapse: collapse; font-size: .82rem; border-radius: 9px; overflow: hidden; }
+  .ck th { text-align: left; padding: .5rem .7rem; background: var(--c-head2); color: #fff; font-size: .74rem; letter-spacing: .03em; }
+  .ck th b { color: #fff; }
+  .ck td { padding: .45rem .7rem; border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; color: var(--c-text); }
+  .ck tr:nth-child(even) td { background: var(--c-row); }
+  .ck .karty { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .6rem; }
+  .ck .karta { border: 1px solid var(--c-border); border-radius: 10px; padding: .8rem .9rem; background: #fff; display: flex; flex-direction: column; gap: .4rem; }
+  .ck .karta h3 { font-size: .9rem; color: var(--c-head); margin: 0; }
+  .ck .karta .ikona { width: 36px; height: 36px; border-radius: 9px; background: var(--c-row); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+  .ck .przyklad { font-size: .82rem; color: var(--c-muted); }
+  .ck .przyklad b { color: var(--c-text); }
+  .ck .uwaga { background: rgba(251,191,36,.16); border-left: 3px solid var(--yellow); border-radius: 8px; padding: .7rem .9rem; }
+  .ck .przeplyw { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .5rem; color: var(--c-head2); font-weight: 800; }
+  .ck .przeplyw > b { background: var(--c-row); color: var(--c-head); border: 1px solid var(--c-border); border-radius: 999px; padding: .2rem .7rem; font-size: .8rem; }
+  .ck svg { max-width: 100%; height: auto; }
+  .soon-note { color: var(--muted); font-size: .85rem; padding: .3rem 0 .6rem; }
+  .toc .soon { display: block; padding: .28rem .55rem; font-size: .78rem; color: var(--muted); opacity: .55; }
+  @media (max-width: 720px) {
+    .ck .cornell { grid-template-columns: 1fr; }
+    .ck .tresc { border-left: 0; border-top: 0; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">🔭 StudyZone</a>
+  <span class="sep">/</span>
+  <a href="swps.html">SWPS</a>
+  <span class="sep">/</span>
+  <a href="swps-rok5.html">Rok 5</a>
+  <span class="sep">/</span>
+  <a href="swps-kreowanie.html">Kreowanie wizerunku w polityce</a>
+  <span class="sep">/</span>
+  <span class="current">Notatki</span>
+</nav>
+
+<div class="layout">
+
+<aside class="toc">
+  <div class="toc-title">Spis treści</div>
+  <div class="toc-group">
+    <div class="toc-group-label">⚡ O przedmiocie</div>
+    <a href="#info">Zakres i zaliczenie</a>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">🏷️ 1 · Marka w polityce</div>
+    <a href="#S1">1 · Czym jest marketing polityczny</a>
+    <a href="#S2">2 · Polityk a produkt: co wspólne, co inne</a>
+    <a href="#S3">3 · Co jest „produktem” w polityce</a>
+    <a href="#S4">4 · Partia i polityk jako marka</a>
+    <a href="#S5">5 · Promise concept: marka buduje relację obietnicami</a>
+    <a href="#S6">6 · Od partii do wyborcy: jak zmieniały się kampanie</a>
+    <a href="#S7">7 · Zaawansowany model marketingu politycznego i permanentna kampania</a>
+    <a href="#S8">8 · Segmentacja: do kogo mówić</a>
+    <a href="#S9">9 · Etyka: makiawelizm w polityce</a>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">👁️ 2 · Percepcja społeczna a ocena polityków</div>
+    <a href="#S10">10 · Jak wyborca poznaje polityka</a>
+    <a href="#S11">11 · Atrybucja: „kto i dlaczego to zrobił?”</a>
+    <a href="#S12">12 · Błędy w spostrzeganiu ludzi</a>
+    <a href="#S13">13 · Model soczewki</a>
+    <a href="#S14">14 · Schematy i szufladki</a>
+    <a href="#S15">15 · Model kontinuum formowania wrażeń</a>
+    <a href="#S16">16 · Model ELM: dwie drogi perswazji</a>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">🎯 3 · Pozycjonowanie, styl i wizerunek kandydatów</div>
+    <span class="soon">notatka po wykładzie</span>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">🎙️ 4 · Komunikacja (nie)werbalna w polityce</div>
+    <span class="soon">notatka po wykładzie</span>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">📚 Źródła</div>
+    <a href="#lit">Materiały i literatura</a>
+  </div>
+</aside>
+
+<main class="content">
+
+  <div class="page-header">
+    <div class="subject-icon">🗳️</div>
+    <div class="subject-tag">SWPS · Rok 5 · Semestr zimowy</div>
+    <h1>Kreowanie wizerunku w polityce</h1>
+    <div class="accent-line"></div>
+    <p class="subtitle">Jak działa marketing polityczny i czym różni się od marketingu produktów, co jest „produktem” w polityce, jak partia i polityk budują markę i relację z wyborcami obietnicami (promise concept), dlaczego kampania jest dziś permanentna, jak segmentuje się wyborców — oraz jak wyborcy spostrzegają i oceniają polityków: atrybucja, model soczewki, schematy, model kontinuum i ELM.</p>
+  </div>
+
+  <div class="exam-strip" id="info">
+    <div class="exam-badge hi"><div class="label">Zaliczenie</div><div class="value">sprawdzian testowy</div></div>
+    <div class="exam-badge"><div class="label">Próg</div><div class="value">51 / 100 pkt</div></div>
+    <div class="exam-badge"><div class="label">Zakres</div><div class="value">wykład + literatura obowiązkowa</div></div>
+    <div class="exam-badge"><div class="label">Prowadząca</div><div class="value">dr Milena Drzewiecka</div></div>
+  </div>
+
+  <div class="callout info">
+    <span class="ci">ℹ️</span><div>Notatka idzie za <strong>4 zagadnieniami z sylabusa</strong>. Gotowe są <strong>zagadnienia 1 i 2</strong>; 3 i 4 dojdą po kolejnych wykładach. Źródła: slajdy wykładu, Twoje notatki z wykładów (zrzuty pełniejszych slajdów) i literatura obowiązkowa: <strong>Cwalina, Falkowski (2006)</strong>, <strong>Lewicka – Procesy atrybucji</strong>, <strong>Wojciszke – Psychologia społeczna</strong>. Każdy blok ma układ Cornella: <strong>hasło po lewej, notatka po prawej</strong>, a na końcu zagadnienia podsumowanie. Kliknij <strong>🙈 Tryb powtórki</strong>, żeby zasłonić definicje i sprawdzić się.</div>
+  </div>
+
+  <!-- ══════════ ZAGADNIENIE 1 ══════════ -->
+  <div class="group-divider" id="Z1">
+    <span class="group-divider-label gdl-core">🏷️ Zagadnienie 1 · Marka w polityce</span>
+    <div class="group-divider-line"></div>
+  </div>
+  <div class="callout exam"><span class="ci">⚡</span><div><strong>W skrócie:</strong> Marketing polityczny bierze narzędzia z marketingu firm, ale polityk to nie proszek do prania. Głosujemy wszyscy tego samego dnia, nie płacimy ceny, a wynik dotyczy wszystkich. „Produktem” jest platforma kampanii, a partia i polityk działają jak marka, która buduje z wyborcą relację na obietnicach i zaufaniu. Dziś kampania nie kończy się w dniu wyborów: trwa cały czas (permanentna kampania).</div></div>
+
+  <section id="S1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-header-text"><h2>Czym jest marketing polityczny</h2><div class="src-tag">Zagadnienie 1 · <span>Marka w polityce</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🛒</span>Marketing<small>American Marketing Association, 1985</small></div>
+  <div class="tresc">
+    <p class="zakryj">Proces planowania i realizowania pomysłów, kształtowania cen, promocji i dystrybucji myśli, towarów i usług, żeby stworzyć wymianę, która realizuje cele jednostek i organizacji.</p>
+    <p>Firma steruje czterema bodźcami, tzw. <b>4P</b>: <b>produkt, cena, miejsce (dystrybucja), promocja</b>. Kontrolowanie ich tak, żeby wywołać oczekiwaną reakcję klienta, to <b>marketing mix</b>.</p>
+    <p class="przyklad"><b>Schemat S–O–R:</b> S to bodźce marketingowe, które firma kontroluje (4P). O to to, co dzieje się w głowie klienta i czego nie widać (motywacja, emocje, postawy, osobowość, pamięć, percepcja). R to widoczna reakcja, czyli zakup.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🗳️</span>Marketing polityczny<small>Cwalina, Falkowski, Newman, 2009</small></div>
+  <div class="tresc">
+    <p class="zakryj">Procesy ustanawiania, wymiany, utrzymywania i wzmacniania <b>relacji</b> między obiektami na rynku politycznym (politykami, partiami, wyborcami, grupami interesów, instytucjami). Ich celem jest rozpoznanie i zaspokojenie ich potrzeb oraz rozwijanie przywództwa politycznego.</p>
+    <p>Inaczej, prościej: narzędzia, którymi wspiera się cele polityczne partii, instytucji i wyborców.</p>
+    <p class="przyklad"><b>Lock i Harris (1996):</b> marketing polityczny bada wymianę między podmiotami politycznymi a ich otoczeniem, zwłaszcza to, jak się <b>pozycjonują</b> i jak ze sobą <b>komunikują</b>.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🌐</span>Rynek polityczny<small>Kotler i Kotler, 1999</small></div>
+  <div class="tresc">
+    <p>W środku stoi <b>kandydat lub partia</b>. Wokół jest <b>5 sił</b>: wyborcy, grupy interesu (aktywiści, związki, organizacje), media, partie oraz sponsorzy.</p>
+    <svg viewBox="0 0 360 172" style="max-width:460px" role="img" aria-label="Rynek polityczny: kandydat lub partia w środku, wokół wyborcy, media, sponsorzy, grupy interesu, partie">
+      <g font-family="sans-serif" font-size="15" font-weight="700" text-anchor="middle">
+        <g style="stroke:var(--zloto);stroke-width:2">
+          <line x1="180" y1="86" x2="60" y2="30"/><line x1="180" y1="86" x2="180" y2="30"/><line x1="180" y1="86" x2="300" y2="30"/>
+          <line x1="180" y1="86" x2="95" y2="145"/><line x1="180" y1="86" x2="265" y2="145"/>
+        </g>
+        <g style="fill:var(--fiolet-jasny)">
+          <rect x="6" y="10" width="108" height="36" rx="9"/><rect x="126" y="10" width="108" height="36" rx="9"/><rect x="246" y="10" width="108" height="36" rx="9"/>
+          <rect x="20" y="127" width="150" height="36" rx="9"/><rect x="190" y="127" width="150" height="36" rx="9"/>
+        </g>
+        <rect x="95" y="66" width="170" height="40" rx="10" style="fill:var(--zloto)"/>
+        <text x="180" y="91" style="fill:#1C1430">KANDYDAT / PARTIA</text>
+        <g style="fill:var(--fiolet)">
+          <text x="60" y="33">Sponsorzy</text><text x="180" y="33">Media</text><text x="300" y="33">Wyborcy</text>
+          <text x="95" y="150">Grupy interesu</text><text x="265" y="150">Partie</text>
+        </g>
+      </g>
+    </svg>
+    <p><b>Media to najważniejsza siła.</b> Działają <b>jawnie</b> (otwarcie popierają opcję, nagłaśniają wydarzenia) albo <b>ukrycie</b> (decydują, jak często kandydat się pojawia, wyolbrzymiają lub pomniejszają jego stanowiska, eksponują dobre albo złe cechy).</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">♿</span>Przykład na start<small>F.D. Roosevelt</small></div>
+  <div class="tresc">
+    <p>Na ok. 50 tys. zdjęć Roosevelta tylko dwa pokazują go na wózku. Sztab zbudował obraz silnego przywódcy: prezydent opierał się o ramię syna i o laskę, więc wyglądało, że chodzi. Obraz w głowach wyborców był niezgodny z rzeczywistością.</p>
+    <p>Takie budowanie obrazu kandydata to <b>pozycjonowanie</b>: <span class="zakryj">znalezienie w umyśle wyborcy wyraźnego, pożądanego miejsca dla kandydata względem konkurentów</span>.</p>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-header-text"><h2>Polityk a produkt: co wspólne, co inne</h2><div class="src-tag">Zagadnienie 1 · <span>Marka w polityce</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🤔</span>Czy polityk to produkt?</div>
+  <div class="tresc">
+    <p><b>Nie do końca: człowiek jest bardziej skomplikowany niż produkt.</b></p>
+    <ul>
+      <li>Kotler (1969) vs Newman (1994): sprzedaż produktu vs marketing ludzi.</li>
+      <li>Inaczej spostrzegamy produkty, a inaczej osoby. Produkty oceniamy po funkcjonalności, a ludzi „po ludzku”. Ludzkie cechy przypisujemy też rzeczom (antropomorfizm).</li>
+      <li><b>Marland (2003):</b> polityka nie da się „mieć na własność”. Bliżej mu do <b>usługodawcy wynajętego na czas kadencji</b>, jak lekarz czy prawnik.</li>
+      <li><b>Newman (1994):</b> kandydat jest jak agent ubezpieczeniowy. Produktem jest polisa, a nie agent.</li>
+    </ul>
+    <p class="przyklad"><b>Z wykładu:</b> „perfekcyjny gentleman, buntownik w aurze gwiazdy, muskularny geniusz”. To nie opis polityka, tylko modelu BMW. Produktom też nadajemy osobowość.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🤝</span>Podobieństwa</div>
+  <div class="tresc">
+    <ul>
+      <li>Te same narzędzia: badania, segmentacja, pozycjonowanie, planowanie mediów, reklama.</li>
+      <li>Wyborców analizuje się tymi samymi modelami, co konsumentów.</li>
+      <li>W demokracji obie strony grają w wolnorynkową grę opartą na konkurencji.</li>
+    </ul>
+  </div>
+
+  <div class="haslo"><span class="ikona">⚖️</span>Różnice<small>slajd 14 + Lock i Harris, Newman</small></div>
+  <div class="tresc">
+    <table>
+      <tr><th></th><th>Polityka</th><th>Biznes</th></tr>
+      <tr><td>Kiedy wybieram</td><td>Wszyscy jednego dnia</td><td>Kiedy chcę</td></tr>
+      <tr><td>Czyj wybór się liczy</td><td>Głosuję sam, ale wynik jest „kolektywny”: decyduje większość, zwycięzca bierze wszystko</td><td>Mój zakup nie zależy od innych</td></tr>
+      <tr><td>Cena</td><td>Brak ceny w pieniądzu</td><td>Znam cenę</td></tr>
+      <tr><td>Rytm</td><td>Intensywna kampania przed wyborami</td><td>Zakupy w trybie ciągłym</td></tr>
+      <tr><td>Nowa marka</td><td>Nowa partia to trudna sprawa, wiele szybko znika, brak partii ponadnarodowych</td><td>Wiele marek międzynarodowych</td></tr>
+      <tr><td>Cel</td><td>Władza / demokracja</td><td>Zysk</td></tr>
+      <tr><td>Wygrana</td><td>Często o kilka punktów procentowych</td><td>Lider ma dużą przewagę</td></tr>
+      <tr><td>Badania</td><td>Kandydaci często bardziej ufają intuicji</td><td>Decyzje na podstawie badań</td></tr>
+      <tr><td>Reklama</td><td>Dużo kampanii negatywnych i porównawczych</td><td>Rzadko atak na konkurenta</td></tr>
+      <tr><td>„Rozpakowanie”</td><td>Nie wiem, co jest w środku, a zmienić zdanie mogę dopiero za kilka lat</td><td>Mogę szybko wymienić produkt</td></tr>
+      <tr><td>Bycie liderem</td><td>Po wygranej poparcie zwykle spada</td><td>Marka wiodąca jest najpopularniejsza</td></tr>
+    </table>
+    <div class="uwaga">Wniosek Cwaliny i Falkowskiego: <b>bezrefleksyjne przenoszenie</b> metod z marketingu konsumenckiego na wybory jest błędem. Mimo to dziedzina korzysta z tych samych pojęć (badania, segmentacja, pozycjonowanie), bo wciąż się kształtuje.</div>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-header-text"><h2>Co jest „produktem” w polityce</h2><div class="src-tag">Zagadnienie 1 · <span>Marka w polityce</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">📦</span>Platforma kampanii<small>Newman, 1994</small></div>
+  <div class="tresc">
+    <p>Produktem nie jest sam kandydat, tylko <b>platforma kampanii (wyborcza)</b>. Składa się z:</p>
+    <ol class="zakryj">
+      <li>programu wyborczego,</li>
+      <li>stanowisk wobec najważniejszych problemów kampanii,</li>
+      <li>wizerunku kandydata / partii,</li>
+      <li>odniesienia do zaplecza politycznego (partia, popierające grupy, autorytety).</li>
+    </ol>
+    <p>Platforma <b>ewoluuje</b> razem z kampanią. Marka polityczna trwa dłużej niż jedna kampania.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🧭</span>Co wybieramy przy urnie?</div>
+  <div class="tresc">
+    <p><b>Poglądy polityczne</b> mają dwa wymiary lewica–prawica: <b>tożsamościowy</b> (wartości, światopogląd) i <b>ekonomiczny</b>.</p>
+    <p><b>Ideologia</b> to <span class="zakryj">społecznie podzielany zbiór poglądów: jednocześnie opis świata i przepis na jego urządzenie</span> (Wojciszke). Według Conversa to system przekonań o szerokim zakresie idei, skupiony na sprawach politycznych.</p>
+    <p>Trzy społeczne funkcje ideologii: <span class="zakryj">przynależność społeczna, kontrola, wzmacnianie poczucia własnej wartości</span>.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">📜</span>Program: mieć czy nie?<small>Bennett, 1977</small></div>
+  <div class="tresc">
+    <table>
+      <tr><th>Rytuał: mieć</th><th>Pragmatyka: nie przesadzać</th></tr>
+      <tr><td>Wyborcy <b>oczekują</b> programu, czyli konkretnych pomysłów na ważne problemy. Kandydat bez programu łamie te rytualne oczekiwania i może stracić poparcie.</td><td>Jasny, konkretny program jest <b>ryzykowny</b>: może polaryzować elektorat i zniechęcić niezdecydowanych. Do tego jest nudny, a większość wyborców go nie czyta albo nie rozumie.</td></tr>
+    </table>
+  </div>
+
+  <div class="haslo"><span class="ikona">🧰</span>4P w polityce<small>Niffenegger, 1988</small></div>
+  <div class="tresc">
+    <div class="karty">
+      <div class="karta"><h3>Produkt</h3><p>„Złożony zbiór” korzyści, jakie wyborcy dostaną, jeśli kandydat wygra. Główne obietnice są zapisane w platformie partyjnej. Czy wyborcy w nie uwierzą, zależy od tego, co wiedzą o kandydacie i jego dokonaniach, od jego cech oraz od oceny gospodarki pod rządami poprzedników.</p><p class="przyklad">„Opakowanie” robią konsultanci: Reagan zamiast „postawy obronnej” mówił o „postawie pokojowej”.</p></div>
+      <div class="karta"><h3>Cena</h3><p>Koszty, jakie wyborcy ponieśliby po wyborze kandydata: <b>ekonomiczne</b> (podatki, cięcia), <b>wizerunek kraju</b> (duma czy wstyd), <b>psychologiczne</b> (np. pochodzenie, wyznanie). Strategia polega na tym, żeby swoje koszty zmniejszać, a koszty rywala zwiększać.</p><p class="przyklad">Kennedy, pierwszy katolik, pokazywał się z protestantami. Kwaśniewski: „prezydent wszystkich Polaków”.</p></div>
+      <div class="karta"><h3>Miejsce</h3><p>Bezpośrednie spotkania kandydata z wyborcami i praca wolontariuszy „od drzwi do drzwi”, czyli „przedłużenie kandydata” w terenie.</p><p class="przyklad">Gary Hart latał samolotem od miasta do miasta i dawał konferencje na lotniskach.</p></div>
+      <div class="karta"><h3>Promocja</h3><p>Reklama płatna i darmowe relacje w mediach (publicity). Cztery strategie: <b>koncentracji</b> (wysiłek na wybranych segmentach), <b>wyczucia czasu</b> (wydatki, gdy jest dobra passa), <b>zmylenia</b> (wytrącić silniejszego z równowagi), <b>kampanii negatywnej</b> (atak na rywala).</p></div>
+    </div>
+    <p class="przyklad"><b>4P według Newmana (1994):</b> produkt = platforma kampanii; <b>push marketing</b> = przekaz od kandydata do sztabu i wolontariuszy (jak hurtownie); <b>pull marketing</b> = przekaz do wyborców przez media i materiały; <b>polling</b> = sondaże przez całą kampanię.</p>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-header-text"><h2>Partia i polityk jako marka</h2><div class="src-tag">Zagadnienie 1 · <span>Marka w polityce</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🏷️</span>Po co marka w polityce?</div>
+  <div class="tresc">
+    <p>Marki bywają osobowe, związane z miejscem, z konkretną akcją albo z firmą. W polityce marka:</p>
+    <ol class="zakryj">
+      <li>odróżnia partię od innych, podobnych,</li>
+      <li>buduje jej tożsamość, czyli „osobowość”,</li>
+      <li>nadaje określony wizerunek.</li>
+    </ol>
+    <p>A wizerunek przekłada się na to, jak oceniamy <b>jakość</b> programu, oferty i działań z tym znakiem. Marka ma więc wartość użytkową.</p>
+    <p>Sztaby chcą, żeby wyborca wybierał ich ofertę <b>stale</b>. Dlatego budują <b>lojalność wobec marki</b>, tak jak firmy.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">💎</span>Strategia marketingowa<small>Kotler, 2008</small></div>
+  <div class="tresc">
+    <div class="przeplyw"><b>zarządzanie produktem → TWORZY</b> <b>zarządzanie marką → KOMUNIKUJE</b> <b>zarządzanie klientem → DOSTARCZA</b> → <b>WARTOŚĆ</b></div>
+  </div>
+
+  <div class="haslo"><span class="ikona">📱</span>Marketing 6.0<small>metamarketing</small></div>
+  <div class="tresc">
+    <ul>
+      <li>spójne doświadczenie marki we wszystkich kanałach (jak omnichannel),</li>
+      <li>interaktywne, wciągające doświadczenie marki,</li>
+      <li>offline i online mają się uzupełniać.</li>
+    </ul>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-header-text"><h2>Promise concept: marka buduje relację obietnicami</h2><div class="src-tag">Zagadnienie 1 · <span>Marka w polityce</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🤞</span>Co to jest?</div>
+  <div class="tresc">
+    <p>Narzędzie marketingu politycznego do budowania relacji z wyborcami: <span class="zakryj"><b>złożyć, spełnić i uaktywnić obietnice</b> (give, fulfill &amp; enable promises)</span>.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">💞</span>Dlaczego działa?</div>
+  <div class="tresc">
+    <ul>
+      <li>Marka jest <b>partnerem w relacji</b> z wyborcą (Fournier, 2009). Relacja nie jest celem samym w sobie, tylko ułatwia życie.</li>
+      <li>Relacja z marką to rodzaj psychologicznej <b>umowy („kontraktu”)</b>.</li>
+      <li><b>Zaufanie</b> to klucz do zaangażowania: zaangażowana strona uważa, że relacja jest warta wysiłku, żeby trwała (Morgan i Hunt, 1994).</li>
+      <li>Spełnione obietnice (albo takie, które wyborcy uważają za spełnione) budują zaufanie do partii.</li>
+    </ul>
+    <p>Zaangażowanie polityczne ma 3 wymiary: <span class="zakryj"><b>behawioralny</b> (głosuję na partię), <b>afektywny</b> (lubię ją), <b>czasowy</b> (chcę, żeby rządziła dalej)</span>.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🎁</span>3 typy obietnic<small>Anker i in., 2012</small></div>
+  <div class="tresc">
+    <div class="karty">
+      <div class="karta"><div class="ikona">⚙️</div><h3>Funkcjonalna</h3><p class="zakryj">Reforma albo konkretny program.</p><p class="przyklad">Wejście do UE i NATO, 500+ (PiS, 2015), 3 × 15 (PO, 2005).</p></div>
+      <div class="karta"><div class="ikona">🚩</div><h3>Symboliczna</h3><p class="zakryj">Skojarzenie z pożądanym wizerunkiem lub tożsamością (moją albo grupy).</p><p class="przyklad">„Jestem prawdziwym patriotą”, „Make America Great Again” (Trump), „Change” (Obama, 2008).</p></div>
+      <div class="karta"><div class="ikona">🙋</div><h3>Doświadczalna</h3><p class="zakryj">Wyborca sam aktywnie działa na rzecz marki.</p><p class="przyklad">Wywieszenie plakatu, udział w demonstracjach, miesięcznicach.</p></div>
+    </div>
+  </div>
+
+  <div class="haslo"><span class="ikona">📣</span>Jak obiecywać?</div>
+  <div class="tresc">
+    <ul>
+      <li>Marka <b>nie może obiecywać wszystkiego wszystkim</b>. Najpierw trzeba określić swoje możliwości i cele oraz cele wybranych grup wyborców (segmentacja).</li>
+      <li>Wyborcy <b>prawie nie czytają programów</b>, więc nie wiedzą, ile punktów zrealizowano (Pétry i Collette, 2009).</li>
+      <li>Dlatego zadaniem partii jest <b>jasno i czytelnie komunikować obietnice</b>: w kampanii, a po przejęciu władzy również to, że je spełniła.</li>
+    </ul>
+    <div class="przeplyw"><b>Obiecaj</b> → <b>Przypomnij</b> → <b>Spełnij</b> → <b>Powiedz, że spełniłeś</b> → <b>Przypomnij</b></div>
+    <p class="przyklad"><b>Którędy:</b> spoty, przemówienia, wywiady, konferencje, konwencje, debaty, social media, plakaty. <b>Dlaczego to powtarzanie działa:</b> efekt czystej ekspozycji i efekt familiarności (to, co znamy, lubimy bardziej).</p>
+    <div class="uwaga">Rynek polityczny <b>nie daje równych szans</b> (Smith, 2009). Partia z większością w parlamencie naprawdę może spełnić obietnice, a opozycja może tylko mówić o tym, co by zrobiła (Cwalina, Drzewiecka, 2022).</div>
+  </div>
+
+  <div class="haslo"><span class="ikona">🙊</span>Niedotrzymane obietnice</div>
+  <div class="tresc">
+    <p>Gdy obietnicy nie da się spełnić, politycy szukają przyczyny <b>na zewnątrz</b>.</p>
+    <p class="przyklad"><b>Przykład z wykładu (J. Kaczyński, Płock, 2022):</b> inflacja to w ok. ¼ COVID i tarcze antycovidowe, reszta to „putinflacja”, a do tego „Zachód zapłacił za chciwość”.</p>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-header-text"><h2>Od partii do wyborcy: jak zmieniały się kampanie</h2><div class="src-tag">Zagadnienie 1 · <span>Marka w polityce</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🔄</span>4 koncepcje kampanii<small>Newman, 1994</small></div>
+  <div class="tresc">
+    <div class="przeplyw"><b>partyjna</b> → <b>produktu</b> → <b>sprzedaży</b> → <b>marketingowa</b></div>
+    <table>
+      <tr><th>Koncepcja</th><th>Na czym się skupia</th><th>Jak wygląda</th></tr>
+      <tr><td>Partyjna</td><td>na <b>partii</b></td><td>Kampanię prowadzą szefowie partii, szef sztabu to szef partii, kandydat zależy od partii. Tak było np. z PZPR w PRL.</td></tr>
+      <tr><td>Produktu</td><td>na <b>kandydacie</b></td><td>Szuka się najlepszego kandydata, jak ulepsza się towar. Lojalność przesuwa się od struktur partii do kandydata.</td></tr>
+      <tr><td>Sprzedaży</td><td>na <b>kandydacie i jego „opakowaniu”</b></td><td>Wchodzą konsultanci z zewnątrz i eksperci od mediów. Liczy się reakcja wyborców i jak kandydat wypada w mediach (Nixon).</td></tr>
+      <tr><td>Marketingowa</td><td>na <b>wyborcy</b></td><td>Kampanię prowadzą eksperci od marketingu. Badania, potem dopasowanie oferty do potrzeb wyborców.</td></tr>
+    </table>
+    <p>W koncepcji marketingowej liczą się też <b>„usługi posprzedażowe”</b>, czyli dotrzymanie obietnic po wyborach. Marketing nie kończy się w dniu wygranej.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🆚</span>Partyjna vs marketingowa</div>
+  <div class="tresc">
+    <table>
+      <tr><th></th><th>Partyjna</th><th>Marketingowa</th></tr>
+      <tr><td>Misja</td><td>Kandydat ma pasować do ideologii partii</td><td>Najpierw badamy, czego chcą wyborcy, potem wybieramy lub „tworzymy” kandydata</td></tr>
+      <tr><td>Cel</td><td>Realizować filozofię partii</td><td>Wygrać, potem spełnić obietnice</td></tr>
+      <tr><td>Strategia</td><td>Sieć wolontariuszy głosi hasła partii</td><td>Media i komunikaty dopasowane do segmentów</td></tr>
+      <tr><td>Planowanie</td><td>Operacyjne (zbiórki, komitety)</td><td>Strategiczne, na podstawie danych i sondaży</td></tr>
+      <tr><td>Struktura</td><td>Scentralizowana: rządzi szef partii</td><td>Zdecentralizowana: zespół konsultantów</td></tr>
+      <tr><td>Reklama</td><td>Wokół ideologii, kandydat w tle, bez badań</td><td>Wokół kandydata, oparta na badaniach</td></tr>
+    </table>
+  </div>
+
+  <div class="haslo"><span class="ikona">👓</span>Marketingowa krótkowzroczność<small>Levitt</small></div>
+  <div class="tresc">
+    <p><b>Potrzeba</b> to stan braku, który popycha do działania. <b>Chęć posiadania</b> to konkretny przedmiot, który ją zaspokaja. Jedną potrzebę można zaspokoić na wiele sposobów.</p>
+    <p class="zakryj">Krótkowzroczność polega na tym, że firma (albo kandydat) skupia się na swoim produkcie, a nie na funkcji, którą ma pełnić. W polityce oznacza to kandydata, który widzi tylko własną ideologię, choć ta może w ogóle nie przyciągać wyborców.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🗺️</span>Modele kampanii<small>z literatury</small></div>
+  <div class="tresc">
+    <ul>
+      <li><b>Niffenegger (1988):</b> kandydat → program 4P → segmenty wyborców, a pośrodku badania rynku. To dość dosłowne przeniesienie marketingu gospodarczego.</li>
+      <li><b>Kotlerowie (1999), mapa marketingowa kandydata, 6 etapów:</b> badania środowiska → analiza wewnętrzna i zewnętrzna (swoje i rywali mocne i słabe strony) → marketing strategiczny (segmentacja, pozycjonowanie) → cele i strategia → planowanie komunikacji, dystrybucji i organizacji → kluczowe rynki i kontrola wyników.</li>
+      <li><b>Newman (1994):</b> kampania marketingowa (segmentacja, pozycjonowanie, marketing mix) prowadzi kandydata przez etapy kampanii politycznej. Wpływają na nią technologie, przepisy oraz siły takie jak konsultanci, media, sondażownie, partie i grupy interesu.</li>
+      <li><b>Lees-Marshment, wszechstronny marketing polityczny (CPM):</b> marketing to więcej niż komunikacja. Dotyczy wszystkiego, co robi partia (także tego, jak powstaje „produkt”), a nie tylko kampanii.</li>
+    </ul>
+    <p class="przyklad"><b>Historia:</b> pierwsze sondaże do pozycjonowania zlecił sztab Eisenhowera (1952). Ludzie Nixona (1968) badali wizerunek „idealnego prezydenta” i zbliżali do niego kandydata. Reagan (1984) miał system informacji politycznej PINS.</p>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-header-text"><h2>Zaawansowany model marketingu politycznego i permanentna kampania</h2><div class="src-tag">Zagadnienie 1 · <span>Marka w polityce</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🏛️</span>Zaawansowany model<small>Cwalina, Falkowski, Newman, 2015</small></div>
+  <div class="tresc">
+    <p>Model ma 3 piętra:</p>
+    <ol>
+      <li><b>Orientacja dominująca w demokracji:</b> na kandydata, lidera partyjnego, partię albo rząd.</li>
+      <li><b>Permanentna kampania polityczna:</b> przed kampanią → kampania ⇄ po kampanii.</li>
+      <li><b>Proces marketingu politycznego</b> (tabela niżej).</li>
+    </ol>
+    <div class="karty">
+      <div class="karta"><div class="ikona">🍰</div><h3>Rozwijanie przekazu: segmenty</h3><p>Segmentacja pierwotna i wtórna (pomiar potrzeb), profile wyborców, wybór segmentów docelowych.</p></div>
+      <div class="karta"><div class="ikona">📍</div><h3>Rozwijanie przekazu: pozycjonowanie (branding)</h3><p>Pomiar wizerunku i mocnych/słabych stron programu, analiza konkurencji, pozycja w segmentach, platforma kampanii (wizerunek, program, obietnice).</p></div>
+      <div class="karta"><div class="ikona">📢</div><h3>Rozpowszechnianie przekazu</h3><p>Kampania osobista (wolontariusze, spotkania), kampania przez media, PR, monitorowanie sondażami, social networking.</p></div>
+      <div class="karta"><div class="ikona">🤝</div><h3>Budowanie relacji</h3><p>Dostarczenie platformy (wdrożenie polityki), <b>budowanie wzajemnego zaufania</b>, permanentna komunikacja, lobbing.</p></div>
+    </div>
+  </div>
+
+  <div class="haslo"><span class="ikona">♾️</span>Permanentna kampania</div>
+  <div class="tresc">
+    <p class="zakryj">Kampania nie kończy się w dniu wyborów. Marketing trwa przed, w trakcie i po kampanii, a po wygranej przechodzi w budowanie relacji: wdrażanie obiecanej polityki, budowanie zaufania i stałą komunikację z wyborcami.</p>
+    <p>Łączy się to z promise concept: obietnicę trzeba nie tylko spełnić, ale też <b>powiedzieć, że się ją spełniło, i przypominać</b>.</p>
+    <div class="uwaga"><b>Teoria a praktyka:</b> według Newmana koncepcję marketingową krytykuje się za to, że kandydaci po wygranej często nie spełniają obietnic. Dlatego cel kampanii jest osiągnięty dopiero wtedy, gdy obietnice zostaną spełnione, a nie w dniu wygranej.</div>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-header-text"><h2>Segmentacja: do kogo mówić</h2><div class="src-tag">Zagadnienie 1 · <span>Marka w polityce</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🍰</span>Segmentacja</div>
+  <div class="tresc">
+    <p class="zakryj">Podział wyborców na grupy (segmenty), na których kandydat chce się skupić i do których kieruje przekaz. Celem jest poznanie potrzeb i cech wyborców, żeby skutecznie się z nimi komunikować.</p>
+    <div class="przeplyw"><b>podziel rynek na segmenty</b> → <b>wybierz segment</b> → <b>dopasuj do niego marketing mix</b></div>
+    <p>Segment jest przydatny, gdy ma: <span class="zakryj"><b>tożsamość grupową</b> (ludzie w nim są podobni do siebie i różni od innych), <b>podobne zachowanie</b> (podobnie reagują na kampanię) i <b>skuteczność</b> (strategia naprawdę do nich dotrze)</span>.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">1️⃣</span>Pierwotna i wtórna</div>
+  <div class="tresc">
+    <table>
+      <tr><th>Segmentacja pierwotna</th><th>Segmentacja wtórna</th></tr>
+      <tr><td><b>A priori</b>, według kryteriów ustalonych z góry. Wstępnie zawęża rynek do tych, których warto poznać. Dwa kryteria: <b>identyfikacja partyjna</b> (konkretna partia albo „niezależni”) i <b>siła tej identyfikacji</b> (od pewnych zwolenników po niezdecydowanych).</td><td>A priori albo <b>post hoc</b>. Poznaje potrzeby „obiecujących” segmentów. Używa cech <b>geograficznych, demograficznych, behawioralnych i psychograficznych</b>.</td></tr>
+    </table>
+    <p class="przyklad"><b>A posteriori (post hoc)</b> to podział wyliczony z danych (analiza skupień, skalowanie wielowymiarowe), który łączy ludzi o podobnym zachowaniu.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">👥</span>Demografia czy psychografia?</div>
+  <div class="tresc">
+    <p><b>Demograficzna:</b> widoczne cechy (wiek, płeć, wykształcenie, zawód, dochód), np. metoda ACORN według miejsca zamieszkania. Przewiduje raczej to, <i>czy</i> ktoś pójdzie głosować, a nie <i>na kogo</i>.</p>
+    <p><b>Psychograficzna:</b> niewidoczne cechy psychiczne (osobowość, wartości, styl życia). Newman wyróżnił 4 typy wyborców: <span class="zakryj"><b>racjonalni</b> (program, gospodarka), <b>emocjonalni</b> (uczucia wobec kandydata), <b>społeczni</b> (z jaką grupą kojarzy się kandydat), <b>sytuacyjni</b> (bieżące wydarzenia)</span>.</p>
+    <div class="uwaga"><b>Pytanie z wykładu: gdzie te segmentacje działają lepiej?</b> W marketingu <b>konsumenckim</b>. W polityce ani demografia, ani psychografia nie dają oczekiwanych wyników. Najbardziej obiecujący jest podział według <b>czasu i pewności decyzji</b> wyborcy.</div>
+  </div>
+
+  <div class="haslo"><span class="ikona">📍</span>Mapy percepcji<small>pozycjonowanie</small></div>
+  <div class="tresc">
+    <p>Skalowanie wielowymiarowe rysuje „mapę w głowie wyborcy”: gdzie stoją kandydaci (np. oś liberalizm–konserwatyzm, oś „rząd ma się angażować / nie”). Dodaje się na niej <b>punkt idealny</b>, czyli kandydata, jakiego chcieliby wyborcy. Potem można <b>repozycjonować</b> kandydata, czyli przesunąć go bliżej ważnego segmentu i dalej od rywali.</p>
+    <p class="przyklad"><b>Johnson (1968):</b> Wallace programowo pasował do najbardziej konserwatywnych wyborców, a zagłosowało na niego tylko 14% z nich. Odrzucili go za <b>wizerunek</b>, nie za program. W Polsce takie mapy robił Żukowski (1997): osie wartości i interesów.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">❓</span>Niezdecydowani: segment strategiczny</div>
+  <div class="tresc">
+    <ul>
+      <li>Ugruntowanych postaw kampania nie zmieni, a telewizja raczej je wzmacnia. Można za to <b>kształtować obraz u niezdecydowanych</b> (Blumler i McQuail).</li>
+      <li>Niezdecydowani dzielą się na <b>wyborców kampanijnych</b> (śledzą kampanię i mają dużo informacji) i <b>wyborców ostatniej chwili</b> (mało wiedzą, ulegają przypadkowej reklamie).</li>
+      <li><b>Paradoks medialny:</b> <span class="zakryj">niezdecydowani są najbardziej podatni na media, ale najmniej śledzą politykę, więc przekaz do nich nie dociera</span>.</li>
+      <li>Czas decyzji to raczej <b>cecha sytuacji</b> (konkretnych wyborów) niż osoby.</li>
+      <li>Wyborców lojalnych ubywa. W Wielkiej Brytanii było ich 77% w 1964 r. i 60% w 1992 r., a niezdecydowanych w 1992 r. było już 24%. Niezdecydowani to głównie ludzie młodzi, słabo związani z partią.</li>
+    </ul>
+  </div>
+
+  <div class="haslo"><span class="ikona">🏃</span>„Uciekający” elektorat<small>Cwalina, Falkowski, Różnowski, 1997</small></div>
+  <div class="tresc">
+    <p>Pytamy o partię <b>drugiego wyboru</b>. Ci, którzy wskazują inną partię, to <b>elektorat rezerwowy</b>, który może „uciec”. Wnioski z badania dla AWS (1997):</p>
+    <ol>
+      <li>Najpierw <b>utrzymaj własny elektorat</b>: utwierdzaj go, że wybrał słusznie.</li>
+      <li>Zabiegaj o wyborców tych partii, od których da się ich przejąć, zwykle <b>centrowych</b> (wtedy UW, w Wielkiej Brytanii Liberalni Demokraci).</li>
+      <li><b>Błędem jest walka wprost z głównym przeciwnikiem</b>: elektoraty skrajnych rywali dzieli bariera światopoglądowa (tylko 2% wyborców AWS brało pod uwagę SLD).</li>
+    </ol>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-header-text"><h2>Etyka: makiawelizm w polityce</h2><div class="src-tag">Zagadnienie 1 · <span>Marka w polityce</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🦊</span>Makiawelista<small>slajd 27</small></div>
+  <div class="tresc">
+    <p>Na wykładzie padło pytanie: <b>po czym rozpoznać makiawelistę?</b></p>
+    <p>Etyczne pułapki w marketingu politycznym widać w materiałach na przykładach:</p>
+    <ul>
+      <li><b>Fałszywy wizerunek</b>: Roosevelt „chodzący” na zdjęciach.</li>
+      <li><b>Manipulowanie przekazem przez media</b>: wyolbrzymianie albo przemilczanie stanowisk kandydata.</li>
+      <li><b>Łatwość manipulowania niezdecydowanymi</b>, którzy mało wiedzą.</li>
+      <li><b>Niedotrzymywanie obietnic</b> i zrzucanie winy na okoliczności.</li>
+    </ul>
+    <div class="uwaga">W udostępnionych slajdach i literaturze ten temat to tylko pytanie, bez rozwinięcia. Szczegóły (np. cechy makiawelisty) były omawiane ustnie, więc warto dopisać je ze swoich notatek, jeśli je masz.</div>
+  </div>
+</div>
+    </div>
+  </section>
+  <div class="summary-box"><h4>Podsumowanie zagadnienia 1</h4><ul><li>Marketing polityczny korzysta z narzędzi biznesu (4P, segmentacja, pozycjonowanie), ale wybory rządzą się innymi prawami: jeden dzień, brak ceny, wynik zbiorowy, „produkt”, którego nie da się rozpakować.</li><li>Produktem jest <b>platforma kampanii</b>, a partia i polityk działają jak <b>marka</b>, która odróżnia, daje tożsamość i wizerunek.</li><li>Marka buduje relację <b>obietnicami</b> (funkcjonalnymi, symbolicznymi, doświadczalnymi). Zaufanie rodzi się, gdy obietnice są spełniane i jasno komunikowane.</li><li>Kampanie przeszły drogę <b>od partii do wyborcy</b>. Dziś kampania jest <b>permanentna</b> i nie kończy się w dniu wyborów.</li><li>Kluczowy segment to <b>niezdecydowani</b>, a mądra strategia to utrzymać swoich i przejmować wyborców od partii pośrodku.</li></ul></div>
+
+  <!-- ══════════ ZAGADNIENIE 2 ══════════ -->
+  <div class="group-divider" id="Z2">
+    <span class="group-divider-label gdl-core">👁️ Zagadnienie 2 · Percepcja społeczna a ocena polityków</span>
+    <div class="group-divider-line"></div>
+  </div>
+  <div class="callout exam"><span class="ci">⚡</span><div><strong>W skrócie:</strong> Wyborca nie widzi polityka „takiego, jaki jest”, tylko interpretuje to, co widzi. Upraszcza, szuka przyczyn zachowań (atrybucja), korzysta ze wskazówek (model soczewki), wrzuca kandydata do szufladek (schematy, model kontinuum) i myśli albo uważnie, albo na skróty (ELM). Sztab, który zna te mechanizmy i błędy w spostrzeganiu ludzi, wie, jak pokazywać sukcesy i tłumaczyć wpadki.</div></div>
+
+  <section id="S10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-header-text"><h2>Jak wyborca poznaje polityka</h2><div class="src-tag">Zagadnienie 2 · <span>Percepcja społeczna a ocena polityków</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">👀</span>Na co patrzę, a co widzę?<small>slajd 30</small></div>
+  <div class="tresc">
+    <p>To samo zdarzenie różni ludzie widzą różnie, bo każdy je <b>interpretuje</b> („dekoduje”). Na slajdzie pada też hasło <b>naiwny realizm</b>, rozwijane ustnie.</p>
+    <p>Dla sztabu to ważne: wizerunek powstaje w głowie wyborcy, z relacji mediów i komentarzy. Dlatego projektując wizerunek, trzeba znać psychologiczne teorie spostrzegania ludzi (Cwalina, Falkowski).</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🗳️</span>Założenia oceny polityka<small>Sullivan i in., 1990</small></div>
+  <div class="tresc">
+    <ol>
+      <li>Wyborcy <b>upraszczają</b> świat (także polityczny): schematyzują go i kategoryzują.</li>
+      <li>Wybierając, korzystają ze <b>strategii wnioskowania z codziennego życia</b>.</li>
+      <li>Informacji jest dużo i są sprzeczne, więc wybierają tylko te potrzebne do decyzji („Myśli tak jak ja”, „Jaki on atrakcyjny!”).</li>
+      <li>Ocena kompetencji i cech kandydata wpływa na <b>emocje</b> wyborcy (lubię / nie lubię).</li>
+    </ol>
+  </div>
+
+  <div class="haslo"><span class="ikona">🧠</span>Podmiot poznający<small>Fiske i Taylor, 2008</small></div>
+  <div class="tresc">
+    <div class="przeplyw"><b>naiwny naukowiec</b> → <b>skąpiec poznawczy</b> → <b>umotywowany taktyk</b></div>
+    <table>
+      <tr><th>Naiwny naukowiec</th><th>Skąpiec poznawczy</th><th>Umotywowany taktyk</th></tr>
+      <tr><td>Chce się wysilić, „zbiera dowody”, uważnie obserwuje zachowania i cechy innych.</td><td>Ma ograniczone zasoby, więc stosuje <b>skróty poznawcze</b> (heurystyki). Bywają mylne, ale oszczędzają wysiłek.</td><td>Wybiera strategię zależnie od celów: gdy sprawa jest ważna, myśli jak naukowiec, a gdy nieważna, jak skąpiec.</td></tr>
+    </table>
+    <p>Najnowsze ujęcie to <b>aktywowany aktor</b>: działamy pod silnym wpływem otoczenia, a pod spodem pracują procesy automatyczne i świadome. Motywy wpływają na jedne i drugie.</p>
+    <div class="uwaga">Z wykładu: w czasie wyborów wyborców trzeba traktować jak <b>skąpców poznawczych</b>.</div>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div class="section-header-text"><h2>Atrybucja: „kto i dlaczego to zrobił?”</h2><div class="src-tag">Zagadnienie 2 · <span>Percepcja społeczna a ocena polityków</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">❓</span>Atrybucja</div>
+  <div class="tresc">
+    <p><span class="zakryj">Atrybucja to zdroworozsądkowy wniosek o przyczynie zachowania lub zdarzenia.</span> Teorie atrybucji opisują, jak ludzie odpowiadają na pytanie <b>„Dlaczego?”</b> i kogo lub co uznają za odpowiedzialnego.</p>
+    <p>Pytamy „dlaczego” najczęściej, gdy zdarzenie jest <b>nieoczekiwane</b> albo <b>negatywne</b>.</p>
+    <p>Funkcje atrybucji (Lewicka): <span class="zakryj"><b>kontrola</b> (wiem, jak wpłynąć na zdarzenia), <b>przewidywanie</b> (wiem, czego się spodziewać), <b>ochrona samooceny</b> (sukces to moja zasługa, porażka to okoliczności)</span>.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🔍</span>Heider (1958)<small>klasyczna teoria atrybucji</small></div>
+  <div class="tresc">
+    <p>Ludzie chcą widzieć świat społeczny jako <b>przewidywalny i kontrolowalny</b>, więc szukają przyczyn cudzych zachowań. Najpierw pytają o <b>intencję</b>: czy zachowanie było zamierzone (przyczynowość osobowa), czy nie (np. kichanie albo powódź, przyczynowość nieosobowa).</p>
+    <p>Dwa rodzaje przyczyn: <span class="zakryj"><b>wewnętrzne (osobowe)</b>: intencja („chce”), zdolności („potrafi”), motywacja („usiłuje”); <b>zewnętrzne (środowiskowe)</b>: trudności, okoliczności, szczęście lub pech</span>.</p>
+    <p class="przyklad"><b>Przykład (Cwalina, Falkowski):</b> kandydat bierze dziecko na ręce. Atrybucja wewnętrzna: jest czuły i lubi dzieci. Atrybucja zewnętrzna: to zabieg pod wyborców, czyli jest nieszczery.</p>
+    <div class="uwaga"><b>Wniosek marketingowy</b> (z powodu podstawowego błędu atrybucji i asymetrii aktor–obserwator): <span class="zakryj"><b>pozytywne</b> zachowania polityka pokazuj tak, żeby wyborcy uznali je za naturalne i za jego osobistą zasługę (przyczyna wewnętrzna); <b>wpadki</b> tłumacz okolicznościami (zmęczenie, choroba, wrogo nastawiona publiczność, czyli przyczyna zewnętrzna)</span>.</div>
+  </div>
+
+  <div class="haslo"><span class="ikona">🎤</span>Przykłady tłumaczenia wpadek<small>z wykładu</small></div>
+  <div class="tresc">
+    <ul>
+      <li>Dlaczego J. Kaczyński przegrał debatę z D. Tuskiem (2007)? PiS: „niesprzyjająca publiczność”.</li>
+      <li>Dlaczego A. Kwaśniewski chwiał się w Charkowie? Jego otoczenie: „pourazowy zespół przeciążeniowy goleni prawej”. Według Cwaliny i Falkowskiego sztab (R. Kalisz) mówił o lekach przeciwbólowych po kontuzji na tenisie, czyli o czynniku sytuacyjnym, a nie o „złym prowadzeniu się”.</li>
+      <li>Dlaczego na konwencję Obamy (2008) przychodziły tłumy? Republikanie: „miliony wydane na konwencję”. Sukces rywala tłumaczy się okolicznościami.</li>
+    </ul>
+  </div>
+
+  <div class="haslo"><span class="ikona">🎯</span>Teoria wniosków korespondentnych<small>Jones i Davis, 1965</small></div>
+  <div class="tresc">
+    <p>Szukamy „odpowiedniości” między zachowaniem, intencją i <b>trwałą cechą</b> osoby. Taki wniosek najbardziej się przydaje, bo pozwala przewidywać przyszłe zachowania.</p>
+    <div class="przeplyw"><b>1. identyfikacja intencji</b> → <b>2. atrybucja dyspozycji (cechy)</b></div>
+    <ul>
+      <li>Zachowanie uznajemy za <b>zamierzone</b>, gdy osoba <b>wiedziała</b>, jakie będą skutki, i <b>mogła</b> je wywołać (miała swobodę działania).</li>
+      <li><b>Nietożsame skutki:</b> patrzymy, czym wybrana opcja różni się od odrzuconych. Im mniej różnic, tym pewniejszy wniosek o cesze.</li>
+      <li>Zachowania <b>zgodne z oczekiwaniami</b> („tak się robi”) mało mówią o człowieku. <b>Nieoczekiwane</b> i negatywne mówią dużo.</li>
+      <li>Ludzie <b>nie doceniają presji sytuacji</b> (badanie Jonesa i Harrisa z esejami o Castro: autorowi przypisywano poglądy z eseju, nawet gdy pisał go pod przymusem).</li>
+    </ul>
+    <p class="przyklad"><b>W polityce:</b> polityk, który po każdej przegranej zakłada nową partię, wydaje się dominujący i egocentryczny. <b>Wniosek dla sztabu:</b> wizerunek trzeba planować w czasie i stale monitorować, bo <b>jeden „wyskok”</b> może zburzyć obraz. Dotyczy to bardziej obrazu pozytywnego niż negatywnego.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">🎲</span>Model współzmienności<small>Kelley, 1967, 1973</small></div>
+  <div class="tresc">
+    <p>Przy zachowaniach powtarzalnych sprawdzamy 3 rodzaje informacji („sześcian atrybucyjny”):</p>
+    <ul>
+      <li><b>Spójność:</b> <span class="zakryj">czy ta sama osoba zachowuje się podobnie wobec tego samego obiektu (czy polityk P jest zawsze miły dla dziennikarzy)</span>.</li>
+      <li><b>Wybiórczość:</b> <span class="zakryj">czy zachowuje się tak tylko wobec tego bodźca, a wobec innych podobnych nie (jest miły, ale wobec dziennikarza X agresywny)</span>.</li>
+      <li><b>Powszechność:</b> <span class="zakryj">czy inni zachowują się podobnie wobec tego samego obiektu (czy wszyscy są agresywni wobec dziennikarza X)</span>.</li>
+    </ul>
+    <table>
+      <tr><th>Zachowanie jest…</th><th>Przyczyna leży w…</th></tr>
+      <tr><td>spójne + <b>wybiórcze</b> + <b>powszechne</b> (wszyscy są agresywni wobec dziennikarza X)</td><td><b>obiekcie</b> (w dziennikarzu X)</td></tr>
+      <tr><td>spójne + <b>niewybiórcze</b> + <b>niepowszechne</b> (P jest miły też dla X, inni politycy nie)</td><td><b>osobie</b> (P jest uprzejmy i miły)</td></tr>
+    </table>
+    <p>Najważniejsza jest <b>spójność</b> (wyjaśniała 20% atrybucji, wybiórczość 10%, powszechność tylko 3%). Zachowanie niespójne zawsze przypisujemy okolicznościom.</p>
+    <div class="uwaga"><b>Wniosek dla sztabu:</b> liczy się <b>spójność wizerunku</b>, czyli dokładnie zaprojektowane cechy i zachowania, które z nich wynikają. <b>Koszty niespójności</b> (przykład z wykładu): zdjęcia Magdaleny Ogórek z imprezy u J. Przetakiewicz nie pasowały do jej kampanijnego wizerunku.</div>
+  </div>
+
+  <div class="haslo"><span class="ikona">🌡️</span>Atrybucyjna teoria motywacji<small>Weiner</small></div>
+  <div class="tresc">
+    <p>Wnioskując o przyczynach, analizujemy 3 wymiary:</p>
+    <div class="karty">
+      <div class="karta"><h3>Umiejscowienie</h3><p class="zakryj">Na ile zachowanie zależało od aktora, a na ile od sytuacji?</p></div>
+      <div class="karta"><h3>Kontrolowalność</h3><p class="zakryj">Na ile mógł to kontrolować (zdolności vs wysiłek)?</p></div>
+      <div class="karta"><h3>Stabilność</h3><p class="zakryj">Czy zachowanie się utrzymuje i powtarza?</p></div>
+    </div>
+    <p><b>Konsekwencje przypisania odpowiedzialności</b> (slajdy 42–43):</p>
+    <div class="przeplyw"><b>zdarzenie</b> → <b>przyczyna kontrolowalna</b> (zaniedbanie, brak wysiłku) → <b>odpowiedzialny: TAK</b> → <b>gniew</b> → <b>nagana, potępienie, odwet</b></div>
+    <div class="przeplyw"><b>zdarzenie</b> → <b>przyczyna niekontrolowalna</b> (klimat, choroba, małe zdolności) → <b>odpowiedzialny: NIE</b> → <b>nagany, potępienia i odwetu brak</b></div>
+    <p class="przyklad">Stała przyczyna (np. zdolności) sprawia, że spodziewamy się powtórki. Przyczyna kontrolowalna budzi gniew (Wojciszke).</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">⏱️</span>Atrybucja dyspozycji krok po kroku<small>Trope i Liberman, 1993; Gilbert</small></div>
+  <div class="tresc">
+    <div class="przeplyw"><b>identyfikacja zachowania (automatyczna)</b> → <b>wniosek o cesze</b> → <b>poprawka na sytuację</b></div>
+    <p>Na to, jak <b>rozpoznamy</b> zachowanie (np. łzy jako smutek czy wzruszenie), wpływają: <b>wskazówki sytuacyjne</b> (pogrzeb czy film), <b>wskazówki behawioralne</b> (łzy) i <b>wcześniejsze informacje</b> (znana osoba, stereotyp płci).</p>
+    <p>Według Gilberta przypisanie cechy dzieje się <b>automatycznie</b>, a <b>poprawka na sytuację</b> wymaga wysiłku. Gdy umysł jest zajęty czymś innym, poprawki brakuje. To wyjaśnia podstawowy błąd atrybucji.</p>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S12">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div class="section-header-text"><h2>Błędy w spostrzeganiu ludzi</h2><div class="src-tag">Zagadnienie 2 · <span>Percepcja społeczna a ocena polityków</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">⚠️</span>Deformacje atrybucji<small>Lewicka, Wojciszke</small></div>
+  <div class="tresc">
+    <table>
+      <tr><th>Błąd</th><th>Na czym polega</th></tr>
+      <tr><td><b>Podstawowy błąd atrybucji</b> (Ross)</td><td class="zakryj">Cudze zachowania przypisujemy cechom osoby, a nie doceniamy sytuacji. „Jest taki, bo taki jest”, choć zachowanie wymusiła sytuacja lub rola.</td></tr>
+      <tr><td><b>Asymetria aktor–obserwator</b> (Jones, Nisbett)</td><td class="zakryj">Cudze zachowanie tłumaczymy cechami, a własne sytuacją. (Wojciszke: ta asymetria jest zwykle słaba.)</td></tr>
+      <tr><td><b>Egotyzm atrybucyjny</b></td><td class="zakryj">Sukcesy przypisujemy sobie, porażki okolicznościom. Polityk po wygranej chwali siebie i program, a po przegranej wini wyborców, media i rywali.</td></tr>
+      <tr><td><b>Egocentryzm atrybucyjny</b></td><td class="zakryj">Przeceniamy swój wkład we wspólny wynik.</td></tr>
+      <tr><td><b>Efekt fałszywej powszechności</b></td><td class="zakryj">Przeceniamy, ilu ludzi myśli tak jak my (np. zaskoczenie wynikiem „naszej” partii w wieczór wyborczy).</td></tr>
+    </table>
+  </div>
+
+  <div class="haslo"><span class="ikona">🌀</span>Inne zniekształcenia<small>Argyle; Mądrzycki</small></div>
+  <div class="tresc">
+    <ul>
+      <li>Zakładamy, że ktoś zachowa się tak samo w innych sytuacjach („skoro upił się na uroczystości, to nie pierwszy raz”).</li>
+      <li>Na siłę budujemy spójny obraz: „dobre rzeczy chodzą w parze” („jest wykształcony, to zna języki”).</li>
+      <li>Za silny wpływ <b>pierwszego wrażenia</b> (zwłaszcza wyglądu) i stereotypów.</li>
+      <li>Faworyzujemy „swoich” (to samo miasto, szkoła, klasa społeczna) i osoby do nas podobne.</li>
+      <li><b>Spostrzeganie życzeniowe:</b> „ci, których popieram, są porządni, a ich przeciwnicy to oszuści”. Do tego projekcja własnych cech na innych.</li>
+    </ul>
+    <div class="uwaga"><b>Po co to sztabowi?</b> Żeby zbudować wizerunek, w którym wyborcy zobaczą zamierzone cechy, mimo że patrzą „po swojemu”, i żeby świadomie <b>uruchamiać</b> te tendencje u wyborców.</div>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S13">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <div class="section-header-text"><h2>Model soczewki</h2><div class="src-tag">Zagadnienie 2 · <span>Percepcja społeczna a ocena polityków</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🔎</span>Model soczewki<small>Brunswik, 1956</small></div>
+  <div class="tresc">
+    <div class="przeplyw"><b>cecha polityka (np. kompetencje)</b> → <b>„soczewka” wskazówek</b> → <b>sąd wyborcy (ocena kompetencji)</b></div>
+    <ol>
+      <li><span class="zakryj">Wskazówki z otoczenia wyborcy działają jak <b>soczewka</b>, przez którą widzi polityka i wnioskuje o jego cechach.</span></li>
+      <li>Wskazówki dotyczą: <b>dokonań</b> (sprawdził się jako poseł), <b>zdolności</b> (zna języki), <b>zachowań niewerbalnych</b> (jąka się), <b>wyglądu</b> (jest elegancki), <b>propozycji</b> (ma dobry program).</li>
+      <li>Wskazówek jest nieskończenie wiele. Wyborca zna tylko <b>próbkę</b>.</li>
+      <li>Wskazówki bywają <b>trafne albo mylące</b>, np. wybiórcze lub niespójne z innymi informacjami (działalność w poprzednim ustroju, przeszłość kryminalna).</li>
+      <li>Wnioskowanie zależy od <b>zdolności i motywacji</b> wyborcy. Zainteresowanemu wyborami wskazówki przydają się bardziej.</li>
+    </ol>
+    <p><b>Trafność wskazówek</b> (czy informacja jest „dobra”) + <b>użyteczność wskazówek</b> (jak wyborca z nich wnioskuje) = <b>osiągnięcie funkcjonalne</b>, czyli trafność sądu o polityku.</p>
+    <p class="przyklad"><b>Wniosek:</b> to od sztabu zależy, czego wyborcy dowiedzą się o kandydacie, czy uznają to za prawdziwe i użyteczne oraz czy to zrozumieją.</p>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S14">
+    <div class="section-header">
+      <div class="section-num">14</div>
+      <div class="section-header-text"><h2>Schematy i szufladki</h2><div class="src-tag">Zagadnienie 2 · <span>Percepcja społeczna a ocena polityków</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🗂️</span>Schemat poznawczy<small>Wojciszke</small></div>
+  <div class="tresc">
+    <p class="zakryj">Schemat to uporządkowana wiedza z wcześniejszych doświadczeń z jakimś rodzajem osób, zdarzeń czy obiektów. Zawiera wiedzę uogólnioną, a nie wszystkie szczegóły.</p>
+    <p>Rdzeniem schematu jest <b>prototyp</b>, czyli najbardziej typowy egzemplarz. Pozwala rozpoznawać obiekty i dopowiadać ich cechy, których jeszcze nie widzieliśmy.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">📚</span>Rodzaje schematów<small>Wojciszke, 1986</small></div>
+  <div class="tresc">
+    <table>
+      <tr><th>Rodzaj</th><th>Co obejmuje</th><th>Przykład</th></tr>
+      <tr><td>Przedmiotowe: <b>jednostkowe</b></td><td>konkretna osoba</td><td>J. Kaczyński, M. Jordan</td></tr>
+      <tr><td>Przedmiotowe: <b>kategorialne</b></td><td>rodzaj ludzi</td><td>polityk, sportowiec</td></tr>
+      <tr><td><b>Skrypty</b></td><td>scenariusze zdarzeń w typowej kolejności</td><td>rekonstrukcja rządu</td></tr>
+      <tr><td><b>Atrybutywne (cech)</b></td><td>wybrane aspekty osób lub zdarzeń</td><td>inteligencja</td></tr>
+    </table>
+  </div>
+
+  <div class="haslo"><span class="ikona">⚡</span>Kiedy schemat działa?</div>
+  <div class="tresc">
+    <p>Schemat musi być: <span class="zakryj"><b>wykształcony</b> (mam go w głowie), <b>zaktywizowany</b> (jest „pod ręką”) i <b>stosowalny</b> (pasuje do sytuacji)</span>.</p>
+    <p class="przyklad"><b>Eksperyment z Donaldem (Higgins i in., 1977):</b> ten sam opis śmiałka oceniano lepiej po wcześniejszym „podsunięciu” słów <i>odważny, wytrwały</i>, a gorzej po <i>lekkomyślny, uparty</i>. Słowa niepasujące do Donalda nic nie zmieniały.</p>
+    <p>To <b>prymowanie (poprzedzanie)</b>: najpierw aktywizuje się jakąś wiedzę, a potem ona wpływa na ocenę. Schemat łatwiej się włącza, gdy go oczekujemy, gdy wiąże się z naszymi celami, gdy był używany niedawno i gdy często.</p>
+    <p>Stereotypy <b>oszczędzają wysiłek</b> i działają automatycznie, nawet podprogowo (Macrae i in.).</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">❤️‍🔥</span>Schematy wyzwalające afekt</div>
+  <div class="tresc">
+    <p>Ocena „po etykiecie” (np. „lewicowiec”) wygrywa, gdy:</p>
+    <ol>
+      <li>etykieta padła <b>wcześnie</b> w informacjach o osobie (efekt pierwszeństwa),</li>
+      <li>kategoria <b>wyróżnia</b> osobę na tle innych (efekt wyrazistości),</li>
+      <li>wyborca <b>niedawno lub często</b> używał tej kategorii (efekt poprzedzania, priming),</li>
+      <li>nastrój wyborcy pasuje do najłatwiej dostępnych kategorii, pozytywnych lub negatywnych.</li>
+    </ol>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S15">
+    <div class="section-header">
+      <div class="section-num">15</div>
+      <div class="section-header-text"><h2>Model kontinuum formowania wrażeń</h2><div class="src-tag">Zagadnienie 2 · <span>Percepcja społeczna a ocena polityków</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">↔️</span>Dwa końce kontinuum<small>Fiske i Neuberg, 1990</small></div>
+  <div class="tresc">
+    <p>Wrażenie o kimś tworzymy:</p>
+    <ul>
+      <li><span class="zakryj">na podstawie <b>etykiety kategorii</b> (szybko, „po szufladce”, jak skąpiec poznawczy)</span>, albo</li>
+      <li><span class="zakryj"><b>analitycznie</b>, cecha po cesze („atrybut po atrybucie”, jak naiwny naukowiec)</span>.</li>
+    </ul>
+    <p>To są dwa końce jednego kontinuum. Reakcja na nową osobę zaczyna się od <b>wstępnej kategoryzacji</b> i <b>wzbudzenia emocji</b>.</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">5️⃣</span>5 zasad modelu</div>
+  <div class="tresc">
+    <ol>
+      <li><b>Kategoria ma pierwszeństwo.</b> Jeśli osoba pasuje do szufladki, nie analizujemy jej dokładniej.</li>
+      <li>Przesuwanie się po kontinuum zależy od tego, <b>jak łatwo dopasować</b> osobę do kategorii. Trudno dopasować? Analizujemy cechy.</li>
+      <li><b>Kluczowa jest uwaga.</b> Analiza idzie dalej, tylko jeśli chcemy patrzeć uważnie.</li>
+      <li><b>Liczy się motywacja.</b> Jeśli opinia o kimś nie jest nam potrzebna, przerywamy.</li>
+      <li>Motywacja wpływa na uwagę, ocenę i interpretację cech.</li>
+    </ol>
+  </div>
+
+  <div class="haslo"><span class="ikona">🌱</span>Przykład: kandydat Zielonych</div>
+  <div class="tresc">
+    <div class="przeplyw"><b>wstępna kategoryzacja</b> → <b>czy jest choć trochę ważny?</b> → <b>uwaga na cechy</b> → <b>kategoryzacja potwierdzająca</b> → <b>rekategoryzacja</b> → <b>analiza cecha po cesze</b></div>
+    <ul>
+      <li><b>Potwierdzająca:</b> „Faktycznie jest lewicowcem, mój człowiek”.</li>
+      <li><b>Rekategoryzacja:</b> ma lewicowe ideały i dba o środowisko, ale jest młody i niedoświadczony. Na prezydenta się nie nadaje, ale byłby obiecującym posłem.</li>
+      <li><b>Analiza cecha po cesze:</b> dobrze wykształcony, zna języki, młody, bez doświadczenia w polityce.</li>
+    </ul>
+    <p>Jeśli osoba nas nie interesuje, proces się zatrzymuje (STOP).</p>
+  </div>
+
+  <div class="haslo"><span class="ikona">💡</span>Wnioski dla sztabu<small>Cwalina, Falkowski</small></div>
+  <div class="tresc">
+    <ul>
+      <li><b>Znany kandydat</b> jest oceniany szybko i powierzchownie, po kategorii. To ułatwienie, ale raz przypiętą szufladkę <b>bardzo trudno zmienić</b>.</li>
+      <li>Dlatego kluczowe jest dobre <b>pierwsze przedstawienie</b> kandydata i wzbudzenie zainteresowania, zwłaszcza u mniej znanych.</li>
+      <li>Kandydaci spoza polityki są oceniani przez <b>dawny zawód</b>: prezenter czy lekarz zyskują, a np. osoba z przeszłością kryminalną jest od razu „skreślona”.</li>
+    </ul>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <section id="S16">
+    <div class="section-header">
+      <div class="section-num">16</div>
+      <div class="section-header-text"><h2>Model ELM: dwie drogi perswazji</h2><div class="src-tag">Zagadnienie 2 · <span>Percepcja społeczna a ocena polityków</span></div></div>
+    </div>
+    <div class="lcard ck">
+<div class="cornell">
+  <div class="haslo"><span class="ikona">🛣️</span>ELM<small>Petty i Cacioppo, 1986</small></div>
+  <div class="tresc">
+    <table>
+      <tr><th>Tor centralny</th><th>Tor peryferyjny</th></tr>
+      <tr><td>fakty i logiczne argumenty, wysoka wiarygodność nadawcy, racjonalna, ale <b>dwustronna</b> argumentacja, spójność</td><td>atrakcyjność przekazu i nadawcy, symbole autorytetu, płynność mówienia, manipulacja dystrakcją, wzbudzanie konkretnych emocji</td></tr>
+      <tr><td><b>Kiedy:</b> <span class="zakryj">wysoka motywacja, potrzeba poznania, zdolność oceny, mocne argumenty</span></td><td><b>Kiedy:</b> <span class="zakryj">niska motywacja, brak potrzeby poznania, brak zdolności oceny, słabe argumenty</span></td></tr>
+      <tr><td><b>Efekt:</b> <span class="zakryj">trwała, odporna zmiana postawy</span></td><td><b>Efekt:</b> <span class="zakryj">nietrwała, podatna na wpływ zmiana postawy</span></td></tr>
+    </table>
+  </div>
+</div>
+    </div>
+  </section>
+  <div class="summary-box"><h4>Podsumowanie zagadnienia 2</h4><ul><li>Wyborca jest zwykle <b>skąpcem poznawczym</b>: upraszcza, kategoryzuje i myśli na skróty. Gdy mu zależy, potrafi analizować jak naukowiec.</li><li><b>Atrybucja:</b> sukcesy kandydata pokazuj jako jego zasługę, wpadki jako winę okoliczności. Ludzie i tak przeceniają rolę cech (podstawowy błąd atrybucji).</li><li><b>Kelley i Jones z Davisem</b> uczą, że liczy się <b>spójność</b> wizerunku, a jeden „wyskok” może go zburzyć.</li><li><b>Model soczewki:</b> wyborca widzi polityka przez wskazówki, a sztab decyduje, jakie to będą wskazówki. <b>Model kontinuum:</b> pierwsza szufladka jest trudna do zmiany.</li><li><b>ELM:</b> zaangażowanych przekonują argumenty (tor centralny), a niezaangażowanych atrakcyjność i emocje (tor peryferyjny).</li></ul></div>
+
+  <!-- ══════════ ZAGADNIENIE 3 ══════════ -->
+  <div class="group-divider" id="Z3">
+    <span class="group-divider-label gdl-core">🎯 Zagadnienie 3 · Pozycjonowanie, styl i wizerunek kandydatów</span>
+    <div class="group-divider-line"></div>
+  </div>
+  <p class="soon-note">Notatka do tego zagadnienia pojawi się po wykładzie 3.</p>
+
+  <!-- ══════════ ZAGADNIENIE 4 ══════════ -->
+  <div class="group-divider" id="Z4">
+    <span class="group-divider-label gdl-core">🎙️ Zagadnienie 4 · Komunikacja (nie)werbalna w polityce</span>
+    <div class="group-divider-line"></div>
+  </div>
+  <p class="soon-note">Notatka do tego zagadnienia pojawi się po wykładzie 4.</p>
+
+  <div class="group-divider" id="lit">
+    <span class="group-divider-label gdl-lit">📚 Materiały i literatura</span>
+    <div class="group-divider-line"></div>
+  </div>
+  <div class="lcard"><ul class="alist"><li><strong>Zagadnienie 1 · Marka w polityce:</strong> slajdy wykładu „Kreowanie wizerunku polityka” (M. Drzewiecka), slajdy 3–28; „Promise concept – uzupełnienie do materiałów z 1. wykładu”; własne notatki z wykładu 1 (w tym zrzuty: rynek polityczny, Kotler 2008, zaawansowany model marketingu politycznego, „Promise concept, czyli jak?”, „Promise concept a komunikacja”, „Jak wytłumaczyć niedotrzymanie obietnic?”); Cwalina, Falkowski (2006), Marketing polityczny. Perspektywa psychologiczna, s. 13–47 i 105–145.</li><li><strong>Zagadnienie 2 · Percepcja społeczna a ocena polityków:</strong> slajdy wykładu „Kreowanie wizerunku polityka” (M. Drzewiecka), slajdy 29–54; własne notatki z wykładu 2 (w tym zrzuty: modele podmiotu poznającego, przykłady atrybucji, „Uwaga” do Kelleya, koszty niespójności, model soczewki, rodzaje schematów, model kontinuum, ELM); Cwalina, Falkowski (2006), s. 155–166; Lewicka (2006), Procesy atrybucji, s. 45–68; Wojciszke (2011), Psychologia społeczna, s. 73–79 i 134–139.</li></ul></div>
+
+</main>
+</div>
+
+<!-- ── TRYB POWTÓRKI: zasłoń i sprawdź ── -->
+<style>
+  .recall-fab { position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+    display: flex; flex-direction: column; align-items: flex-end; gap: .5rem;
+    font-family: 'Segoe UI', system-ui, sans-serif; }
+  .recall-fab button { border: none; cursor: pointer; border-radius: 22px;
+    padding: .6rem 1.1rem; font-size: .85rem; font-weight: 700; color: #fff;
+    background: linear-gradient(135deg, var(--c-head), var(--c-head2));
+    box-shadow: 0 4px 16px var(--nc-glow); transition: transform .12s, box-shadow .2s; }
+  .recall-fab button:hover { transform: translateY(-1px); box-shadow: 0 6px 22px var(--nc-glow); }
+  .recall-fab .recall-sub { display: none; gap: .4rem; }
+  body.recall-on .recall-fab .recall-sub { display: flex; }
+  .recall-fab .recall-sub button { font-size: .75rem; padding: .42rem .8rem;
+    background: #fff; color: var(--c-head); border: 1.5px solid var(--nc-border); box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+  .recall-fab .recall-sub button:hover { background: var(--nc-dim); }
+
+  body.recall-on .recall-hide { filter: blur(6px); background: var(--nc-dim);
+    border-radius: 4px; cursor: pointer; transition: filter .12s, background .12s;
+    -webkit-user-select: none; user-select: none; }
+  body.recall-on .recall-hide:hover { filter: blur(3px); }
+  body.recall-on .recall-hide.revealed { filter: none; background: transparent;
+    cursor: default; -webkit-user-select: auto; user-select: auto; }
+
+  @media print { .recall-fab { display: none; } body.recall-on .recall-hide { filter: none; background: transparent; } }
+</style>
+
+<div class="recall-fab" id="recallFab">
+  <div class="recall-sub">
+    <button type="button" data-recall="reveal">Odsłoń wszystko</button>
+    <button type="button" data-recall="hide">Zasłoń ponownie</button>
+  </div>
+  <button type="button" data-recall="toggle" id="recallToggle">🙈 Tryb powtórki</button>
+</div>
+
+<script>
+(function () {
+  var SEL = '.content .zakryj, .content .term, .content .ltable td:not(:first-child), .content .alist li > strong, .content .nlist li > strong, .content .alist li > em, .content .value, .content .exam-badge, .content .pill, .content .qopts li.ok, .content .formula';
+  var body = document.body, on = false, prepared = false;
+  function prepare() {
+    if (prepared) return;
+    document.querySelectorAll(SEL).forEach(function (el) {
+      if (!el.closest('.recall-hide')) el.classList.add('recall-hide');
+    });
+    prepared = true;
+  }
+  function setOn(v) {
+    on = v;
+    if (on) prepare();
+    body.classList.toggle('recall-on', on);
+    document.getElementById('recallToggle').textContent = on ? '\u{1F441}️ Wyłącz powt\xf3rkę' : '\u{1F648} Tryb powt\xf3rki';
+  }
+  document.getElementById('recallFab').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var a = b.getAttribute('data-recall');
+    if (a === 'toggle') setOn(!on);
+    else if (a === 'reveal') document.querySelectorAll('.recall-hide').forEach(function (el){ el.classList.add('revealed'); });
+    else if (a === 'hide') document.querySelectorAll('.recall-hide').forEach(function (el){ el.classList.remove('revealed'); });
+  });
+  var content = document.querySelector('.content');
+  if (content) content.addEventListener('click', function (e) {
+    if (!on) return;
+    var t = e.target.closest('.recall-hide'); if (!t) return;
+    t.classList.toggle('revealed');
+  });
+})();
+</script>
+
+</body>
+</html>
