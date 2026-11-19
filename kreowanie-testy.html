@@ -162,6 +162,14 @@
   @media (max-width: 480px) {
     .test-card { padding: 1.1rem 1.2rem; gap: 1rem; }
   }
+
+  .wstecz-bar { position: relative; z-index: 2; padding: .9rem 1.5rem 0; }
+  .wstecz { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem 1.15rem; border-radius: 999px;
+    background: rgba(107,140,255,.14); border: 1px solid rgba(107,140,255,.5); color: #dfe6ff;
+    font-family: inherit; font-size: .85rem; font-weight: 600; text-decoration: none;
+    transition: background .2s, border-color .2s, transform .1s; }
+  .wstecz:hover { background: rgba(107,140,255,.28); border-color: #6b8cff; color: #fff; transform: translateY(-1px); }
+  @media (max-width: 720px) { .wstecz-bar { padding: .75rem 1rem 0; } }
 </style>
 </head>
 <body>
@@ -181,6 +189,7 @@
   <span class="sep">/</span>
   <span class="current">Testy</span>
 </nav>
+<div class="wstecz-bar"><a class="wstecz" href="swps-kreowanie.html">← Wróć do przedmiotu</a></div>
 
 <div class="page">
   <div class="page-header">
