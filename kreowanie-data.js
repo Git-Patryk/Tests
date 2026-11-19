@@ -28,6 +28,14 @@ window.RECALL_DECK = {
    {
     "id": "K2",
     "label": "2 · Percepcja społeczna a ocena polityków"
+   },
+   {
+    "id": "K3",
+    "label": "3 · Pozycjonowanie, styl i wizerunek kandydatów"
+   },
+   {
+    "id": "K4",
+    "label": "4 · Komunikacja (nie)werbalna w polityce"
    }
   ]
  },
@@ -211,6 +219,234 @@ window.RECALL_DECK = {
    "sec": "K2",
    "f": "Kiedy dominuje kategoryzacja po etykiecie (schematy wyzwalające afekt)?",
    "b": "Gdy etykieta padła wcześnie, wyróżnia osobę, była niedawno lub często używana i pasuje do nastroju wyborcy."
+  },
+  {
+   "id": "K3-1",
+   "sec": "K3",
+   "f": "Czym jest pozycjonowanie kandydata?",
+   "b": "Znalezieniem dla niego wyraźnego, pożądanego miejsca w umysłach wyborców względem konkurentów (stałe definiowanie, modyfikowanie i monitorowanie)."
+  },
+  {
+   "id": "K3-2",
+   "sec": "K3",
+   "f": "Jakie są 4 rodzaje pozycjonowania według Smitha?",
+   "b": "Wizerunkowe (lider, zespół, partia), poznawcze (korzyści, jakość/cena, rywalizacja, ideologia), emocjonalne (lęk, złość, nadzieja, duma…), konatywne (działania polityka, endorserów, niekontrolowane zdarzenia)."
+  },
+  {
+   "id": "K3-3",
+   "sec": "K3",
+   "f": "Jakie są 3 grupy teorii przywództwa?",
+   "b": "Wielkiego człowieka (trzeba się urodzić), ducha czasu (decyduje sytuacja), interakcyjne (osobowość × sytuacja × potrzeby grupy)."
+  },
+  {
+   "id": "K3-4",
+   "sec": "K3",
+   "f": "Czym różni się naturalny od wykreowanego przywódcy charyzmatycznego?",
+   "b": "Naturalny POSIADA cechy (np. dojrzałą osobowość), wykreowany zostaje UZNANY za charyzmatycznego przez opinię społeczną."
+  },
+  {
+   "id": "K3-5",
+   "sec": "K3",
+   "f": "Co to jest szklana zjeżdżalnia?",
+   "b": "Przekazywanie kobietom sterów wtedy, gdy ryzyko porażki jest największe."
+  },
+  {
+   "id": "K3-6",
+   "sec": "K3",
+   "f": "Jakie składniki charyzmy podaje Leary (1996)?",
+   "b": "Kompetencja, władza, moralność, umiejętność wzbudzania sympatii, umiejętność zaskakiwania (w modelu idealnego kandydata: siła i onieśmielanie)."
+  },
+  {
+   "id": "K3-7",
+   "sec": "K3",
+   "f": "Jak Cwalina i Falkowski definiują wizerunek?",
+   "b": "Tworzone w określonym celu wyobrażenie, które przez skojarzenia przydaje obiektowi dodatkowych wartości i przyczynia się do jego emocjonalnego odbioru."
+  },
+  {
+   "id": "K3-8",
+   "sec": "K3",
+   "f": "Czym różni się teza projekcji kandydata od tezy projekcji wyborców (Nimmo)?",
+   "b": "W pierwszej wizerunek „posiada” kandydat (to, co ukazuje), w drugiej wyborcy (to, co skłonni są spostrzegać)."
+  },
+  {
+   "id": "K3-9",
+   "sec": "K3",
+   "f": "Kto według wykładu jest „pośrednikiem wizerunku”?",
+   "b": "Specjalista od wizerunku (image broker), facylitator komunikacji między kandydatem a wyborcami."
+  },
+  {
+   "id": "K3-10",
+   "sec": "K3",
+   "f": "Czym różni się rola polityczna od stylu (Nimmo i Savage)?",
+   "b": "Rola to stanowisko (przywódcy, partyjne), styl to sposób zdobywania wyborców (styl wystąpień i styl osobisty)."
+  },
+  {
+   "id": "K3-11",
+   "sec": "K3",
+   "f": "Jakie wymiary wizerunku znaleźli Pancer i in.?",
+   "b": "Kompetencja, integralność, charyzma (w Kanadzie, USA i Wielkiej Brytanii)."
+  },
+  {
+   "id": "K3-12",
+   "sec": "K3",
+   "f": "Jakie motywy polityków badał Winter?",
+   "b": "Władzy, afiliacji i osiągnięć (analiza treści przemówień)."
+  },
+  {
+   "id": "K3-13",
+   "sec": "K3",
+   "f": "Jaka cecha awansowała w prototypie idealnego prezydenta między 1995 a 2000?",
+   "b": "Prezencja i atrakcyjność (z 4. na 2. miejsce); kompetencje straciły na znaczeniu."
+  },
+  {
+   "id": "K3-14",
+   "sec": "K3",
+   "f": "Jakie hasło łączy wymiary oceny z reakcjami (Wojciszke)?",
+   "b": "Moralność (wspólnotowość) = lubienie, kompetencje (sprawczość) = respekt."
+  },
+  {
+   "id": "K3-15",
+   "sec": "K3",
+   "f": "Na czym polega model przeciętniaka?",
+   "b": "Poparcie dostaje kandydat najbardziej typowy („sąsiad zza drzwi”); zbyt gorsi i zbyt lepsi są odrzucani. Tak oceniano Reagana w 1984."
+  },
+  {
+   "id": "K3-16",
+   "sec": "K3",
+   "f": "Jakie 4 funkcje komunikacji niewerbalnej wymienia Argyle?",
+   "b": "Wyrażanie postaw i emocji, autoprezentacja, funkcje rytualne, podtrzymywanie komunikacji werbalnej."
+  },
+  {
+   "id": "K3-17",
+   "sec": "K3",
+   "f": "Co wykazała Wioletta Czerko?",
+   "b": "Kandydat w zielonej koszuli był oceniany gorzej (mniej profesjonalny, mniej lubiany, mniejsze poparcie) niż w niebieskiej lub białej."
+  },
+  {
+   "id": "K3-18",
+   "sec": "K3",
+   "f": "Z czego składa się struktura wizerunku według Cwaliny i Falkowskiego?",
+   "b": "Cechy rdzeniowe, cechy peryferyjne, zachowania niewerbalne, zachowania werbalne, w kontekście sytuacji i oczekiwań wyborców."
+  },
+  {
+   "id": "K3-19",
+   "sec": "K3",
+   "f": "Jaka pułapka czeka kandydatki według badań Rosenwasser?",
+   "b": "Zadania „kobiece” uznaje się za najmniej ważne, a gdy kobieta pokazuje się jako „męska”, bywa karana za łamanie ról płciowych."
+  },
+  {
+   "id": "K4-1",
+   "sec": "K4",
+   "f": "Czym jest priming według Iyengara i Kindera?",
+   "b": "Narzucaniem standardów oceny zjawiska: media przez uwagę poświęcaną sprawom czynią je kryteriami ocen polityków."
+  },
+  {
+   "id": "K4-2",
+   "sec": "K4",
+   "f": "Czym różni się dostępność tymczasowa od chronicznej?",
+   "b": "Tymczasowa wynika z niedawnego przekazu (pamięć robocza), chroniczna z częstej ekspozycji (działa niezależnie od świeżości przekazu)."
+  },
+  {
+   "id": "K4-3",
+   "sec": "K4",
+   "f": "Kto jest mniej podatny na priming?",
+   "b": "Osoby bardziej „wyrobione” politycznie."
+  },
+  {
+   "id": "K4-4",
+   "sec": "K4",
+   "f": "Jakie są 3 rodzaje primingu wizerunku według Druckmana i in.?",
+   "b": "Bezpośredni, pośredni (wskazówki wizualne, symbole) i przez problemy."
+  },
+  {
+   "id": "K4-5",
+   "sec": "K4",
+   "f": "Co mówi teoria agenda setting (McCombs i Shaw)?",
+   "b": "Media nie tyle mówią, co myśleć, ile o czym myśleć: im więcej uwagi temat dostaje, tym ważniejszy się wydaje."
+  },
+  {
+   "id": "K4-6",
+   "sec": "K4",
+   "f": "Jakie są 3 rodzaje bias w mediach?",
+   "b": "Gatekeeping (selekcja materiałów), coverage (ilość uwagi, fizyczne cechy przekazu), statement (tendencyjna ocena zdarzeń)."
+  },
+  {
+   "id": "K4-7",
+   "sec": "K4",
+   "f": "Co pokazali Kalmoe i Gross o fladze w reklamach 2012?",
+   "b": "Flaga częściej występowała w reklamach Romneya, zwłaszcza w jego reklamach pozytywnych."
+  },
+  {
+   "id": "K4-8",
+   "sec": "K4",
+   "f": "Na czym polegał priming przez problemy u Nixona?",
+   "b": "Mówił o polityce zagranicznej, by wzmocnić percepcję kompetencji, ale nie poprawiło to ciepła i zaufania."
+  },
+  {
+   "id": "K4-9",
+   "sec": "K4",
+   "f": "Czym jest rama interpretacyjna?",
+   "b": "Alternatywnym opisem tej samej informacji lub problemu; definiuje problem, przyczyny, ocenę moralną i rozwiązanie."
+  },
+  {
+   "id": "K4-10",
+   "sec": "K4",
+   "f": "Jakie 5 ram rodzajowych wyróżniają Semetko i Valkenburg?",
+   "b": "Konfliktu, koncentracji na człowieku, konsekwencji ekonomicznych, moralności, odpowiedzialności."
+  },
+  {
+   "id": "K4-11",
+   "sec": "K4",
+   "f": "Czym różni się rama epizodyczna od tematycznej (Iyengar)?",
+   "b": "Epizodyczna pokazuje konkretny przypadek, tematyczna szerszy kontekst, przyczyny i skutki."
+  },
+  {
+   "id": "K4-12",
+   "sec": "K4",
+   "f": "Jaka jest podstawowa zasada ramowania według Lakoffa?",
+   "b": "Nigdy nie używaj języka drugiej strony, bo zaprzeczając ramie, i tak ją przywołujesz (Nixon: „Nie jestem oszustem”)."
+  },
+  {
+   "id": "K4-13",
+   "sec": "K4",
+   "f": "Jaki jest klucz modelu surowego ojca, a jaki opiekuńczego rodzica?",
+   "b": "Surowy ojciec: dyscyplina i posłuszeństwo. Opiekuńczy rodzic: empatia i odpowiedzialność."
+  },
+  {
+   "id": "K4-14",
+   "sec": "K4",
+   "f": "Według czego ludzie głosują według Lakoffa?",
+   "b": "Według tożsamości i wartości (z kim się symbolicznie identyfikują), a nie własnego interesu."
+  },
+  {
+   "id": "K4-15",
+   "sec": "K4",
+   "f": "Co to jest hipokognicja?",
+   "b": "Brak prostej, utrwalonej ramy, którą da się przywołać jednym lub dwoma słowami."
+  },
+  {
+   "id": "K4-16",
+   "sec": "K4",
+   "f": "Czym różni się program jako rytuał od programu jako pragmatyki (Bennett)?",
+   "b": "Rytuał: wyborcy oczekują programu. Pragmatyka: konkretny program polaryzuje i nudzi."
+  },
+  {
+   "id": "K4-17",
+   "sec": "K4",
+   "f": "Czym jest wieloznaczność semantyczna, a czym argumentacyjna?",
+   "b": "Semantyczna to ogólniki („służba zdrowia musi się zmienić”), argumentacyjna to kilka opcji bez wyboru żadnej."
+  },
+  {
+   "id": "K4-18",
+   "sec": "K4",
+   "f": "Jakie 4 możliwości ma mówca przed wrogą publicznością (Williams i Goss)?",
+   "b": "Wycofać się, pominąć konfliktowe tematy, jasno powiedzieć swoje i znieść wrogość albo świadomie mówić wieloznacznie."
+  },
+  {
+   "id": "K4-19",
+   "sec": "K4",
+   "f": "Jakie 5 narzędzi mówcy opisuje Anderson?",
+   "b": "Więź, narracja, wyjaśnianie, perswazja, odkrywanie."
   }
  ]
 };
