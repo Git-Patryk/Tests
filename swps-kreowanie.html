@@ -125,6 +125,17 @@
   @media (max-width: 520px) {
     .mode-grid { grid-template-columns: 1fr; }
   }
+
+  .wstecz-bar { position: sticky; top: var(--wstecz-top, 62px); z-index: 40; height: 0; overflow: visible;
+    padding: 0 1.5rem; pointer-events: none; }
+  .wstecz { position: relative; top: .7rem; pointer-events: auto; display: inline-flex; align-items: center; gap: .4rem;
+    padding: .5rem 1.15rem; border-radius: 999px; background: rgba(14,18,34,.92); border: 1px solid rgba(107,140,255,.6);
+    color: #dfe6ff; font-family: inherit; font-size: .85rem; font-weight: 600; text-decoration: none;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 6px 18px rgba(0,0,0,.35);
+    transition: background .2s, border-color .2s, transform .1s; }
+  .wstecz:hover { background: rgba(38,52,98,.95); border-color: #6b8cff; color: #fff; transform: translateY(-1px); }
+  .wstecz-odstep { height: 3.4rem; }
+  @media (max-width: 720px) { .wstecz-bar { padding: 0 1rem; } }
 </style>
 </head>
 <body>
@@ -142,6 +153,9 @@
   <span class="sep">/</span>
   <span class="current">Kreowanie wizerunku w polityce</span>
 </nav>
+<div class="wstecz-bar"><a class="wstecz" href="swps-rok5.html">← Wróć do Roku 5</a></div><div class="wstecz-odstep"></div>
+<script>(function(){function u(){var n=document.querySelector('nav');if(n)document.documentElement.style.setProperty('--wstecz-top',n.offsetHeight+'px');}
+u();addEventListener('DOMContentLoaded',u);addEventListener('load',u);addEventListener('resize',u);setTimeout(u,400);})();</script>
 
 <div class="page">
   <div class="page-header">
