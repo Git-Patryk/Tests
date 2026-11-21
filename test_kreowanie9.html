@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 9 — Wykład 21.11: wizerunek, motywy, płeć – Kreowanie wizerunku w polityce</title>
+<style>
+  :root {
+    --blue:   #1f4e8c;
+    --blue2:  #173d6e;
+    --blue3:  #9cbbe3;
+    --blue4:  #e4eefb;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f6f9fe;
+    --border: #d5e0ee;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f1f6fd;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #123a6b 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 600;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+    padding: .5rem 1.15rem;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 999px;
+    transition: background .2s, border-color .2s, transform .1s;
+  }
+  header .back-link:hover { background: rgba(255,255,255,.28); border-color: #fff; transform: translateY(-1px); }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,78,140,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #f1f6fd;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #c7d9f0;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #123a6b; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(31,78,140,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #f1f6fd; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #123a6b; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,78,140,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #123a6b, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(31,78,140,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #123a6b; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="kreowanie-testy.html">← Wróć do listy testów</a>
+  <h1>🗳️ Kreowanie wizerunku w polityce</h1>
+  <p>Zagadnienie 3: Pozycjonowanie, styl i wizerunek kandydatów · 18 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POWTÓRKA Z WYKŁADU 21.11</div>
+    <h2>Test 9 — Wykład 21.11: wizerunek, motywy, płeć</h2>
+    <p>Pytania jednokrotnego wyboru (jedna poprawna z czterech), jak na sprawdzianie testowym. Oparte na notatce z zagadnienia 3: slajdach, Twoich notatkach z wykładu i literaturze obowiązkowej.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>idealny prezydent 1995 i 2000, motywy władzy, osiągnięć i afiliacji, profil motywacyjny Busha, Clintona i Perota (Winter), sprawczość i wspólnotowość, lubienie i respekt, Fiske, Cuddy i Glick, Peeters, Mamdani i Eisenkot, superman i everyman, Lepper, Leary, idealny polityk a płeć, kobiety-ekspertki w mediach i przyczyny ich niedoreprezentowania</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>18 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 18</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/18</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Która cecha awansowała w rankingu idealnego prezydenta z 4. miejsca (1995) na 2. miejsce (2000)?", "opts": [{"t": "prezencja, atrakcyjność", "c": true}, {"t": "kompetencje, profesjonalizm", "c": false}, {"t": "siła, zdecydowanie", "c": false}, {"t": "otwartość na ludzi i na świat", "c": false}], "exp": "W 2000 r. ranking otwierały: uczciwość i wiarygodność, a zaraz po niej prezencja i atrakcyjność. Kompetencje spadły z 2. na 4. miejsce."},
+  {"q": "Która cecha pojawiła się w rankingu idealnego prezydenta w 2000 r., a nie było jej w 1995 r.?", "opts": [{"t": "troska o innych i o kraj", "c": true}, {"t": "skuteczność w działaniu", "c": false}, {"t": "inteligencja i elokwencja", "c": false}, {"t": "wykształcenie", "c": false}], "exp": "W 2000 r. w miejsce skuteczności weszła troska o innych i o kraj. Skuteczność była w rankingu z 1995 r."},
+  {"q": "Motyw, który wiąże się z „natchnionym” przywództwem i charyzmą, ale też z agresją, ryzykiem i nadużywaniem alkoholu, to motyw:", "opts": [{"t": "władzy", "c": true}, {"t": "osiągnięć", "c": false}, {"t": "afiliacji", "c": false}, {"t": "bezpieczeństwa", "c": false}], "exp": "Motyw władzy: koncentracja na wpływie i prestiżu. Skojarzenia w polityce: wojna, przemoc, ale i charyzma."},
+  {"q": "Politycy z silnym motywem afiliacji to według slajdu często:", "opts": [{"t": "„obrońcy pokoju”, skłonni jednak do wikłania się w skandale", "c": true}, {"t": "innowatorzy, którzy łatwo ulegają frustracji przy ograniczonym wpływie", "c": false}, {"t": "przywódcy wojenni podejmujący duże ryzyko w polityce zagranicznej", "c": false}, {"t": "technokraci unikający kontaktu z wyborcami i mediami", "c": false}], "exp": "Afiliacja to dbanie o ciepłe relacje; sprzyja współpracy, ale w zagrożeniu tacy ludzie się wycofują. Frustracja przy ograniczonym wpływie to motyw osiągnięć."},
+  {"q": "Jak Winter (1995) wyjaśnia przegraną George’a Busha w 1992 r.?", "opts": [{"t": "zbyt silnym pragnieniem utrzymania władzy", "c": true}, {"t": "zbyt słabym motywem osiągnięć na tle Perota", "c": false}, {"t": "brakiem motywu afiliacji w przemówieniach", "c": false}, {"t": "zbyt dużym podobieństwem profilu do Clintona", "c": false}], "exp": "Na wykresie Bush miał najwyższe nasilenie wszystkich trzech motywów, a najwyższe władzy. Zwycięzca, Clinton, był najbliżej średniej."},
+  {"q": "Co analizował Winter, określając profile motywacyjne kandydatów w wyborach 1992 r.?", "opts": [{"t": "przemówienia otwierające ich kampanie", "c": true}, {"t": "wyniki testów osobowości wypełnionych przez kandydatów", "c": false}, {"t": "sondaże wśród wyborców po debatach", "c": false}, {"t": "reklamy telewizyjne emitowane w ostatnim tygodniu", "c": false}], "exp": "Przemówienia kodowano pod kątem nasilenia motywów władzy, osiągnięć i afiliacji („osobowość na odległość”)."},
+  {"q": "Według Wojciszkego wspólnotowość (moralność) wywołuje przede wszystkim:", "opts": [{"t": "lubienie", "c": true}, {"t": "respekt", "c": false}, {"t": "zazdrość", "c": false}, {"t": "posłuszeństwo", "c": false}], "exp": "Moralność = lubienie, kompetencje (sprawczość) = respekt."},
+  {"q": "Respekt wobec drugiej osoby wiąże się z mechanizmem:", "opts": [{"t": "monitorowania jej bieżącego i potencjalnego statusu", "c": true}, {"t": "monitorowania jej wpływu na nasze własne interesy i cele", "c": false}, {"t": "porównywania jej wyglądu z naszym", "c": false}, {"t": "unikania kontaktu z osobami obcymi", "c": false}], "exp": "Sprawczość → respekt: śledzimy status innego człowieka. Wspólnotowość → lubienie: śledzimy jego wpływ na nasze interesy."},
+  {"q": "Według Fiske, Cuddy i Glick (2006) sądy o cieple:", "opts": [{"t": "są pierwotne i formułowane przed sądami o kompetencjach", "c": true}, {"t": "pojawiają się dopiero po ocenie kompetencji", "c": false}, {"t": "nie wpływają na zachowania wobec ocenianej osoby", "c": false}, {"t": "dotyczą wyłącznie oceny polityków, a nie zwykłych ludzi", "c": false}], "exp": "Ciepło oceniamy najpierw i ma ono większą wagę dla reakcji afektywnych i behawioralnych."},
+  {"q": "Według Peetersa (1992) cechy praktyczne, takie jak kompetencje:", "opts": [{"t": "nie wyzwalają automatycznie zbliżenia ani unikania", "c": true}, {"t": "zawsze i od razu wywołują automatyczną reakcję zbliżenia", "c": false}, {"t": "są jedynym typowym wymiarem oceny innych ludzi", "c": false}, {"t": "liczą się tylko przy ocenie kobiet", "c": false}], "exp": "Typowym wymiarem oceny innych jest moralność. Reakcja na kompetencje zależy od kontekstu (np. kompetentny wróg jest groźny)."},
+  {"q": "Slajd o Zohranie Mamdanim (Nowy Jork, 2025) ilustruje:", "opts": [{"t": "obietnicę sprawczości połączoną z prezentacją wspólnotowości", "c": true}, {"t": "percepcję sprawczości połączoną z perswazją wspólnotowości", "c": false}, {"t": "model supermana pokazującego się w sytuacji kryzysu", "c": false}, {"t": "priming przez miejsce głosowania", "c": false}], "exp": "Mamdani obiecuje konkretne działania, a pokazuje się jako „swój” wśród ludzi. „Percepcja sprawczości, perswazja wspólnotowości” to tytuł slajdu o Eisenkocie."},
+  {"q": "Pokazywanie prezydenta na zakupach w markecie w kurtce puchowej to przykład budowania wizerunku według modelu:", "opts": [{"t": "everymana, czyli przeciętniaka", "c": true}, {"t": "supermana", "c": false}, {"t": "surowego ojca", "c": false}, {"t": "przywództwa transformacyjnego", "c": false}], "exp": "Na slajdzie „Everyman” były m.in. zdjęcia Dudy z zakupów (Fakt.pl). Superman to np. Bush z megafonem na gruzach WTC."},
+  {"q": "Przykład Andrzeja Leppera na wykładzie służył odpowiedzi na pytanie, czy:", "opts": [{"t": "z everymana można zrobić supermana", "c": true}, {"t": "kobieta może wygrać wybory prezydenckie", "c": false}, {"t": "program wyborczy jest potrzebny", "c": false}, {"t": "uścisk dłoni świadczy o dominacji", "c": false}], "exp": "Zdjęcia pokazały przemianę: rolnik w koszuli → trybun w koszulce „POLSKA” → polityk w garniturze."},
+  {"q": "Które cechy według Leary’ego (1996) składają się na charyzmę idealnego kandydata?", "opts": [{"t": "kompetencja, siła, moralność, wzbudzanie sympatii, onieśmielanie", "c": true}, {"t": "uczciwość, wykształcenie, prezencja, skuteczność, otwartość", "c": false}, {"t": "ekspresyjność, wrażliwość, kontrola, elokwencja, wizja", "c": false}, {"t": "ciepło, uroda, wysoki wzrost, niski głos i elegancki ubiór", "c": false}], "exp": "Pytanie ze slajdu: czy kandydat musi je mieć? Według Leary’ego wystarczy, że sprawia takie wrażenie (autoprezentacja)."},
+  {"q": "W prototypie idealnego prezydenta kobiety (w odróżnieniu od mężczyzny) pojawiają się:", "opts": [{"t": "ciepło, zadbana fryzura i konserwatywny ubiór", "c": true}, {"t": "wiedza, urok osobisty i garnitur", "c": false}, {"t": "wzbudzanie poczucia bezpieczeństwa i siła", "c": false}, {"t": "elokwencja, charyzma, młody wiek i sportowa sylwetka", "c": false}], "exp": "Mężczyzna: z wiedzą, silny, czarujący, dobrze ubrany, w garniturze, wzbudzający poczucie bezpieczeństwa. Kobieta: silna, inteligentna, ciepła, zadbana fryzura, konserwatywny ubiór, wzbudzająca zaufanie."},
+  {"q": "Według Dunaway i in. (2013) jedną z przyczyn mniejszej obecności kobiet w mediach jest to, że:", "opts": [{"t": "kobiety ocenia się po wyglądzie, a mężczyzn po tym, co mówią", "c": true}, {"t": "kobiety rzadziej kończą studia z nauk politycznych", "c": false}, {"t": "redakcje mają ustawowe limity zapraszanych do studia ekspertek", "c": false}, {"t": "kobiety lepiej wypadają w prasie niż w telewizji", "c": false}], "exp": "Inne przyczyny ze slajdu: koncentracja mediów na najwyższych stanowiskach (Shor), obowiązki domowe (PIE), impostor syndrome (Sandberg), brak reguł „antenowej równości”."},
+  {"q": "Jaki odsetek ekspertów w 17 niemieckich kanałach TV (2020) stanowili mężczyźni?", "opts": [{"t": "74%", "c": true}, {"t": "52%", "c": false}, {"t": "64%", "c": false}, {"t": "91%", "c": false}], "exp": "Niemcy 2020: 74% M vs 26% K. Finlandia 2016: 70% vs 30%. USA 2020 (eksperci od COVID-19 w prasie): 64% vs 36%."},
+  {"q": "Caroline Criado Perez pisze, że odmawiając połowie ludności współudziału w rządzeniu, tworzymy na szczycie lukę:", "opts": [{"t": "informacyjną", "c": true}, {"t": "finansową", "c": false}, {"t": "pokoleniową", "c": false}, {"t": "technologiczną", "c": false}], "exp": "Prowadząca dopowiedziała: odmawiając kobietom obecności w mediach, tworzymy lukę percepcyjną."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#123a6b'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#173d6e'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#1f4e8c'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

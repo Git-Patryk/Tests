@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test 10 — Wykład 21.11: dominacja, priming, framing – Kreowanie wizerunku w polityce</title>
+<style>
+  :root {
+    --blue:   #1f4e8c;
+    --blue2:  #173d6e;
+    --blue3:  #9cbbe3;
+    --blue4:  #e4eefb;
+    --red:    #c1121f;
+    --red2:   #fde8e9;
+    --gray:   #475569;
+    --light:  #f6f9fe;
+    --border: #d5e0ee;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f1f6fd;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #123a6b 0%, var(--blue2) 100%);
+    color: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  header .back-link {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 600;
+    font-family: sans-serif;
+    margin-bottom: 1rem;
+    padding: .5rem 1.15rem;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 999px;
+    transition: background .2s, border-color .2s, transform .1s;
+  }
+  header .back-link:hover { background: rgba(255,255,255,.28); border-color: #fff; transform: translateY(-1px); }
+  header h1 {
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  header p { margin-top: .5rem; opacity: .85; font-size: .95rem; font-family: sans-serif; }
+
+  #start-screen, #quiz-screen, #result-screen {
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  .start-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,78,140,.12);
+  }
+  .start-card h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--blue2); }
+  .start-card p { line-height: 1.7; margin-bottom: .8rem; font-size: .95rem; font-family: sans-serif; color: var(--gray); }
+  .start-card .topics {
+    text-align: left;
+    background: #f1f6fd;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    border: 1px solid #c7d9f0;
+  }
+  .start-card .topics p { margin-bottom: 0; font-size: .88rem; }
+  .start-card .topics strong { display: block; margin-bottom: .5rem; color: var(--blue2); }
+
+  .level-badge {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--blue2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .85rem 2.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: background .2s, transform .1s;
+    font-family: sans-serif;
+  }
+  .btn:hover { background: #123a6b; transform: translateY(-1px); }
+  .btn:active { transform: none; }
+
+  .progress-wrap { margin-bottom: 1.2rem; }
+  .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue2), var(--blue3));
+    border-radius: 4px;
+    transition: width .4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: .8rem;
+    color: var(--gray);
+    margin-bottom: .35rem;
+    font-family: sans-serif;
+  }
+
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(31,78,140,.1);
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: .78rem;
+    color: var(--blue2);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .5rem;
+    font-family: sans-serif;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+    color: #1a1a1a;
+  }
+
+  .options { display: flex; flex-direction: column; gap: .7rem; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    font-family: sans-serif;
+    font-size: .95rem;
+    line-height: 1.5;
+    color: #212529;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue3); background: #f1f6fd; }
+  .option-btn .opt-letter { font-weight: 800; color: var(--blue2); min-width: 1.4rem; font-size: 1rem; }
+  .option-btn.correct { background: var(--blue4); border-color: var(--blue2); }
+  .option-btn.wrong { background: var(--red2); border-color: var(--red); }
+  .option-btn.correct .opt-letter { color: #123a6b; }
+  .option-btn.wrong .opt-letter { color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: 10px;
+    font-size: .9rem;
+    line-height: 1.6;
+    display: none;
+    font-family: sans-serif;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: var(--blue4); border-left: 4px solid var(--blue2); }
+  .feedback-box.fail { background: var(--red2); border-left: 4px solid var(--red); }
+  .feedback-box strong { display: block; margin-bottom: .3rem; font-size: .95rem; }
+
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(31,78,140,.1);
+    margin-bottom: 1.5rem;
+  }
+  .result-card h2 { font-size: 1.5rem; margin-bottom: .5rem; color: var(--blue2); }
+  .score-circle {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #123a6b, var(--blue2));
+    color: #fff;
+    margin: 1rem auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 0 30px rgba(31,78,140,.4);
+  }
+  .score-circle .score-num { font-size: 2.8rem; line-height: 1; }
+  .score-circle .score-denom { font-size: 1rem; opacity: .75; font-family: sans-serif; }
+  .grade-label { font-size: 1.4rem; font-weight: 900; margin: .5rem 0; font-family: sans-serif; }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-box { background: var(--light); border-radius: 10px; padding: .8rem; font-family: sans-serif; }
+  .stat-box strong { display: block; font-size: 1.4rem; }
+  .stat-box span { font-size: .78rem; color: var(--gray); }
+  .stat-correct strong { color: #123a6b; }
+  .stat-wrong strong { color: var(--red); }
+
+  .review-list { text-align: left; }
+  .review-item {
+    padding: .8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    font-size: .88rem;
+    line-height: 1.5;
+    font-family: sans-serif;
+  }
+  .review-item.ok   { background: var(--blue4); border-left: 3px solid var(--blue2); }
+  .review-item.fail { background: var(--red2);  border-left: 3px solid var(--red); }
+  .review-item .ri-meta { font-size: .75rem; color: var(--gray); margin-bottom: .2rem; }
+
+  @media (max-width: 480px) {
+    .result-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: .97rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-link" href="kreowanie-testy.html">← Wróć do listy testów</a>
+  <h1>🗳️ Kreowanie wizerunku w polityce</h1>
+  <p>Zagadnienie 4: Komunikacja (nie)werbalna w polityce · 17 pytań</p>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="level-badge">POWTÓRKA Z WYKŁADU 21.11</div>
+    <h2>Test 10 — Wykład 21.11: dominacja, priming, framing</h2>
+    <p>Pytania jednokrotnego wyboru (jedna poprawna z czterech), jak na sprawdzianie testowym. Oparte na notatce z zagadnienia 4: slajdach, Twoich notatkach z wykładu i literaturze obowiązkowej.</p>
+    <div class="topics">
+      <strong>Zakres pytań:</strong>
+      <p>niewerbalne pokazy dominacji (handshake, postawa, czekanie), priming (Iyengar i Kinder), dostępność tymczasowa i chroniczna (Claibourn), typy primingu wizerunku (Druckman i in.), polityka symboliczna Searsa, priming przez miejsce głosowania (Rutchick), flaga (Kalmoe i Gross), framing jako proces (de Vreese), ramy zysków i strat, epizodyczna i tematyczna, Lakoff: ramowanie, poziomy ram, surowy ojciec i opiekuńczy rodzic, retoryka Trumpa</p>
+    </div>
+    <p>Po każdej odpowiedzi zobaczysz, czy była poprawna, wraz z <strong>wyjaśnieniem</strong> — dlaczego ta odpowiedź jest poprawna i dlaczego pozostałe nie. Kolejność pytań i odpowiedzi jest losowana. Łącznie <strong>17 pytań</strong>.</p>
+    <button class="btn" id="startBtn">Rozpocznij test</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progText">Pytanie 1 z 17</span>
+      <span id="scoreText">Wynik: 0</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-num" id="qNum">Pytanie 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox"></div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="nextBtn" style="display:none">Następne pytanie &rarr;</button>
+  </div>
+</div>
+
+<div id="result-screen" style="display:none">
+  <div class="result-card">
+    <h2>Wyniki testu</h2>
+    <div class="score-circle">
+      <span class="score-num" id="resFinal">0</span>
+      <span class="score-denom" id="resDenom">/17</span>
+    </div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="result-stats">
+      <div class="stat-box stat-correct"><strong id="resCorrect">0</strong><span>Poprawnych</span></div>
+      <div class="stat-box stat-wrong"><strong id="resWrong">0</strong><span>Niepoprawnych</span></div>
+      <div class="stat-box"><strong id="resPct">0%</strong><span>Skuteczność</span></div>
+    </div>
+    <button class="btn" id="retryBtn">Spróbuj jeszcze raz</button>
+  </div>
+  <div class="result-card" style="padding:2rem">
+    <h2 style="text-align:left;font-size:1.15rem;margin-bottom:1rem">Przegląd odpowiedzi</h2>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {"q": "Slajd „Poczekaj(my)” z Putinem czekającym na Erdoğana ilustruje:", "opts": [{"t": "każenie komuś czekać jako niewerbalny pokaz dominacji", "c": true}, {"t": "priming przez symbole narodowe pokazywane w reklamie wyborczej", "c": false}, {"t": "ramę epizodyczną w przekazie medialnym", "c": false}, {"t": "model everymana w autoprezentacji polityka", "c": false}], "exp": "Putin sam słynie z każenia innym czekać, więc media pisały, że został „upokorzony własną bronią”."},
+  {"q": "Priming według Iyengara i Kindera polega na:", "opts": [{"t": "narzucaniu standardów oceny zjawiska, zanim się z nim zetkniemy", "c": true}, {"t": "zmianie sposobu rozumienia sprawy przez celowy dobór słów i metafor", "c": false}, {"t": "podawaniu wyborcom samych faktów bez interpretacji", "c": false}, {"t": "ukrywaniu przed mediami wad kandydata", "c": false}], "exp": "Media izolują problemy, zdarzenia lub atrybuty jako kryteria ocen. To możliwe, bo ludzie nie mogą zwracać uwagi na wszystko."},
+  {"q": "Według Claibourn (2008) częsta ekspozycja na przekaz sprawia, że informacja staje się dostępna:", "opts": [{"t": "chronicznie", "c": true}, {"t": "tymczasowo", "c": false}, {"t": "podprogowo", "c": false}, {"t": "wybiórczo", "c": false}], "exp": "Bieżący przekaz daje dostępność tymczasową (pamięć robocza), a częste powtarzanie dostępność chroniczną, niezależną od świeżości bodźca."},
+  {"q": "Odwołanie się do symboli narodowych i religijnych lub do obecności dzieci, żeby wzmocnić wybrane aspekty wizerunku, to priming:", "opts": [{"t": "pośredni", "c": true}, {"t": "bezpośredni", "c": false}, {"t": "przez problemy", "c": false}, {"t": "chroniczny", "c": false}], "exp": "Druckman, Jacobs i Ostermeier (2004): bezpośredni = wprost nacisk na aspekty wizerunku; pośredni = wskazówki wizualne; przez problemy = tematy, które wysyłają sygnał o wizerunku."},
+  {"q": "Hasła „Żydokomuna”, „moherowe berety”, „lewacka ideologia” ilustrują:", "opts": [{"t": "teorię polityki symbolicznej Searsa", "c": true}, {"t": "model opiekuńczego rodzica Lakoffa", "c": false}, {"t": "ramę zysków Tversky’ego i Kahnemana", "c": false}, {"t": "agenda setting McCombsa i Shawa", "c": false}], "exp": "Etykiety i symbole aktywują gotowe postawy; to przykład primingu pośredniego."},
+  {"q": "W badaniu Rutchicka (2010) zmienną niezależną było:", "opts": [{"t": "miejsce lokalu wyborczego: kościół lub miejsce świeckie", "c": true}, {"t": "procent głosów na kandydata Republikanów", "c": false}, {"t": "stosunek zarejestrowanych Demokratów do Republikanów w okręgu", "c": false}, {"t": "liczba reklam wyemitowanych w okręgu", "c": false}], "exp": "Zmienna zależna: % głosów na McLeoda. Kowariant: stosunek zarejestrowanych Demokratów do Republikanów. 35 kościołów vs 371 miejsc świeckich."},
+  {"q": "Jaki wynik uzyskał Rutchick (2010) dla lokali wyborczych w kościołach?", "opts": [{"t": "Republikanin dostał tam więcej głosów niż w miejscach świeckich", "c": true}, {"t": "Demokrata dostał tam więcej głosów niż w miejscach świeckich", "c": false}, {"t": "frekwencja była tam wyraźnie niższa niż w lokalach w szkołach", "c": false}, {"t": "miejsce głosowania nie miało żadnego wpływu na wynik", "c": false}], "exp": "41% w kościołach vs 32% w miejscach świeckich (F(1, 402) = 3,91, p = 0,05). Kościół prymował głosowanie konserwatywne."},
+  {"q": "Według Kalmoe i Gross (2016) prezentacja Demokraty na tle flagi USA wśród osób o silnym patriotyzmie:", "opts": [{"t": "zwiększała poparcie dla jego republikańskiego rywala", "c": true}, {"t": "zwiększała poparcie dla samego Demokraty wśród wszystkich wyborców", "c": false}, {"t": "nie zmieniała poparcia żadnego z kandydatów", "c": false}, {"t": "obniżała frekwencję w całym elektoracie", "c": false}], "exp": "Flaga w tle podnosiła poparcie dla kandydata Republikanów bez względu na to, kto przy niej stał. Konserwatystów można pozycjonować przez symbole narodowe."},
+  {"q": "W reklamach wyborczych z 2012 r. flaga USA pojawiała się częściej u:", "opts": [{"t": "Mitta Romneya, zwłaszcza w reklamach pozytywnych", "c": true}, {"t": "Baracka Obamy, zwłaszcza w reklamach negatywnych", "c": false}, {"t": "obu kandydatów dokładnie tak samo często", "c": false}, {"t": "Baracka Obamy, zwłaszcza w reklamach kontrastowych", "c": false}], "exp": "Romney 43% vs Obama 34% wszystkich reklam; w pozytywnych 75% vs 47%."},
+  {"q": "Według de Vreese (2005) czynniki wewnętrzne w tworzeniu ramy na poziomie redakcji to m.in.:", "opts": [{"t": "polityka redakcyjna i wartość newsa", "c": true}, {"t": "postawy i zachowania odbiorców", "c": false}, {"t": "przetwarzanie informacji przez widzów", "c": false}, {"t": "ramy ogólne i specyficzne", "c": false}], "exp": "Proces: tworzenie ramy (czynniki wewnętrzne i zewnętrzne) → rama w newsie (specyficzna lub ogólna) → efekty (przetwarzanie informacji, postawy, zachowania)."},
+  {"q": "Nagłówek „Musiałem zwolnić ludzi i zamknąć biznes. Jestem na krawędzi. Przeczytaj historię Jana i zobacz, jak rząd nie radzi sobie z pandemią” stosuje ramę:", "opts": [{"t": "epizodyczną", "c": true}, {"t": "tematyczną", "c": false}, {"t": "zysków", "c": false}, {"t": "moralności", "c": false}], "exp": "To pytanie ze slajdu. Problem pokazano na przykładzie jednej osoby (Jana), a nie przez analizę przyczyn i skutków."},
+  {"q": "Rama tematyczna według Iyengara (1991) to:", "opts": [{"t": "umieszczenie sprawy w ogólnym kontekście przyczyn i skutków", "c": true}, {"t": "pokazanie sprawy na przykładzie jednej konkretnej osoby", "c": false}, {"t": "skupienie się na zyskach z danego rozwiązania", "c": false}, {"t": "przedstawienie sprawy jako sporu dwóch partii", "c": false}], "exp": "Np. konsekwencje zmian w systemie zasiłków. Epizodyczna = np. jedna osoba bezdomna."},
+  {"q": "„Wojna z terrorem” i „okupowanie Iraku” to przykład:", "opts": [{"t": "dwóch ram tej samej sytuacji", "c": true}, {"t": "dwóch rodzajów primingu bezpośredniego", "c": false}, {"t": "dwóch typów wieloznaczności programowej", "c": false}, {"t": "dwóch etapów agenda setting", "c": false}], "exp": "Slajd „Rok 2001”: pierwsza rama zakłada zagrożenie i konieczność walki, druga sugeruje agresora."},
+  {"q": "Lakoff („Nie myśl o słoniu”) twierdzi, że:", "opts": [{"t": "ramy przebijają fakty, więc trzeba zmieniać ramę na swoją", "c": true}, {"t": "fakty same wyzwalają wyborców spod wpływu ram", "c": false}, {"t": "warto powtarzać ramy przeciwnika, by je obalić argumentami", "c": false}, {"t": "język nie wpływa na poglądy polityczne", "c": false}], "exp": "Cytat ze slajdu: „Fakty, uwolnione ze wszystkich ram, nie wyzwolą cię… Ramy przebijają fakty. Zawsze zmieniaj ramę na swoją” (Lakoff, 2011, s. 190)."},
+  {"q": "Poziom ram, na którym znajdują się wartości (moralny światopogląd), Lakoff nazywa:", "opts": [{"t": "deep framing", "c": true}, {"t": "surface framing", "c": false}, {"t": "issue framing", "c": false}, {"t": "episodic framing", "c": false}], "exp": "Surface framing = slogany, issue framing = problemy, deep framing = wartości."},
+  {"q": "Według modelu surowego ojca państwo jest po to, by:", "opts": [{"t": "utrzymywać porządek i wymierzać sprawiedliwość karą", "c": true}, {"t": "zapewniać edukację, ochronę zdrowia i programy prospołeczne", "c": false}, {"t": "dzielić odpowiedzialność między obywateli po równo", "c": false}, {"t": "budować zaufanie przez empatię", "c": false}], "exp": "Klucz: posłuszeństwo. Model opiekuńczego rodzica: rząd dba o edukację, zdrowie, programy prospołeczne i wolności; klucz: empatia i odpowiedzialność."},
+  {"q": "Przemówienie Trumpa w Warszawie („walczmy wszyscy jak Polacy: o rodzinę, o wolność, o ojczyznę i o Boga”) prowadząca podała jako przykład retoryki zgodnej z modelem:", "opts": [{"t": "surowego ojca", "c": true}, {"t": "opiekuńczego rodzica", "c": false}, {"t": "everymana", "c": false}, {"t": "wieloznaczności argumentacyjnej", "c": false}], "exp": "Niebezpieczny świat, opresyjna ideologia i terroryzm, silna rodzina i system wartości, walka: elementy modelu surowego ojca."}
+];
+
+// ---- SHUFFLE ----
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---- STATE ----
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = [];
+
+function init() {
+  questions = shuffle(ALL_QUESTIONS);
+  current = 0;
+  score = 0;
+  answered = [];
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  document.getElementById('progText').textContent = 'Pytanie ' + (current + 1) + ' z ' + total;
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  document.getElementById('progBar').style.width = ((current / total) * 100) + '%';
+  document.getElementById('qNum').textContent = 'Pytanie ' + (current + 1);
+  document.getElementById('qText').textContent = q.q;
+
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({ ...o, origIdx: i })));
+  const letters = ['A', 'B', 'C', 'D'];
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  shuffledOpts.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-letter">' + letters[idx] + '</span><span>' + opt.t + '</span>';
+    btn.addEventListener('click', function() {
+      selectAnswer(opt.c, q.exp, btn, wrap, q.q, shuffledOpts, letters, idx);
+    });
+    wrap.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.innerHTML = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function selectAnswer(isCorrect, explanation, clickedBtn, wrap, qText, opts, letters, selectedIdx) {
+  const buttons = wrap.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  let correctIdx = -1;
+  opts.forEach((o, i) => { if (o.c) correctIdx = i; });
+
+  buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect && correctIdx !== -1) {
+    buttons[correctIdx].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedbackBox');
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback-box ok show';
+    fb.innerHTML = '<strong>Poprawna odpowiedź!</strong>' + explanation;
+  } else {
+    fb.className = 'feedback-box fail show';
+    fb.innerHTML = '<strong>Niepoprawna odpowiedź.</strong>' + explanation;
+  }
+
+  answered.push({
+    qText: qText,
+    correct: isCorrect,
+    chosen: opts[selectedIdx].t,
+    correctAns: opts.find(o => o.c).t
+  });
+
+  document.getElementById('scoreText').textContent = 'Wynik: ' + score;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'inline-block';
+  nextBtn.textContent = current + 1 < questions.length ? 'Następne pytanie →' : 'Pokaż wyniki';
+}
+
+document.getElementById('nextBtn').addEventListener('click', function() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const total = questions.length;
+  const wrong = total - score;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resFinal').textContent = score;
+  document.getElementById('resDenom').textContent = '/' + total;
+  document.getElementById('resCorrect').textContent = score;
+  document.getElementById('resWrong').textContent = wrong;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let grade, col;
+  if (pct >= 90)      { grade = 'Doskonale!';      col = '#123a6b'; }
+  else if (pct >= 75) { grade = 'Bardzo dobrze!';  col = '#173d6e'; }
+  else if (pct >= 60) { grade = 'Dobrze';          col = '#1f4e8c'; }
+  else if (pct >= 51) { grade = 'Zaliczone';       col = '#e9c46a'; }
+  else                { grade = 'Wymaga powtórki'; col = '#c1121f'; }
+
+  const gl = document.getElementById('gradeLabel');
+  gl.textContent = grade;
+  gl.style.color = col;
+
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answered.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (a.correct ? 'ok' : 'fail');
+    div.innerHTML =
+      '<div class="ri-meta">Pytanie ' + (i + 1) + (a.correct ? ' — Poprawnie' : ' — Błędnie') + '</div>' +
+      '<strong>' + a.qText + '</strong>' +
+      (a.correct ? '' :
+        '<div style="margin-top:.3rem">Twój wybór: <em>' + a.chosen + '</em><br>Poprawna: <em>' + a.correctAns + '</em></div>');
+    rl.appendChild(div);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', init);
+document.getElementById('retryBtn').addEventListener('click', init);
+</script>
+</body>
+</html>

@@ -335,6 +335,42 @@ window.RECALL_DECK = {
    "b": "Zadania „kobiece” uznaje się za najmniej ważne, a gdy kobieta pokazuje się jako „męska”, bywa karana za łamanie ról płciowych."
   },
   {
+   "id": "K3-20",
+   "sec": "K3",
+   "f": "Który wymiar oceniamy u innych najpierw (Fiske, Cuddy, Glick, 2006)?",
+   "b": "Ciepło (wspólnotowość): jest pierwotne, oceniane przed kompetencjami i silniej wpływa na emocje i zachowania."
+  },
+  {
+   "id": "K3-21",
+   "sec": "K3",
+   "f": "Co pokazuje przykład Mamdaniego (NYC, 2025)?",
+   "b": "Obietnicę sprawczości (konkretne sprawy do załatwienia) połączoną z prezentacją wspólnotowości (bliskość, rozmowy z ludźmi na ulicy)."
+  },
+  {
+   "id": "K3-22",
+   "sec": "K3",
+   "f": "Jaki profil motywów miał Bush w 1992 r. według Wintera?",
+   "b": "Najsilniejsze wszystkie trzy motywy; przegrał m.in. przez zbyt silne pragnienie (utrzymania) władzy. Clinton był najbliżej średniej, Perot najniżej."
+  },
+  {
+   "id": "K3-23",
+   "sec": "K3",
+   "f": "Czy z everymana można zrobić supermana?",
+   "b": "Tak: wizerunek przesuwa się z rolą (Lepper: rolnik → trybun w koszulce „POLSKA” → polityk w garniturze; Duda raz w markecie, raz na terenach powodzi)."
+  },
+  {
+   "id": "K3-24",
+   "sec": "K3",
+   "f": "Czym różnią się prototypy idealnego prezydenta kobiety i mężczyzny?",
+   "b": "Od kobiety oczekuje się dodatkowo ciepła i zaufania, a w wyglądzie zadbanej fryzury i konserwatywnego ubioru; od mężczyzny wiedzy, siły, uroku i „garnituru”."
+  },
+  {
+   "id": "K3-25",
+   "sec": "K3",
+   "f": "Jakie są przyczyny niedoreprezentowania kobiet-ekspertek w mediach?",
+   "b": "Media skupiają się na najwyższych (męskich) stanowiskach (Shor), kobiety ocenia się po wyglądzie, a mężczyzn po treści (Dunaway), nierówny podział obowiązków domowych, syndrom oszusta (Sandberg), brak reguł „antenowej równości”."
+  },
+  {
    "id": "K4-1",
    "sec": "K4",
    "f": "Czym jest priming według Iyengara i Kindera?",
@@ -447,6 +483,30 @@ window.RECALL_DECK = {
    "sec": "K4",
    "f": "Jakie 5 narzędzi mówcy opisuje Anderson?",
    "b": "Więź, narracja, wyjaśnianie, perswazja, odkrywanie."
+  },
+  {
+   "id": "K4-20",
+   "sec": "K4",
+   "f": "Co wykazał Rutchick (2010)?",
+   "b": "W lokalach wyborczych w kościołach konserwatywny Republikanin dostał 41% głosów, w miejscach świeckich 32%: miejsce głosowania prymuje wartości konserwatywne (priming pośredni)."
+  },
+  {
+   "id": "K4-21",
+   "sec": "K4",
+   "f": "Komu pomaga flaga w tle według Kalmoe i Gross (2016)?",
+   "b": "Kandydatowi Republikanów wśród silnych patriotów, nawet gdy na tle flagi pokazano Demokratę."
+  },
+  {
+   "id": "K4-22",
+   "sec": "K4",
+   "f": "Jaka rama: „Przeczytaj historię Jana, który musiał zamknąć biznes…”?",
+   "b": "Epizodyczna (problem pokazany na przykładzie jednej osoby)."
+  },
+  {
+   "id": "K4-23",
+   "sec": "K4",
+   "f": "Jaki niewerbalny sygnał dominacji pokazuje slajd „Poczekaj(my)”?",
+   "b": "Każenie innym czekać: Putin musiał czekać na Erdoğana (upokorzony „własną bronią”)."
   }
  ]
 };
